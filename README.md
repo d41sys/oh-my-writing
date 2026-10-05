@@ -24,3 +24,9 @@ Update: `git -C ~/academic-writing-skill pull`.
 
 ## Test the scans
 `tests/scan_fixture.tex` is a positive control for the Tier-1/Tier-2 scans in `references/ai-tells.md`: Tier 1 must hit lines 2, 4, 12 only; Tier 2 must flag only paragraph 3.
+
+## Slash command
+```bash
+mkdir -p ~/.claude/commands && ln -s ~/academic-writing-skill/commands/academic-writing.md ~/.claude/commands/academic-writing.md
+```
+Then: `/academic-writing rewrite the abstract` or `/academic-writing write the introduction, example paper: arXiv 2505.23941`.
