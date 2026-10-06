@@ -60,7 +60,7 @@ Return the drafted part and a short list: `[ASK AUTHOR]` / `[VERIFY]` items, any
 
 **Order of sections (whole paper)**: story card → abstract draft (forces focus) → introduction → method/protocol → experiments → related work → conclusion → abstract rewritten last. Figures and tables are planned with the outline of the section that uses them (`references/figures-latex.md`).
 
-**Revising an existing section**: same steps, but edit, do not rewrite. An existing paper that was already checked and submitted is the default text; every sentence you keep needs no re-verification, every sentence you rewrite does. Step 0 input is the existing text. Before drafting, mark each sentence keep / fix / cut, and change only sentences with a concrete defect (wrong fact, missing required element, reviewer request, rule violation). Reuse the old wording for everything else, including whole parts that already work (e.g. a challenge or motivation passage). Never paraphrase a correct sentence. Step 4's fact trace then covers only the changed sentences, compared against the old text and the results; the hand-off lists each change with its reason.
+**Revising an existing section**: same steps, but edit, do not rewrite. An existing paper that was already checked and submitted is the default text; every sentence you keep needs no re-verification, every sentence you rewrite does. Step 0 input is the existing text. Before drafting, mark each sentence keep / fix / cut, and change only sentences with a concrete defect (wrong fact, missing required element, reviewer request, rule violation). Reuse the old wording for everything else, including whole parts that already work (e.g. a challenge or motivation passage). Never paraphrase a correct sentence. Step 4's fact trace then covers only the changed sentences, compared against the old text and the results; the hand-off lists each change with its reason. When a response letter exists, also follow `references/revision.md`.
 
 ## Principles behind every step
 
@@ -126,6 +126,7 @@ Never frame the work as "naive baseline, then our fix": it reads as an increment
 | `references/figures-latex.md` | figures, tables, math, citations, final checks |
 | `references/review.md` | Step 4b external reviewer prompt, reviewer questions, this project's lessons |
 | `references/exemplar.md` | Step 0 analysis of an example paper (research design first, writing last) |
+| `references/revision.md` | revising a reviewed paper: coverage matrix, fact provenance, letter quote integrity, change marking |
 
 ## With ARIS
 `/paper-plan` → this skill's Step 1 story card feeds the claims-evidence matrix. `/paper-write` → use Steps 2–5 per section. After all sections: ARIS `paper-claim-audit`, `citation-audit`, `auto-paper-improvement-loop`.
