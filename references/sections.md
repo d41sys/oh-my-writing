@@ -10,10 +10,14 @@ Write a draft first to force focus; rewrite it last, when the results and story 
 
 Pre-writing: what problem; why no established solution; what we contribute; why it works; what new insight.
 
-Pick one structure:
-- **Challenge → contribution**: task → challenge (limitation + reason) → contribution named in 1–2 sentences (name it, don't list its steps) → benefit → evidence.
-- **Challenge → insight → contribution**: as above, with one insight sentence before the contribution. Best for insight/analysis papers.
-- **Multiple contributions**: task → one contrast with prior work if needed → each contribution with its advantage in one sentence → evidence.
+The abstract is a summary of the whole paper, in paper order. It must contain, in this order: (1) **challenge**: why the problem matters in practice (its cost or risk, with a number from the paper's introduction) and why it is hard now, stated before any task definition; (2) **research gap**: what existing approaches do and the technical reason they fall short; (3) **proposed method**: the contribution named, with the mechanism that closes the gap; (4) **experiments**: datasets (with how their labels were obtained) and what was compared; (5) **results**: the key numbers against the strongest same-protocol baseline, then the takeaway. Do not open with a definition of the task ("X is the task of ..."); open with why the problem matters. Relative improvements over published results obtained under different protocols do not belong in the abstract.
+
+Pick one structure, all following the order above:
+- **Challenge → gap → contribution**: challenge → gap (limitation + reason) → contribution named in 1–2 sentences (name it, don't list its steps) → experiments → results.
+- **Challenge → gap → insight → contribution**: as above, with one insight sentence before the contribution. Best for insight/analysis papers.
+- **Multiple contributions**: challenge → gap → each contribution with its advantage in one sentence → experiments → results.
+
+Dataset descriptions in the abstract state label provenance only as the source documents it (for example, "real inspection labels" only if the dataset release says so; otherwise name the dataset and its size). Comparisons follow the relative-improvement rule in `style.md` (Precision).
 
 Rules: first sentence specific to this paper (no "LLMs have achieved remarkable..." opener); at least one concrete number; self-contained; no citations; no undefined acronyms (spell out AUROC etc.); 150–250 words; one message per sentence, short sentences (aim for about 20–25 words on average; split any sentence that carries two results). Introduce the task before the setup details, one step per sentence. The last sentence states what the reader should remember, not a generic "these results demonstrate" summary; it may only restate results already given, with their conditions (dataset, split, setting) attached. Never aggregate, extrapolate, or infer a threshold in the closing sentence (no "at least X on all", no "requires closer to Y"). A reviewer must be able to write "X is good for Y in the context of Z" after reading it.
 
