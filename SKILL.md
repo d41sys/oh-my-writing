@@ -52,7 +52,7 @@ Under each TL;DR comment, write the paragraph: first sentence states the message
   `codex exec -m <model> -c model_reasoning_effort=xhigh -s read-only --skip-git-repo-check -o paper/drafts/reviews/<section>_round<N>.md - < prompt.txt`
   Model: ARIS `REVIEWER_MODEL` if the installed CLI supports it, else the model of the last successful review round recorded in the project's review history. The `mcp__codex__codex` tool also works but times out at 30 s on xhigh reviews; prefer the CLI.
 - Never resume a session and never tell the reviewer what was fixed or why; it sees only the current files.
-- If Codex is unavailable, use a subagent pinned to a different model than the writer. If no other model is available, say "external review not run" in the hand-off; never substitute a self-review.
+- If Codex is unavailable (including usage limits), use a subagent pinned to a different model family than the writer; list available selectors first (e.g. `omp models find gpt --json`) instead of guessing a model name. If no other model is available, say "external review not run" in the hand-off; never substitute a self-review.
 - Apply CRITICAL and MAJOR findings that the evidence supports; a finding that would add an unsupported claim is rejected with a one-line reason. Re-run 4a, then one more fresh 4b round. At most two 4b rounds per section; report what remains.
 
 ### Step 5. Hand-off
