@@ -28,6 +28,10 @@ Wrap every added or changed span in the revision macro (e.g. `\rev{}`), includin
 - A figure or ratio named in the text is defined where it is first used (e.g. a separation ratio), in the code's terms.
 - Comparisons of a full model against a baseline attribute the gain to the full objective, not to the components the authors prefer (bundled intervention).
 - Name the checkpoint or configuration behind any qualitative figure or efficiency number when more than one exists.
+- Recompute every range or summary taken from a table ("F1-scores in the 0.94--0.955 range") against the table in the same file; old text is often wrong here.
+- A value you derive (e.g. miss rate = 1 − recall) must not contradict a column the table already reports for the same quantity; when it does, keep the reported value and drop the derivation.
+- A table row that combines numbers from different configurations (dataset, backbone) needs a caption note saying which number comes from which.
+- After inserting words into an existing sentence, reread the whole sentence; insertions next to an existing verb often produce a double predicate.
 
 ## 6. External review in revision mode
 Give the reviewer only sources the author has not overridden, and state which facts are author-confirmed. Otherwise every round re-reports settled provenance issues and spends the review on them instead of on prose.
