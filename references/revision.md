@@ -19,6 +19,7 @@ Ask who ran the experiments before reading code. A server account you can reach 
 ## 3. Quote integrity with the response letter
 The letter quotes manuscript sentences. Every edit to a quoted sentence is applied to the letter quote in the same pass, in every copy (Markdown, Word, and the duplicate text-box copy Word stores). Use `\ref`/`\eqref`, recompile, and only then update equation, table, and section numbers in the letter. Never edit the reviewer's own text in the letter.
 Adding or removing a float renumbers every later table or figure. Renumber the letter's references first (response text and excerpts, never the reviewer's text), then apply quote replacements that already use the new numbers; doing it in the other order shifts the new references twice. Note the old numbering in any appendix or audit file that still uses it.
+When editing the Word letter through its XML: match within one run (`<w:r>…</w:r>` with no nested `</w:r>`), never with a lazy `.*?` that can cross run or paragraph boundaries, because one such match can copy or delete half the document. Map repeated strings (e.g. excerpt headings) by their full text, not by position, since text boxes store a second copy. Keep a copy of the file before each pass, and before shipping diff the paragraphs against the previous version: every changed paragraph must be an intended change.
 
 ## 4. Mark every change
 Wrap every added or changed span in the revision macro (e.g. `\rev{}`), including the abstract and table cells. Deleted text cannot be colored; list deletions in the hand-off.
