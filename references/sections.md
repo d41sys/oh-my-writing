@@ -49,7 +49,7 @@ Introduce the problem with a concrete example, not with a list of citations sayi
 3. New module on an existing pipeline: the pipeline we build on → the observation that motivates the module → the module → why it beats the generic alternative.
 4. Observation-driven (fits analysis papers): the key finding first → the observation behind it → what we did with it → what it leads to.
 
-**Contributions**: 2–4 falsifiable bullets, 1–2 lines each, each with a forward reference to the section, table, or figure holding its evidence. A reviewer must be able to agree or disagree with each. Bad: "We conduct extensive experiments", "we improve the visualization". Preview the headline result before the bullets.
+**Contributions**: 2–4 falsifiable bullets, 1–2 lines each, each with a forward reference to the section, table, or figure holding its evidence. A reviewer must be able to agree or disagree with each. Bad: "We conduct extensive experiments", "we improve the visualization". Preview the headline result before the bullets. The evaluation bullet states the headline numbers even though the abstract and results repeat them; the one-fact-one-place rule (figures-latex.md) applies to tables and body text, not to the abstract, the contributions, or the conclusion summary. When removing redundancy, never strip results from these summary places.
 
 **No roadmap paragraph** ("The rest of this paper is organized as..."). The forward references in the bullets and the narrative already map the paper.
 
