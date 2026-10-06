@@ -16,6 +16,7 @@
 - Caption above the table; caption covers setting/protocol/notation, not discussion.
 - Metric direction in headers (Acc ↑, Err ↓); units; consistent decimals within a column; numbers right/decimal aligned, text left.
 - One table, one message. Do not mix different dimensions (e.g., terminal outcome vs trace status) in one category axis; use a cross-tab.
+- One fact, one place: a summary table does not repeat values already defined in the method (window length, stride, input size), and prose that cites the table does not restate its numbers. Merge derived rows into their source row (e.g. period and number of days).
 - Make the intended comparison adjacent; repeat a baseline row if needed. Clarity beats elegance.
 - Restrained highlighting of best / key rows only.
 - Every percentage traceable to integer numerator/denominator; report "54/96 (56.3%)" when denominators vary.
