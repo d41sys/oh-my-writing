@@ -48,6 +48,7 @@ Introduce the problem with a concrete example, not with a list of citations sayi
 2. Two contributions: contribution 1 and its advantage → the challenge it leaves → contribution 2 as the answer.
 3. New module on an existing pipeline: the pipeline we build on → the observation that motivates the module → the module → why it beats the generic alternative.
 4. Observation-driven (fits analysis papers): the key finding first → the observation behind it → what we did with it → what it leads to.
+5. Systems structural patterns (Gap Analysis, Contribution List, Thesis Formula): enumerate gaps $G_1 \dots G_n \to A_1 \dots A_n$, organize multi-type contributions with section pointers, or frame around a singular comparative thesis ("$X$ is better for $Y$ in $Z$").
 
 **Contributions**: 2–4 falsifiable bullets, 1–2 lines each, each with a forward reference to the section, table, or figure holding its evidence. A reviewer must be able to agree or disagree with each. Bad: "We conduct extensive experiments", "we improve the visualization". Preview the headline result before the bullets. The evaluation bullet states the headline numbers even though the abstract and results repeat them; the one-fact-one-place rule (figures-latex.md) applies to tables and body text, not to the abstract, the contributions, or the conclusion summary. When removing redundancy, never strip results from these summary places.
 
@@ -87,7 +88,7 @@ Three questions: (1) better than strong, recent baselines under a fair, identica
 
 Plan: claim → validation experiment; module/key parameter → ablation. Order: setup → main result → supporting experiments → ablations/analysis, ordered as an argument. Put each control next to the claim it tests.
 
-Each result paragraph: topic sentence = the claim tested → evidence with numbers → what the reader should notice → link to the next question. Refer to "Table N" in the sentence that interprets it, on the same page.
+Each result paragraph: topic sentence = the claim tested → evidence with numbers → what the reader should notice → link to the next question. Refer to "Table N" in the sentence that interprets it, on the same page. Table captions go above the table; use Title Case for noun-phrase headings (no period) or Sentence case for empirical assertions (with period); open with standard academic prefixes ("Comparison with...", "Ablation study on..."); purge promotional verbs ("showcase", "depict", "boast") in favor of objective verbs ("show", "compare", "present").
 
 Evidence quality:
 - An experiment is good when its outcome would differ depending on which hypothesis is true; one decisive experiment beats many weak ones.
