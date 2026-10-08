@@ -77,6 +77,10 @@ Thanks to the following projects and their contributors. Their work informed the
 | [ARIS (Auto-claude-code-research-in-sleep)](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep) | Paper planning and drafting, claim and citation audits, review/rebuttal, figures, talks, grants and patent writing |
 | [mattpocock/skills](https://github.com/mattpocock/skills) | Writing-for-agents, draft shaping and interview-style clarification methods |
 | [garden-skills](https://github.com/ConardLi/garden-skills) | Long-form article presentation and reader-facing layout |
+| [ResumeSkills](https://github.com/Paramchoudhary/ResumeSkills) | Résumé, CV, cover-letter, LinkedIn-profile and portfolio methods |
+| [proficiently-claude-skills](https://github.com/proficientlyjobs/proficiently-claude-skills) | Truthful cover-letter and résumé tailoring |
+| [jezweb/claude-skills](https://github.com/jezweb/claude-skills) | Award applications, proposals and regional business English |
+| University career and writing centers, DAAD, European Education Area | Statement-of-purpose, personal-statement and motivation-letter guidance (cited per unit) |
 
 Copyright and license notices are preserved in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). In particular, the identified Diátaxis adaptations remain CC-BY-SA 4.0. Acknowledgment does not replace license compliance.
 
