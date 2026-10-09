@@ -35,6 +35,8 @@ Then: `/academic-writing rewrite the abstract` or `/academic-writing write the i
 
 Oh My Writing is an independently organized writing knowledge library, separate from the existing academic-writing runtime above. Start with [the subject index](references/knowledge/index.md), [coverage and limitations](references/knowledge-review.md), or the [research report](WRITING_RESEARCH_REPORT.md).
 
+The [source insights report](SOURCE_INSIGHTS_REPORT.md) compares the 17 sources as skill designs: architecture, quality control, contradictions, and recommendations for this library.
+
 The [source knowledge coverage report](KNOWLEDGE_COVERAGE_REPORT.md) compares retained, partial, and missing methods within explicit audit scopes. Its percentages are static checklist judgments, not whole-repository coverage or measured model performance.
 
 References explain the writing methods directly: decisions, procedures, examples, exceptions, and checks. They do not send the model to copies of another repository. Shared guidance is merged by subject; specialist depth lives in our own modules. Load only what the task needs. The [100-pattern anti-slop catalog](references/ai-slop-catalog.md) and [post](references/writing-post.md), [paper](references/writing-paper.md), and [report](references/writing-report.md) guides supply detailed applications.
