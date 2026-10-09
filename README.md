@@ -35,6 +35,8 @@ Then: `/academic-writing rewrite the abstract` or `/academic-writing write the i
 
 Oh My Writing is an independently organized writing knowledge library, separate from the existing academic-writing runtime above. Start with [the subject index](references/knowledge/index.md), [coverage and limitations](references/knowledge-review.md), or the [research report](WRITING_RESEARCH_REPORT.md).
 
+The [reference review report](REFERENCE_REVIEW_REPORT.md) checks every knowledge unit against its sources and assigns it a tier.
+
 The [review checklist](REVIEW_CHECKLIST.md) lists the human decisions still needed before the reference library is final.
 
 The [conflicts register](CONFLICTS_REGISTER.md) lists every contradiction found between knowledge units, open or reconciled, so it can be reviewed later.
