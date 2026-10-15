@@ -35,9 +35,21 @@ Then: `/academic-writing rewrite the abstract` or `/academic-writing write the i
 
 Oh My Writing is an independently organized writing knowledge library, separate from the existing academic-writing runtime above. Start with [the subject index](references/knowledge/index.md), [coverage and limitations](references/knowledge-review.md), or the [research report](WRITING_RESEARCH_REPORT.md).
 
-The [reference review report](REFERENCE_REVIEW_REPORT.md) checks every knowledge unit against its sources and assigns it a tier.
+The [reference review report](REFERENCE_REVIEW_REPORT.md) includes a usefulness-first assessment (§14). Older source-fidelity tiers are historical, not an approval of the expanded library.
 
 The [review checklist](REVIEW_CHECKLIST.md) lists the human decisions still needed before the reference library is final.
+
+For human review, open the generated `review/assets-review.html`: restored entries are grouped into **keep / conditional / consolidate / runtime / exclude**, with separate canonical-unit and original-source-file views. Suggestions are model-assisted opinions. Your decisions and notes stay in browser storage; export JSON to back them up. The page does not modify library files.
+
+Rebuild the local review from the existing audit JSON and cached sources:
+
+```bash
+node scripts/build-asset-source-index.mjs
+node scripts/build-asset-review.mjs
+open review/assets-review.html
+```
+
+These commands require local `review/usefulness-audit.json`, the earlier review/provenance artifacts and `.cache/omw_sources/`; they do not download or re-evaluate sources. The generated page and data are local artifacts, not committed assets. Source links attached to a unit establish association, not exact provenance for every restored sentence. Files not usefulness-reviewed are labelled separately from the five recommendations.
 
 The [conflicts register](CONFLICTS_REGISTER.md) lists every contradiction found between knowledge units, open or reconciled, so it can be reviewed later.
 
