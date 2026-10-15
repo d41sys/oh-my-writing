@@ -39,7 +39,7 @@ The [reference review report](REFERENCE_REVIEW_REPORT.md) includes a usefulness-
 
 The [review checklist](REVIEW_CHECKLIST.md) lists the human decisions still needed before the reference library is final.
 
-For human review, open the generated `review/assets-review.html`: restored entries are grouped into **keep / conditional / consolidate / runtime / exclude**, with separate canonical-unit and original-source-file views. Suggestions are model-assisted opinions. Your decisions and notes stay in browser storage; export JSON to back them up. The page does not modify library files.
+For human review, open the generated `review/assets-review.html`. It defaults to **original assets by repository**, identified by their original paths—not by K-IDs. K-IDs identify our rewritten knowledge, available separately in the **synthesized methods** and **rewritten knowledge groups** tabs. The five keep / conditional / consolidate / runtime / exclude recommendations assess synthesized entries, not complete original files. Source files without a usefulness assessment are labelled explicitly. Your decisions and notes stay in browser storage; export JSON to back them up. The page does not modify library files.
 
 Rebuild the local review from the existing audit JSON and cached sources:
 
@@ -50,6 +50,8 @@ open review/assets-review.html
 ```
 
 These commands require local `review/usefulness-audit.json`, the earlier review/provenance artifacts and `.cache/omw_sources/`; they do not download or re-evaluate sources. The generated page and data are local artifacts, not committed assets. Source links attached to a unit establish association, not exact provenance for every restored sentence. Files not usefulness-reviewed are labelled separately from the five recommendations.
+
+The active tab, group chips and results summary show matching counts, not fixed catalogue totals. Changing a source filter clears the selected source group to avoid a hidden intersection with a different repo. “Mọi nhóm” removes only the group selection; “Xóa bộ lọc” clears the group and all filter conditions. Review-state filters update the visible cards immediately when a decision changes; note editing keeps focus when the matching cards are unchanged.
 
 The [conflicts register](CONFLICTS_REGISTER.md) lists every contradiction found between knowledge units, open or reconciled, so it can be reviewed later.
 
