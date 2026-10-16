@@ -1006,6 +1006,9 @@ def grade_run(run_dir: Path) -> dict:
         output = out_path.read_text(encoding="utf-8", errors="replace") if out_path.is_file() else None
         reply_path = meta_path.parent / "reply.md"
         reply = reply_path.read_text(encoding="utf-8", errors="replace") if reply_path.is_file() else ""
+        # Questions left for the author in an open-questions file are addressed to the author, like the reply.
+        for notes in sorted(workspace.glob("**/open-questions.md")) if workspace.is_dir() else []:
+            reply += "\n\n" + notes.read_text(encoding="utf-8", errors="replace")
         grade = grade_case(case, output, reply, workspace)
         deliverables = {d: (workspace / d).is_file() for d in case.get("deliverables", [])}
         runs.append({**{k: meta.get(k) for k in ("case", "skill", "host", "condition", "skill_loaded",
