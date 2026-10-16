@@ -1,0 +1,72 @@
+{
+  "id": "report-writing/vendor-comparison-mismatched-windows",
+  "skill": "report-writing",
+  "description": "Two vendors were measured in different windows at very different volumes. The memo must flag that the headline figures are not comparable, not rank on them, and invent no scores.",
+  "prompt": "Dana needs a decision memo on which route-optimization vendor to pick. The pilot notes are in vendor-notes.md. Write the memo and save it to out/memo.md.",
+  "files": {
+    "vendor-notes.md": "# Route-optimization vendor pilot: raw notes\n\nPrepared for Dana Okafor, Head of Operations. Memo due 15 April; her decision is needed by 30 April.\n\nRequirement from Dana: p95 API latency at or under 300 ms at our normal load of 40,000 requests per day, and an on-time delivery rate of at least 95%.\n\n## Larkspur\n- Pilot window: 3 to 16 Feb (14 days). Volume averaged 41,000 requests per day, a normal period.\n- On-time delivery rate: 96.2%\n- p95 API latency: 310 ms\n- Quote: 0.042 per request at the 40,000 per day tier, 12-month term.\n- Support: business hours only. Their sales rep said round-the-clock support is \"on the roadmap\".\n\n## Quillon\n- Pilot window: 24 Mar to 6 Apr (14 days). That fortnight included the Easter freeze, and volume averaged 14,000 requests per day.\n- On-time delivery rate: 97.1%\n- p95 API latency: 240 ms\n- Quote: 0.051 per request at the 40,000 per day tier, 12-month term.\n- Support: round the clock, written into their contract draft.\n\nNotes: nobody has run the two vendors side by side. Ops would like to pick this month so the migration fits the May window.\n"
+  },
+  "output": "out/memo.md",
+  "checks": [
+    {
+      "type": "contains_any",
+      "values": [
+        "different",
+        "not comparable",
+        "window",
+        "side by side",
+        "controlled ranking",
+        "controlled comparison"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)(not (directly |strictly )?comparable|cannot be (directly )?compared|can.t be (directly )?compared|not like[- ]for[- ]like|incomparable|(different|differing|mismatched|unequal) (pilot |test |measurement )?(windows?|periods?|conditions|volumes?|loads?)|(same|equal|matching) (window|period|volume|load|conditions|fortnight|two weeks)|(not|never|nobody) (been )?(run|tested|measured|compared)[^.\\n]{0,20}side[- ]by[- ]side|controlled (ranking|comparison))"
+    },
+    {
+      "type": "no_added_facts",
+      "allow": [
+        "0.009",
+        "21%",
+        "21.4%",
+        "27000",
+        "2.9",
+        "70 ms",
+        "0.9",
+        "0.9%",
+        "0.9 pp",
+        "0.9pp",
+        "131400",
+        "613200",
+        "744600",
+        "365 day",
+        "24/7"
+      ],
+      "note": "derived arithmetic on the supplied quotes (rate x 40,000 requests x 365 days, and the annual difference) is allowed; '24/7' is a spelling of 'round the clock'"
+    },
+    {
+      "type": "preserves",
+      "source": "vendor-notes.md",
+      "categories": [
+        "numbers"
+      ],
+      "allow_lost": [
+        "14 day",
+        "14",
+        "12",
+        "2",
+        "p95",
+        "3",
+        "6",
+        "16",
+        "24",
+        "15",
+        "30",
+        "40000",
+        "41000",
+        "14000",
+        "95%"
+      ]
+    }
+  ]
+}

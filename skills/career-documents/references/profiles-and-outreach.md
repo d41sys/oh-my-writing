@@ -1,4 +1,4 @@
-Load when: writing a LinkedIn or portfolio profile, a portfolio case study, a story bank, short application-form answers, a cold or networking email, a reference request, an offer reply, or when the English locale of a message must be chosen.
+Load when: writing a LinkedIn or portfolio profile, a portfolio case study, a story bank, short application-form answers, a cold, networking or academic outreach email, a warm-intro or thank-you note, a reference request, an offer reply, or when the English locale of a message must be chosen.
 
 # Profiles, portfolios, form answers and outreach
 
@@ -111,8 +111,8 @@ Rules:
 ### 5.1 Pick the vehicle
 - Formal application with a letter requested: cover letter.
 - A named person, cold or warm, no open application: a short email (this section).
-- Public professional updates: feed posts, not messages.
-- Investor or partner outreach: not this skill's scope; keep the same honesty rules.
+- Public professional updates, newsletters and email sequences: `post-writing`, not messages.
+- Investor, customer, partner or sales outreach: out of scope for all of the writing skills here (this skill covers outreach for jobs, careers and academia); if the author writes it anyway, the same honesty rules apply.
 
 ### 5.2 Facts first, angle second
 1. Collect real, dated, public facts about the recipient or organization: a post, talk, paper, product change, job posting, public statement. Keep the source and date for each. Use an exact quote only with a link.
@@ -122,14 +122,14 @@ Rules:
 5. Removal test: if the personalized opening can be deleted and the message still makes sense, the personalization is decoration. The observation should lead into why the sender is writing.
 
 ### 5.3 Message shape (job-seeking email)
-- **Subject:** short and human, naming the sender or the topic. No tricks, urgency, or role-title stuffing.
+- **Subject:** short and human, naming the topic or the sender. Say what the message is about, for example the role or the paper. No tricks, urgency, fake "Re:" or "Fwd:" prefixes, or role-title stuffing. Keep it short enough to read in full on a phone; the exact cut-off varies by mail client, so verify rather than quote a number.
 - **Hook (two to three sentences):** one specific, true observation about the company's product, method or claim, not "I love your mission".
 - **Background (three to five sentences):** the current role in plain words, one relevant past item, one or two pieces of proof. Context beats a list of achievements.
 - **Bridge (one or two sentences):** what the role or team seems to need and how recent work relates, stated as reasoned fit.
 - **Disclosures:** state relocation, time zone, work authorization or an obvious experience gap early and calmly when material.
 - **Link:** one portfolio or work link if useful.
 - **Close:** one low-pressure ask plus name and email.
-- Length: usually well under 300 words; shorter for a busy senior reader or a platform message.
+- Length: usually well under 300 words; a busy senior reader, a first message to a stranger or a platform message wants far less (a few short sentences). If the user states a word limit, it wins.
 - Do not paste a cover letter. Attach a résumé only when the market or the person's earlier reply makes that normal.
 
 ### 5.4 The ask
@@ -155,13 +155,34 @@ Pick by recipient and purpose rather than filling a template:
 - Stop at once on a no, an unsubscribe request, or any reply that ends the thread.
 - Include an opt-out wording and the sender's real identity if sending to many people.
 - Draft only. The user sends. Do not describe or schedule sends.
+- Reply handling: sort each reply (interested, wants information, objection, not now, referral to someone else, out of office, unsubscribe). Answer a positive reply with the specific thing asked for and one easy next step. A "not now" gets a short thanks and a note that the sender will not chase. Any reply stops the follow-up sequence.
+- Illustrative spacing for job-seeking: one follow-up after about a week, a later one after two or more weeks, then stop. On a platform, stop after three unanswered messages in total. These are courtesy heuristics, not rules; the user's judgment and the recipient's norms decide.
 
 ### 5.8 Platform messages
-A connection note states one credible reason in a line or two (the platform limits note length; verify). After acceptance, one short message tied to the reason and a light question. Write it in the user's voice. Stop after a few unanswered messages.
+A connection note or short-form message is two or three plain sentences: one credible reason to write, then the ask. Platform limits on note length change, so verify them. After acceptance, one short message tied to the reason and a light question. Write it in the user's voice. Never say "loved your talk" or "great post" without naming which one. Stop after a few unanswered messages.
 
-### 5.9 Examples (invented placeholders)
+### 5.9 Warm introductions, referrals and thank-you notes
+- **Intro or referral request:** state why the connector is a fair person to ask, what the sender is applying for, and give a way out ("no worries if it is not a fit"). Attach a self-contained blurb of under about 100 words that the connector can forward unedited: who the sender is, the one relevant proof point, what is being asked of the third party. The blurb uses only facts the candidate supplied and carries no praise the connector has not given.
+- **Thank-you or post-conversation note:** name the specific topic discussed, deliver anything promised (a link, the two questions, the résumé), add one new relevant point only if one exists, and state the next step or none. Do not stretch a ten-minute chat into a relationship ("great catching up") or claim advice that was not given.
+- Never write "as we discussed" or "following up on our conversation" unless the user confirms a real exchange.
+
+### 5.10 Academic outreach (prospective supervisor, lab, program contact)
+Conventions differ by country, field and department; some programs forbid or ignore direct contact before applying. Ask the user to check the program's admissions page and note it as `[VERIFY: does this program accept pre-application contact?]` when unknown.
+1. Facts from the user: degree and institution, the research or project they did (with their own role), the one recent paper, project or talk of the recipient they have actually read, and what they want (a place in the lab, a question about fit, whether the group is taking students).
+2. Name one specific, recent work of the recipient and one honest link to the sender's own work. If the user has not read anything specific, do not guess a paper: write `[ASK AUTHOR: one paper or project of theirs you have read, and what you took from it]` or send a plainer message with no claim of familiarity.
+3. Shape: subject naming the purpose and field; two or three sentences on the sender; the link to the recipient's work; one ask ("Are you taking students for [term]?"); an offer to send a CV and transcript, attached only if the program asks. Do not attach a full statement of purpose to a first message.
+4. Say plainly if the sender is applying through the normal route and only asks whether the fit is reasonable. Do not imply an agreement, a promised place or a prior exchange; never name another faculty member as a contact unless the user did.
+5. Keep it shorter than a cover letter: a first message to a busy academic is usually under about 150 words. Include the sender's full name, program applied to, and a link to a CV or page if one exists.
+6. A list of professors with only the name swapped fails the removal test. Prefer a few well-researched messages.
+
+### 5.11 Draft hand-off for outreach
+Return each message with the recipient, the channel, the subject, the body, and a short note: which facts about the recipient were used and where the user can check them, any warm path, and a confidence of high, medium or low that the hook is real. If no verified hook exists, say so in the note.
+
+### 5.12 Examples (invented placeholders)
 - Informational ask: "Hi Dana, I read your team's post on moving support reporting to a shared warehouse. I run a similar migration for a 12-person finance team. Would you be open to answering two questions by email about how you handled backfills?"
 - Referral ask: "Hi Sam, I am applying for the Data Analyst role at [company]. We worked together on the pricing review at [former employer]. Would you be comfortable referring me, or is there someone better to ask? I can send the posting and a two-line summary of the work."
+- Academic ask: "Dear Dr. Okoye, I am applying to the MSc in Ecology at [university] this autumn. I read your 2025 paper on hedgerow connectivity and ran a smaller version of that survey for my undergraduate thesis. Are you taking students for next year? I can send my CV and thesis summary if useful."
+- Thank-you after a short call: "Hi Sam, thank you for the call on Tuesday. As promised, here are the two questions I mentioned, and the link to the pricing review. I will not take more of your time unless you suggest a next step."
 
 ## 6. Reference lists and reference requests
 
@@ -208,4 +229,10 @@ Notes:
 - State currency and tax treatment in cross-border messages.
 - Plain-word swaps that work in every market: "get in touch" for "reach out", "use" for "leverage", "follow up" for "circle back", "closer look" for "deep dive".
 - Locale polish never licenses invented local presence ("our Auckland team") or pressure.
+- Spelling traps beyond the table: UK, AU and NZ split licence (noun) from license (verb) and practice (noun) from practise (verb); US uses one form for both. "Programme" is the general UK, AU and NZ spelling (program for software); US uses "program". "Judgement" is common outside the US. Do not "correct" a US document into British splits or the reverse. Official names (a university, a product, a legal entity) keep their own spelling.
+- Numeric-only dates (01/02/2026) are ambiguous across these markets; write the month as a word.
+- Sign-off cautions: a bare "Best" can read as American in the UK and NZ; "Cheers" can read as imported in the US and is for established rapport in the UK; avoid "Warm regards" in AU. Match the recipient's own level; with a corporate or senior reader go one notch more formal than the default and keep the greeting plain.
+- Stock phrases to cut in any market: "please find attached" (say what is attached), "at your earliest convenience" (give a date), "I trust this finds you well", "moving forward" as an opener, "reach out", "touch base". Replace vague promises with specific ones ("by Thursday").
+- In NZ, shared framing ("we could look at this together") and a closing "What do you think?" often fit better than one-sided "I will handle this". Treat as a tendency, not a rule.
+- Do not copy a corporate reader's jargon back to them; say the plain thing.
 - For non-English drafts, locale tables here do not apply.

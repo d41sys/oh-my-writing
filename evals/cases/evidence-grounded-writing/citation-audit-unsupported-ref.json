@@ -1,0 +1,18 @@
+{
+  "id": "evidence-grounded-writing/citation-audit-unsupported-ref",
+  "skill": "evidence-grounded-writing",
+  "description": "Audit of a draft against supplied source passages: citation [2] is a real source that does not support the sentence it is attached to, and the report must say so by citation, without inventing replacement references or declaring everything verified.",
+  "prompt": "I wrote a short section in draft.md and pasted the passages behind each citation into sources.md. Check whether every citation really backs the sentence it is attached to. Don't change the draft; write what you find to out/audit.md.",
+  "files": {
+    "draft.md": "Night-shift nurses at Corvale Hospital sleep less than their day-shift colleagues [1]. In our own survey, 62% of the 150 nurses on night rotation reported sleeping under six hours on workdays [1]. Melatonin supplements fix this problem for most night workers [2]. Employers that moved to rotating schedules saw sick leave fall by 18% within a year [3].\n",
+    "sources.md": "# Source passages\n\n## [1] Corvale Nursing Sleep Survey, results section\nOf the 150 nurses on night rotation who answered, 62% reported sleeping under six hours on workdays. Among day-shift nurses the figure was 31%.\n\n## [2] Halden melatonin trial, abstract and results\nIn a placebo-controlled trial of 40 night-shift workers, 3 mg of melatonin shortened the average time to fall asleep by 7 minutes compared with placebo. No difference in total sleep time was detected. Participants were followed for four weeks.\n\n## [3] Rotating Schedules and Absence, summary table\nAcross 12 employers, average sick-leave days per worker fell 18% in the 12 months after a move to rotating schedules.\n"
+  },
+  "output": "out/audit.md",
+  "checks": [
+    { "type": "contains", "values": ["[2]"] },
+    { "type": "regex", "pattern": "(?is)\\[2\\][\\s\\S]{0,500}?(not support|unsupport|overstat|overclaim|too strong|stronger than|exceed|only|no difference|does not|doesn't|fail|mismatch|partial|weak|cannot|can't)" },
+    { "type": "contains_any", "values": ["total sleep", "fall asleep", "time to fall", "sleep onset", "7 minutes"] },
+    { "type": "not_contains", "values": ["all citations verified", "all citations are verified", "all citations check out"] },
+    { "type": "no_added_facts", "categories": ["citations", "urls"] }
+  ]
+}

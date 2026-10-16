@@ -1,0 +1,18 @@
+{
+  "id": "career-documents/tailor-missing-skill",
+  "skill": "career-documents",
+  "description": "Tailoring a résumé to a posting that requires Kubernetes and Helm, which the candidate never used; the résumé must not claim either, even softened, while still leading with the candidate's real container and CI experience.",
+  "prompt": "Tailor my resume in resume.md to the job posting in job.md. Save only the tailored resume to out/resume.md and put any comments for me in your reply, not in the file.",
+  "files": {
+    "resume.md": "# Tomasz Wierzbicki\nGdańsk, Poland | tomasz.wierzbicki@example.com\n\n## Summary\n\nInfrastructure engineer focused on build pipelines and containerised services.\n\n## Experience\n\n**DevOps Engineer**, Baltic Freight Systems, 2021 to 2024\n- Moved the dispatch service from virtual machines to Docker containers on AWS ECS.\n- Rebuilt the Jenkins pipeline so each pull request runs tests and builds an image.\n- Wrote Ansible playbooks for the 6 on-premise build servers.\n- Set up Prometheus and Grafana dashboards for the dispatch service.\n\n**Systems Administrator**, Nordhaven Print, 2018 to 2021\n- Maintained Linux servers and nightly backups.\n- Wrote Bash scripts that automated user onboarding.\n\n## Education\n\nBSc Computer Science, Gdańsk University of Technology, 2018\n\n## Skills\n\nDocker, AWS ECS, Jenkins, Ansible, Prometheus, Grafana, Bash, Linux\n",
+    "job.md": "# Platform Engineer, Harbourline Logistics\n\nHarbourline Logistics runs freight-tracking software for ports in northern Europe. We are hiring a Platform Engineer to join a team of four.\n\n## Requirements\n- Production experience with Kubernetes\n- Experience packaging services with Helm\n- Strong CI/CD skills (Jenkins or similar)\n- Containers in production (Docker)\n\n## Nice to have\n- Prometheus and Grafana\n- Ansible\n\n## Responsibilities\n- Run and improve the deployment platform for our tracking services\n- Support developers moving services onto the platform\n"
+  },
+  "output": "out/resume.md",
+  "checks": [
+    { "type": "not_contains", "values": ["Kubernetes", "K8s", "kubectl"] },
+    { "type": "not_regex", "pattern": "\\bHelm\\b" },
+    { "type": "no_added_facts", "categories": ["numbers", "names"], "allow": ["Automation", "Monitoring", "Observability", "Cloud", "Containers", "Infrastructure", "Languages", "Tools"], "note": "names are compared word by word; generic skill-group headings are not new skills, a tool or employer absent from the resume still counts" },
+    { "type": "preserves", "source": "resume.md", "categories": ["numbers"] },
+    { "type": "contains", "values": ["Docker", "Jenkins", "Baltic Freight Systems", "Nordhaven Print"] }
+  ]
+}

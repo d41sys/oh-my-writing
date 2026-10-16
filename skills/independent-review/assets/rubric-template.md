@@ -56,6 +56,8 @@ Scoring rules:
 
 One short paragraph: would the stated reader, reading this, get what they came for? Name the weakest criterion and the one thing worth keeping. Do not average Part B into a single number unless the user asks; a total hides which criterion failed.
 
+When anchors exist, add an anchor comparison: which good anchors the text falls short of and which bad anchors it beats, on which criteria, and why.
+
 ## Reporting line
 
 `Rubric: <n> criteria, calibration <status>; scores are judgments by <reviewer family or "unknown">, not measurements.`

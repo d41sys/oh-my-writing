@@ -14,6 +14,7 @@ Check the filled prompt against this list. Remove anything that matches.
 - Any hint of the verdict you want, or reassurance or warnings about weak spots.
 - Leading questions ("is the opening strong?", "isn't this clear?").
 - Anything about the writer's process, tools, or model.
+- Confidential or unpublished material the owner has not cleared to leave this session (see step 3 of the skill).
 
 Allowed: who reads the text, what that reader knows and needs, hard constraints (length, format, venue, house style), sources the text must agree with, the rubric, and the output format below.
 
@@ -35,6 +36,8 @@ The reader opens the document because: {{READER_REASON}}
 After reading, the reader has to: {{READER_NEXT_ACTION_OR_DECISION}}
 Hard constraints: {{LENGTH_FORMAT_VENUE_STYLE_RULES}}
 Review in this language: {{REVIEW_LANGUAGE}}
+
+Open your reply with one line: Reviewer-Model: <your own model id, or unknown>
 
 Do not edit any file. Do not rewrite the document. Do not use outside
 knowledge to fill a gap in the text; if you had to, say so.
@@ -89,3 +92,28 @@ VERDICT: ready | revise
 | `RUBRIC_PATH_OR_TEXT` | a filled rubric; calibrated or labelled `calibration: none` | a rubric invented to fit the verdict |
 
 If the reply has no `VERDICT:` line, treat it as `revise` and ask for a new session only if the findings are unusable.
+
+## Variant: rejection memo (High depth, or after a review that approved everything)
+
+Two separate sessions, neither the writer's. Use the same header block as above (reader, constraints, sources). The writer's defence of the text is never given to either session.
+
+Session 1, the attacker:
+
+```
+You are a senior reviewer who has decided to recommend rejecting the document.
+Write the strongest case for rejection in about 200 words, from what is on the
+page and in the sources only. Quote the passage behind each attack. Do not
+invent problems and do not attack the author. If no case survives a careful
+reading, write "no case for rejection" and stop.
+```
+
+Session 2, the adjudicator (not a defender): give it the document, the sources, and the attacker's memo verbatim.
+
+```
+For each attack in the memo, decide: answered by the text (quote where),
+partly answered (say what is missing), or unresolved (say what evidence or
+decision would resolve it). Judge the document and the memo; do not argue for
+either side. Finish with one line: VERDICT: ready | revise
+```
+
+Unresolved attacks go through triage like any finding. The memo is a stress test, not a rewrite order: an attack that needs evidence the material lacks becomes `[ASK AUTHOR: ...]` or a stated limit, not an invented answer.

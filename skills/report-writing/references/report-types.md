@@ -15,6 +15,8 @@ Each type below gives the reader's job, a default spine, the voice and density t
 | Know whether work is on track and what needs them | Status report |
 | Trust figures and a story before putting money in | Investor materials |
 | Learn what went wrong and prevent a repeat | Post-mortem |
+| Check something against a standard and see what fails | Audit or diagnostic report |
+| Keep a reusable lesson from hard or surprising work | Lessons-learned entry |
 
 When a request fits two types (a research report that ends in a decision), write the decision memo on top and attach the research as the evidence section or appendix.
 
@@ -93,6 +95,7 @@ Everything in the research spine applies, plus these specifics.
 - **Label every figure** as reported fact, estimate, calculation, forecast, opinion, or recommendation, and keep the ledger described in [comparisons and recommendations](comparisons-and-recommendations.md).
 - **A figure is not true because a paid report prints it.** Cite the original producer where possible, note when several outlets repeat one origin, and do not count mirrors as independent confirmation.
 - **Growth rates:** show start value, end value, and number of periods for any compound rate; it hides volatility and breaks and is undefined from a zero or negative start. Do not mix nominal and real values in one total.
+- **Stocks and flows:** an installed base, headcount, or capacity is a stock; revenue and shipments are flows. Converting one to the other needs a stated turnover, utilization, or replacement-cycle assumption.
 - **Forecasts:** build paths from named drivers, separate history from forecast visually, give a downside and an upside, and do not attach probabilities to scenarios without a model that produces them.
 
 **Traps:** one big number with no definition; a market "size" that is a vendor's headline; CAGR with no endpoints; confident forecasts from a single source.
@@ -119,6 +122,8 @@ The report answers three questions, and every section earns its place by moving 
 **Close with decisions, not admiration.** Questions that help a team align: Is the target position still open or is a rival moving in? Which direct rival is the sharpest threat in the next planning horizon, and what is the counter? Does the identity balance still hold? Which trailing criterion is worth closing and which to concede on purpose? What single move widens distinctiveness most without costing credibility?
 
 **Habits:** use a decision-relevant shortlist instead of a census, and justify inclusions and exclusions; a skewed shortlist can make the client look unbeatable or doomed. Look past the well-marketed names for strong low-profile players. When arguing a rival's limits, also inspect what they advertise as their strength; the strength often hides the deeper limit. Typical length is roughly 1,500 to 3,000 words plus appendix.
+
+**Table stakes versus differentiators:** list each claimed feature and ask whether every comparable rival also has it. If so it is table stakes and is mentioned in passing, not listed as a strength. Each remaining differentiator says how this one differs, not "we also have it", and a differentiator for the client needs customer, win and loss, or review evidence, otherwise it is a hypothesis.
 
 **Traps:** methodology first; scores without the tension map; a matrix with a blended total; deep dives chosen by ranking; recommendations that ignore the brief; brochure language adopted as fact.
 
@@ -147,11 +152,11 @@ The report answers three questions, and every section earns its place by moving 
 
 **Spine:**
 
-1. Overall state in one line, with the definition of the state words used (what "at risk" means here).
+1. Overall state in one line: health, the milestone reached, the biggest blocker or decision needed (or "none"), and what happens next, with the definition of the state words used (what "at risk" means here). If this line cannot be written, the situation is not yet understood. Pair each status word with a trend (improving, stable, declining); green means on track, not hopeful.
 2. What changed since the last report, ahead of anything that did not.
 3. Progress against plan: milestones with planned and actual or forecast dates; metrics with the target and baseline.
 4. Risks and blockers, each with the effect on the plan, the owner, and the date by which a decision or action is needed.
-5. Asks: decisions or help needed, by whom, by when.
+5. Asks: each decision as a specific question with its options, the impact of each, a recommended option when the author has one, who decides, the date, and what happens if the date slips. If none are needed, say "No decisions needed this period."
 6. Next period: the few things that will happen, not everything planned.
 
 **Voice:** terse and factual. Prefer a short table to paragraphs for dates and owners. Do not list activity ("held meetings, reviewed items") in place of outcomes.
@@ -163,6 +168,8 @@ The report answers three questions, and every section earns its place by moving 
 ## Investor materials
 
 Covers pitch deck, one-pager, investor memo, periodic investor update, accelerator or grant application answers, and the model excerpts that support them. This is writing support, not investment, legal, or financial advice.
+
+Investor, customer or partner outreach messages (cold emails, pitches, sales follow-ups) are out of scope for all of the writing skills here; this section covers the materials, not the message that asks for a meeting.
 
 **Golden rule: the materials must agree with each other.** Before drafting any piece, create or confirm one list of canonical facts: traction metrics, pricing and revenue assumptions, raise size and instrument, use of funds, team names and titles, milestones and dates. If drafts or assets disagree, stop and resolve it before writing more. Check every number in every asset against that list before sending.
 
@@ -184,19 +191,23 @@ Covers pitch deck, one-pager, investor memo, periodic investor update, accelerat
 
 ## Post-mortem or incident review
 
+This is the blameless document written for the team. A public blog post that tells the incident's story is `post-writing`.
+
 **Reader's job:** learn what in the system allowed this, and agree on changes.
 
 **Spine:**
 
 1. Summary: what happened, impact (who, how many, how long, cost), and the main cause in plain terms, in a few sentences.
 2. Impact: measured, with source. Separate what was measured from what is estimated.
-3. Timeline: timestamped events with the information available at each point. Decisions are judged against what was known then.
+3. Timeline: timestamped events with the information available at each point. Decisions are judged against what was known then. Times and durations are the author's; compute a duration only from given timestamps and show the arithmetic.
 4. Causes: the chain from trigger to impact, and the conditions that let it happen. Use why-questions until you reach something a change can fix, typically three to five levels. Each causal link has evidence (log, metric, measurement), or is marked as probable.
 5. What went well and where luck helped. Luck is a finding too.
-6. Action items: each with an owner, a date, and how we will know it worked. Prefer changes to systems and checks over retraining or reminders.
+6. Action items: each tied to a verified cause and specific enough to check (name the system, threshold, document, or step; "improve monitoring" is not an action), with an owner, a date, and the evidence that will show it worked. Prefer changes to systems and checks over retraining or reminders. If the author gave no owner or date, mark `[ASK AUTHOR: owner and date]` rather than assigning one.
 7. Open questions and what is not known.
 
 **Blameless is a method, not a tone.** People are not the cause; the conditions in which a reasonable person acted that way are. Name roles and systems, not culprits, unless the people consented. If a statement ends at "human error," "carelessness," or "operator did not follow the procedure," keep going: why did the system allow, encourage, or fail to catch that? A root cause that restates the problem or whose only fix is "remind the team" is still a symptom.
+
+**When the source notes blame a person,** keep the observable event (what was done, on what information, under what conditions) and drop the verdict ("X messed up", "careless"). Use the role, not the name, unless the person consented. Say in the change note that this was done.
 
 **Separate confirmed, probable, and to fix.** Facts before opinions; cite the logs, frames, thresholds, or measurements. Do not infer actor or motive from the observable change; report the observable source. If a past event has no recoverable cause, say so.
 
@@ -218,7 +229,7 @@ A reusable record after hard or surprising work, not a diary line.
 
 When the report checks something against a standard and finds problems.
 
-- Split what is confirmed, what probably caused it, and what must be fixed. Keep it short.
+- Lead with what is broken and the verdict, not with what works. Split what is confirmed, what probably caused it, and what must be fixed. Keep it short.
 - Findings table: location, evidence (quoted or measured), the issue, why it matters, confidence, action. Highest confidence first. Say how many findings there are by group.
 - "Could not check X" is different from "X is broken." Do not call the audit complete if a required source failed to load; say what was not examined.
 - If nothing is found, state the scope and assumptions and say the surface is clean in one line.

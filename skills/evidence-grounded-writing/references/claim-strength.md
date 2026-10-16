@@ -32,6 +32,8 @@ Hedges versus levels:
 
 A hedge is right when the uncertainty is real and about the effect itself (for example, a confidence interval that spans zero). It is wrong when it hides that the author does not know what the evidence covers.
 
+Stacked hedges collapse to one: "may possibly be able to reduce" becomes "may reduce". Keep the single hedge that carries the real uncertainty (a preclinical result, an interval that spans zero); never collapse to none when the evidence is that weak.
+
 Guarantee claims deserve extra suspicion. Words like "always", "never", "all", "guarantees", "proven" ask for a proof or exhaustive check. A benchmark, however large, is a systematic claim. If you cannot find the proof, downgrade the wording and keep the number.
 
 ## 2. Claim types and the verbs that fit
@@ -51,6 +53,10 @@ Rules of thumb:
 - Pick the verb for the type the evidence supports, not the type the author hopes for.
 - A good prediction score does not show a cause. An effect after an intervention does not show the proposed pathway.
 - A proposal or hypothesis is labeled as such. Do not present it in the grammar of a finding.
+- Match the evidence to the claim type: causal needs a design that isolates the part (ablation, randomisation, a comparison group); generalisation needs varied settings, not one; improvement needs a fair baseline; descriptive needs a defined sample; scoping needs stated bounds. One experiment rarely covers two of these.
+- A plausible mechanism says how an effect could happen; it is not a measurement that it does. Use a mechanism in place of a slogan only if the source describes it; never invent one to make a sentence sound explained.
+- Keep the statement class: a measured fact, an estimate, a calculation from stated inputs, a forecast under assumptions, an opinion and a recommendation are different things. Do not rewrite an estimate as a fact, a scenario as a prediction, an interview theme as a prevalence, or a recommendation as an evidence claim.
+- The kind of evaluation sets a ceiling: real ground truth allows the full claim; a synthetic proxy allows claims about proxy consistency only; a simulation needs "in simulation"; human judgments need an agreement statistic. Scores divided by the model's own maximum, or references built from model output, do not count as ground truth; show raw and normalised scores side by side and treat a score near 100% from self-normalisation as a flag.
 - Observation first, interpretation after: say what was seen, in what population, over what period, then what it might mean.
 
 ## 3. Causal versus correlational wording
@@ -79,6 +85,16 @@ Special cases:
 - Not significant is not "no effect". Write "no difference was detected (interval X to Y)" and say whether the study was able to detect an effect of the size that matters.
 - A single p-value is not the probability the claim is true; it measures how surprising the data are under a null model. Report effect size and interval next to it.
 - Post-hoc patterns are exploratory. Label them so; do not present them as pre-planned tests.
+- Equivalence needs its own test. "No meaningful difference" rests on a stated margin and an equivalence or non-inferiority test, not on a p-value above 0.05.
+- Inference traps worth a quick check, each with the fix in brackets:
+  - the outcome may drive the exposure (reverse direction) [say the design cannot tell the direction];
+  - improvement after an intervention may be recovery, drift or regression to the mean [name the rival, or add a comparison group];
+  - several things changed together (hardware, load, release) [credit the bundle, not one part];
+  - a group-level pattern is not a statement about one person [keep the claim at group level];
+  - a handful of cases or one anecdote is not a rate [report the count; a single safety signal is still worth reporting as a signal];
+  - "no harm found" is not "safe" unless the search could have found it [say what could and could not be detected];
+  - many comparisons make chance hits likely: with k independent tests at the 5% level the chance of at least one false positive is 1 - 0.95^k, about 64% for k = 20 [say how many were run, label unplanned ones exploratory];
+  - only the successful runs, a truncated axis or a favourable subset are shown [report the rest, or say what was left out].
 
 ## 4. Comparison validity
 
@@ -96,6 +112,8 @@ Also:
 - Where the gain is small, show raw numbers next to the relative change so the reader can judge scale.
 - Each metric shows one property. A metric for accuracy says nothing about cost or fairness; state which property the claim is about.
 - Baseline numbers say where they came from: reproduced by the author, or taken from a paper.
+- Report ties and parity as results. When a metric exists in raw and adjusted form, give both; showing only the flattering one is a credibility failure.
+- Do not blend figures that use different definitions, windows, currencies or price bases into one number without converting and saying so. Do not average two conflicting measurements into a made-up midpoint.
 
 ## 5. Placing uncertainty
 
@@ -104,6 +122,9 @@ Also:
 - Make it specific: what is unknown, why, and in which direction it could move the result. "Results may vary" tells the reader nothing; "we tested one dataset, so the gain on noisier data is unknown" does.
 - Keep real uncertainty (an interval, a disagreement between sources) in the text; do not smooth it into confident prose.
 - Do not apologise for a solid result. If the evidence is strong, say it plainly.
+- Null, unexpected and inconclusive findings stay in, with the prominence they deserve. If two credible sources disagree, report both and the likely reason (conditions, workload, population, period).
+- A limit followed straight away by a sweeping superlative ("systems differ, but ours is the best overall") cancels the limit. Keep the claim inside the tested boundary and name where the method degrades or was not tried.
+- Do not close with a blanket "more research is needed". Name the specific missing evidence, or say nothing.
 
 ## 6. Editing without upgrading
 
@@ -119,8 +140,14 @@ When revising any text, never raise strength unless new evidence is in the ledge
 | "up to 40%" | "40%" | best case presented as typical |
 | "among 120 respondents" | "users say" | sample presented as population |
 | "not tested on X" | (sentence removed) | limit erased |
+| "in mice" / "in vitro" / "in adults over 65" | "in animals" / "in cells" / "in people", or the scope dropped | population or species widened |
+| "the cohort showed" | "you should" / "people can" | group result turned into individual advice |
+| "no harm was observed in 40 patients" | "safe" | absence of detection written as safety |
+| "under these assumptions" / "forecast" | "will" | scenario written as prediction |
 
 If tightening for length, shorten words, not scope. When two edits conflict (shorter versus accurate), accuracy wins.
+
+Concision trap: collapse stacked hedges to one and cut filler around the claim ("it is important to note that", "in the context of"), but keep the scope words (species, population, setting, period), the numbers and the hedge that carries real uncertainty. "may reduce X in mice" stays "may reduce X in mice", not "reduces X". Removing an unsupported claim is an honest edit, but list it in the change list; do not reword a sentence so that the problem merely stops being visible.
 
 ## 7. High-stakes domains
 
@@ -128,7 +155,7 @@ For health, legal, financial, safety or security statements:
 
 - Report what the supplied source says and cite it; do not add dosage, legal conclusions, tax or investment guidance, or safety assurances from memory.
 - Do not turn group-level findings into advice for an individual ("the cohort showed..." is not "you should...").
-- Mark the statement `[VERIFY with a qualified source: ...]` when the author wants to publish something that could change someone's health, rights or money.
+- Mark the statement `[VERIFY: qualified source for <statement>]` when the author wants to publish something that could change someone's health, rights or money.
 - Keep jurisdiction and date: laws, guidelines and prices differ by place and expire.
 - Required disclaimers stay as the author wrote them.
 

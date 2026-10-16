@@ -47,6 +47,8 @@ two samples, or numbers that swing widely. Omit anything weaker than weak. -->
 | Contractions | <uses them freely> | <contractions 31 per 1000 words> | <strong> | <all sets> |
 | Punctuation | <rare semicolons, parentheses for asides> | <semicolon 0.4, parenthesis 6 per 1000 words> | <moderate> | <public> |
 | Formatting | <prose with occasional short lists> | <bullet ratio 0.15> | <weak> | <public> |
+| Fragments and rhythm | <runs of very short sentences, rarely a long one> | <stat: median 6, max 14; post-01 opening run> | <moderate> | <public> |
+| Capitalization | <conventional> | <all sample titles and sentences> | <weak> | <public> |
 
 ## Observed moves
 
@@ -61,6 +63,9 @@ name the file. -->
 | Hedging | <hedges once, with the reason> | <"probably, since I only ran it twice" (post-02)> | <moderate> | <all sets> |
 | Humor | <dry, one aside per piece> | <"(it did not)" (post-05)> | <weak> | <public> |
 | Recurring phrase | <"in practice"> | <3 of 6 samples> | <moderate> | <public> |
+| Compression | <compressed: terms defined in passing> | <post-02 "a cache, meaning the copy we keep nearby"> | <weak> | <public> |
+| Claim style | <number first, then the claim> | <post-01, post-03, post-04> | <moderate> | <public> |
+| Call to action | <none; pieces end on the last point> | <absent in 5 of 5 samples> | <moderate> | <public> |
 
 ## Splits and conflicts
 
@@ -78,6 +83,16 @@ tables above. Apply only when the author asks for them for a given piece. -->
 | Preference | Said on | Samples show | Decision |
 |---|---|---|---|
 | <"I want to sound less formal"> | <YYYY-MM-DD> | <formal in 5 of 6 samples> | <pending: ask the author per piece> |
+
+## Declared rules and terminology
+
+<!-- Rules the author states outright, not traits read from samples: words they refuse, preferred
+terms and casing, punctuation they never use. Keep each short, dated, and in the author's words.
+Style only: no product facts, figures or biography. -->
+
+| Rule | Said on | Applies to | Samples agree? |
+|---|---|---|---|
+| <"never use em dashes in client emails"> | <YYYY-MM-DD> | <client email> | <yes, 0 in 4 samples> |
 
 ## Channel notes
 
@@ -115,4 +130,4 @@ enough samples to mean something), or that the author explicitly asked for. Say 
 
 <!-- Newest first. Record the date, the samples added or removed, and what changed. -->
 
-- <YYYY-MM-DD>: built from <n> samples (<set names>); <confidence>.
+- <YYYY-MM-DD>: built from <n> samples (<set names>); <confidence>. Open questions for the author are marked `[ASK AUTHOR: ...]`.

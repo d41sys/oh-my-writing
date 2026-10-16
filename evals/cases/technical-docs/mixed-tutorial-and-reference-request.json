@@ -1,0 +1,48 @@
+{
+  "id": "technical-docs/mixed-tutorial-and-reference-request",
+  "skill": "technical-docs",
+  "description": "A request for a getting-started guide that also lists every config option: the guide teaches one short path and links to a separate reference page instead of pasting the full option table, invents no config keys, and the reply says what was split.",
+  "prompt": "tailr is our small log-tailing tool (tailr.py, with tailr.toml.example for the settings). Write a getting-started guide for new users that also lists every config option. Save the guide to out/getting-started.md; put any other page you decide to create in out/ as well.",
+  "files": {
+    "tailr.py": "\"\"\"tailr: print lines from a log file, optionally following it as it grows.\n\nNeeds Python 3.11 or newer (tomllib).\n\"\"\"\nimport argparse\nimport re\nimport sys\nimport time\nimport tomllib\nfrom datetime import datetime\n\nDEFAULTS = {\n    \"pattern\": \"\",\n    \"follow\": True,\n    \"poll_interval_ms\": 250,\n    \"max_line_bytes\": 8192,\n    \"color\": \"auto\",\n    \"timestamp_format\": \"\",\n    \"output_file\": \"\",\n}\n\n\ndef main(argv=None):\n    parser = argparse.ArgumentParser(prog=\"tailr\", description=\"Print and follow log lines.\")\n    parser.add_argument(\"--config\", default=\"tailr.toml\", help=\"TOML config file (default: tailr.toml)\")\n    args = parser.parse_args(argv)\n\n    with open(args.config, \"rb\") as fh:\n        cfg = {**DEFAULTS, **tomllib.load(fh)}\n    if \"path\" not in cfg:\n        print(\"tailr: the config has no 'path'\", file=sys.stderr)\n        return 2\n\n    rx = re.compile(cfg[\"pattern\"]) if cfg[\"pattern\"] else None\n    colour = cfg[\"color\"] == \"always\" or (cfg[\"color\"] == \"auto\" and sys.stdout.isatty())\n    extra = open(cfg[\"output_file\"], \"a\", encoding=\"utf-8\") if cfg[\"output_file\"] else None\n    print(f\"tailr: watching {cfg['path']}\", file=sys.stderr)\n\n    with open(cfg[\"path\"], \"rb\") as log:\n        while True:\n            raw = log.readline()\n            if not raw:\n                if not cfg[\"follow\"]:\n                    break\n                time.sleep(cfg[\"poll_interval_ms\"] / 1000)\n                continue\n            line = raw.decode(\"utf-8\", errors=\"replace\").rstrip(\"\\n\")\n            if len(raw) > cfg[\"max_line_bytes\"]:\n                line = raw[: cfg[\"max_line_bytes\"]].decode(\"utf-8\", errors=\"ignore\") + \"...\"\n            if rx and not rx.search(line):\n                continue\n            if colour and rx:\n                line = rx.sub(lambda m: f\"\\x1b[1m{m.group(0)}\\x1b[0m\", line)\n            if cfg[\"timestamp_format\"]:\n                line = datetime.now().strftime(cfg[\"timestamp_format\"]) + line\n            print(line)\n            if extra:\n                extra.write(line + \"\\n\")\n    return 0\n\n\nif __name__ == \"__main__\":\n    sys.exit(main())\n",
+    "tailr.toml.example": "# tailr configuration. Only \"path\" is required.\n\n# File to watch.\npath = \"/var/log/app.log\"\n\n# Print only lines that match this regular expression. Default: \"\" (every line).\npattern = \"\"\n\n# Keep watching for new lines after reaching the end of the file. Default: true.\nfollow = true\n\n# How often to check the file for new data, in milliseconds. 50 to 5000. Default: 250.\npoll_interval_ms = 250\n\n# Lines longer than this many bytes are cut and end with \"...\". Default: 8192.\nmax_line_bytes = 8192\n\n# Highlight matches: \"auto\", \"always\" or \"never\". Default: \"auto\".\ncolor = \"auto\"\n\n# strftime format put in front of each printed line. \"\" means no prefix. Default: \"\".\ntimestamp_format = \"\"\n\n# Also append every printed line to this file. Default: \"\" (do not write a file).\noutput_file = \"\"\n"
+  },
+  "output": "out/getting-started.md",
+  "checks": [
+    {
+      "type": "regex",
+      "pattern": "(?i)\\]\\([^)\\s]*(reference|config|options|settings)[^)\\s]*\\)"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?s)\\A(?=.*\\bpoll_interval_ms\\b)(?=.*\\bmax_line_bytes\\b)(?=.*\\btimestamp_format\\b)(?=.*\\boutput_file\\b)"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "`(?!(?:poll_interval_ms|max_line_bytes|timestamp_format|output_file)`)[a-z]+(?:_[a-z]+)+`"
+    },
+    {
+      "type": "contains_any",
+      "values": [
+        "we will",
+        "we'll",
+        "in this tutorial",
+        "in this guide"
+      ]
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(alternatively|if you prefer|or, if you)\\b"
+    },
+    {
+      "type": "contains_any",
+      "values": [
+        "reference",
+        "separate page",
+        "split",
+        "two pages"
+      ],
+      "target": "reply"
+    }
+  ]
+}

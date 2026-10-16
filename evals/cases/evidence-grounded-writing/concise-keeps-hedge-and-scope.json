@@ -1,0 +1,20 @@
+{
+  "id": "evidence-grounded-writing/concise-keeps-hedge-and-scope",
+  "skill": "evidence-grounded-writing",
+  "description": "Concision edit of a hedged preclinical claim: filler and stacked hedges go, but 'may', 'in mice', the numbers and the not-tested-in-humans limit must survive and no stronger verb may appear.",
+  "prompt": "This paragraph in draft.md is far too wordy for our abstract. Tighten it a lot, keep it as one paragraph, and save the tighter version to out/tight.md.",
+  "files": {
+    "draft.md": "It is important to note that, on the basis of the results that were obtained in the experiments carried out in our laboratory, the compound known as Rilvastat may possibly be able to reduce the growth of tumours in mice, although it should also be pointed out that this effect was observed in a total of 24 mice given 10 mg/kg daily for 28 days, and that the compound has not been tested in humans.\n"
+  },
+  "output": "out/tight.md",
+  "checks": [
+    { "type": "contains", "values": ["human"] },
+    { "type": "regex", "pattern": "(?i)\\b(?:in|of|among) (?:\\d+ )?(?:\\w+ )?mice\\b|\\bmouse\\b", "note": "the claim stays scoped to mice (\"in mice\" or \"a study of 24 mice\")" },
+    { "type": "regex", "pattern": "(?i)\\b(may|might|could)\\b" },
+    { "type": "not_regex", "pattern": "(?i)(?<!may )(?<!might )(?<!could )(?<!may have )(?<!might have )(?<!could have )\\b(reduces|reduced|shrinks|prevents|eliminates|demonstrates|proves)\\b", "note": "no stronger verb; 'may have reduced' keeps the hedge" },
+    { "type": "preserves", "source": "draft.md", "categories": ["numbers"] },
+    { "type": "not_contains", "values": ["it is important to note", "it should also be pointed out", "on the basis of the results"] },
+    { "type": "word_count", "min": 18, "max": 60 },
+    { "type": "similarity", "source": "draft.md", "min": 0.1 }
+  ]
+}

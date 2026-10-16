@@ -226,6 +226,30 @@ def test_citation_year_and_index_are_not_read_as_figures(tmp_path):
     assert ledger(tmp_path, sentence + "\n")["claims"] == []
 
 
+@pytest.mark.parametrize(
+    "marker",
+    [
+        "[VERIFY: find a source for the 12% figure]",
+        "[ASK AUTHOR: which survey?]",
+        "[UNTESTED]",
+        "[CITATION NEEDED: a source for the 12% figure]",
+        "[Source needed]",
+        "[UNVERIFIED]",
+    ],
+)
+def test_gap_markers_count_as_pending(tmp_path, marker):
+    """The three standard markers and the older placeholders all read as pending, never as cited."""
+    sentence = f"Sales grew 12% last year {marker}."
+    claim = by_sentence(ledger(tmp_path, sentence + "\n"))[sentence]
+    assert claim["pending_marker"] is True
+    assert claim["citation_present"] is False
+
+
+def test_marker_text_is_not_read_as_a_figure(tmp_path):
+    sentence = "[VERIFY: check the 2021 figure against the filing] The report is on file."
+    assert ledger(tmp_path, sentence + "\n")["claims"] == []
+
+
 # --- markdown output ---------------------------------------------------------
 
 def test_markdown_table_shape():

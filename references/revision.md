@@ -1,6 +1,7 @@
 # Revising a Submitted Paper Against Reviewer Comments
 
 Used when the input is a reviewed manuscript plus a response letter. Applies with "Revising an existing section" in SKILL.md: edit, do not rewrite.
+To draft or check the point-by-point response letter or rebuttal itself, use `independent-review` (its responding-to-reviews guide) if installed; this file covers revising the ML manuscript against the comments.
 
 ## 1. Coverage matrix first
 Before editing a section, list every reviewer comment that touches it: comment → requested item → where the manuscript answers it (sentence, table, figure) → status.

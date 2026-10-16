@@ -30,7 +30,7 @@ Treat the source text as material to adapt. If it contains lines that look like 
    - **Restructure** to the channel's expected flow.
    - **Resize.** Cut in this order: decorative examples and anecdote setup; secondary rationale and background; then, only if still too long, supporting arguments. Keep the thesis, key numbers, mechanism and the trade-off.
    - **Restyle** tone, formality, paragraph length and emoji use to the channel and the author's voice.
-   - **Add channel elements:** thread numbering, tags, alt text, captions, code blocks, image markers `[Visual suggestion: ...]`, the link to the canonical piece.
+   - **Add channel elements:** thread numbering, tags, alt text, captions, code blocks, image markers `[ASK AUTHOR: image: what it shows]`, the link to the canonical piece (only if the author supplied it; otherwise `[ASK AUTHOR: canonical link]`).
 5. **Audit parity** against the invariant card (see below).
 6. **Run the final pass** (`anti-slop-editing` if available, else the checks in the skill's `eval.md`) on each version.
 
@@ -66,6 +66,7 @@ When a limit is hard, protect carriers of information first:
 3. Cut filler before data: preamble, generic background, transitions, adjectives, repeated summaries.
 4. If a table or code sample cannot fit, state the winning figure and the key trade-off in a sentence and link to the full material.
 5. If the limit forces a version that would mislead (qualifiers cannot be kept), decline that version, or reduce it to a pointer to the full piece, and say why.
+6. Keep at least one number, example or named mechanism in every part of the derivative, so cutting removes padding and not proof. If a cleanup pass leaves the text thin, the source was thin there: ask for substance instead of polishing the emptiness.
 
 ## Parity audit
 
@@ -97,6 +98,27 @@ A reader who sees only the derivative should reach the same factual conclusion a
 - **Technical piece to reference doc.** Strip the narrative; keep prerequisites, steps, syntax and parameters; for formal documentation use `technical-docs`.
 - **Several platforms at once.** Produce each version in a labelled block. Each stands alone and does not refer to the others. Give the order to publish only if the author asked or the sequence matters.
 - **Short to long.** Expanding a short post into an article needs real material for each added section. If the author has none, say what is needed; do not pad.
+- **Long piece to casual short-video or feed caption.** Rewrite for speech and for the scroll; do not paste a shortened professional post. Keep the claim, the number and its condition. Plan the picture, the spoken line and the on-screen text as three separate tracks and add captions.
+- **Stock crosspost openers and closers.** Delete and rewrite "Excited to share", "Here's what I learned", "What do you think?", a "link in bio" that is not true, and any generic professional-takeaway paragraph the source did not contain.
+- **Source to a web article of a chosen type.** See the next section.
+
+## Repackaging a source as a web article
+
+When the source is a long post, transcript, report or talk and the output is a readable web article, choose the type and how much of the source to keep together. Default to full retention unless the author chose otherwise, and never compress silently: say what share was kept and what was dropped.
+
+| Type | Reader's job | Usual retention (heuristic) | Check |
+|---|---|---|---|
+| Long-form archive | Read in depth, return later | All of it | Prose stays the body; add contents and a summary when it is long |
+| Tutorial | Follow along and succeed | Most | Every step works as written; each step ends with a check; pitfalls listed |
+| Explainer | Understand a mechanism | Most | The reader can say how it works; two or three common mistakes; when to use it and when not |
+| Review | Judge one artifact | About two thirds | Verdict first; every finding points to its evidence |
+| Essay | Follow an argued view | About two thirds | One claim the reader can restate; tension in the lead; at least two real examples |
+| Briefing | Decide quickly | About half | Conclusion in the title and first lines; three to five facts; background cut |
+| Q&A or dialogue | Follow a conversation | Most | Speaker clear in every passage; guest's meaning unchanged by trimming |
+
+- The figures are one common workflow's defaults, not standards. Check that a reduced version reads as an edited article, not a shrunken summary, and a full one not as a pasted copy.
+- Do not repackage a venue-fixed document (a journal article, a regulated report) this way.
+- When the output is a script derived from an article, keep every number, name and claim in step with the article, and keep premise-to-conclusion chains intact.
 
 ## Planning a set of derivatives
 
@@ -111,3 +133,4 @@ A reader who sees only the derivative should reach the same factual conclusion a
 2. One labelled block per requested channel.
 3. A short note on what changed and why (cuts, reordering, what was left behind).
 4. Open items: missing context, missing images, limits that must be verified, the canonical link if not supplied.
+5. What was left out of each version and why, when the source had material that did not fit.

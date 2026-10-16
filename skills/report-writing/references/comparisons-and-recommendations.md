@@ -45,6 +45,8 @@ When candidates cannot share a contract (a free tier against a paid one, one mar
 
 Any conversion (currency, unit, nominal to real) is a calculation and is recorded as such. Never average conflicting measurements to make them agree; describe how they differ (method, date, environment, population) and say which you rely on and why.
 
+**When windows or definitions differ and cannot be aligned,** do not rank, sum, or average on that criterion. Put the figures side by side with each window and definition named, say which way the mismatch could bias the result (a window with a launch spike, a holiday, or an outage flatters or penalizes its candidate) only when the material shows it, and state what measurement would make them comparable and who can supply it. The recommendation may still rest on the criteria that were measured alike; say that this one is undecided. The same applies across periods or survey waves: before comparing a metric between two of them, check that wording, population, definition, and collection mode did not change, and mark any break instead of feeding the difference into a trend.
+
 Break performance out by segment when a pooled number would hide the failure that matters (by site, region, customer type, scanner, workload).
 
 ## 4. Criteria, rubrics, weights, tension poles
@@ -160,6 +162,8 @@ Include the status quo or doing nothing as an option, with its real cost. Put op
 ## 9. The recommendation
 
 **Form.** Action, expected impact, effort or cost, and where known the owner and date, in active voice. "Reduce checkout steps from five to three; expected to lift completion (no baseline figure available; measure first); about two engineer-weeks." Impact stated qualitatively when no number exists. Illustrative numbers must carry a visible label saying they are illustrative.
+
+**Whose recommendation.** A recommendation is the author's judgment. If the notes name one, write it. If they do not, do not manufacture one: say what the evidence points toward as analysis, and mark the slot `[ASK AUTHOR: recommendation ...]` naming the options the evidence supports so the author can choose in one line. A request for "our recommendation" does not turn a gap in the notes into permission to decide for the author.
 
 **What would change it.** State the evidence, threshold, or event that would reverse or modify the recommendation ("If the pilot shows uptime below 99.5%, choose A"). This turns hedging into something the reader can monitor.
 

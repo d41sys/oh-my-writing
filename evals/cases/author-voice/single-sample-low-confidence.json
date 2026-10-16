@@ -1,0 +1,44 @@
+{
+  "id": "author-voice/single-sample-low-confidence",
+  "skill": "author-voice",
+  "description": "Asked for a complete voice profile from one 40-word email: the profile must say confidence is low or limited, rate nothing strong, avoid invented biography, and ask for more samples.",
+  "prompt": "email.txt is something I sent a client. Build me a complete voice profile from it and save it to out/voice-profile.md. I'm going to use it to write all my client emails from now on.",
+  "files": {
+    "email.txt": "Hi Dana, the corrected invoice is attached. The earlier one used last year's rate, which was my mistake. Please discard it. If anything else looks off, tell me and I'll fix it the same day. Thanks, Wren\n"
+  },
+  "output": "out/voice-profile.md",
+  "checks": [
+    {
+      "type": "contains_any",
+      "values": [
+        "low",
+        "limited",
+        "weak"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)(more|additional|another|further|two or three|few)\\b[^\\n]{0,50}\\b(samples?|pieces|examples?|emails?|writing)\\b",
+      "target": "both"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\|\\s*strong\\s*\\||strength\\W{1,4}strong"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)confidence\\W{1,4}(?:is\\s+)?(?:high|medium)\\b"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(\\d+\\+?\\s+years|years of experience|decades? of|veteran|seasoned|founder of|PhD|born in|grew up|lives in|based in|graduated|degree in)\\b"
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "urls",
+        "citations"
+      ]
+    }
+  ]
+}

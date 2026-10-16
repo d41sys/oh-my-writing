@@ -1,9 +1,10 @@
 ---
 name: anti-slop-editing
-description: Audits and edits prose for AI-writing patterns such as stock vocabulary, empty framing, staged contrasts, puffery, vague attribution, formulaic endings, decorative formatting and chatbot residue, while keeping the author's meaning, facts and voice. Works in detect, edit and rewrite modes and reports writing-quality signals, never a verdict on who wrote the text. Use when the user asks to remove AI-sounding phrasing, de-slop or clean up a draft, check a text for AI tells, make writing sound less robotic or more natural, strip chatbot leftovers, or audit a draft before publishing.
+description: Audits and edits prose for AI-writing patterns such as stock vocabulary, empty framing, staged contrasts and reveals ("The best part?", "Here's the thing:"), puffery, vague attribution, formulaic endings, decorative formatting and chatbot residue, while keeping the author's meaning, facts and voice. Works in detect, edit and rewrite modes and reports writing-quality signals, never a verdict on who wrote the text. Use when the user asks to remove AI-sounding phrasing, de-slop or clean up a draft, check a text for AI tells, make writing sound less robotic or more natural, strip chatbot leftovers, or run an AI-pattern audit before publishing. Claims and citation audits go to evidence-grounded-writing, whole-draft reader reviews to independent-review, and "sound like me" requests to author-voice.
+license: MIT
 compatibility: Optional helper scripts need Python 3.10+; the skill works without them.
 metadata:
-  version: "1.0"
+  version: "1.1"
   skill-author: d41sys
 ---
 
@@ -13,12 +14,12 @@ This skill finds the places where prose reads as generic, inflated or templated,
 
 ## When to use
 
-- The user pastes or names a draft and asks to remove AI-sounding phrasing, make it more natural, or tighten empty padding.
-- The user wants an audit of a text before it is published, sent or submitted.
+- The user pastes or names a draft and asks to remove AI-sounding phrasing, make it sound less robotic or more natural, or tighten empty padding. ("Sound like me" or "match my voice" is `author-voice`.)
+- The user wants an AI-pattern audit of a text before it is published, sent or submitted. ("Audit" aimed at claims, numbers or citations is `evidence-grounded-writing`; "audit" or "review" of the whole piece as a reader is `independent-review`.)
 - A text contains chatbot leftovers (greetings, offers, placeholders, leaked markup).
 - Another writing skill has produced a draft and needs a final pass.
 
-Not for: building a voice from samples (use `author-voice`), planning or drafting from raw material (`structured-drafting`), checking claims and citations (`evidence-grounded-writing`), an independent fresh-reader review (`independent-review`), or genre-specific writing (`post-writing`, `report-writing`, `technical-docs`, `career-documents`). For ML paper sections use `academic-writing`. If the user asks whether a text was written by a model, do not give a verdict; offer the writing-quality findings instead.
+Not for: building or applying a voice from the author's samples, including "sound like me" and "match my voice" (use `author-voice`); planning or drafting from raw material (`structured-drafting`); checking claims, numbers and citations, including "audit the citations" and "fact-check" (`evidence-grounded-writing`); an independent fresh-reader review of the whole piece (`independent-review`); or genre-specific writing (`post-writing`, `report-writing`, `technical-docs`, `career-documents`). For ML paper sections use `academic-writing` if installed; otherwise `structured-drafting` for structure plus `evidence-grounded-writing` for claims. If the user asks whether a text was written by a model, do not give a verdict; offer the writing-quality findings instead.
 
 ## Inputs
 
@@ -29,7 +30,7 @@ Read from the conversation or files:
 - any author sample (earlier writing in the user's voice, or the untouched parts of the same text);
 - any user corrections to facts. A correction counts as an intended change, not an invention.
 
-Ask at most two questions, and only when the answer changes the output: which mode they want if they gave no hint, or what the destination is if it decides the genre. Otherwise proceed, state the assumed mode and profile in one line, and go on.
+Ask at most three questions, fewer for short tasks, and only when the answer changes the output: which mode they want if they gave no hint, or what the destination is if it decides the genre. In non-interactive runs (a batch job, a pipeline, nobody to answer) proceed on stated assumptions: state the assumed mode and profile in one line, and go on.
 
 Profiles for the scanner and for judgment:
 
@@ -50,15 +51,15 @@ Steps:
 
 1. **Fix the brief.** Settle mode, scope (whole text, a section, a named file), destination and genre, protected passages, and user corrections. Pick a profile (`casual`, `professional`, `technical`, `academic`) from the destination; for fiction, read without scanning. If the scope is unclear, use the narrowest clearly relevant scope or ask once. See [genre calibration](references/genre-calibration.md).
 2. **Read the whole text once without changing anything.** Note the author's habits (dashes, fragments, hedges, asides, bold) from the text itself or the supplied sample. A habit the author shows is voice, not slop.
-3. **Locate candidates.** If Python 3.10+ is available, run the scanner from this skill's directory and keep its output as a list of places to look:
-   `python scripts/slop_scan.py --profile professional draft.md` (add `--json` for machine output; reads stdin when no file is given).
-   Then read for what the scanner cannot see: reflexive triads, synonym cycling, echo summaries at paragraph ends, interchangeable paragraphs, acknowledgment loops, invented specifics. If the scanner is unavailable, work by reading with the [pattern catalog](references/pattern-catalog.md) and label the report "model-only".
+3. **Locate candidates.** If Python 3.10+ is available, run the scanner by its path in this skill's `scripts/` directory (your working directory is probably the user's project, not the skill) and keep its output as a list of places to look:
+   `python <skill-dir>/scripts/slop_scan.py --profile professional draft.md` (add `--json` for machine output; reads stdin when no file is given).
+   Then read for what the scanner cannot see: reflexive triads, synonym cycling, echo summaries at paragraph ends, acknowledgment loops, invented specifics, and paragraph contribution (say in one phrase what each paragraph adds; if two paragraphs could swap places unchanged, report it as a structural note, and restructure only when asked). If the scanner is unavailable, work by reading with the [pattern catalog](references/pattern-catalog.md) and label the report "model-only".
 4. **Confirm findings.** For each candidate, answer four questions: is the pattern really present in context, does a genre or author exception apply, does it cost the reader something (empty, inflated, hidden, delayed), and is it inside the authorized scope and outside protected regions. Only a yes to all four is a finding. Group findings that share one cause. Rank them: P0 residue and credibility problems (chat wrappers, placeholders, leaked markup, unsupported claims), P1 clear tells (staged contrasts, significance inflation, vague attribution, era openers, formulaic closers, stacked stock words), P2 polish (dash density, cadence, transitions, bold, copula). Go deep on the few that matter; do not pad the list with weak hits.
 5. **Act by mode.**
    - `detect`: report ranked findings in the Output shape below; stop.
-   - `edit`: fix findings only. Prefer deleting the empty part over rewriting; restate the point from the author's own material if something must replace it. Where a fix needs a fact the text does not contain, leave the span and mark `[ASK AUTHOR: ...]` or `[VERIFY: ...]`. Delete without a marker only framing that asserts nothing checkable ("a testament to", "the future is here"); a claim about the world stays or gets a marker, and every removed claim is listed in What changed so the author can restore it. Leave untouched paragraphs untouched.
+   - `edit`: fix findings only. Prefer deleting the empty part over rewriting; restate the point from the author's own material if something must replace it. Where a fix needs a fact the text does not contain, leave the span and mark `[ASK AUTHOR: ...]` or `[VERIFY: ...]`. Delete without a marker only framing that asserts nothing checkable (a staged setup such as "The best part?" or "Here's the thing:", "a testament to", "underscored our commitment to quality", "the future is here"); a claim about the world stays or gets a marker, and every removed span is listed in What changed so the author can restore it. When the framing rides on a fact ("The best part? It cut builds to 9 minutes"), keep the fact and cut the setup. Leave untouched paragraphs untouched.
    - `rewrite`: diagnose first in two or three lines, then rebuild the affected passages around their main points rather than patching phrases one by one.
-6. **Run the preservation check** before returning anything that changed more than a deleted wrapper line. Follow [preservation check](references/preservation-check.md): two-way added and lost comparison, and, if available, `python scripts/fact_diff.py before.md after.md`. When you cannot write files (read-only sandbox), pipe the edited text on stdin: `python scripts/fact_diff.py draft.md - <<'EOF'` ... `EOF`. Inserted `[ASK AUTHOR]`/`[VERIFY]` markers are not counted as added facts. Repair failures with the smallest restoring edit. The ceiling is two editing passes in total; audits and checks are not passes.
+6. **Run the preservation check** before returning anything that changed more than a deleted wrapper line. Follow [preservation check](references/preservation-check.md): two-way added and lost comparison, and, if available, `python <skill-dir>/scripts/fact_diff.py before.md after.md`. When you cannot write files (read-only sandbox), pipe the edited text on stdin: `python <skill-dir>/scripts/fact_diff.py draft.md - <<'EOF'` ... `EOF`. Inserted `[ASK AUTHOR]`/`[VERIFY]` markers are not counted as added facts. Repair failures with the smallest restoring edit. The ceiling is two editing passes in total; audits and checks are not passes.
 7. **Self-check and return.** Apply `eval.md` to your own output, fix any failure, then return the result in the Output shape. A clean text is a valid result: say that no justified edit was found and return the text unchanged.
 
 ## Rules
@@ -101,7 +102,7 @@ Left alone: matches kept on purpose or blocked (quotes, code, missing source), w
 Checks: passes used of the ceiling; scanner and preservation script ran or did not run; residuals and why; stop reason.
 ```
 
-For a named file edited in place, return the report only, not the file. For a clean text, say "No justified edit found", add the one-line reason, and return the text unchanged (or say it is unchanged for long files).
+For a named file edited in place, return the report only, not the file. For a clean text, say "No justified edit found", add the one-line reason, and return the text unchanged (or say it is unchanged for long files). `detect` never writes to the source: if the user wants the report saved, write only the report to the path they gave and leave the source byte-identical.
 
 **rewrite**: a two or three line diagnosis, the rewritten text once, What changed grouped by theme, Left alone, Checks. The rewrite should not be longer than the source unless the user asked.
 
@@ -125,6 +126,17 @@ Edit, era opener plus staged contrast (the unsupported half of the claim is flag
 - Before: "In today's fast-paced world, our new scheduler isn't just faster, it's smarter. It cut queue times from 14 minutes to 9."
 - After: "Our new scheduler cut queue times from 14 minutes to 9. [ASK AUTHOR: what makes it smarter? Name the behavior, or drop the claim.]"
 - What changed: removed the era opener; replaced the staged contrast with the supported fact; "smarter" has no support in the text, so it is marked for the author instead of kept or deleted.
+
+Edit, rhetorical setups and puffery (setups go, the fact they carried stays, the value claim is listed):
+
+- Before: "Here's the thing: the release underscored our commitment to developer productivity. The best part? It cut build times from 14 minutes to 9."
+- After: "The release cut build times from 14 minutes to 9."
+- What changed: removed the "Here's the thing:" and "The best part?" setups; removed "underscored our commitment to developer productivity" (a value claim with nothing checkable; restore it if the author has a concrete example). Kept the 14-to-9-minute fact.
+
+Left alone, genuine question and real label:
+
+- Span: "Do you want the short version or the long one? Result: 42 ms."
+- Result: no finding; the question is addressed to the reader and "Result:" is a label.
 
 Detect, vague attribution with no source in the text:
 

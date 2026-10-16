@@ -1,0 +1,73 @@
+{
+  "id": "author-voice/draft-in-voice-no-invention",
+  "skill": "author-voice",
+  "description": "Drafts a short update in an author's habits (very short sentences, first person plural, dry humor, no exclamation marks, no call to action) from four samples and notes, without inventing numbers or names, without leaking the internal note, and without adding hype, bait or first-person-singular voice.",
+  "prompt": "samples.md has four newsletter pieces I wrote for our studio's mailing list, and notes.md has what happened this week. Write this week's update so it sounds like me, and save it to out/post.md.",
+  "files": {
+    "samples.md": "# Newsletter pieces by Ines, Tern Street studio (all written by her, sent to the mailing list)\n\n## Post, March\nThe glaze shelf fell on Monday. Nobody was under it. Two jars did not survive. We have rebuilt the shelf with longer screws, which is what we should have used the first time. The jars were mostly blue. We are choosing to see this as a colour study.\n\n## Post, May\nThe new wheel arrived on Thursday. It is quieter than the old one. That is the whole review. We moved the old wheel to the back room, where it will be missed by nobody but Priya. She says it has character. We say it has a wobble.\n\n## Post, July\nOpen studio ran long on Saturday. We booked twenty seats and fourteen people came. The other six sent apologies and one sent a loaf of bread. We took the bread. The bowls from the Saturday class are drying on the rack by the door.\n\n## Post, September\nWe raised the price of the small mug by one pound. It still costs less than lunch. We checked. Clay costs more this year and so does everything else. The mug is the same mug. It holds the same amount of tea, which has always been the point.\n",
+    "notes.md": "Notes for this week's update (Ines):\n\n- The second kiln is working again. The element was replaced on Tuesday.\n- We refired the 24 bowls that had been stuck waiting for it. Two came out cracked. The rest are fine.\n- Open studio is on Saturday, 10 to 2, same as always.\n- Internal, leave out: the argument with the supplier about the invoice.\n- There is no new stock to sell this week.\n"
+  },
+  "output": "out/post.md",
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "citations",
+        "urls"
+      ]
+    },
+    {
+      "type": "not_contains",
+      "values": [
+        "!"
+      ]
+    },
+    {
+      "type": "word_count",
+      "min": 45,
+      "max": 170
+    },
+    {
+      "type": "regex",
+      "pattern": "\\b[Ww]e\\b|\\b[Oo]ur\\b"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "\\b(I|me|my|I'm|I've)\\b"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?:[^\\s.!?]+\\s+){20,}[^\\s.!?]+[.?]"
+    },
+    {
+      "type": "not_contains",
+      "values": [
+        "supplier",
+        "invoice",
+        "argument"
+      ]
+    },
+    {
+      "type": "contains",
+      "values": [
+        "Saturday",
+        "kiln"
+      ]
+    },
+    {
+      "type": "not_contains",
+      "values": [
+        "excited",
+        "thrilled",
+        "stay tuned",
+        "don't miss",
+        "honestly",
+        "let us know",
+        "what do you think",
+        "can't wait",
+        "see you there"
+      ]
+    }
+  ]
+}

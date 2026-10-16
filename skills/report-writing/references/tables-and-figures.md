@@ -1,4 +1,4 @@
-Load when: choosing, building, captioning, or auditing a table, chart, or diagram in a report, or setting heading and Markdown conventions.
+Load when: choosing, building, captioning, or auditing a table, chart, or diagram in a report, or applying the report-specific Markdown rules in section 9.
 
 # Tables and figures
 
@@ -97,11 +97,10 @@ Choose the most specific diagram type for the content: process or decision (flow
 
 ## 9. Document conventions in Markdown
 
-- Exactly one H1; then H2 for major sections and H3 inside; avoid going deeper than H4; never skip a level. Sentence-case descriptive headings (not "Details").
-- Bold only for key terms or genuine emphasis, a couple per paragraph at most; never whole sentences.
-- Lists have parallel form and at most two levels. Numbered for ordered steps; bullets for sets. If a bullet becomes a paragraph, make it a subsection.
-- Meaningful link text; relative paths for files in the same repository; full URLs for external sources. A footnote or reference must actually support the claim, not merely sit near it.
-- Short typed callouts for evidence that needs flagging (Observed, Calculation, Assumption, Limit, Warning), one to three lines, not nested. Prefer these to a generic "Key insight" box.
+General Markdown conventions are owned by `technical-docs` (its Markdown conventions section). If that skill is not installed, use the standard ones: one H1, no skipped heading levels, sentence-case descriptive headings, sparing bold, parallel lists, meaningful link text, relative links for local files. The report-specific rules:
+
+- Use short typed callouts for evidence that needs flagging (Observed, Calculation, Assumption, Limit, Warning), one to three lines, not nested. Prefer these to a generic "Key insight" box.
+- A footnote or reference must actually support the claim, not merely sit near it.
 - Use clean semantic Markdown while the draft is unfinished so evidence gaps stay visible. Elaborate formatting must not cover missing content.
 - Unfinished sections keep their markers and the draft banner until resolved; never substitute boilerplate to make a document look complete.
 

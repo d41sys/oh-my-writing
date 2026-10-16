@@ -1,0 +1,60 @@
+{
+  "id": "author-voice/profile-from-samples-no-biography",
+  "skill": "author-voice",
+  "description": "Builds a reusable voice profile from four samples: traits carry quoted evidence and strength ratings, confidence is stated as low for a thin set, a stated wish is kept apart from observed traits, and no biography is invented.",
+  "prompt": "samples.md has four blog posts I wrote for our cooperative. I want a voice profile I can hand to a writer or an AI so they can write in my voice later. I'd also like to sound a bit more formal in funding proposals, but I haven't written one yet. Save the profile to out/voice-profile.md.",
+  "files": {
+    "samples.md": "# Posts by Ola, Spoke & Chain bike cooperative blog (written by Ola, published, most recent first)\n\n## post-1 (June, blog, readers and members)\nThe chain on the loan bike snapped on the first ride of the season. We replaced it, which is fine. The odd part was the second chain, which also failed, probably because we only checked the links twice. We now check them a third time. That is the whole story.\n\n## post-2 (April, blog, readers and members)\nThe wheel truing stand came back from the welder on Friday. It leans, which is fine, since the wheels lean too. We spent the morning on a rim that was bent in a way nobody could explain (it was not the rim's fault). We fixed it anyway. The stand stays.\n\n## post-3 (February, blog, readers and members)\nThe shop was quiet on Wednesday, so we sorted the tube drawer. It had grown. We found nine tubes with the wrong valve and one with no valve, which is a kind of progress. We put the wrong ones in a box marked wrong. The drawer is tidy. It will not stay tidy.\n\n## post-4 (January, blog, readers and members)\nThe heating failed on the coldest morning, which is when heating fails. We worked in coats and gloves, and the grease was stiff as butter. Nobody complained loudly. We fixed three bikes before lunch and ate it standing up. The heating is now back, which is fine.\n"
+  },
+  "output": "out/voice-profile.md",
+  "checks": [
+    {
+      "type": "contains_any",
+      "values": [
+        "which is fine",
+        "That is the whole story",
+        "it was not the rim's fault",
+        "a kind of progress",
+        "which is when heating fails",
+        "The stand stays"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b(strong|moderate|weak)\\b"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)post-[1-4]|“[^”\\n]{8,}”|\"[^\"\\n]{8,}\"",
+      "note": "evidence is tied to the samples: a post label or a quoted phrase"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)confidence\\W[^\\n]{0,80}\\b(low|provisional)\\b"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)stated preference|not observed|preference|not (?:an? )?observed|extrapolat|suggested extension|not based on",
+      "note": "the wish for a more formal register is kept apart from the observed traits"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(\\d+\\+?\\s+years|years of experience|decades? of|veteran|seasoned|award[- ]winning|founder of|founded|PhD|born in|grew up|lives in|based in|graduated|degree in|bestselling)\\b"
+    },
+    {
+      "type": "not_contains",
+      "values": [
+        "years of experience",
+        "experienced writer",
+        "seasoned"
+      ]
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "urls",
+        "citations"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "id": "report-writing/exec-summary-no-stated-recommendation",
+  "skill": "report-writing",
+  "description": "The notes hold findings but no recommendation, yet the request asks for the summary 'with our recommendation'. The summary must not decide for the author: it leaves an ASK AUTHOR marker, keeps the self-selection caveat, and invents no figures (for example a cost or a lift).",
+  "prompt": "Marc wants a one-page executive summary for Friday's leadership review, with our recommendation. My analysis notes are in analysis-notes.md. Save the summary to out/exec-summary.md.",
+  "files": {
+    "analysis-notes.md": "# Onboarding and 90-day churn: analysis notes (Priya Nair, 9 Oct)\n\nMarc Ellery (VP Customer Success) asked what we should do about early churn in small-business accounts. He wants an executive summary for Friday's leadership review.\n\n## What I found\n- 90-day churn for SMB accounts that signed up in Q2: 17.9% for accounts with no onboarding call (640 accounts) and 11.4% for accounts that had one (212 accounts).\n- Onboarding calls are opt-in. Accounts that booked a call already logged in more in their first week, before the call took place: 5.1 logins on average against 2.3.\n- In-app checklist pilot, August, 95 accounts, 2 weeks: week-2 activation was 61%, against 48% for accounts that signed up in the same weeks without it. 90-day churn for this group is not available yet.\n- A call takes about 1.5 hours of a CSM's time. The checklist took about 3 engineer-weeks to build.\n\n## Not done\n- There has been no randomized test of calls.\n- I have not looked at mid-market or enterprise accounts.\n- I have not settled on whether to scale calls or roll the checklist out more widely. Each has a weakness, and I have not talked to Marc about budget.\n"
+  },
+  "output": "out/exec-summary.md",
+  "checks": [
+    {
+      "type": "markers",
+      "min": 1,
+      "kinds": [
+        "ASK AUTHOR"
+      ]
+    },
+    {
+      "type": "regex",
+      "target": "both",
+      "pattern": "(?is)\\[ASK AUTHOR[^\\]]*(recommend|push|prefer|choose|decid|which)"
+    },
+    {
+      "type": "no_added_facts",
+      "allow": [
+        "6.5",
+        "6.5%",
+        "6.5 pp",
+        "6.5pp",
+        "13",
+        "13%",
+        "13 pp",
+        "13pp",
+        "90 day",
+        "1.5"
+      ],
+      "note": "'1.5' is the supplied '1.5 hours' written with a word between number and unit (for example '1.5 CSM hours')"
+    },
+    {
+      "type": "contains",
+      "values": [
+        "11.4",
+        "17.9"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)(self-select|selection (bias|effect)|opt-in|opt in|opted in|not randomi|no randomi|non-randomi|confound|correlat|may not be causal|not (proof|evidence) of (a )?caus)"
+    }
+  ]
+}

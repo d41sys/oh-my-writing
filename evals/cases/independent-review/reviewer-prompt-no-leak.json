@@ -1,0 +1,47 @@
+{
+  "id": "independent-review/reviewer-prompt-no-leak",
+  "skill": "independent-review",
+  "description": "Reviewer prompt keeps the reader brief and constraints but leaks none of the author's intent, fix history, or prior-reviewer reaction.",
+  "prompt": "I'm about to send draft.md to the directors and I want a proper outside check first. Please prepare the prompt I will give to an independent reviewer (a separate session, a different model if I have one). My background notes are in author-notes.md. Save the prompt to out/reviewer-prompt.md.",
+  "files": {
+    "draft.md": "# Proposal: one shared on-call rota for the three regional offices\n\nBrightwater Logistics runs three separate pager rotas, one per region. When a depot outage crosses a regional border, the engineer who gets paged often cannot reach the right team without calling around.\n\n## 1 Why now\n\nTwo of the last three cross-region outages were slowed by exactly this hand-off. The depot managers have asked for one place to look.\n\n## 2 What it costs\n\nThe pilot needs one paid seat per on-call engineer in the scheduling tool. We have not yet received a quote. Engineers on the shared rota would give up their regional-only rota, which some of them prefer.\n\n## 3 What we would change\n\nOne rota covers all three regions on a weekly rotation. Each region keeps a named backup. Handover happens on Monday at 09:00 local time.\n\n## 4 Decision needed\n\nApprove a six-week pilot starting 4 May. We would review the results with you on 15 June.\n",
+    "author-notes.md": "Reader: the three regional operations directors at Brightwater. They know the current regional pager rotas but have not seen the shared-rota idea. They decide on Thursday's budget call whether to fund the six-week pilot. Limit: one page.\n\nMy goal: I want them to say the argument is airtight so I can skip the extra meeting.\n\nHistory: I already fixed the intro after the first round of comments. The previous reviewer hated section 2 (the cost section) and said it read like a sales pitch, so I rewrote it twice. Please make sure the reviewer is not too harsh on the cost section, the numbers are rough.\n\nI also like the Monday 09:00 handover, but I am not sure it is realistic.\n"
+  },
+  "output": "out/reviewer-prompt.md",
+  "checks": [
+    {
+      "type": "not_contains",
+      "values": [
+        "airtight",
+        "fixed the intro",
+        "already fixed",
+        "hated",
+        "sales pitch",
+        "too harsh",
+        "skip the extra meeting"
+      ]
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\bI want(ed)? (them|the directors)\\b"
+    },
+    {
+      "type": "contains_any",
+      "values": [
+        "operations directors",
+        "directors"
+      ]
+    },
+    {
+      "type": "contains_any",
+      "values": [
+        "draft.md",
+        "shared on-call rota"
+      ]
+    },
+    {
+      "type": "word_count",
+      "min": 80
+    }
+  ]
+}

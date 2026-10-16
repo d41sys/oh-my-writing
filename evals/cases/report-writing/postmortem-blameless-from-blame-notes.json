@@ -1,0 +1,64 @@
+{
+  "id": "report-writing/postmortem-blameless-from-blame-notes",
+  "skill": "report-writing",
+  "description": "Raw incident notes assign fault to named people ('his error', 'she should have checked'). The post-mortem must be blameless (roles and conditions, no name beside a verdict), keep every timestamp and duration, add no new numbers, and mark the owners and dates the notes do not give.",
+  "prompt": "Write up the 7 Oct checkout outage as a post-mortem for the engineering all-hands. The raw notes from the incident channel are in incident-notes.md. Save it to out/postmortem.md.",
+  "files": {
+    "incident-notes.md": "# Checkout outage, 7 Oct: raw notes from the incident channel\n\nImpact: checkout failed for customers from 14:02 to 14:51, 49 minutes in total. About 3,100 checkouts failed. The checkout error rate peaked at 38%.\n\nTimeline (UTC):\n- 14:02 Tomás Reyes (on call) deployed a config change to the payments service. He pushed the wrong config, his error.\n- 14:09 error-rate alert fired. The page went to Tomás only.\n- 14:21 Tomás acknowledged the page. Hana Lindqvist (secondary on call) had been in the mandatory security training since 14:00 and never saw the escalation; she should have checked her phone.\n- 14:34 rollback started.\n- 14:51 error rate back under 1%.\n\nWhat the config was: payment-timeout was set to null instead of 30 seconds. The config schema allows null for that field. Staging validation passes a null because staging falls back to a default value; production has no default, so requests hung until the gateway cut them off at 60 seconds.\n\nEscalation policy: a page goes to one person. The secondary is paged only if the first page stays unacknowledged for 30 minutes.\n\nRollback took 17 minutes because the rollback runbook predates the move to the new deploy tool, so the steps had to be found in the old wiki.\n\nLuck: it happened outside the evening peak, with volume at roughly half of peak.\n\nNot known: why the alert took 7 minutes to fire after the change.\n"
+  },
+  "output": "out/postmortem.md",
+  "checks": [
+    {
+      "type": "not_regex",
+      "pattern": "(?is)(Tom[aá]s|Reyes|Hana|Lindqvist)[^.\\n]{0,80}\\b(error|fault|mistake|blame|blamed|wrong|careless|negligen\\w*|should have|failed to|forgot|messed)\\b"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?is)\\b(error|fault|mistake|blame|blamed|careless|negligence)\\b[^.\\n]{0,40}\\b(of|by|from|belongs? to)\\b[^.\\n]{0,15}(Tom[aá]s|Reyes|Hana|Lindqvist)"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(his|her) (error|fault|mistake)\\b"
+    },
+    {
+      "type": "not_contains",
+      "values": [
+        "should have checked her phone",
+        "was careless",
+        "was negligent"
+      ]
+    },
+    {
+      "type": "preserves",
+      "source": "incident-notes.md",
+      "categories": [
+        "numbers"
+      ],
+      "allow_lost": [
+        "7",
+        "00"
+      ]
+    },
+    {
+      "type": "no_added_facts",
+      "allow": [
+        "12 min",
+        "13 min",
+        "19 min",
+        "25 min",
+        "32 min",
+        "42 min",
+        "3"
+      ],
+      "note": "'3' is a count of the memo's own listed causes (for example 'three gaps'), not a figure from the notes"
+    },
+    {
+      "type": "markers",
+      "min": 1,
+      "kinds": [
+        "ASK AUTHOR",
+        "VERIFY"
+      ]
+    }
+  ]
+}

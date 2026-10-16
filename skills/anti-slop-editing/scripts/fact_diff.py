@@ -5,7 +5,8 @@ Extracts the items an edit must not silently change, then reports items that wer
 lost and items that were added. Categories:
 
     numbers      numbers with units or percent (1,000 equals 1000; "5 percent"
-                 equals "5%"; the words two..twelve count as 2..12)
+                 equals "5%"; "6 minutes" equals "six minutes" and "6-minute";
+                 24/7 is one number; the words two..twelve count as 2..12)
     negations    not, no, never, without, neither, nor, none, nothing, nobody,
                  nowhere (contractions such as isn't count as "not")
     certainty    may, might, could, must, should, likely, probably, always, ...
@@ -59,9 +60,8 @@ CURLY_QUOTE_RE = re.compile("\u201c([^\u201d]{1,600})\u201d")
 
 NUMBER_WORDS = {"two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8,
                 "nine": 9, "ten": 10, "eleven": 11, "twelve": 12}
-DIGIT_RE = re.compile(r"(?<![\w.])(?P<cur>[$\u20ac\u00a3\u00a5])?(?P<num>\d+(?:[.,]\d+)*)"
-                      r"(?:\s?(?P<unit>%|per cent\b|[A-Za-z\u00b5\u00b0][A-Za-z\u00b5\u00b0/]*))?")
-WORD_NUM_RE = re.compile(r"\b(?P<word>" + "|".join(NUMBER_WORDS) + r")\b(?:\s?(?P<unit>%|percent\b|per cent\b))?", re.I)
+DIGIT_RE = re.compile(r"(?<![\w.])(?P<cur>[$\u20ac\u00a3\u00a5])?(?P<num>\d+(?:[.,]\d+)*(?:/\d+(?!\d|[.,]\d))?)"
+                      r"(?:[\s-]?(?P<unit>%|per cent\b|[A-Za-z\u00b5\u00b0][A-Za-z\u00b5\u00b0/]*))?")
 IDENT_RE = re.compile(r"\b[A-Za-z]+\d+(?:[.\-]\d+)*[A-Za-z]*\b")
 LIST_MARKER_RE = re.compile(r"^[ \t]*(?:\d+[.)]|[-*+])[ \t]+", re.M)
 # Markers this skill tells the editor to insert; their wording is a question, not a fact.
@@ -85,6 +85,11 @@ UNIT_CANON = {
     "\u00b0c": "\u00b0c", "\u00b0f": "\u00b0f", "\u00b0": "\u00b0",
     "gb/s": "gb/s", "mb/s": "mb/s", "kb/s": "kb/s",
 }
+# A spelled number takes the same units as a digit ("six minutes" equals "6 minutes"); only known units are
+# consumed so that "two three" still yields both numbers.
+_WORD_UNITS = "|".join(sorted((u for u in UNIT_CANON if u.isalpha()), key=len, reverse=True))
+WORD_NUM_RE = re.compile(r"\b(?P<word>" + "|".join(NUMBER_WORDS) + r")\b(?:[\s-]?(?P<unit>%|percent\b|per cent\b|(?:"
+                         + _WORD_UNITS + r")\b))?", re.I)
 
 NEGATIONS = {"not", "no", "never", "without", "neither", "nor", "none", "nothing", "nobody", "nowhere"}
 CERTAINTY = {"may", "might", "could", "must", "should", "shall", "would", "likely", "unlikely", "probably", "possibly",
@@ -206,7 +211,7 @@ class Extraction:
         for m in WORD_NUM_RE.finditer(work):
             unit = UNIT_CANON.get((m.group("unit") or "").lower(), "")
             num = str(NUMBER_WORDS[m.group("word").lower()])
-            self.add("numbers", f"{num}{unit}" if unit == "%" else num, m.start())
+            self.add("numbers", f"{num}{unit}" if unit == "%" else (f"{num} {unit}" if unit else num), m.start())
         for m in IDENT_RE.finditer(work):
             self.add("numbers", m.group(0), m.start())
 
@@ -235,7 +240,7 @@ class Extraction:
 
     def _names(self, work: str) -> None:
         for m in NAME_RE.finditer(work):
-            tokens = [re.sub(r"['\u2019]s$", "", t) for t in re.split(r"[ \t]+", m.group(0))]
+            tokens = [re.sub(r"['\u2019](?:s|m|d|ll|ve|re)$", "", t) for t in re.split(r"[ \t]+", m.group(0))]
             tokens = [t for t in tokens if t and not (len(t) == 1 and t.isalpha())]
             if not tokens:
                 continue

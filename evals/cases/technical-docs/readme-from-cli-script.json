@@ -1,0 +1,75 @@
+{
+  "id": "technical-docs/readme-from-cli-script",
+  "skill": "technical-docs",
+  "description": "README for an argparse script documents only flags the parser defines, states where output goes (stdout vs stderr), exit codes, and invents no install step, format support or version.",
+  "prompt": "I want to share csvtrim.py with the rest of the team. Write a README for it and save it to out/README.md.",
+  "files": {
+    "csvtrim.py": "#!/usr/bin/env python3\n\"\"\"csvtrim: strip spaces around every field of a CSV file and drop blank rows.\n\nStandard library only. Tested with Python 3.11.\n\"\"\"\nimport argparse\nimport csv\nimport sys\n\n\ndef main(argv=None):\n    parser = argparse.ArgumentParser(\n        prog=\"csvtrim\",\n        description=\"Strip spaces around every field and drop rows that are empty.\",\n    )\n    parser.add_argument(\"-i\", \"--input\", required=True, help=\"CSV file to read (UTF-8, comma-separated)\")\n    parser.add_argument(\"-o\", \"--output\", help=\"file to write; default is standard output\")\n    parser.add_argument(\"-v\", \"--verbose\", action=\"store_true\", help=\"print row counts to standard error\")\n    args = parser.parse_args(argv)\n\n    try:\n        src = open(args.input, newline=\"\", encoding=\"utf-8\")\n    except OSError as exc:\n        print(f\"csvtrim: cannot read {args.input}: {exc.strerror}\", file=sys.stderr)\n        return 1\n\n    dst = open(args.output, \"w\", newline=\"\", encoding=\"utf-8\") if args.output else sys.stdout\n    kept = dropped = 0\n    with src:\n        writer = csv.writer(dst)\n        for row in csv.reader(src):\n            cells = [cell.strip() for cell in row]\n            if not any(cells):\n                dropped += 1\n                continue\n            writer.writerow(cells)\n            kept += 1\n    if args.output:\n        dst.close()\n\n    if args.verbose:\n        print(f\"kept {kept} rows, dropped {dropped} blank rows\", file=sys.stderr)\n    return 0\n\n\nif __name__ == \"__main__\":\n    sys.exit(main())\n",
+    "sample.csv": "id, name ,qty\n1, Linh ,4\n,,\n2,Minh , 7\n  ,  ,  \n3, An,2\n"
+  },
+  "output": "out/README.md",
+  "checks": [
+    {
+      "type": "contains",
+      "values": [
+        "--input",
+        "--output",
+        "--verbose"
+      ]
+    },
+    {
+      "type": "not_regex",
+      "pattern": "--(?!(input|output|verbose|help|version)\\b)[a-z][a-z-]+"
+    },
+    {
+      "type": "contains_any",
+      "values": [
+        "stdout",
+        "standard output",
+        "terminal",
+        "printed to the screen"
+      ]
+    },
+    {
+      "type": "contains_any",
+      "values": [
+        "stderr",
+        "standard error"
+      ]
+    },
+    {
+      "type": "contains_any",
+      "values": [
+        "exit code",
+        "exit status",
+        "exits with",
+        "non-zero",
+        "nonzero"
+      ]
+    },
+    {
+      "type": "not_contains",
+      "values": [
+        "pip install",
+        "brew install",
+        "npm install",
+        "docker run",
+        "PyPI",
+        "TSV",
+        "tab-separated",
+        ".xlsx"
+      ]
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers"
+      ]
+    },
+    {
+      "type": "word_count",
+      "min": 60,
+      "max": 600
+    }
+  ]
+}

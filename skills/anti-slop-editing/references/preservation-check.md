@@ -38,12 +38,12 @@ Hardest-hit edits to re-read first: merged or split sentences, triads and lists 
 
 ## Running the helper
 
-If `scripts/fact_diff.py` is available and Python 3.10+ runs:
+If this skill's `scripts/fact_diff.py` is available and Python 3.10+ runs (use its path inside the skill directory, shown here as `<skill-dir>`):
 
 ```
-python scripts/fact_diff.py before.md after.md
-python scripts/fact_diff.py --json before.md after.md
-python scripts/fact_diff.py --ignore names before.md after.md   # category the user asked to change
+python <skill-dir>/scripts/fact_diff.py before.md after.md
+python <skill-dir>/scripts/fact_diff.py --json before.md after.md
+python <skill-dir>/scripts/fact_diff.py --ignore names before.md after.md   # category the user asked to change
 ```
 
 Exit 0 means nothing mechanical was lost or added; exit 1 means review the listed items; exit 2 means an input problem.
@@ -63,7 +63,7 @@ If the script is not available, do the two-way check by hand and label the repor
 - An editing pass is a stage that changes the returned text. Audits, re-reads, scans and preservation checks are not passes. A no-op uses 0 passes.
 - The default ceiling is two passes in total: the first edit, and at most one corrective pass that fixes a preservation failure or a surviving high-priority pattern. A user may set a lower or higher limit; honor it.
 - Stop earlier when no justified in-scope edit remains. Stop at the ceiling even if candidates remain, and report them.
-- On a preservation failure: restore the exact source wording for the failed span first (smallest repair). If the restored span still carries a pattern, leave it and report it. If a second check still fails, stop, return the safest version, and list the unresolved items for the author, marked `[EDITORIAL REVIEW NEEDED]`.
+- On a preservation failure: restore the exact source wording for the failed span first (smallest repair). If the restored span still carries a pattern, leave it and report it. If a second check still fails, stop, return the safest version, and list the unresolved items for the author as `[ASK AUTHOR: ...]` lines.
 - Do not use a second pass to polish. Passes exist to repair, not to improve.
 
 ## Residuals and what to report

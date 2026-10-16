@@ -1,0 +1,58 @@
+{
+  "id": "anti-slop-editing/edit-announcement-keeps-facts",
+  "skill": "anti-slop-editing",
+  "description": "Sloppy release announcement: stock framing, staged reveals and chatbot closers go, while numbers, negations, hedge and 'only' survive and the unsourced 'Experts say' is marked rather than silently kept or invented.",
+  "prompt": "This release announcement sounds machine-written. Remove the AI-sounding phrasing from announcement.md and save the edited version to out/announcement.md.",
+  "files": {
+    "announcement.md": "In today's fast-paced world, our team is thrilled to announce Tidewater 2.4. This release marks a pivotal moment for data teams, underscoring our commitment to developer productivity.\n\nHere's the thing: imports got faster. The best part? The 38,000-row sample file now loads in 9 minutes, down from 14 minutes. We did not change the CSV format, and existing configs will not need edits. The new retry logic may reduce failed imports on flaky networks, though we have tested it on only two customer datasets so far.\n\nExperts say incremental imports are the future. We hope this helps you plan your upgrade, and let us know in the comments what you think!\n"
+  },
+  "output": "out/announcement.md",
+  "checks": [
+    {
+      "type": "preserves",
+      "source": "announcement.md",
+      "categories": [
+        "numbers",
+        "negations",
+        "certainty",
+        "scope"
+      ]
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "citations",
+        "urls"
+      ]
+    },
+    {
+      "type": "slop_absent",
+      "patterns": [
+        "era-opener",
+        "announced-feeling",
+        "significance",
+        "trailing-rider",
+        "commitment-claim",
+        "underscore-verb",
+        "staged-reveal",
+        "colon-reveal",
+        "chat-closer",
+        "engagement-bait"
+      ]
+    },
+    {
+      "type": "markers",
+      "min": 1,
+      "max": 4,
+      "target": "both"
+    },
+    {
+      "type": "contains",
+      "values": [
+        "38,000",
+        "Tidewater 2.4"
+      ]
+    }
+  ]
+}

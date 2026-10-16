@@ -88,6 +88,30 @@ Words that announce, introduce or comment on content instead of delivering it.
 - Fine when: the step really is additive and the connector is the lightest way to show it, especially in formal and academic writing.
 - Fix: let the sentences connect by content, or use "and", "also", "but".
 
+### Rhetorical questions and question runs (`rhetorical-question`, `question-run`)
+- Looks like: "But what does this mean for developers?", "So why should you care?", "Do I know how it works? Where it breaks? Which corners it cut?"
+- Cost: a question the reader did not ask, used as a transition or a drumbeat; the answer was ready anyway.
+- Fine when: a genuine question to the reader that the text then works through or leaves for them ("Do you want the short version or the long one?"), an FAQ, an interview, a survey, or a Socratic passage the author chose. The author's samples that use questions are voice.
+- Fix: delete the question and state the answer or finding. One immediately answered question per piece is a habit, not a defect; a run of three is a pattern.
+
+### Performed insight and narrated candor (`performed-insight`, `narrated-candor`)
+- Looks like: "Sit with that for a moment.", "That's not nothing.", "Here's where it gets interesting.", "That's the part nobody mentions.", "I want to be upfront:", "Rather than bury this, I'll say it plainly:".
+- Cost: cues the reader to be impressed or to trust before giving them the content; the sentence about honesty is not the caveat.
+- Fine when: it sits inside a quotation, or the sentence names what is surprising and why. A disclosure (a limit, a conflict of interest, an uncertainty) is content and stays; only the announcement around it goes.
+- Fix: delete the cue and keep the fact or caveat it introduced: "I want to be upfront: the sample was small" becomes "The sample was small."
+
+### Launch-copy introductions and slot-fill praise (`launch-intro`, `madlib-step`)
+- Looks like: "Meet Flowdesk, your new favorite dashboard.", "Say hello to calm.", "Enter Flowdesk.", "a major step forward for AI infrastructure", "I recently had the pleasure of".
+- Cost: any adjective or product name fits the slot, so the sentence says nothing about this product or result.
+- Fine when: the piece is launch copy by design and the author's samples do this, or a measured result follows ("a first step toward the full API: it covers 4 of 11 endpoints").
+- Fix: "Flowdesk is a treasury dashboard." State what it does or what was measured. Do not invent the capability.
+
+### Affective adverbs (`affective-adverb`)
+- Looks like: "Interestingly,", "Surprisingly,", "Remarkably,", "Undoubtedly," at the start of sentences.
+- Cost: tells the reader how to react; two or more in a text read as filler.
+- Fine when: once, and the text says what was expected and how the result differs.
+- Fix: delete the adverb. Keep the fact; if the expectation matters, state it.
+
 ## 3. Contrast and reveal templates
 
 Sentence shapes that stage a point by denying something nobody said.
@@ -104,11 +128,11 @@ Sentence shapes that stage a point by denying something nobody said.
 - Fine when: compact microcopy beside a button ("Free to start. No card required."), or a list of real exclusions.
 - Fix: say what actually happens, in order, from the source.
 
-### Staged reveals and self-answered questions (`staged-reveal`, `self-answered-question`)
-- Looks like: "Here's the catch:", "The result? Faster builds.", "Why does this matter? Because...".
-- Cost: manufactures suspense around ordinary information.
-- Fine when: FAQs, interviews, labelled results ("Result: 42 ms"), or a question a reader really asks.
-- Fix: state the point as a plain sentence.
+### Staged reveals, colon reveals and self-answered questions (`staged-reveal`, `colon-reveal`, `self-answered-question`, `self-answered-fragment`)
+- Looks like: "Here's the thing:", "The kicker:", "Plot twist:", "The best part?", "One word: speed.", "What if I told you the cache was the problem?" (also a scenario opener), "The result? Faster builds.", "Why does this matter? Because...", "What changed? Nothing."
+- Cost: manufactures suspense around ordinary information. The setup adds words and delays the point; the reveal is rarely a surprise.
+- Fine when: a genuine question to the reader ("Do you want the short version or the long one? I can do either."), a real label or list introducer ("Result: 42 ms", "Steps to reproduce:", "Pro tip:" in a tutorial), an FAQ or interview, or a question a reader would really ask whose answer is new information ("Who owns the rollout? Nobody yet.").
+- Fix: delete the setup and state the point as a plain sentence ("It runs offline."). Keep a colon that introduces a checkable list or value. The setup is framing; the claim after it stays.
 
 ### Crowd foil (`crowd-foil`)
 - Looks like: "While everyone else debated, we shipped."
@@ -174,6 +198,42 @@ Claims of importance or consensus with nothing behind them.
 - Fine when: the change is explained next, or the figure of speech is plainly metaphor.
 - Fix: ask what changed and who acted; use only what the text says.
 
+### Commitment and values claims (`commitment-claim`)
+- Looks like: "underscored our commitment to developer productivity", "our dedication to quality", "our passion for excellence".
+- Cost: asserts a value nobody can check, in the place where the fact should be. Often rides on a verb such as "underscored" or on a trailing rider.
+- Fine when: a concrete obligation follows (a refund window, a deadline, a service level), or the line sits in a quotation or a contract.
+- Fix: keep the fact the sentence rides on (what shipped, what changed) and cut the value claim, listing the removed claim in What changed. If nothing checkable is left, delete the sentence and say so. Do not invent the evidence of commitment.
+
+### Hollow aphorisms, "real/actual" inflation and invented coinages (`aphorism-formula`)
+- Looks like: "Trust is the currency of teams.", "At its core, what really matters is...", "real product-market fit", "genuine utility", "a failure mode nobody talks about", "she coined the phrase".
+- Cost: profundity by template; "real" implies fake alternatives without saying which; "coined" and "nobody talks about" are priority claims the text may not support.
+- Fine when: the contrast is explicit ("real revenue from paying customers, not grants"), the line is literal (the currency of a country), or the author's voice uses aphorisms deliberately.
+- Fix: replace the template with the assertion the material supports; drop the adjective; define a term on first use instead of claiming to have coined it. An unsupported priority claim gets `[VERIFY: ...]` or goes.
+
+### False concession and invented antonyms (`false-concession`)
+- Looks like: "While X is impressive, Y remains a challenge.", "false precision rather than genuine accuracy".
+- Cost: balance by template; the second half is a stock worry, or the pair has a made-up opposite that only exists for symmetry.
+- Fine when: both halves carry named facts the text supports.
+- Fix: state each half as its own fact; keep the uncertainty on both sides as the source has it. Do not resolve a tension the author left open.
+
+### Vague association (`vague-association`)
+- Looks like: "He is associated with the leadership of ExampleCorp.", "tied to economic modernization".
+- Cost: implies a role or link while hiding what it was.
+- Fine when: the source leaves the relationship unspecified, or a measured statistical association is the correct term (epidemiology, social science).
+- Fix: name the relationship the text gives. If it does not give one, keep the vague wording or mark `[ASK AUTHOR: what was the role?]`; never invent a title or mechanism.
+
+### Parenthetical hedges (`parenthetical-hedge`)
+- Looks like: "(and, increasingly, Z)", "(or, more precisely, Y)", "(and perhaps more importantly, W)".
+- Cost: an afterthought tucked inside the sentence that either matters and deserves its own sentence, or does not.
+- Fine when: the correction is exact and short ("or, more precisely, 4 of the 6 sites").
+- Fix: make it a separate sentence, or delete it. Keep a hedge the claim needs at the source's level of certainty.
+
+### Buried verbs, agentless passives and developer slogans (`nominalization`, `dev-slogan`)
+- Looks like: "conducted an analysis of" (analyzed), "The results are preserved automatically.", "it just works", "batteries included", "zero config", "sane defaults".
+- Cost: the action or the actor is hidden; slogans stand for behavior the text never states.
+- Fine when: a Methods section names a formal procedure; a changelog, README or commit subject uses clipped imperative or passive lines as the register; the slogan is the product's own name for a feature or is quoted.
+- Fix: put the action in the verb and name the actor only if the text gives one ("we" is not invented when agency is unclear); replace a slogan with the behavior ("installs with no config file").
+
 ## 5. Rhythm and shape uniformity
 
 Found by reading shape, not words. Scanner hits here are always weak.
@@ -201,6 +261,18 @@ Found by reading shape, not words. Scanner hits here are always weak.
 - Cost: the reader wonders whether four things exist.
 - Fine when: genuinely different referents.
 - Fix: pick the clearest term and repeat it. Repeating a technical term is correct.
+
+### Manufactured punchlines and stranded auxiliaries (found by reading)
+- Looks like: "We planned for every failure mode. Except the one that happened.", "The tool died; the data didn't.", "Not always. Not perfectly."
+- Cost: a twist or a beat stands where the specific event should be; one is style, a repeated habit is a template.
+- Fine when: one earned short sentence carries real weight, or the passage is comic or theatrical by design.
+- Fix: keep one if earned; turn the rest into a sentence with the actual subject and cause. If the source does not say what the missed failure mode was, mark `[ASK AUTHOR: which failure mode?]` instead of guessing.
+
+### Colon into a forced triple (found by reading)
+- Looks like: "The architecture provides: separate ports, processes, and local state."
+- Cost: the colon list is shaped as three even when the content has two or four parts.
+- Fine when: there really are three, or a spec table or option list is the register.
+- Fix: list what the source supports and state the real count.
 
 ### Interchangeable paragraphs and symmetrical sections
 - Looks like: swapping two body paragraphs changes nothing; every section has the same length and shape.
@@ -272,6 +344,18 @@ Found by reading shape, not words. Scanner hits here are always weak.
 - Fine when: one or two meaningful tags on a platform that uses tags.
 - Fix: keep the meaningful ones.
 
+### Heading echoes and heading case (`heading-echo`)
+- Looks like: "## Performance" followed by "Speed matters." before the real content; Title Case Subheadings in a document otherwise written in sentence case.
+- Cost: a one-line restatement of the heading delays the content; mixed case reads as pasted from elsewhere.
+- Fine when: the line is a real scope statement for a formal section, or the house style requires title case throughout.
+- Fix: delete the echo line and start with the substantive sentence; match the document's own heading case. Only change heading case when the scope allows structure edits.
+
+### Unnecessary hyphenation and modifier stacks (found by reading)
+- Looks like: "in real-time" (adverbial), "works out-of-the-box", "a high-quality, well-architected, future-proof solution".
+- Cost: noise at the margins; stacked modifiers repeat praise without properties.
+- Fine when: the hyphen precedes a noun ("real-time analytics") or is the style guide's rule.
+- Fix: "in real time", "out of the box"; name the property the stacked adjectives stand for. Low priority (P2).
+
 ### Typographic residue
 - Looks like: curly quotes plus perfectly even punctuation in a casual chat message or commit note.
 - Cost: weak signal only; most editors auto-curl.
@@ -305,3 +389,9 @@ Highest priority because it is never part of the message. Remove only the wrappe
 - Cost: delays the answer.
 - Fine when: the restatement orients a reader among several questions ("To answer your question from Tuesday:"), or the reader is new to the topic.
 - Fix: read to decide; delete only restatements that add nothing before the answer.
+
+## 9. Signals this skill does not use
+
+- Vocabulary-diversity ratios, punctuation-distribution or burstiness scores, function-word statistics and normalization or confusable-character checks come from detector work. They do not measure what a reader loses and they invite chasing a score; this skill reports reader cost only.
+- Not tells on their own: repeating a defined term, short declarative sentences, first-person "we", plain "is" and "has", typographic curly quotes, and contrast sentences that carry a measured finding. Do not fix these.
+- Moral adjectives on data or objects ("an honest shape") and "assumptions that stop being true" are sometimes plain imprecision, sometimes metaphor. Check the meaning before changing; replace only with a property the text supports (calibrated, no longer holds).

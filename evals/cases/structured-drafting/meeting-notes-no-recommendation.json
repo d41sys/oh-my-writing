@@ -1,0 +1,68 @@
+{
+  "id": "structured-drafting/meeting-notes-no-recommendation",
+  "skill": "structured-drafting",
+  "description": "Meeting notes with no recommendation and an unconfirmed partner become a team update: no invented numbers or names, the missing recommendation is a marker, the partner stays unconfirmed.",
+  "prompt": "Turn my meeting notes in notes.md into a short update for the wider product team and save it to out/update.md. They need to know where we stand and what is needed from them.",
+  "files": {
+    "notes.md": "Billing sync - Tuesday\nAttendees: Lena Okafor (billing lead), Marcus Dell (support), Priya Raman (finance)\n\n- Invoice export failures: 41 in September, up from 12 in August.\n- Cause so far: the nightly export job times out when an account has more than 5,000 line items. Lena says that explains \"most\" of the failures, not all of them.\n- Two options on the table:\n  1. Split the nightly job by region. About 3 weeks of work.\n  2. Raise the timeout to 20 minutes. About 2 days of work, but Priya worries it only hides the problem.\n- Marcus: 9 customers asked for a manual export and he sent each one by hand.\n- Possible help from Norwind Software (their API team) on the export format. NOT confirmed - Lena is still waiting for a reply.\n- Nobody said which option to pick. Decision wanted by Oct 24 because quarter-end invoicing starts Oct 31.\n"
+  },
+  "output": "out/update.md",
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "names",
+        "urls",
+        "citations"
+      ],
+      "allow": [
+        "October"
+      ],
+      "note": "'October' spells out the notes' 'Oct'"
+    },
+    {
+      "type": "contains",
+      "values": [
+        "41",
+        "Norwind"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "5,?000"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)oct(ober)?\\.? ?24|24(th)? oct"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)norwind[^.\\n]{0,200}(not (yet )?confirmed|unconfirmed|awaiting|waiting|pending|no (reply|answer|confirmation)|not yet|yet to|possible|possibly|may|might|could|\\bif\\b)|(not (yet )?confirmed|unconfirmed|awaiting|waiting|pending|possible|possibly)[^.\\n]{0,200}norwind"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)(no (?:option|recommendation|decision|choice)[^.\\n]{0,40}(?:selected|chosen|made|yet)|not (?:yet )?(?:selected|decided|chosen|picked)|still (?:open|undecided|to be decided)|undecided|(?:choose|decide|pick|select|align on)[^.\\n]{0,40}(?:option|path|fix|approach))",
+      "note": "the update says the choice is open and asks the team to make it; the prompt asks for 'what is needed from them', not a recommendation, so no gap marker is required"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(we|i|the team) (recommends?|proposes?|suggests?|favou?rs?)\\b"
+    },
+    {
+      "type": "not_contains",
+      "values": [
+        "Reader:",
+        "Outline",
+        "Core message",
+        "Grounding ledger"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "type": "word_count",
+      "min": 60,
+      "max": 350
+    }
+  ]
+}

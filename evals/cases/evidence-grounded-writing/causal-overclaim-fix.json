@@ -1,0 +1,20 @@
+{
+  "id": "evidence-grounded-writing/causal-overclaim-fix",
+  "skill": "evidence-grounded-writing",
+  "description": "Correlational data written as a cause, with 'always', 'proves' and an unnamed 'studies show': the revision must drop all three, keep the figures and the usage limit, add no invented source, and mark the missing source.",
+  "prompt": "This paragraph goes to the school board next week (evidence notes are in notes.md). Fix whatever we can't actually back up, change as little else as you can, and save the revised paragraph to out/revised.md.",
+  "files": {
+    "draft.md": "Our analysis of 1,240 students at Harlow Academy shows that the tutoring app Quillpad raises exam scores. Students who used Quillpad at least three times a week scored 14 points higher on the spring exam (mean 78 versus 64) than students who did not use it. Studies show that apps like this always improve results, which proves that every school should adopt Quillpad. Usage was voluntary, and we did not collect prior grades.\n",
+    "notes.md": "Evidence on file for this paragraph:\n- The Harlow Academy spring-exam dataset (1,240 students) is the only data.\n- Observational: students chose for themselves whether to use the app.\n- Grades from before the spring exam were not collected.\n- No outside studies or reports are on file.\n"
+  },
+  "output": "out/revised.md",
+  "checks": [
+    { "type": "not_contains", "values": ["always", "proves", "proven", "studies show"] },
+    { "type": "preserves", "source": "draft.md", "categories": ["numbers"] },
+    { "type": "no_added_facts", "categories": ["citations", "urls", "names"] },
+    { "type": "markers", "min": 1 },
+    { "type": "contains_any", "values": ["associated with", "higher among", "than students who did not", "than those who did not", "scored higher", "correlat"] },
+    { "type": "contains_any", "values": ["voluntar", "chose", "self-select", "prior grade", "prior-grade", "before the spring"] },
+    { "type": "similarity", "source": "draft.md", "min": 0.35 }
+  ]
+}

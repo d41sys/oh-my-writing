@@ -27,7 +27,7 @@ A cover letter is a short argument that the candidate meets this employer's stat
 1. List three to five requirements from the posting and the two or three true achievements that answer them.
 2. Find one organization-specific hook that is publicly checkable (a product, method, public project, stated problem in the posting). If none can be found, say so and write without a fake one.
 3. Write a one-sentence thesis of fit naming two or three true qualifications mapped to the requirements. The body proves it.
-4. Check each fact against the candidate's material. A claim without support is removed or marked `[ASK AUTHOR]`.
+4. Check each fact against the candidate's material. A claim without support is removed or marked `[ASK AUTHOR: ...]`.
 
 ### 2.3 Structure (about three to four short paragraphs)
 1. **Opening (two to three sentences):** name the role (and the requisition ID if the employer uses one), land a specific hook, and state the thesis. If the candidate has a direct link to the role (uses the product, knows someone who works there and has permission to name them, has deep field knowledge), put it first.
@@ -128,7 +128,7 @@ Aids for the reader: strong topic sentences, the main claim at paragraph edges, 
 - Writing what the committee is assumed to want instead of what is true.
 
 ### 3.6 European motivation letters
-These often ask: the professional goal and sector after the degree; the contribution the applicant intends to make once in a position to act (grounded in experience or credible facts, not slogans); why this program, naming courses, modules or methods; why this candidate, with proof of roles and strengths; and, for some country-specific calls, why this country and what its system or sector offers, only with real research. Write continuous prose, not the questionnaire. Be reflective and factual, not a campaign speech or a résumé. State strengths plainly without false modesty. Length varies: some calls ask for one page, others for two or three. If the call is silent, use the shorter safe default and say so. Check the current call text.
+These often ask: the professional goal and sector after the degree; the contribution the applicant intends to make once in a position to act (grounded in experience or credible facts, not slogans); why this program, naming courses, modules or methods; why this candidate, with proof of roles and strengths; and, for some country-specific calls, why this country and what its system or sector offers, only with real research. Write continuous prose, not the questionnaire; keep the guiding questions and the outline out of the final letter. Be reflective and factual, not a campaign speech or a résumé. State strengths plainly without false modesty. Length varies: some calls ask for one page, others for two or three. If the call is silent, use the shorter safe default and say so. Check the current call text. Never invent a contact, an NGO role or a technology-transfer plan.
 
 ### 3.7 Length and revision
 - The stated limit (words, characters, pages, box size) always wins. If none, roughly one to two pages is the common starting point for many graduate statements. Do not squeeze with small type or margins.
@@ -165,4 +165,4 @@ Each program needs its own version. Swapping a faculty name is not tailoring. Ke
 5. Length is verified against the governing limit, not against these heuristics.
 6. Clichés and template phrases replaced by evidence, in the author's voice.
 7. Regional salutation, sign-off and spelling consistent.
-8. Open items and `[VERIFY]` markers listed for the user.
+8. Open items and `[VERIFY: ...]` markers listed for the user.

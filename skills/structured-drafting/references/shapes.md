@@ -11,7 +11,7 @@ Goal: know exactly what you have, where each piece came from, and what is missin
 1. Read the whole pile first, end to end. Do not outline from the first third.
 2. Split into units: one claim, example, datum, story, opinion, definition, or quote per unit. A unit stays small enough to be placed in exactly one block.
 3. Label each unit with its kind and its source (file and place, speaker and time, or "author's head" when it was said in conversation and has no document). The source label is what later lets a reviewer check a claim.
-4. Mark duplicates (keep the clearest), contradictions (do not resolve silently; ask), and units that only make sense to the author.
+4. Mark duplicates (keep the clearest), contradictions (do not resolve silently; keep both values with their sources and ask, or flag in the draft when the author cannot be asked), and units that only make sense to the author. For notes and transcripts also mark status: decided, proposed, unconfirmed, open. A hedge ("about", "I think", "if legal agrees") stays attached to its unit.
 5. Group by the reader's questions, not by where the material came from. A draft that mirrors the order of the sources is a summary of the sources, not an answer to the reader.
 6. List the gaps: the example the argument needs but the pile lacks, the number a claim implies, the counter-case, the definition. Write each as a question. A gap is filled by the author, a real source, or a cut; never by a plausible-sounding addition.
 7. Note what was normalised: facts already supported by the material, items that still need checking, and open questions. Do not restart analysis from zero when the author already supplied findings.
@@ -34,6 +34,7 @@ State the core in one or two sentences before outlining. A usable core is a posi
 - Boundary test: where does it stop being true? A core with no boundary is usually broader than the evidence.
 - Shift test (for arguments): what changed that makes this claim worth making now?
 - Size test: if it needs three sentences and an "and also", the piece may be two pieces, or the core is not yet found.
+- Change test: what does the piece change about what the reader currently believes or will do? If nothing, there is no reason for the piece yet; look for the tension in the material. If the material holds none, say so and use the plain message of the segment instead of inventing a hook.
 
 If the material cannot support a specific core, say so. Offer the nearest supported core and ask; do not manufacture novelty or drop inconvenient material to force a tidy line.
 
@@ -96,7 +97,7 @@ If the request mixes teaching a newcomer with serving an expert lookup, use `tec
 
 - **Mixed readers.** Layer the piece: outcome first, one sentence of mechanism, then deeper sections specialists can jump to. Put implementation detail below or in an appendix, not in the lead.
 - **Mixed shapes.** Choose a primary shape for the spine and label secondary blocks (for example an instruction piece with one explanation block). Do not interleave shapes block by block.
-- **Repackaging a longer source** (transcript, report, long post into an article). Decide, and tell the author, how much is kept. Defaults, not rules: a faithful long-form keeps nearly all of it; a formal report keeps the summary, findings, data, limits and recommendations and trims derivations; an explainer keeps the mechanism and examples; a decision brief keeps the recommendation, key facts and trade-offs; an essay keeps the argued line. Never compress silently, and never let a reduced version read like a shrunken copy; an edited article has its own order. For dialogue sources keep speakers explicit and do not alter what a speaker meant when trimming filler.
+- **Repackaging a longer source** (transcript, report, long post into an article). Decide, and tell the author, how much is kept. Defaults, not rules: a faithful long-form keeps nearly all of it; a formal report keeps the summary, findings, data, limits and recommendations and trims derivations; an explainer keeps the mechanism and examples; a decision brief keeps the recommendation, key facts and trade-offs; an essay keeps the argued line. Name must-keep items (each pointing to a place in the source) and may-cut items (each with a reason) so that the kept share matches what was declared. Never compress silently, and never let a reduced version read like a shrunken copy; an edited article has its own order. Compression must not turn an opinion or a guess into a stated fact, and a paraphrase is never presented as a transcript. For dialogue sources keep speakers explicit and do not alter what a speaker meant when trimming filler.
 - **Fixed templates and venues.** When structure is fixed, skip shape choice: gather the material against the template and use the block tests as a revision pass.
 
 ## Weight, openings, endings

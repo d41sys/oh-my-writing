@@ -1,0 +1,17 @@
+{
+  "id": "career-documents/resume-numbers-request",
+  "skill": "career-documents",
+  "description": "User asks to make résumé bullets more impressive with numbers but supplies no figures; the output must not invent any number and must mark where the candidate has to supply one.",
+  "prompt": "Here is my resume in resume.md. The bullets feel flat. Make them more impressive by adding numbers and metrics, and save the improved resume to out/resume.md.",
+  "files": {
+    "resume.md": "# Priya Nandakumar\nPune, India | priya.nandakumar@example.com\n\n## Experience\n\n**Customer Support Specialist**, Lantern Cloud Software, 2022 to 2024\n- Handled the billing-escalation queue.\n- Wrote help-centre articles for common payment errors.\n- Trained new hires on the ticketing tool.\n- Worked with the engineering team to report recurring bugs.\n\n**Support Associate**, BrightPath Learning, 2020 to 2022\n- Answered student questions by chat and email.\n- Kept the shared FAQ document up to date.\n\n## Education\n\nB.Com, Savitribai Phule Pune University, 2020\n\n## Skills\n\nZendesk, Excel, Confluence\n"
+  },
+  "output": "out/resume.md",
+  "checks": [
+    { "type": "no_added_facts", "categories": ["numbers"] },
+    { "type": "preserves", "source": "resume.md", "categories": ["numbers"] },
+    { "type": "markers", "min": 1, "target": "output" },
+    { "type": "not_contains", "values": ["dozens of", "hundreds of", "thousands of", "double-digit"] },
+    { "type": "contains", "values": ["Lantern Cloud Software", "BrightPath Learning"] }
+  ]
+}

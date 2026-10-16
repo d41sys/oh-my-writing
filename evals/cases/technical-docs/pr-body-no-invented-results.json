@@ -1,0 +1,77 @@
+{
+  "id": "technical-docs/pr-body-no-invented-results",
+  "skill": "technical-docs",
+  "description": "PR description from a diff and the author's notes reports only the test run the author did, labels everything else Not run, states door type and blast radius, flags the default change and the jitter-after-cap detail, and invents no numbers.",
+  "prompt": "Write the pull request description for the change in changes.diff, using my notes in notes.md. Save it to out/PR.md.",
+  "files": {
+    "changes.diff": "diff --git a/taskrunner/retry.py b/taskrunner/retry.py\nindex 3f2a1c9..b81d0e4 100644\n--- a/taskrunner/retry.py\n+++ b/taskrunner/retry.py\n@@ -8,9 +8,15 @@ import random\n import time\n \n \n-def backoff_delays(attempts, base=0.5, jitter=0.1):\n-    \"\"\"Yield the sleep time before each retry: base * 2**n, plus jitter.\"\"\"\n+def backoff_delays(attempts, base=0.5, jitter=0.1, max_delay=30.0):\n+    \"\"\"Yield the sleep time before each retry: base * 2**n, plus jitter.\n+\n+    Each delay is capped at max_delay seconds before jitter is added.\n+    Pass max_delay=None to keep the old uncapped behaviour.\n+    \"\"\"\n     for n in range(attempts):\n         delay = base * (2 ** n)\n+        if max_delay is not None:\n+            delay = min(delay, max_delay)\n         yield delay + random.uniform(0, jitter)\n \n \ndiff --git a/tests/test_retry.py b/tests/test_retry.py\nindex 91c7e22..4d0a6f3 100644\n--- a/tests/test_retry.py\n+++ b/tests/test_retry.py\n@@ -20,3 +20,13 @@ def test_delays_grow():\n     delays = list(backoff_delays(4, base=1.0, jitter=0.0))\n     assert delays == [1.0, 2.0, 4.0, 8.0]\n+\n+\n+def test_delay_is_capped():\n+    delays = list(backoff_delays(10, base=1.0, jitter=0.0, max_delay=30.0))\n+    assert max(delays) == 30.0\n+\n+\n+def test_max_delay_none_is_uncapped():\n+    delays = list(backoff_delays(10, base=1.0, jitter=0.0, max_delay=None))\n+    assert delays[-1] == 512.0\n",
+    "notes.md": "Fixes #412.\n\nIn staging last week the upstream was down and one job kept sleeping between retries for 17 minutes. The backoff just doubles forever, so I added max_delay.\n\nOnly ran `pytest tests/test_retry.py` locally: 4 passed. I have not run the rest of the suite and CI has not started yet.\n\nThe nightly sync uses attempts=12, so it will now wait at most 30 seconds between tries instead of growing. That is what I want, but it is a change for that job.\n\nNo design doc for this. I did not touch the README or docs. I think it is safe to merge.\n"
+  },
+  "output": "out/PR.md",
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers"
+      ]
+    },
+    {
+      "type": "not_contains",
+      "values": [
+        "all tests pass",
+        "all tests are passing",
+        "all tests passed",
+        "tests are green",
+        "ci is green",
+        "ci passes",
+        "ci passed",
+        "builds pass"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)not (yet )?(been )?run|haven't run|have not run|hasn't been run|has not been run"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b(two|one)-way\\b"
+    },
+    {
+      "type": "contains",
+      "values": [
+        "blast radius"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)(closes|fixes|resolves)\\s+#412"
+    },
+    {
+      "type": "contains",
+      "values": [
+        "max_delay",
+        "jitter"
+      ]
+    },
+    {
+      "type": "contains_any",
+      "values": [
+        "nightly sync",
+        "attempts=12"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "(?im)^[#*>\\s-]*(?:title:?[*\\s]*)?(?:fix|feat|perf|refactor)(?:\\([\\w./-]+\\))?!?: \\S"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?im)^[#*>\\s-]*(?:title:?[*\\s]*)?(?:fix|feat|perf|refactor)(?:\\([\\w./-]+\\))?!?: .{60,}$"
+    },
+    {
+      "type": "word_count",
+      "min": 80,
+      "max": 500
+    }
+  ]
+}

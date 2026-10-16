@@ -23,7 +23,7 @@ Goal: close the gap between what the author knows and what you know, without tur
 3. **Clarifying round.** Read the dump, then ask the frontier: every question whose answer does not depend on another unanswered question. Number them. For each, offer a recommended answer worded so that "yes" accepts it. Shorthand replies are fine. Look up anything findable in the supplied material instead of asking; the author owns decisions, you own fact-finding.
 4. **Repeat** with the new frontier until the questions are about edge cases and exceptions, not fundamentals. State the shared understanding in a few lines and ask for a correction before building.
 
-If the author is unsure of the structure, propose a short scaffold (a handful of sections suited to the document type, with shape per [shapes](shapes.md)), confirm it, then create all headings with a placeholder such as `[To be written]` so the author can see the whole.
+If the author is unsure of the structure, propose a short scaffold (a handful of sections suited to the document type, with shape per [shapes](shapes.md)), confirm it, then create all headings with a plain line such as "Not yet drafted." under each so the author can see the whole. Do not use a bracket marker for this; brackets are reserved for gaps in content.
 
 ## Phase 2: build section by section
 
@@ -84,7 +84,7 @@ An optional slower loop for essays and argued posts where the author wants to co
 
 - Re-read the working file before every write. The author may have edited, reordered or deleted things; preserve their edits exactly.
 - Treat "cut that", "sharpen it", "merge those" as first-class instructions, not suggestions.
-- A substantial author edit to an earlier block can change what comes next; re-check the ledger.
+- A substantial author edit to an earlier block can change what comes next; re-check the ledger. In a long session keep the decisions (core, shape, ledger, cuts) in the working file and re-read them before re-deciding anything.
 - Add no publishing markup, platform formatting or front matter that was not requested.
 - Keep a running glossary line when a concept is named in conversation; update it when a term is sharpened. Use the glossary to hold one term per concept.
 - Never overwrite the source material.

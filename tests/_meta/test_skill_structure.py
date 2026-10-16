@@ -20,12 +20,14 @@ NAME_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 LINK_RE = re.compile(r"\]\(([^)\s]+)\)")
 INTERNAL_ID_RE = re.compile(r"\bK-[A-Z]+-\d+\b|\bSLOP-[A-Z]+-\d+\b")
 # Skills are written in our own words; source projects are thanked in README only.
+# Owner handles and repository slugs only, matched as whole tokens, so ordinary words stay usable.
 SOURCE_FINGERPRINTS = [
-    "conorbronsdon", "avoid-ai-writing", "blader", "humanizer", "affaan", "everything-claude-code",
+    "conorbronsdon", "avoid-ai-writing", "blader", "affaan", "everything-claude-code",
     "d-wwei", "great-writer", "greatwriter", "mattpocock", "wanshuiyin", "auto-claude-code",
-    "k-dense", "garden-skills", "conardli", "resumeskills", "paramchoudhary", "proficiently",
+    "k-dense", "garden-skills", "conardli", "resumeskills", "paramchoudhary", "proficientlyjobs",
     "jezweb", "leey21", "orchestra-research", "coreyhaines", "marketingskills", "no-ai-slop",
 ]
+FINGERPRINT_RE = re.compile(r"(?<![\w-])(" + "|".join(map(re.escape, SOURCE_FINGERPRINTS)) + r")(?![\w-])")
 
 
 def split_frontmatter(path: Path):
@@ -105,9 +107,14 @@ def test_own_words_without_source_fingerprints(skill):
             continue
         text = f.read_text(encoding="utf-8")
         assert not INTERNAL_ID_RE.search(text), f"internal library ID in {f.relative_to(skill)}"
-        lowered = text.lower()
-        hits = [s for s in SOURCE_FINGERPRINTS if s in lowered]
+        hits = sorted(set(FINGERPRINT_RE.findall(text.lower())))
         assert not hits, f"source-repository name {hits} in {f.relative_to(skill)}"
+
+
+def test_license_is_mit_except_diataxis_adaptation(skill):
+    raw, _ = split_frontmatter(skill / "SKILL.md")
+    expected = "CC-BY-SA-4.0" if skill.name == "technical-docs" else "MIT"
+    assert yaml.safe_load(raw).get("license") == expected
 
 
 def test_plugin_manifests_agree():

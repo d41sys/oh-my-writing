@@ -25,6 +25,9 @@ Throughout: numbers describe the samples, they do not set targets. Words such as
 | Punctuation habits | Em dashes, semicolons, colons, parentheses, ellipses, exclamation marks, quote style | Script rates per 1000 words for the first four; hand count the rest | One dash in a long sample is not a habit. Say "rare" or "absent" only with enough words behind it |
 | Formatting habits | Headings, bullets, bold, tables, emoji, signature blocks | Script bullet ratio and heading count; list the formats you saw | A platform may force the format. Record the channel next to the habit |
 | Recurring phrases | Two or three word phrases that appear across samples | Script phrase list (phrases found in at least two samples), then read each in context | A topic word that returns because the topic returns is not a voice habit. Keep phrases that carry attitude or structure ("in practice", "to be fair") |
+| Fragments and rhythm | Share of sentences with no verb or under about four words; whether short sentences come in runs or sit between longer ones; repeated sentence openings | Script sentence-length figures (minimum, median, spread), a hand count of fragments, and a quoted run. Count the samples that show it | A habit of very short sentences is voice when it appears across the samples; it is staging when you add it. Deliberate repetition for rhythm is not a defect |
+| Capitalization | Conventional, all lowercase, mixed, or situational (a name, a joke) | Quote two lines and say in how many samples it holds | Never lowercase text to look casual unless it is observed in the samples |
+| Quote and apostrophe style | Straight or curly marks, single or double quotes | Count in the author's own prose, outside quoted material: majority wins, a tie takes the first seen, no evidence leaves the text as it is | Most editors curl marks automatically, so a curly mark alone says little. A house rule, if declared, overrides what the samples show |
 
 ## Move traits (read, then quote)
 
@@ -41,6 +44,10 @@ Throughout: numbers describe the samples, they do not set targets. Words such as
 | Recurring moves | Signature constructions: a list of three, an aside in parentheses, a question then answer, a turn ("That said,") | Quote each and count the samples it appears in | A move seen in one sample is an event, not a move |
 | Humor-adjacent tone markers | Emoji, slang, in-jokes, era-bound references | Quote with date context | Dated references carry voice. Keep them unless they hurt meaning |
 | Never-do zones | Things the author avoids: exclamation marks, first person, hype adjectives, a topic | Needs absence across many samples or an explicit request. Record the count (absent in 6 of 6) | Absence in three short samples proves little. Rate weak or ask the author |
+| Compression and density | How much each sentence carries: terse and compressed, or explained and spelled out; whether terms are defined on the spot | Quote one dense and one spelled-out passage; say which is typical | Density follows the reader. Compare within one channel |
+| Claim style | How a claim is framed, supported and sharpened: number first, mechanism first, example first; whether emphasis comes from detail or from adjectives | Quote two claims with what supports each | Record the habit, not the claim. Never copy the facts |
+| Calls to action and sign-offs | Whether pieces end by asking the reader to do something, and how directly | Quote the endings that do, and count the samples that end without one | A convention (an email sign-off) is not a habit of the voice. An absent call to action in three samples is weak evidence |
+| Declared rules and terminology | What the author says outright: words they refuse, preferred terms and casing, punctuation they never use | Quote the instruction or note its date; record as declared, not observed | A declared rule outranks a trait. When a sample breaks the rule, record the conflict and ask |
 
 ## Language-specific notes
 
@@ -50,6 +57,7 @@ English lexical lists (pronouns, contractions, hedge words, phrase filters) are 
 - Other languages: record sentence and paragraph shape, punctuation, formatting, openings and closings, and evidence habits. Skip any English word list.
 - Mixed-language writers: record each language as its own set. A profile built on English samples does not transfer to Vietnamese output except for stance and structural moves. Ask for samples in the target language.
 - Second-language English: non-native phrasing that recurs is part of the voice. Record it as a trait; do not treat it as an error unless the author asks for a polish.
+- Vietnamese register: when the reader changes, address forms and particles change with them. Record each audience's forms separately and ask before using a form the samples do not show.
 
 ## Regional English
 
@@ -61,6 +69,18 @@ Record from the samples, not from the author's passport or the reader's market. 
 - Vocabulary: words that mark a region (fortnight, diary, whilst). Keep them where the author uses them; do not sprinkle regional slang the author does not use.
 
 Within one document keep one family. When the reader's market differs from the author's, ask which to follow; do not decide silently.
+
+## Stated register with no samples
+
+When an author asks for a register but there is nothing to measure, treat it as a stated preference for this piece. It changes how the author's own content is expressed; it cannot create an opinion, a reaction or an experience, and it cannot remove an uncertainty the source states.
+
+| Register asked | Move | Do not |
+|---|---|---|
+| Blunt | Lead with the claim; drop windups ("it is important to note"); keep a modal that carries real uncertainty; keep negative results as written | Pad to three items; invent a contrarian foil |
+| Warm | Speak to "you" where the source does; cut empty intensifiers | Open with performed empathy ("I completely understand how you feel"); invent a shared experience |
+| Casual | Plain direct sentences; contractions; everyday wording | Force fragments, slang or typos; "upgrade" plain words the author uses |
+| Professional | Name the actor when it matters; keep asks explicit; concrete claims only from the source | Invent a source behind "experts say"; strip hedges that carry real doubt |
+| Technical | "X is Y" in place of "serves as"; plain neutral tone; lists only for list-shaped content | Add personality to reference or legal text |
 
 ## Channel and register
 

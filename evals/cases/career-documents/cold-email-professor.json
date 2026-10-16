@@ -1,0 +1,18 @@
+{
+  "id": "career-documents/cold-email-professor",
+  "skill": "career-documents",
+  "description": "First email to a professor the user has never contacted: short, built only on the supplied facts, with no invented mutual contact, extra paper, number or claim of a prior conversation.",
+  "prompt": "I want to email Prof. Marchetti before I apply to her program. My details are in about_me.md and her public page is in prof.md. Write the first email and save it to out/email.md. Keep it short, she gets a lot of mail and doesn't know me.",
+  "files": {
+    "about_me.md": "Name: Khanh Le\nCurrent status: final-year BSc Environmental Science student at Riverbend University, graduating June 2027\nThesis: mapping mangrove loss along a 12 km stretch of coast using drone images, supervised by my own lecturer\nGrade average: 3.7 out of 4.0\nWhat I want: a place in the MSc Marine Ecology at Westbrook University, starting September 2027\nWhat I have read of hers: the abstract and methods section of her 2025 paper on seagrass carbon storage. I have not read her other work.\nContact history: I have never written to her or met her.\nMy email: khanh.le@example.com\n",
+    "prof.md": "# Prof. Elena Marchetti, Westbrook University\n\nSchool of Ocean Sciences. Research: carbon storage in seagrass meadows and how marine heatwaves change it.\n\nRecent paper: \"Seagrass carbon stocks after a marine heatwave\", Journal of Coastal Ecology, 2025.\n\nProspective students: I take one or two MSc students a year. If you are thinking of applying, email me a short note with your CV before the application deadline.\n"
+  },
+  "output": "out/email.md",
+  "checks": [
+    { "type": "word_count", "min": 40, "max": 180 },
+    { "type": "no_added_facts", "categories": ["numbers", "names", "citations", "urls"], "allow": ["Dear", "Professor"], "note": "names are compared word by word; the salutation and the expansion of 'Prof.' are not new facts" },
+    { "type": "not_contains", "values": ["as we discussed", "as discussed", "following up on our", "our conversation", "our previous", "when we met", "great catching up", "mutual", "I hope this email finds you well", "I hope this finds you well", "groundbreaking"] },
+    { "type": "contains", "values": ["Marchetti", "Khanh"] },
+    { "type": "contains_any", "values": ["seagrass", "heatwave"] }
+  ]
+}

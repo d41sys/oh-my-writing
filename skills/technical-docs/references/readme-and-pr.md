@@ -1,6 +1,6 @@
-Load when: writing a README, code walkthrough, pull request description, commit message, changelog, release notes or migration guide.
+Load when: writing a README, code walkthrough, pull request description, commit message, decision record (ADR), changelog, release notes or migration guide.
 
-# README, walkthroughs, PRs, changelogs, migrations
+# README, walkthroughs, PRs, commits, ADRs, changelogs, migrations
 
 ## README
 
@@ -34,7 +34,7 @@ Use for onboarding, "how does this feature work", architecture tours, PR tours, 
 1. **Name the reader.** A new joiner, an architect, a reviewer of this PR, an investigator of a failure each need a different path and depth. Write for the actual one.
 2. **Explore first.** Read the README, entry points, folder structure and relevant config; for a PR tour, read the changed files. Do not write steps until the code's shape is clear.
 3. **Follow the execution path.** Order steps by how control or data actually moves: entry point, routing, core logic, side effects, edge case. Each step should depend on the one before. A list of files in alphabetical order is an inventory, not a walkthrough.
-4. **Anchor every step** to a real file, and a line range or pattern. Verify each path and range exists before writing; never guess a line number. Prefer a pattern or function name where lines move. The first step names a real file or directory.
+4. **Anchor every step** to a real file, and a line range or pattern. Verify each path and range exists before writing; never guess a line number. Prefer a pattern or function name where lines move. The first step names a real file or directory. Use a directory step to orient, a file-and-range step for substance, a single selected block when one block matters more than the file, and a text-only step rarely, usually just the close.
 5. **Explain what the code cannot say for itself.** Each substantive step answers four things, briefly:
    - Situation: what the reader is looking at.
    - Mechanism: how it works.
@@ -81,20 +81,55 @@ Notes:
 - If the body must be huge because the diff is huge, the problem is PR size. For a diff over about twenty files that separates cleanly, suggest splitting.
 - Agent or model output about the change is a hypothesis; every claim in the body needs something a reviewer can check.
 - Keep separate judgements separate (correctness, risk, style); a pass on one axis must not hide a fail on another.
+- Report what was run exactly as the author states it, with its scope. "Ran the parser tests locally, 7 passed" does not become "tests pass"; the untouched suite and CI are "Not run" until someone says otherwise. Never write "CI is green" without a pipeline result in front of you.
+- Numbers come from the diff, the notes or a run you made. If you convert or combine them (hours to minutes), show the arithmetic or leave them as given.
+- Check the strength of every guarantee against the code before repeating it (see rule 15 in SKILL.md). If an adjustment is applied after a limit (an offset added after a clamp), a reviewer needs that order stated, because it decides whether "never exceeds" is true.
+- A changed default or a new limit is a behaviour change for existing callers even when no signature changed. Name who is affected (a named job or consumer from the notes) under Risk or Breaking changes.
+- Put thresholds in "Watch after merge" only when the author or a spec gives them; otherwise write "nothing specific" or `[ASK AUTHOR: what should be watched?]`. A vague "works fine" is not a success criterion.
 
 Start from [assets/pr-description-template.md](../assets/pr-description-template.md).
 
 ### Commit messages
 
-`type(scope): short description`, or `type: description`; types such as feat, fix, refactor, docs, test, chore, perf, ci. Imperative mood ("add", not "added"), no trailing period, subject about 72 characters or fewer, then a blank line and an optional body explaining why and what was checked. Follow the repo's existing convention when it differs.
+Shape: `type(scope): short description`, or `type: description`. Types: feat, fix, refactor, docs, test, chore, perf, ci, revert. Imperative mood ("add", not "added"), lowercase after the prefix, no trailing period. Aim for about 50 characters in the subject; treat 72 as the ceiling. Then a blank line and an optional body.
+
+- The body explains why (the cause or constraint) and what was checked, not a line-by-line list of what the diff already shows.
+- Footer lines carry `Closes #N` and any breaking change, stated as what changed and what callers do.
+- Write from the staged diff, not memory. One logical change per commit; if the subject needs "and", consider two commits.
+- Reject empty subjects such as "fix", "updates", "WIP" or "fixed stuff"; they carry no cause or scope.
+- Do not add test claims the author did not run, or co-author and generated-with trailers unless the repo's convention uses them.
+- Follow the repo's existing convention when it differs (for example, no type prefix, or a ticket key first).
 
 ### After a commit or PR
 
 A short receipt: what changed, link or hash, the test command and its result, what is blocked and by whom. Keep it short; no receipts about receipts.
 
+## Decision records (ADRs)
+
+An ADR is a short explanation of one decision: why this was chosen over the alternatives, written for the engineer who asks "why is it like this?" a year later.
+
+Write one only when all three hold: the choice is hard to reverse, a later reader would be surprised without context, and it was a real trade-off among genuine alternatives. Typical cases: a database, message bus, auth or deployment choice with real lock-in (not a library that takes an afternoon to swap); an integration pattern between parts of the system; a boundary or scope decision, including an explicit "no"; a deliberate deviation from the obvious path, with the reason so nobody "fixes" it. Skip easy-to-reverse, unsurprising or no-alternative choices. Create the folder and file when the first record is needed, and follow the repo's numbering and naming.
+
+Skeleton:
+
+1. **Title**: `ADR-NNN: <the decision, stated as a sentence>`.
+2. **Status and date**: Proposed, Accepted, Deprecated, or Superseded by ADR-NNN, with the date. Add deciders only when the author names them.
+3. **Context**: the forces, constraints and the incident, metric or request that triggered the decision. Facts only.
+4. **Options considered**: each real alternative with a one-line trade-off (for example, "managed service: less operating work, higher cost").
+5. **Decision**: what was chosen, in one or two sentences.
+6. **Consequences**: positive and negative, honestly. Quantify only with numbers the source gives. Name what becomes harder.
+
+Rules:
+
+- The reasoning is the author's. If the thread, code or notes do not show which alternatives were weighed or why one won, ask with `[ASK AUTHOR: ...]`; do not construct a convincing history.
+- A record is append-only. When the decision changes, write a new ADR and mark the old one Superseded; correct a factual mistake with a dated correction line, not a silent rewrite.
+- Keep it to about one page. Procedures go to a how-to, parameters to reference, and the full multi-option analysis for stakeholders to a decision report.
+
 ## Changelogs and release notes
 
 Reader: someone deciding whether to upgrade and what they must do. Source history is noisy; translate it.
+
+This skill owns release notes and changelogs. A public launch announcement post that tells readers why the release matters is `post-writing`.
 
 1. **Collect** merged PR titles, descriptions and linked issues. They explain why better than commit lines. Read changed files when a title does not reveal the user-facing effect. Include only what is shipped and usable now; anything behind a flag or in internal beta waits.
 2. **Filter noise**: typo fixes, internal refactors with no behaviour change, routine dependency bumps, CI tweaks, merge commits.

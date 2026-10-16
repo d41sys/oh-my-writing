@@ -27,7 +27,7 @@ Load when: fitting a post to a specific channel, checking display limits and con
   - List: a count and a credibility anchor in the first line, numbered points with one line each, a closing insight.
   - How-to: the outcome, numbered steps with concrete actions, the common failure, one next move.
 - **Document or carousel post:** one idea per slide; slide 1 must work alone as the thumbnail; keep a single visual template; end on one action. The text above the document is a second hook; write it as a standalone post, not "see attached". Judge a carousel by whether readers reach the end, and fix slide 1 or the framework before the middle.
-- **Avoid:** performative vulnerability, fake founder reflection, praise-stacking, corporate speak with no person behind it, a single-sentence-per-line "poem" format used for drama rather than readability.
+- **Avoid:** performative vulnerability, fake founder reflection, praise-stacking, corporate speak with no person behind it, a single-sentence-per-line "poem" format used for drama rather than readability, and stock openers ("Excited to share", "Here's what I learned") that postpone the point.
 - **Links:** put the link where the reader would naturally want it. Some authors place it in a comment instead; treat that as a style choice to verify, not a reach tactic.
 
 ## X (long and short posts, threads)
@@ -72,7 +72,7 @@ Pick by the job of the content. Counts are typical, not rules; a good piece uses
 - The count on the cover must match the slides. Do not pad.
 - Numbers, screenshots and results must be the author's own and real.
 - Keep text legible at thumbnail size and limit text per slide to what one idea needs.
-- Add `[Visual suggestion: ...]` placeholders where the author must supply an image; do not invent screenshots or data.
+- Where the author must supply an image, write `[ASK AUTHOR: image: what it shows]`; do not invent screenshots or data.
 
 ## Forums and communities (Reddit, Hacker News, Stack-style communities, Discord)
 
@@ -83,8 +83,9 @@ Pick by the job of the content. Counts are typical, not rules; a good piece uses
 
 ## Newsletter and email
 
+- **Scope:** newsletters and email sequences are written here. Personal outreach emails for jobs or academia (cold, networking, referral, prospective supervisor) are `career-documents`; investor, customer or sales outreach is not covered by these skills.
 - **Format facts (verify):** subject lines are cut off on phones after a few dozen characters (a heuristic of roughly 40 to 60); preview text follows the subject; images may be blocked by default.
-- **Craft:** see the newsletter section in [post types](post-types.md). The subject line must work if it is the only thing the reader sees and must be true. The first screen carries substance. Single column, short paragraphs, descriptive anchor text, one primary action, a human sign-off.
+- **Craft:** see the newsletter section in [post types](post-types.md) and, for series and team newsletters, [email sequences](email-sequences.md). The subject line must work if it is the only thing the reader sees and must be true. The first screen carries substance. Single column, short paragraphs, descriptive anchor text, one primary action, a human sign-off.
 - **Product update email:** what is new in plain words, why it matters as an outcome, how to use it with a direct link.
 - **Roundup:** curated links with the author's commentary on why each matters; a list of headlines alone adds nothing.
 - **Legal and deliverability:** unsubscribe route, sender identity and consent rules vary by region. Mark `[VERIFY: applicable email rules]` and leave specifics to the sending platform.
@@ -95,6 +96,8 @@ Pick by the job of the content. Counts are typical, not rules; a good piece uses
 - **Length:** match the job. A focused technical post often runs one to three thousand words; shorter is fine when the takeaway is small. Do not pad to a target.
 - **Structure:** a title that says what the piece is about with the terms a reader would search; an opening that gives the answer or the artifact; descriptive headings that state the point of each section rather than a generic label ("Handling lock contention under load" instead of "Background"); a table for repeated fields; code blocks that run as written.
 - **Search and answer engines:** the durable practice is clarity. State the answer to the likely question in plain words early; define a term at first use; under a question-shaped heading, begin with the direct answer, then the nuance; use tables with labelled units; state versions, dates and environments; keep dated facts current. Write one version for people and machines. Do not repeat a keyword for its own sake, do not split a coherent piece into fragments for machines, and do not publish near-identical pages. Reported citation-uplift numbers for particular tactics are unverified; do not promise them.
+- **Match the page to the query's intent.** A reader asking "how does X work" wants an explanation; "X vs Y" wants a comparison with stated criteria; "where is X" wants the link or location; "get X" wants the steps or the download. Give each page one primary subject, and do not publish several near-identical pages for the same query. Put the subject terms in the title, the first heading and the opening, in the words the reader uses; read the sentence aloud and rewrite any that sounds forced. Cover the follow-up questions a reader would ask next in the same piece, as real sections. Use an FAQ block only for questions readers actually ask.
+- **Video and audio.** Search and answer systems read the text around a recording: the transcript, captions, title, chapters and description. Say names and key answers aloud, not only on a slide; correct the captions; title each chapter by the question it answers; put a short written answer in the description. This is accessibility and clarity work, not a ranking trick.
 - **Authorship:** a visible author and date, first-hand experience stated where true, and sources for claims make a piece more credible to readers and are what a careful search system also looks for. Do not invent credentials.
 - **Canonical copy:** publish the full version on a place the author controls, then point from shorter posts back to it (see [repurposing](repurposing.md)).
 
@@ -108,7 +111,7 @@ Pick by the job of the content. Counts are typical, not rules; a good piece uses
 
 - **Format facts (verify):** visual-first notes; a short title (commonly under about 20 characters shows well), images with text, tags.
 - **Craft:** practical value, authentic experience and strong images. Three common types: a recommendation with a real result, a how-to, and an experience reflection. A first-person opening with a specific detail; short paragraphs; emoji as occasional visual anchors, not decoration on every line; bold labels for scannable points; a genuine limitation named; an actionable takeaway; tags.
-- **Image guidance:** add `[配图建议: ...]` markers for the cover and content images, for example a labelled result screenshot or a before and after.
+- **Image guidance:** where the author must supply the cover or content images (a labelled result screenshot, a before and after), write `[ASK AUTHOR: 配图: what it shows]`.
 - **Avoid:** academic openers, ad-copy tone, praise with no reason, titles the note does not deliver, forced slang, invented usage durations. Commands and settings must stay exact.
 
 ## Choosing channels (planning note)

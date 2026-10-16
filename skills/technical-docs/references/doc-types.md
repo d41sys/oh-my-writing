@@ -53,7 +53,7 @@ Taking explanation out of a tutorial often exposes a spot where the learner was 
 
 Build it like this:
 
-1. Name the outcome in one concrete sentence ("In this tutorial we will build a CLI that ..."). Say what will be built, not what the learner will "understand".
+1. Name the outcome in one concrete sentence ("In this tutorial we will build a CLI that ..."). Say what will be built, not what the learner will "understand" or "learn"; write in the first person plural ("we") and point out in passing what the learner should notice. State the learning goal as a real outcome (what they can now do), not an abstraction.
 2. Choose a bounded exercise that finishes in one sitting and yields something real. The exercise is meaningful (a visible achievement), completable, logical in sequence, and complete enough to touch every tool and concept the lesson promises.
 3. Fix the environment: exact tool versions, a starting repo or files, and a way to reset if a step fails.
 4. Write one path. Offer no "or use X instead", no database menus. Required platform branches are the only forks, and they are labeled.
@@ -62,7 +62,7 @@ Build it like this:
 7. Warn before surprises ("this prints about a hundred lines of log") and name a known wrong-turn sign ("if the output lacks `listening on :8080`, the server did not start; recheck step 3").
 8. Stay concrete: this file, this command, this output. Let general ideas emerge from specifics; park theory behind a link.
 9. Spell out embodied basics a learner cannot guess: which terminal, where to type, how long to wait.
-10. Close by describing what the learner has accomplished, then link to the next how-to, the reference and the explanation.
+10. Close by describing what the learner has accomplished, then link to the next how-to, the reference and the explanation. If the learner gave a vague goal or none, ask before writing; a vague mission is worse than none.
 
 Goal check: success means the learner gained skill, not that the artifact exists. If they stop halfway, they should still have gained something.
 
@@ -84,7 +84,7 @@ Seed data teaches too: realistic names instead of "Test Client", one record per 
 8. Start and end at meaningful points. A how-to need not run end to end; it must adapt to the reader's setup.
 9. Prefer one default path with a narrow escape hatch to a menu of alternatives.
 
-Skeleton: title, intro sentence, prerequisites table (requirement, version, how to check), numbered steps (each: action, one-clause reason if non-obvious, command, expected output), verification, troubleshooting, related links. Add "last verified on <version>" when pages go stale quickly.
+Skeleton: title, intro sentence, prerequisites table (requirement, version, how to check) with one command that verifies them all and what it should print, numbered steps (each headed or led by a verb; action, one-clause reason if non-obvious, command, expected output), verification, troubleshooting, related links. Show real trimmed output at checkpoints, not "you should see output". After an error-prone step, list the causes people actually hit, each as symptom, likely cause, check, fix; take them from issues, logs or your own run, not from guesses. Add "last verified on <version>" only when someone will keep it current; add time and difficulty only when they are measured.
 
 Fragility sets freedom. When many approaches work, give guidance and reasons. When one preferred pattern exists, give a template with parameters. When an operation is fragile or order-bound, give the exact commands.
 
@@ -119,7 +119,7 @@ Do not scatter explanation in small parcels across other pages. Give it a home (
 
 Architecture docs are explanation plus a map. Skeleton: one-paragraph overview, stack table (layer, technology, version), annotated directory tree two levels deep, key flows traced step by step (request, middleware, handler, store, response), configuration, deployment. Pick the diagram type by what it shows; see [reference and API](reference-and-api.md#diagrams).
 
-Decision records are a short explanation: context, options considered, decision, consequences. Write one only when the choice is hard to reverse, surprising without context, and the result of a real trade-off between alternatives.
+Decision records are a short explanation: context, options considered, decision, consequences. Write one only when the choice is hard to reverse, surprising without context, and the result of a real trade-off. Skeleton and rules: [README and PR](readme-and-pr.md#decision-records-adrs).
 
 ## Docs architecture and navigation
 
@@ -136,6 +136,12 @@ Decision records are a short explanation: context, options considered, decision,
 - **Completeness is not a page count.** Do not call docs ready because a number of files exist; check that the content matches the implemented behaviour.
 - **Progressive disclosure.** A main page gives the overview; deep detail sits one link away, one level deep, not in chains that cause partial reads.
 - **Sync on behaviour change.** A new, renamed or changed feature updates or creates its page in the same change. Always update docs for new major features, route changes, dependency changes, architecture changes and setup changes; for cosmetic fixes and internal refactors it is optional.
+- **Role names matter less than roles.** A docs set needs a place for rules and conventions, a map (what exists, where, who owns it), current status (blockers, what is being removed), and durable history (decisions, removals, incidents). Keep each role in one file and link between them; do not let rules hold live status, the map become a dashboard, or history repeat every commit.
+- **History is append-only.** Correct a stale claim with an explicit dated correction, not a silent rewrite. For removed paths, keep a short table (path, why removed, replacement) while recreating them is still a risk.
+- **Do not claim docs are read automatically** unless a real mechanism loads them. Otherwise say which page to read first.
+- **FAQ and troubleshooting come from real confusion**, such as issues, support threads and the moments you got stuck while writing, not from hypothetical questions.
+- **Short tool or feature pages** can use four parts: what it does, when to reach for it, common questions, how you know it is working.
+- **Quick-reference sheets and cheat sheets** may drop the surrounding prose entirely; scannability wins. The four-type model does not apply to contract-first or regulatory specifications that must be reviewed and published as one baseline.
 
 ## Mixed-page repair, quickly
 
@@ -144,3 +150,13 @@ Decision records are a short explanation: context, options considered, decision,
 3. Create a destination page only when the moved content is substantial and real; otherwise delete it.
 4. Add links both ways.
 5. Recheck the moved-out page's first line still states its own type's job.
+
+## A request that mixes types
+
+When a user asks for one document that spans types ("a tutorial that also documents every endpoint"), decide before writing:
+
+1. Name the primary reader state (here: a newcomer learning by doing) and write that page to its contract. It uses only the endpoints the lesson needs.
+2. Put the remaining material in its own page of the right type (here: a reference page listing every endpoint in one layout) and link to it from the spot in the tutorial where the reader would ask "what else can I call?". Link back from the reference.
+3. Tell the user in two lines what you split and why, so the change is visible and reversible.
+4. If the user explicitly wants a single file, keep one document but separate the parts under their own H2 sections, label each with its type, and make the reference part self-contained. Say it is a compromise.
+5. Create the second page only when it has real content from the source; never a stub.

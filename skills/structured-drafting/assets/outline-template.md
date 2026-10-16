@@ -22,7 +22,7 @@ Each line is a full message a reader could accept or dispute. Read the lines alo
    - from: (inventory units; author's head if unsourced)
    - form: prose / list / table / quote / code
    - cost if removed: (what the reader loses)
-   - gap: (what the material lacks, as a question or [ASK AUTHOR]/[VERIFY])
+   - gap: (what the material lacks, as a question or `[ASK AUTHOR: ...]` / `[VERIFY: ...]`)
 2. 
 3. 
 

@@ -1,13 +1,14 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "oh-my-writing",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Writing skills for AI-assisted drafting and editing: anti-slop editing, author voice, structured drafting, evidence-grounded claims, independent review, and genre skills for posts, reports, technical docs, and career documents.",
   "author": {
     "name": "d41sys"
   },
   "homepage": "https://github.com/d41sys/academic-writing-skill",
   "repository": "https://github.com/d41sys/academic-writing-skill",
+  "license": "MIT",
   "keywords": [
     "agent-skills",
     "writing",

@@ -1,4 +1,4 @@
-Load when: a text contains percentages, rates, averages, changes over time, rounded values, ranges, intervals or significance statements, or when the same number appears in several places.
+Load when: a text contains percentages, rates, averages, changes over time, rounded values, ranges, intervals or significance statements, when the same number appears in several places, or when result files are supplied to check the text against.
 
 # Numbers and statistics
 
@@ -32,7 +32,7 @@ Do them yourself, in the open, before keeping a number.
 - **Reading "times".** "3x faster" is ambiguous (three times the speed, or three times quicker to run?). State the pair of values.
 - **Sum checks.** Parts add to the whole (allow rounding). Percentages in an exclusive set add to about 100%; if not, say why (multiple answers, missing category).
 - **Rates and per-unit values.** Per what? Per 1,000 users, per year, per request. Compare rates only over the same unit and period.
-- **Averages.** Name the average (mean, median). A mean of skewed values (income, latency, price) can mislead; give the median or spread. An average of averages is not the overall average unless the groups are equal in size.
+- **Averages.** Name the average (mean, median) and match it to the question: the mean when the reader needs a total (cost, hours, bytes, because total = n x mean); the median or a percentile for a typical experience under skewed values (income, latency, price). Give the spread. An average of averages is not the overall average unless the groups are equal in size.
 - **Sample size.** State how many units the number rests on and what counts as a unit (people, sessions, seeds). Many measurements on a few units are not many independent results.
 - **Total counts versus evaluable counts.** Say how many were excluded, lost or unmeasurable before quoting percentages of the rest.
 
@@ -103,3 +103,32 @@ Say so. "The data do not allow an estimate of X" is a valid result. Do not fill 
 - Predicted values presented as measured values.
 - An association in a group presented as a prognosis for an individual.
 - A subset result (one site, one month) presented as the whole.
+
+## 10. Auditing numbers against raw results
+
+Use when result files, tables or logs come with the draft. The example values below are illustrative, not data.
+
+1. **Extract** every number, percentage, comparison and scope statement with its location (section, table, caption, inline).
+2. **Trace** each to the raw file and the exact value. Compare the whole tuple, not the string: metric, value, unit, subject, condition (p50 versus p99, train versus test), locator. A correct number attached to the wrong system or condition is still an error.
+3. **Classify** each: exact match; rounding acceptable; ambiguous mapping; missing evidence; configuration mismatch; aggregation mismatch; number mismatch; scope overclaim. Rounding is acceptable only to the displayed precision: 84.7 may appear as 84.7 or 85, never as 85.3.
+4. **Failure modes to look for:**
+   - number inflation (text 85.3, file 84.7);
+   - a best-run headline while the mean is lower (say whether the figure is average, best or median);
+   - "average over 5 seeds" when the files hold 3 runs (count the runs);
+   - a wrong delta: (85.3 - 73.1) / 73.1 = 16.7%, not 15%;
+   - compared items run with different settings, splits or data;
+   - a caption that describes something other than what the figure or table shows;
+   - "consistently outperforms" after two datasets;
+   - a score divided by the system's own maximum.
+5. **Fix the number from the file**, then fix the wording. Softening a sentence does not repair a wrong figure.
+6. **Report** one row per finding: location, quoted text, text value, file value, correction. Overall result: no numeric claims, not applicable; numbers but no raw files, blocked (say so, do not call the text fine); all reconcile, pass; rounding drift only, warning; any material mismatch, fail.
+7. **State the limits.** This audit checks that the text reports the data faithfully. It does not judge whether the experiment was sound or whether the data justify the claim (that is the claim-strength question). Re-run it when the text or the results change, not on a schedule. If you wrote or edited the text yourself, say the audit is not independent and suggest a fresh reader (`independent-review`).
+
+## 11. Derived and external figures
+
+- **Growth rates (CAGR):** show the start value, end value and number of periods; it is undefined from a zero or negative start and hides volatility and breaks.
+- **Nominal and real values** never share a total or a growth rate; name the deflator. Record every currency or unit conversion as a calculation (rate, date, source, order of conversion and deflation).
+- **Shares and concentration:** one scope, metric, denominator and period; show the unknown or residual share rather than forcing the total to 100%.
+- **Surveys:** for an opt-in or other non-probability sample write "among respondents"; do not quote a margin of sampling error or call a large sample representative; show the unweighted base of small subgroups; a one-time survey does not support cause. AI-generated or simulated answers are not a survey and are never counted as participants.
+- **Unknown is not no, and neither is zero.** Keep `unknown`, `not applicable`, `not measured` and `0` apart in tables.
+- **Illustrative figures are labelled as illustrative**; fixture dates, smoke-test output and placeholder values are not evidence.

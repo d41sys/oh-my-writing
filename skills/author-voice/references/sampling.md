@@ -24,7 +24,7 @@ Roughly in order of usefulness for most authors:
 3. Emails and messages that got a good response, in the channel being targeted.
 4. Documentation, READMEs, changelogs and site copy, when that is the voice being matched.
 
-Generic examples from a platform, a style guide's sample paragraphs and writing by admired authors are not samples. They describe a different voice. If the author supplies them, record them as stated preferences ("sounds like X"), not as evidence.
+Generic examples from a platform, a style guide's sample paragraphs and writing by admired authors are not samples. They describe a different voice. If the author supplies them, record them as stated preferences ("sounds like X"), not as evidence. A brand guideline or style guide the author or their organization wrote is a source of declared rules (words to avoid, preferred terms, casing), recorded as declared, with the date. An earlier draft written by an assistant is not a sample unless the author says they wrote or heavily rewrote it.
 
 ## How many, how long
 
@@ -32,7 +32,7 @@ Generic examples from a platform, a style guide's sample paragraphs and writing 
 |---|---|
 | 5 to 20 samples, around a thousand words or more in total | Normal build. Confidence can reach medium or high if the traits agree |
 | 2 to 4 samples | Build a provisional profile. Cap strength at moderate. Ask the author to confirm each major trait |
-| 1 sample | Do not build a profile. Offer a short list of tendencies as hypotheses, say plainly that one sample is not a voice, and ask for more |
+| 1 sample | Do not build a full profile. Offer a short list of tendencies as hypotheses, every one rated weak, say plainly that one sample is not a voice, and ask for more. If a file was requested, write it as a provisional, low-confidence hypotheses file with an `[ASK AUTHOR: ...]` request for more samples |
 | 0 samples | Do not invent a voice. Use the genre's conventions for the stated reader and ask for two or three real pieces |
 
 These counts are practical heuristics, not thresholds with any special meaning. More samples help only if they are representative; twenty near-identical posts add less than five varied ones.
@@ -94,3 +94,5 @@ Update the profile when the author adds samples, says it sounds off, changes cha
 3. Add rows only for traits the new samples evidence.
 4. Change nothing silently. Ask before overwriting a trait the author confirmed.
 5. Add a dated line to the profile's changelog naming the samples added and the traits changed.
+6. If a new sample or draft contradicts a declared rule, ask which is current ("profile says X, this sample does Y"). Change the profile only after the author answers.
+7. Do not delete anything automatically. Flag rows that no recent sample supports and ask whether to keep or retire them.

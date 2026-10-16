@@ -1,0 +1,131 @@
+{
+  "id": "post-writing/blog-to-x-thread-keeps-conditions",
+  "skill": "post-writing",
+  "description": "Repurpose a finished blog post into an X thread. Every figure with its unit must survive (no rounding such as 11 min), the one negative finding and the two hedges must stay, nothing may be added (no new numbers, names, links or invented stats), the canonical link is kept, and the thread is restructured rather than pasted or collapsed into one post.",
+  "prompt": "Turn the blog post in post.md into a thread for X. Save the thread to out/thread.md. No hashtags.",
+  "files": {
+    "post.md": "# We moved our CI cache to local disks. Builds got faster. Flaky tests stayed the same.\n\nCanonical: https://blog.example.com/ci-cache-local-disks\n\nPosted by Ravi Menon, Tallgrass Labs\n\nUntil March our CI cache lived in object storage. Each build downloaded the dependency cache before it ran a single test, and on busy afternoons that download was the longest step in the job. Then we gave each of our 8 Linux runners a local NVMe cache and kept object storage as a fallback for runners that start cold.\n\nWe watched the change for 3 weeks. That was 412 builds, which we compared with the 412 builds before it. Measuring was simple: we recorded the wall-clock time of every build from the CI system's own logs and recorded only that.\n\nThe median build went from 11.2 minutes to 7.4 minutes. The p95 moved much less, from 18.9 minutes to 16.1 minutes. That gap surprised us. The slowest builds are dominated by the integration test stage, and a faster cache restore leaves a test suite exactly as long as it was.\n\nThe gain likely comes from skipping the network download, but we measured end-to-end times only, so the split between restore time and a quieter network is unknown to us. If you want that split, time the restore step separately.\n\nWe hoped for fewer timing-dependent failures. It did not change the flaky-test rate: before and after were the same within the noise of that sample.\n\nA few limits matter if you want to copy this. We tested Linux runners only, and one repository only, a service of moderate size. A monorepo may look different, because its cache is far larger and a local disk fills quickly.\n\nLocal disks also add a chore. Each runner now needs a cache eviction job, and ours is a nightly script that removes anything older than a week. Object storage handled that for us before.\n\nIf your slowest builds are test-bound, fix the tests first. If your median is cache-bound, a local cache is a cheap place to start.\n"
+  },
+  "output": "out/thread.md",
+  "checks": [
+    {
+      "type": "preserves",
+      "source": "post.md",
+      "categories": [
+        "numbers",
+        "negations",
+        "certainty"
+      ],
+      "allow_lost": [
+        "3 week",
+        "11.2 min",
+        "18.9 min",
+        "likely",
+        "may"
+      ],
+      "note": "figures and the 'did not change flaky rate' negation; hedge words may change ('may' to 'could'), the monorepo hedge is checked below"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)monorepo[^.\\n]{0,120}\\b(?:may|might|could|likely|probably|possibly)\\b|\\b(?:may|might|could|likely|probably|possibly)\\b[^.\\n]{0,120}monorepo",
+      "note": "the monorepo caution stays hedged, in whichever hedge word"
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "urls",
+        "citations"
+      ],
+      "allow": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "3 week",
+        "11.2",
+        "18.9"
+      ],
+      "note": "thread numbering is allowed; no other figure or link"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(?:CTO|CEO|VP|a customer|one customer|our customers)\\b",
+      "note": "no invented person or customer"
+    },
+    {
+      "type": "contains",
+      "values": [
+        "blog.example.com/ci-cache-local-disks"
+      ],
+      "note": "canonical link kept"
+    },
+    {
+      "type": "regex",
+      "pattern": "11\\.2",
+      "note": "starting median kept at full precision"
+    },
+    {
+      "type": "regex",
+      "pattern": "18\\.9",
+      "note": "starting p95 kept at full precision"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)\\A(?!.*download)|likely|probabl|\\bmay\\b|appears|suggests|we think|presumably|not sure|unclear|unknown",
+      "note": "if the download is named as the cause it stays hedged"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)flak",
+      "note": "the flaky-test finding is carried over"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)linux",
+      "note": "the Linux-only scope is carried over"
+    },
+    {
+      "type": "slop_absent",
+      "patterns": [
+        "era-opener",
+        "scenario-opener",
+        "staged-hook",
+        "endorsement-closer",
+        "engagement-bait",
+        "announce-note",
+        "chat-opener",
+        "chat-closer"
+      ]
+    },
+    {
+      "type": "not_contains",
+      "values": [
+        "retweet",
+        "follow me",
+        "follow for more",
+        "like and share"
+      ]
+    },
+    {
+      "type": "similarity",
+      "source": "post.md",
+      "max": 0.6,
+      "note": "restructured, not pasted"
+    },
+    {
+      "type": "word_count",
+      "min": 100,
+      "max": 480,
+      "note": "more than one post, shorter than the source"
+    }
+  ]
+}

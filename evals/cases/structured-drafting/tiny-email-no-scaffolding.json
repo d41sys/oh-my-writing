@@ -1,0 +1,62 @@
+{
+  "id": "structured-drafting/tiny-email-no-scaffolding",
+  "skill": "structured-drafting",
+  "description": "A one-line request for a three-sentence email from short notes: the saved file is only the email (short, no brief or outline labels), no invented facts, and the open legal question stays a question.",
+  "prompt": "Write a 3-sentence email to Ravi from notes.md and save it to out/email.md.",
+  "files": {
+    "notes.md": "- Ravi asked on Friday for the Q3 vendor audit\n- not done: 2 of 5 vendors left, Halden and Orrin\n- can send it by Wed 22nd\n- want his OK to share the draft with legal first? not sure he wants legal in yet, so ask him\n"
+  },
+  "output": "out/email.md",
+  "checks": [
+    {
+      "type": "word_count",
+      "min": 25,
+      "max": 120
+    },
+    {
+      "type": "not_contains",
+      "values": [
+        "Brief",
+        "Outline",
+        "Reader:",
+        "Assumptions",
+        "Draft ("
+      ],
+      "case_sensitive": true
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?m)^\\s*([-*]|\\d+\\.)\\s"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?m)^#{1,6}\\s"
+    },
+    {
+      "type": "no_added_facts"
+    },
+    {
+      "type": "contains",
+      "values": [
+        "Halden",
+        "Orrin"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b22(nd)?\\b"
+    },
+    {
+      "type": "contains",
+      "values": [
+        "legal"
+      ]
+    },
+    {
+      "type": "markers",
+      "min": 0,
+      "max": 2,
+      "target": "output"
+    }
+  ]
+}

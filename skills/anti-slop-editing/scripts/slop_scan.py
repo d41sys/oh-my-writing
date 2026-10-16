@@ -89,6 +89,8 @@ GENERIC_WORD = ("Fine in its literal or technical sense, inside a title or quota
 CLUSTER_WORD = ("One alone is ordinary vocabulary. Listed because 2+ of this kind sit in one paragraph; "
                 "check whether each carries information.")
 TECH = ("technical",)
+# Zero-width start of a sentence (or of a line, optionally after a bullet marker).
+SENT = r"(?:(?m:^)[ \t]*(?:[-*+][ \t]+)?|(?<=[.!?]\s))"
 
 PATTERNS: list[Pattern] = [
     # ---- lexical inflation -------------------------------------------------
@@ -100,6 +102,9 @@ PATTERNS: list[Pattern] = [
        "Fine when literal (page orientation, a real terrain, a legal realm). Flag the figurative 'landscape of X'."),
     _p("underscore-verb", "lexical", r"\bunderscor(?:es|ed|ing)\b|\bunderscore\s+the\b",
        "Fine when 'underscore' names the character or the verb is exact.", skip=TECH),
+    _p("underscore-verb", "lexical",
+       r"\bunderscor(?:es|ed|ing)\s+(?:the|our|its|their|his|her|my|your|a|an|how|that|why|this|these|those)\b",
+       "Fine in a quotation or when the verb is exact. Otherwise 'shows' or a cut: the claim after it is usually the point."),
     _p("showcase", "lexical", r"\bshowcas(?:e|es|ed|ing)\b", GENERIC_WORD),
     _p("foster", "lexical", r"\bfoster(?:s|ed|ing)?\b", "Fine for foster care or a surname; otherwise 'encourage' or a concrete verb."),
     _p("harness-verb", "lexical", r"(?<!test )(?<!wiring )(?<!safety )\bharness(?:es|ed|ing)?\b",
@@ -158,7 +163,7 @@ PATTERNS: list[Pattern] = [
     _p("audience-sweep", "framing", r"\bwhether you['\u2019]?(?:re| are)\b[^.;\n]{1,80}?\bor\b",
        "Name the reader you actually have; fine when the two groups really get different advice next."),
     _p("announced-feeling", "framing",
-       r"\bi(?:['\u2019]m| am) (?:so |really |truly )?(?:excited|thrilled|delighted|proud|pleased) to (?:share|announce|introduce)\b",
+       r"\b(?:i(?:['\u2019]m| am)|we(?:['\u2019]re| are)|(?:our|the) team is) (?:so |really |truly )?(?:excited|thrilled|delighted|proud|pleased) to (?:share|announce|introduce)\b",
        "Fine for a launch post when the feeling is the author's and a concrete fact follows at once.", strength="weak"),
     _p("stock-reaction", "framing",
        r"\b(?:what surprised me most|i was (?:fascinated|surprised|amazed) to (?:discover|learn|find)|the (?:interesting|surprising|crazy) part (?:is|was)|"
@@ -169,15 +174,44 @@ PATTERNS: list[Pattern] = [
        "Keep when the sentence says why the idea keeps recurring."),
     _p("importance-restated", "framing", r"\b(?:here['\u2019]s why (?:this|that|it) matters|this matters because|why this matters)\b",
        "Keep when a concrete consequence follows in the same breath."),
-    _p("hollow-intensifier", "framing", r"\b(?:genuinely|truly|quite frankly|to be honest|simply put)\b",
-       "Often harmless in casual voice or real candor; flag when stacked or when it replaces evidence.", strength="weak"),
+    _p("performed-insight", "framing",
+       r"\b(?:sit with (?:that|this)|let (?:that|this) sink in|that['\u2019]s not nothing|the punchline is|"
+       r"the only (?:metric|thing|number) that (?:matters|counts)|here['\u2019]s what['\u2019]s (?:interesting|wild|funny|fascinating)|"
+       r"here['\u2019]s where it gets (?:interesting|clever|good|weird)|this is the (?:interesting|clever|surprising|best) part|"
+       r"that['\u2019]s the (?:whole|real) (?:point|story)|the part (?:that )?(?:nobody|no one) (?:talks about|mentions)|"
+       r"(?:something|a thing) (?:nobody|no one) (?:talks about|tells you))\b",
+       "Cues the reader to be impressed instead of showing why. Keep only inside a quotation or when the sentence "
+       "names what is surprising and why."),
+    _p("narrated-candor", "framing",
+       r"\b(?:i want to be (?:upfront|honest|clear|transparent)|to be (?:fully |completely )?(?:transparent|upfront)|"
+       r"rather than bury this|i['\u2019]d rather (?:flag|say) (?:it|this|that)|being (?:honest|upfront|transparent) about)\b",
+       "Announces honesty instead of stating the caveat. Delete the wrapper and keep the disclosure itself "
+       "(a limit, a conflict of interest, an uncertainty); that content stays.", strength="weak"),
+    _p("launch-intro", "framing",
+       r"\b[Ss]ay hello to\b|\b[Mm]eet [A-Z][\w-]+, (?:your|the|a)\b|\b[Tt]hink [A-Z]\w+ meets [A-Z]\w+\b|(?m:^)[ \t]*Enter [A-Z][\w-]+[.:!]",
+       "Game-show introduction. Say what the product is and does. Fine in launch copy written to sell, when the author's samples do it.",
+       flags=0),
+    _p("madlib-step", "framing",
+       r"\ba (?:major|crucial|significant|important|big|giant|huge|critical|meaningful|exciting|bold|key) (?:step|leap|move|stride|milestone) "
+       r"(?:forward|towards?|for)\b|\bi recently had the (?:pleasure|privilege|opportunity) of\b",
+       "Slot-fill praise: any adjective fits. Fine when a measured result follows in the same sentence."),
+    _p("rhetorical-question", "framing",
+       SENT + r"(?:so|but|and|now),? (?:why|what|how) (?:should|does|do|would|will|can|could|might) "
+       r"(?:you|this|that|it|we|developers|teams|anyone)\b[^.!?\n]{0,70}\?",
+       "A question the reader did not ask, answered at once. Fine in an FAQ, an interview, or a real question the reader must answer.",
+       strength="weak"),
+    _p("affective-adverb", "framing",
+       r"\b(?:Interestingly|Surprisingly|Remarkably|Tellingly|Undoubtedly|Intriguingly|Fascinatingly|Unsurprisingly)\s*,",
+       "Steers the reader's reaction. Fine once when the fact really is unexpected and the text says what was expected; "
+       "listed because 2+ in one text read as filler.",
+       flags=0, strength="weak", group="affective", cluster=("document", 2)),
     _p("transition-opener", "framing",
        r"\b(?:Moreover|Furthermore|Additionally|In addition|Importantly|Notably|Consequently)\s*,",
        "Fine when it marks a real logical step; listed because 3+ in one text read as filler.",
        flags=0, strength="weak", group="transitions", cluster=("document", 3)),
     # ---- contrast and reveal templates -------------------------------------
     _p("not-just", "contrast",
-       r"\bnot (?:only|just|merely|simply)\b[^.!?\n]{1,100}?(?:\bbut\b|[,;\u2014]\s*(?:it['\u2019]s|it is|they['\u2019]re|this is|that['\u2019]s))",
+       r"(?:\bnot|\b(?:is|are|was|were|does|do|did|has|have|can|could|will|would)n['\u2019]t) (?:only|just|merely|simply)\b[^.!?\n]{1,100}?(?:\bbut\b|[,;\u2014]\s*(?:it['\u2019]s|it is|they['\u2019]re|this is|that['\u2019]s))",
        "Fine when the second half adds a second real, supported fact."),
     _p("about-x-about-y", "contrast",
        r"\b(?:isn['\u2019]t|is not|not) (?:really |just )?about\b[^.!?\n]{1,80}?[,;.\u2014]\s*(?:it['\u2019]s|it is|this is|that['\u2019]s)(?: really| actually)? about\b",
@@ -200,15 +234,31 @@ PATTERNS: list[Pattern] = [
     _p("less-more", "contrast", r"\bless [a-z]+(?: [a-z]+)?,\s+more [a-z]+\b",
        "Fine as a slogan the author owns; weak on its own.", strength="weak"),
     _p("staged-reveal", "contrast",
-       r"\bhere['\u2019]s the (?:thing|kicker|catch|twist|deal)\b|\bthe (?:catch|kicker|twist|truth)\s*[:?]|\bthe (?:result|answer|problem|solution|reason)\?\s+(?=[A-Z])",
-       "Fine as a result label in a report ('The result: 42 ms')."),
+       r"\bhere['\u2019]s the (?:thing|kicker|catch|twist|deal)\b|\bthe (?:catch|kicker|twist|truth)\s*[:?]|"
+       + SENT + r"the (?:result|answer|problem|solution|reason|fix|upshot)\?[ \t]+(?=[A-Z])",
+       "Fine as a result label in a report ('The result: 42 ms') or a question a reader really asks."),
+    _p("colon-reveal", "contrast",
+       SENT + r"(?:(?:the )?(?:best|worst|funniest|scariest|craziest|weirdest|coolest) (?:part|thing|bit)|plot twist|spoiler(?: alert)?|"
+       r"one (?:word|thing)|(?:here['\u2019]s )?the (?:secret|trick|punchline|payoff|real (?:story|reason))|here['\u2019]s the (?:truth|best part))"
+       r"[ \t]*(?::|\?[ \t]+(?=[A-Z0-9]))",
+       "Suspense around ordinary information. Fine as a real label ('Result: 42 ms', 'Pro tip:' in a tutorial) "
+       "or when the question is a real one the next sentence does not simply answer."),
     _p("self-answered-question", "contrast",
        r"[A-Za-z][^.!?\n]{4,70}\?\s+(?:Because|Simple|Simply|Short answer|The answer is|It turns out|Spoiler)\b",
        "FAQs, interviews and questions a reader really asks are fine."),
+    _p("self-answered-fragment", "contrast",
+       SENT + r"[A-Z][^.!?\n]{4,70}\?[ \t]+(?:Nothing|Everything|Nobody|No one|Everyone|Absolutely|Definitely|Exactly|Plenty|Not really|Hardly)\b"
+       r"[^.!?\n]{0,30}[.!]",
+       "A question asked only to be answered one word later. Fine in an FAQ or interview, or when the answer is the new information "
+       "('Who owns the migration? Nobody yet.') and the question is one a reader would ask.", strength="weak"),
     _p("crowd-foil", "contrast",
        r"\b(?:while|as) (?:everyone else|others|the (?:industry|market|competition)|most (?:companies|teams|people|competitors))\b[^.\n]{0,40}"
        r"\b(?:debat\w+|stall\w*|wait\w*|argu\w+|scrambl\w+|catch\w* up|hesitat\w+|sleep\w*|struggl\w+)\b",
        "Fine when the text names the rivals or the position and supports the claim."),
+    _p("false-concession", "contrast",
+       r"\b(?:while|although) [^.!?\n,]{3,60}\b(?:impressive|promising|notable|commendable|laudable|encouraging)\b[^.!?\n]{0,40},"
+       r"[^.!?\n]{3,80}\b(?:remains?|is still|are still)\b",
+       "Balance by template: praise one side, then a 'remains a challenge'. Fine when both sides carry named facts.", strength="weak"),
     # ---- puffery and vague attribution -------------------------------------
     _p("significance", "puffery",
        r"\b(?:a|the)\s+(?:pivotal|watershed|defining|transformative)\s+(?:moment|chapter|milestone|shift|turning point)\b|\bturning point\b|"
@@ -237,8 +287,30 @@ PATTERNS: list[Pattern] = [
        cited_ok=True),
     _p("trailing-rider", "puffery",
        r",\s+(?:highlighting|underscoring|showcasing|emphasi[sz]ing|reflecting|symboli[sz]ing|demonstrating|illustrating|reinforcing|cementing|fostering|contributing to)\s+"
-       r"(?:the|its|their|a|an|how|that)\b",
+       r"(?:the|its|their|our|your|his|her|this|these|those|a|an|how|that)\b",
        "Fine when the participle phrase adds a new fact or a measured result."),
+    _p("commitment-claim", "puffery",
+       r"\b(?:our|its|their|my|his|her|the (?:team|company)['\u2019]s) (?:\w+ )?(?:commitment|dedication|passion) to\b",
+       "Asserts a value nobody can check. Fine when a concrete obligation follows (a deadline, a figure, a deliverable) "
+       "or in a quotation. Otherwise state what was done."),
+    _p("aphorism-formula", "puffery",
+       r"\b(?:is|are) the (?:language|currency|heartbeat|backbone|soul|dna|fabric|architecture) of\b",
+       "Slogan template. Fine when literal ('the currency of Ecuador') or deliberate rhetoric in a voice that uses it.", strength="weak"),
+    _p("vague-association", "puffery",
+       r"\b(?:is|was|are|were|been|being) (?:closely |also |often )?(?:associated|connected|linked|tied) (?:with|to)\b|\bin (?:association|connection) with\b",
+       "Name the actual role or link if the text gives it; if it does not, keep the wording rather than inventing one. "
+       "A measured association is the correct term in science.", strength="weak", only=("professional",)),
+    _p("parenthetical-hedge", "puffery",
+       r"\((?:and,? (?:perhaps|arguably|increasingly|more importantly)|or,? more precisely)\b[^)]{0,50}\)",
+       "Hedge tucked inside brackets. Make it its own sentence if it matters; cut it if it does not.", strength="weak"),
+    _p("nominalization", "puffery",
+       r"\b(?:conduct(?:ed|s|ing)?|perform(?:ed|s|ing)?|carr(?:y|ied|ies|ying) out|undertak(?:e|es|en|ing)|undertook) an? (?:\w+ )?"
+       r"(?:analysis|evaluation|assessment|investigation|examination|comparison|optimi[sz]ation) of\b",
+       "The verb is buried in a noun ('analyze', 'evaluate'). Fine in a Methods section that names a formal procedure.", strength="weak"),
+    _p("dev-slogan", "puffery",
+       r"\b(?:batteries[- ]included|it just works|zero[- ]config(?:uration)?|sane defaults|small enough to fit in your head)\b",
+       "Marketing shorthand. State the behavior ('installs with no config file'). Fine as the product's own name for a feature or in a quotation.",
+       strength="weak"),
     _p("hedge-stack", "puffery",
        r"\b(?:may|might|could)\b[^.!?\n]{0,30}\b(?:potentially|possibly|perhaps)\b|\b(?:potentially|possibly|perhaps)\b[^.!?\n]{0,30}\b(?:may|might|could)\b",
        "Keep one hedge that matches the source's real uncertainty. Stacking two says nothing extra.", skip=TECH),
@@ -261,7 +333,7 @@ PATTERNS: list[Pattern] = [
        r"\b(?:thank me later|you['\u2019]ll thank me|worth your time|worth (?:a|the) (?:read|look|watch)|worth checking out|go check it out)\b",
        "Fine in a DM between people who know each other, or when a reason follows."),
     _p("engagement-bait", "ending",
-       r"\b(?:what do you think\?|let me know in the comments|drop (?:a|your) (?:comment|thoughts)|share your thoughts|thoughts\?)",
+       r"\b(?:what do you think\?|let (?:me|us) know in the comments|drop (?:a|your) (?:comment|thoughts)|share your thoughts|thoughts\?)",
        "Fine when the author really wants replies and says about what."),
     _p("future-work-formula", "ending",
        r"\bfuture work (?:could|may|might|can) (?:explore|investigate|extend|examine)\b|\bwe hope (?:this|our) (?:work|paper|study)\b",
@@ -573,6 +645,18 @@ def _rhythm(masked: str, text: str, locate) -> list:
                 i = best + 1
             else:
                 i += 1
+        i = 0
+        while i < len(info):
+            j = i
+            while j < len(info) and masked[info[j][0]:info[j][1]].rstrip().endswith("?"):
+                j += 1
+            if j - i >= 3:
+                emit(info[i:j], "question-run",
+                     f"{j - i} consecutive questions. Fine in an FAQ, a survey or a deliberate Socratic passage; "
+                     "otherwise state the answers.", "weak")
+                i = j
+            else:
+                i += 1
     return out
 
 
@@ -616,6 +700,28 @@ def _format(masked: str, text: str, locate, profile: str, words: int) -> list:
         if len(tags) >= 5:
             add(offsets[i], "hashtag-block", line.strip(),
                 "A block of generic tags. Keep one or two that carry meaning on platforms that use tags.")
+
+    echo_rx = re.compile(r"\b(?:matters?|(?:is|are) (?:critical|key|essential|crucial|important|vital|everything))\b", re.I)
+    for i, line in enumerate(lines):
+        if not re.match(r"\s*#{1,6}\s", line):
+            continue
+        j = i + 1
+        while j < len(lines) and not lines[j].strip():
+            j += 1
+        if j >= len(lines) or LIST_OR_HEAD_RE.match(lines[j]):
+            continue
+        short = lines[j].strip()
+        if not (len(WORD_RE.findall(short)) <= 6 and short.endswith(".") and echo_rx.search(short)):
+            continue
+        k = j + 1
+        if k < len(lines) and lines[k].strip():
+            continue  # not a one-line paragraph
+        while k < len(lines) and not lines[k].strip():
+            k += 1
+        if k < len(lines) and lines[k].strip() and not LIST_OR_HEAD_RE.match(lines[k]):
+            add(offsets[j], "heading-echo", short,
+                "A one-line paragraph under a heading that only says the topic matters. Start with the substantive sentence "
+                "unless the line is a real scope statement.", "weak")
 
     if profile != "technical":
         for b_start, b_end in prose_blocks(masked):

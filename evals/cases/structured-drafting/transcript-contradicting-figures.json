@@ -1,0 +1,50 @@
+{
+  "id": "structured-drafting/transcript-contradicting-figures",
+  "skill": "structured-drafting",
+  "description": "Transcript gives two different baseline completion rates for the same old flow plus a confounded change: the article must not merge them into one invented figure, must flag the conflict, and must keep the confound.",
+  "prompt": "Here is my interview with Dana in transcript.md. Write a short blog article (around 400 words) from it for our product blog and save it to out/article.md. I'm away today, so don't wait for me.",
+  "files": {
+    "transcript.md": "Interview transcript. Dana Whitfield, head of growth at Kettle (a recipe-planning app). Interviewer: Sam.\n\nSam: What was wrong with onboarding last spring?\nDana: People dropped at the pantry step. We asked everyone to list what was in their pantry before they saw a single recipe. About 31% of new users finished setup back then.\nSam: What did you change?\nDana: We moved the pantry step after the first recipe. We show three recipes first and ask \"which of these could you cook tonight?\", and the pantry list gets built from the answers. Our designer Joel needed about two weeks.\nSam: Did it work?\nDana: Setup completion went up, yes. I don't want to oversell it. We also changed the welcome email the same month, so I can't say which change did the work.\nSam: Where is completion now?\nDana: I'd say around 52%.\nSam: Going back to the old flow, so I have the baseline right. What share finished before the change?\nDana: Only about a quarter, 25%. Maybe less on Android.\nSam: Anything you'd tell other teams?\nDana: Don't ask for work before you've given something back. And measure one change at a time, which we didn't.\n"
+  },
+  "output": "out/article.md",
+  "checks": [
+    {
+      "type": "no_added_facts"
+    },
+    {
+      "type": "contains",
+      "values": [
+        "31",
+        "25"
+      ]
+    },
+    {
+      "type": "contains",
+      "values": [
+        "52",
+        "welcome email"
+      ]
+    },
+    {
+      "type": "markers",
+      "min": 1,
+      "max": 6,
+      "target": "output"
+    },
+    {
+      "type": "not_contains",
+      "values": [
+        "28%",
+        "28 percent",
+        "28.0",
+        "roughly 28",
+        "around 28"
+      ]
+    },
+    {
+      "type": "word_count",
+      "min": 180,
+      "max": 650
+    }
+  ]
+}

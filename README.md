@@ -47,7 +47,7 @@ Then: `/academic-writing rewrite the abstract` or `/academic-writing write the i
 | `technical-docs` | Tutorials, how-to guides, reference, explanation, READMEs, PR descriptions, changelogs |
 | `career-documents` | Truthful résumés, CVs, cover letters, statements of purpose, profiles and outreach |
 
-Install by linking the skill folders where each host looks for them. Claude Code and omp read `~/.claude/skills`; Codex reads `~/.agents/skills`:
+Install by linking the skill folders where each host looks for them. Claude Code reads `~/.claude/skills`; Codex reads `~/.agents/skills`; omp reads its own `~/.omp/agent/skills` and, with its Claude and Agents providers enabled (the default on this setup), the two folders above:
 
 ```bash
 git clone git@github.com:d41sys/academic-writing-skill.git ~/academic-writing-skill
@@ -68,7 +68,17 @@ uv run --with pytest --with pyyaml python -m pytest tests/_meta -q
 for t in tests/*/; do [ -d "$t" ] && [ "$(basename "$t")" != _meta ] && uv run --with pytest python -m pytest "$t" -q; done
 ```
 
-`tests/_meta` checks the shared contract for every skill: allowed frontmatter keys, quoted `metadata.version`, the 500-line limit, `eval.md` and `agents/openai.yaml`, links that stay inside the skill, tests for any `scripts/`, and the absence of internal library IDs and source-repository names. Skill text is written in our own words; sources are thanked in Acknowledgments. The `technical-docs` skill adapts the Diátaxis documentation model and is licensed CC-BY-SA 4.0.
+`tests/_meta` checks the shared contract for every skill: allowed frontmatter keys, quoted `metadata.version`, the license, the 500-line limit, `eval.md` and `agents/openai.yaml`, links that stay inside the skill, tests for any `scripts/`, and the absence of internal library IDs and source-repository names. Skill text is written in our own words; sources are thanked in Acknowledgments.
+
+Benchmark: `evals/` runs realistic writing tasks on Codex and Claude Code with and without the skills and grades them mechanically (invented facts, lost negations and qualifiers, missing gap markers, leftover stock phrasing, leaked context), with an optional blind pairwise judge. See [evals/README.md](evals/README.md):
+
+```bash
+python3 evals/run.py --host codex --host claude --jobs 4
+```
+
+## License
+
+MIT, see [LICENSE](LICENSE). Exception: Diátaxis-derived material, including `skills/technical-docs/`, stays CC-BY-SA 4.0 because that license requires adaptations to keep it. Third-party notices are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 ## Oh My Writing: local knowledge and evaluation
 

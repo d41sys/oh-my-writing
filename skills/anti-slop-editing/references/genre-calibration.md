@@ -54,7 +54,7 @@ Profiles change how strictly a pattern applies. A family a profile does not repo
 - Candidates that matter most: boilerplate openers ("In recent years, X has attracted growing attention"), coverage claims without content ("extensive experiments"), anthropomorphic verbs for models ("understands", "reasons"), significance language, trailing commentary riders, vague attribution without a citation.
 - Plain repetition of a defined term, first person "we", short declaratives and contrast sentences that carry a measured finding are norms, not defects.
 - A style guide that the venue requires (including its dash and contraction rules) outranks the generic catalog for typography. Mechanics follow the guide; the habit may still be noted.
-- For ML paper sections, if `academic-writing` is available, use it for section-level guidance.
+- For ML paper sections, use `academic-writing` if installed; otherwise `structured-drafting` for structure plus `evidence-grounded-writing` for claims.
 
 ### Fiction and creative writing
 - Do not scan or normalize. Fragments, repetition, triads, rhetorical questions, odd rhythm and deliberate cliché can all be craft.

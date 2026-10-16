@@ -26,10 +26,11 @@ A criterion is anchored when the reviewer has seen what a good and a bad instanc
 
 1. **A human picks the examples.** Ideal set: three good and three bad texts in the same genre. Minimum useful set: one good and one bad. The person who knows the readers chooses them, and says what each was chosen for.
 2. **Never generate anchors yourself and call the rubric calibrated.** Texts you invent to illustrate good and bad share your taste; they confirm it. If no human examples exist, set `calibration: none`, still score if useful, and report the scores as uncalibrated opinion.
-3. **Sanity test.** Score the anchors blind (a reviewer who does not know which is which, in shuffled order) with the rubric. If any bad example scores at or above any good example, the rubric is broken. Rewrite the criterion wording, not the examples, and test again. Stop after two rewrites and ask the human; the examples may be the problem.
+3. **Sanity test.** Score the anchors blind (a reviewer who does not know which is which, in shuffled order) with the rubric. If any bad example scores at or above any good example, the rubric is broken. Rewrite the criterion wording, not the examples, and test again. Stop after two rewrites and ask the human; the examples may be the problem. When you later score the real target, show the anchors with their good/bad labels so the scorer can place the target between them.
 4. **Match the genre.** Anchors for a technical README do not calibrate a personal essay. Keep one anchor set per genre. A narrow set pushes every text toward one taste; when the anchors are narrow, say so and keep the writer's own samples ahead of them.
 5. **Calibration is not validation.** Separating six texts shows the rubric can tell those six apart. It does not prove the rubric measures what readers value, and it does not replace reading the text.
-6. **Scorer family.** A score from the same model family that wrote the text is the weakest kind of evidence. Prefer a different family; when impossible, say the score is same-family.
+6. **Scorer family.** A score from the same model family that wrote the text is the weakest kind of evidence. Prefer a different family; when impossible, say the score is same-family. A same-family or self-score may rank which fixes to try first; it never says the text is ready.
+7. **Overrides are a signal.** If the author keeps overriding the calibrated scores, the rubric or the anchors are wrong. Revise them and re-run the sanity test; do not nudge individual scores run by run.
 
 ## 4. Score with reasons
 
@@ -39,7 +40,8 @@ Per criterion: score, a quote or location, one sentence on the reader consequenc
 - A top score needs a quote showing why, not just the absence of problems.
 - Hedged confirmations ("seems fine", "probably works") are not evidence; a claim about facts needs a source, a claim about reading needs a quote.
 - When there is no gap at all, ask once: "what would annoy the stated reader here?" A perfect sheet is rare; if still nothing, accept it and say so.
-- Do not convert scores into a verdict mechanically. The verdict follows from findings by severity (see [triage](triage.md)), with scores as supporting evidence.
+- Do not convert scores into a verdict mechanically. The verdict follows from findings by severity (see [triage](triage.md)), with scores as supporting evidence. Scores are ordinal: a 4 is not twice a 2, so averages and weighted totals hide which criterion failed.
+- With anchors, end the scoring with a short anchor comparison: which anchors the target falls short of or beats, on which criteria, and why. A bare number is not a result.
 
 ## 5. When reviewers disagree
 

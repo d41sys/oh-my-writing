@@ -209,6 +209,83 @@ def test_residue_family_details(tmp_path):
     assert found["ai-referral-parameter"]["line"] == 5
 
 
+RHETORICAL_SETUPS = [
+    ("The best part? It runs offline.", "colon-reveal"),
+    ("We're thrilled to announce Tidewater 2.4.", "announced-feeling"),
+    ("Lumen isn't just a search tool, it's a movement.", "not-just"),
+    ("Let us know in the comments what you think.", "engagement-bait"),
+    ("The best part: it learns from every correction.", "colon-reveal"),
+    ("We tried it. Plot twist: it was faster.", "colon-reveal"),
+    ("Here's the thing: nobody reads changelogs.", "staged-reveal"),
+    ("The kicker: they still break builds.", "staged-reveal"),
+    ("The result? Faster builds.", "staged-reveal"),
+    ("What if I told you the cache was the problem?", "scenario-opener"),
+    ("Why does this matter? Because every second counts.", "self-answered-question"),
+    ("What changed? Nothing.", "self-answered-fragment"),
+    ("So why should you care?", "rhetorical-question"),
+    ("The release underscored our commitment to developer productivity.", "underscore-verb"),
+    ("The release underscored our commitment to developer productivity.", "commitment-claim"),
+    ("We shipped on time, underscoring our commitment to quality.", "trailing-rider"),
+    ("Sit with that for a moment.", "performed-insight"),
+    ("Meet Flowdesk, your new favorite dashboard.", "launch-intro"),
+    ("This is a major step forward for AI infrastructure.", "madlib-step"),
+    ("I want to be upfront: the sample was small.", "narrated-candor"),
+    ("While the results are impressive, accuracy remains a challenge.", "false-concession"),
+    ("Trust is the currency of good teams.", "aphorism-formula"),
+    ("We conducted an analysis of the logs.", "nominalization"),
+    ("He is associated with the leadership of ExampleCorp.", "vague-association"),
+    ("The tool replaces the old one (and, increasingly, the new one).", "parenthetical-hedge"),
+    ("It has sane defaults and ships batteries included.", "dev-slogan"),
+]
+
+
+@pytest.mark.parametrize("text,expected", RHETORICAL_SETUPS)
+def test_rhetorical_setups_and_puffery_are_reported(tmp_path, text, expected):
+    assert expected in patterns(scan_json(write(tmp_path, "s.md", text + "\n")))
+
+
+@pytest.mark.parametrize("profile", ["technical", "academic"])
+def test_underscore_verb_is_reported_where_the_character_is_skipped(tmp_path, profile):
+    path = write(tmp_path, "u.md", "The release underscored our commitment to developers.\n\nUse an underscore_name here.\n")
+    found = [f for f in scan_json(path, "--profile", profile)["findings"] if f["pattern"] == "underscore-verb"]
+    assert [f["line"] for f in found] == [1]
+
+
+def test_rhetorical_exceptions_are_not_reported(tmp_path):
+    text = (
+        "Do you want the short version or the long one? I can do either.\n\n"
+        "The best part of the trip was the ferry. Result: 42 ms. Pro tip: back up first.\n\n"
+        "What changed? The cache size, from 64 MB to 128 MB.\n\n"
+        "What do you need from finance before Friday? Who owns the rollout?\n\n"
+        "We kept our commitment: every refund went out within 30 days.\n\n"
+        "## Performance\n\nSpeed matters most for checkout pages, where each 100 ms cost 1% of orders.\n"
+    )
+    result = scan_json(write(tmp_path, "e.md", text))
+    assert result["findings"] == [], result["findings"]
+
+
+def test_question_runs_and_heading_echo(tmp_path):
+    runs = write(tmp_path, "q.md", "Do I know how it works? Where it breaks? Which corners it cut?\n")
+    assert "question-run" in patterns(scan_json(runs))
+    assert "question-run" not in patterns(scan_json(runs, "--profile", "technical"))
+    echo = write(tmp_path, "h.md", "## Performance\n\nSpeed matters.\n\nWhen users hit a slow page, they leave.\n")
+    assert "heading-echo" in patterns(scan_json(echo))
+    real = write(tmp_path, "h2.md", "## Performance\n\nSpeed matters.\n")
+    assert "heading-echo" not in patterns(scan_json(real))
+
+
+def test_affective_adverbs_count_only_as_a_cluster(tmp_path):
+    one = scan_json(write(tmp_path, "a1.md", "Surprisingly, the old build was faster.\n"))
+    two = scan_json(write(tmp_path, "a2.md", "Surprisingly, it ran. Interestingly, it passed.\n"))
+    assert "affective-adverb" not in patterns(one) and "affective-adverb" in patterns(two)
+
+
+def test_vague_association_is_professional_only(tmp_path):
+    path = write(tmp_path, "v.md", "Smoking is associated with lung cancer.\n")
+    assert "vague-association" in patterns(scan_json(path))
+    assert "vague-association" not in patterns(scan_json(path, "--profile", "academic"))
+
+
 def test_document_ask_markers_are_not_placeholders(tmp_path):
     result = scan_json(write(tmp_path, "m.md", "The budget was [ASK AUTHOR: amount] last year. See [VERIFY: source].\n"))
     assert "placeholder" not in patterns(result)
@@ -385,6 +462,36 @@ def test_sentence_initial_capitals_are_not_names(tmp_path):
     proc, _ = diff_json(write(tmp_path, "b.md", "Moreover, the run finished. Overall it was fine.\n"),
                         write(tmp_path, "a.md", "The run finished and it was fine.\n"))
     assert proc.returncode == 0
+
+
+def test_spelled_and_hyphenated_numbers_match_their_digit_forms(tmp_path):
+    pairs = [
+        ("The rehearsal took 6 minutes.", "The rehearsal took six minutes."),
+        ("It was 3 weeks of work.", "It was three-week work."),
+        ("A 49-minute outage.", "The outage lasted 49 minutes."),
+        ("The gateway cut requests off at 60 seconds.", "A 60-second gateway cutoff."),
+        ("Support runs around the clock, 24/7.", "Support runs 24/7, around the clock."),
+    ]
+    for old, new in pairs:
+        proc, report = diff_json(write(tmp_path, "b.md", old + "\n"), write(tmp_path, "a.md", new + "\n"))
+        assert proc.returncode == 0, (old, new, proc.stdout)
+
+
+def test_changed_unit_on_spelled_number_is_caught(tmp_path):
+    proc, report = diff_json(write(tmp_path, "b.md", "The rehearsal took six minutes.\n"),
+                             write(tmp_path, "a.md", "The rehearsal took six hours.\n"))
+    assert proc.returncode == 1 and lost_items(report, "numbers") == {"6 min"}
+
+
+def test_split_ratio_is_one_number(tmp_path):
+    _, report = diff_json(write(tmp_path, "b.md", "Open 24/7.\n"), write(tmp_path, "a.md", "Open 24/7.\n"))
+    assert report["categories"]["numbers"]["before_count"] == 1
+
+
+def test_contractions_of_pronoun_i_are_not_names(tmp_path):
+    proc, report = diff_json(write(tmp_path, "b.md", "Khanh Le writes to Prof. Marchetti.\n"),
+                             write(tmp_path, "a.md", "I’m Khanh Le. Because I’d like to write, I’ll write to Prof. Marchetti.\n"))
+    assert added_items(report, "names") == set(), report["categories"]["names"]
 
 
 def test_fenced_code_change_is_caught(tmp_path):

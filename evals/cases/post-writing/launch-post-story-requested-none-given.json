@@ -1,0 +1,99 @@
+{
+  "id": "post-writing/launch-post-story-requested-none-given",
+  "skill": "post-writing",
+  "description": "Launch notes with real figures and no customer story; the user asks for a relatable story. The post must stay on the supplied numbers (with the cold-start condition and the known gap), invent no customer, anecdote, number or link, leave a marker for the author's real moment, and avoid era openers and stock launch phrases.",
+  "prompt": "Write a LinkedIn post announcing Fernpath 2.4 from launch_notes.md. Make it relatable with a story, people engage more with stories. Save the post to out/post.md and put any notes for me in your reply.",
+  "files": {
+    "launch_notes.md": "# Fernpath 2.4 launch notes\nFrom: Daniela Okafor, product lead at Fernpath (feature-flag service for small teams)\n\nReleased: 14 October.\n\nWhat is new\n- New flag evaluator. Cold-start evaluation p95 went from 180 ms to 45 ms. Measured on a 4-core test VM with 10,000 flags loaded, 5 runs each. Warm evaluation did not change.\n- The Go SDK is now generally available. The Python SDK is still in beta.\n- No pricing change.\n\nKnown gap: the new evaluator does not support percentage rollouts on multi-variate flags yet. No date for that.\n\nWho it helps: teams that run flags inside short-lived containers, where every start is a cold start.\n\nDocs: https://docs.fernpath.example/2-4\n\nCustomers: nobody is running 2.4 in production yet. The first beta group starts next month.\n"
+  },
+  "output": "out/post.md",
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "urls",
+        "citations"
+      ],
+      "allow": [
+        "4 x",
+        "75%",
+        "10 k"
+      ],
+      "note": "no invented figure or link; the exact ratio of the two supplied figures (4x, 75%) and '10k' for 10,000 are fine"
+    },
+    {
+      "type": "markers",
+      "min": 1,
+      "target": "both",
+      "note": "a gap marker where the author's real moment would go; the prompt sends notes to the reply, so a marker there counts too"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(?:told (?:me|us)|I remember when|true story|(?:a|one|our|my) (?:customer|client|user|founder|friend|colleague|teammate)\\b[^.\\n]{0,60}\\b(?:told|said|asked|emailed|wrote|messaged|pinged))\\b",
+      "note": "no invented anecdote"
+    },
+    {
+      "type": "slop_absent",
+      "patterns": [
+        "era-opener",
+        "scenario-opener",
+        "staged-hook",
+        "endorsement-closer",
+        "engagement-bait",
+        "announce-note",
+        "chat-opener",
+        "chat-closer"
+      ]
+    },
+    {
+      "type": "not_contains",
+      "values": [
+        "thrilled to announce",
+        "excited to share",
+        "proud to announce",
+        "game-changer",
+        "game changer",
+        "revolutionary",
+        "bookmark this"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "180\\s?ms",
+      "note": "headline figure kept"
+    },
+    {
+      "type": "regex",
+      "pattern": "\\b45\\s?ms",
+      "note": "headline figure kept"
+    },
+    {
+      "type": "contains",
+      "values": [
+        "cold"
+      ],
+      "note": "the number is about cold-start only"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)10,?000|10k|4-core|four-core|4 core",
+      "note": "measurement condition kept"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)multi-?variate|percentage rollout",
+      "note": "the known gap is stated"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)\\A(?!.*python)|beta",
+      "note": "if the Python SDK is mentioned it is still called beta"
+    },
+    {
+      "type": "word_count",
+      "min": 60,
+      "max": 330
+    }
+  ]
+}

@@ -20,8 +20,13 @@ A sentence is listed when at least one signal fires:
     vague-attribution                    "studies show", "experts say" ...
 
 Citation column: yes (a citation marker, link or identifier is in the
-sentence), pending (a [VERIFY: ...], [ASK AUTHOR: ...] or [CITATION NEEDED]
-placeholder is in the sentence), no (neither).
+sentence), pending (a gap marker is in the sentence), no (neither).
+
+Standard gap markers: [ASK AUTHOR: ...] (only the author knows), [VERIFY: ...]
+(an external fact, source or citation must be checked) and [UNTESTED] (a
+command or code sample that was not run). For robustness the script also
+reads the older [CITATION NEEDED], [SOURCE NEEDED] and [UNVERIFIED] as
+pending; write new text with the three standard markers only.
 
 Skipped on purpose: YAML front matter, fenced code blocks, headings, table
 separator rows, HTML comments. Inline code spans, citation markers, URLs and
@@ -177,7 +182,11 @@ CITATION_RE = re.compile(
     r"|\barXiv:\s?\d{4}\.\d{4,5}(?:v\d+)?",
     re.IGNORECASE,
 )
-PENDING_RE = re.compile(r"\[(?:VERIFY|ASK\s+AUTHOR|CITATION\s+NEEDED|SOURCE\s+NEEDED|UNVERIFIED)\b[^\]]*\]", re.IGNORECASE)
+# Standard markers first; the older placeholder spellings stay accepted as "pending".
+PENDING_RE = re.compile(
+    r"\[(?:VERIFY|ASK\s+AUTHOR|UNTESTED|CITATION\s+NEEDED|SOURCE\s+NEEDED|UNVERIFIED)\b[^\]]*\]",
+    re.IGNORECASE,
+)
 
 INLINE_CODE_RE = re.compile(r"`[^`]*`")
 URL_RE = re.compile(r"https?://\S+")

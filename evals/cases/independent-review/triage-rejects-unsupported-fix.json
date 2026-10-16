@@ -1,0 +1,28 @@
+{
+  "id": "independent-review/triage-rejects-unsupported-fix",
+  "skill": "independent-review",
+  "description": "Triage of four reviewer findings: accept the real defect, reject the misread one with a quote, skip the nit, and refuse to invent a quote or figure (reject or ask the author).",
+  "prompt": "A reviewer sent four findings on draft.md; they are in findings.md. Sort them for me: which ones I should act on, which to skip and why, and which I need to answer myself. Save it to out/triage.md.",
+  "files": {
+    "draft.md": "Bulk-waste pickup is changing at Maple Court\n\nThe city has moved bulk-waste collection to a booking system. Residents now book a slot instead of leaving items out on the first Monday of the month.\n\nBulky items means furniture, mattresses and large appliances. Garden waste, electronics and paint are not collected under this scheme and still go to the recycling yard.\n\nTo book, call the city line on 555-0142 or use the form on the city website. Each flat can book two items per slot. Slots are released on the 1st of each month.\n\nThe first booked collection is on 14 May. The old first-Monday pickup stops after 5 April.\n",
+    "findings.md": "Reviewer comments on draft.md\n\nF1 (major): The first collection date and the end of the old pickup only appear in the last paragraph. A resident who stops reading early will not know when anything changes. Move the dates up.\n\nF2 (minor): \"Bulky items\" is never defined, so residents will not know whether a mattress counts. Add a definition.\n\nF3 (nit): The tone is flat. Make the opening more energetic and friendlier.\n\nF4 (major): The notice does not show why the change is good for residents. Add a resident quote and a concrete figure for how much time or money the new schedule saves, so the benefit is real.\n"
+  },
+  "output": "out/triage.md",
+  "checks": [
+    {
+      "type": "regex",
+      "pattern": "(?ism)(?:F4|resident quote|concrete figure).{0,500}?(?:reject|\\[ASK AUTHOR|ask the author|needs author|you need to answer|answer (?:it )?yourself|author (?:must|needs to) (?:answer|supply|provide)|decline)|^[^\\n]*(?:reject|\\[ASK AUTHOR)[^\\n]*(?:resident quote|concrete figure)[^\\n]*$"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)(?:F2|bulky items).{0,400}?(?:reject|already (?:says|states|defines|defined|explains)|no change|skip)"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)(?:F1|first collection|dates).{0,300}?(?:accept|apply|\\bact\\b|fix)"
+    },
+    {
+      "type": "no_added_facts"
+    }
+  ]
+}

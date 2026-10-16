@@ -106,3 +106,15 @@ Cost: <sessions, rounds>
 ```
 
 For a clean text: "no accepted findings".
+
+## 9. Contesting a finding and drift
+
+A rejection in triage is a decision for the author, not a ruling on the reviewer. When the author (or user) disputes a finding that matters, or insists on a rejection the reviewer is likely to repeat:
+
+1. Write a short card per contested finding, at most three per round: label (accept / partly accept / reject), the argument (already addressed, based on a misreading, out of scope), and the evidence (a quote, a source line, a section the reviewer can re-read).
+2. If a ruling from the reviewer is wanted, run a separate verification job in a new session: the reviewer's own finding verbatim, the card's evidence as locations, and an instruction to open those locations and check them itself. A summary of the argument is not evidence. Label this verification; it never counts as a fresh review.
+3. Ruling vocabulary: sustained (the card holds, drop the finding), overruled (the finding stands, keep the action), partly sustained (narrow the finding to what still holds). Withdrawn findings leave the must-fix list.
+4. A rebuttal never fabricates evidence or misstates a result. Honest grounds are a factual error in the review or a point outside the document's scope. "Too costly" is not a ground; accept the finding and list it under remaining.
+5. Before conceding that a concern cannot be addressed, try two different fixes (narrow the claim; add the limit; reframe). Only then concede, narrowly, and bound what is lost.
+
+Drift: a suggestion that would change what the document is trying to do (a different audience, a different question, an added contribution) is a scope change, not a revision. Name it as drift, argue against it with evidence from the reader brief, or send it to the author as a decision. Do not fold it in as an ordinary fix.

@@ -1,0 +1,50 @@
+{
+  "id": "anti-slop-editing/protected-regions-survive",
+  "skill": "anti-slop-editing",
+  "description": "Post with a Python block, a YAML block, a block quotation and a cited sentence: surrounding era opener, significance inflation, closing formula and chatbot residue go, but code, quote, citation and numbers stay byte-identical.",
+  "prompt": "Tidy up post.md for our engineering blog: take out the generic, AI-sounding filler. Save the edited post to out/post.md.",
+  "files": {
+    "post.md": "# Retry budgets in Quill\n\nIn today's rapidly evolving landscape, retry logic plays a crucial role in building reliable systems. It serves as the backbone of every client, a testament to careful engineering.\n\nQuill's client wraps every call like this:\n\n```python\ndef fetch(url, retries=3):\n    for attempt in range(retries):\n        resp = session.get(url, timeout=5)\n        if resp.status_code != 503:\n            return resp\n    raise RuntimeError(\"retry budget exhausted\")\n```\n\nThe maintainers put it bluntly: \"Retries without a budget are a denial-of-service attack you run against yourself.\" Studies show that unbounded retries amplify outages (Nguyen and Okafor, 2021). Moreover, a budget of 10% extra requests held error rates flat in our tests, using the config below.\n\n```yaml\nretry_budget:\n  ratio: 0.1\n  min_per_second: 10\n```\n\nIn conclusion, the future of reliable clients looks bright. I hope this helps!\n"
+  },
+  "output": "out/post.md",
+  "checks": [
+    {
+      "type": "preserves",
+      "source": "post.md",
+      "categories": [
+        "code_blocks",
+        "quotes",
+        "citations",
+        "numbers"
+      ]
+    },
+    {
+      "type": "contains",
+      "case_sensitive": true,
+      "values": [
+        "Retries without a budget are a denial-of-service attack you run against yourself.",
+        "(Nguyen and Okafor, 2021)",
+        "raise RuntimeError(\"retry budget exhausted\")",
+        "min_per_second: 10"
+      ]
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "citations",
+        "urls"
+      ]
+    },
+    {
+      "type": "slop_absent",
+      "patterns": [
+        "era-opener",
+        "significance",
+        "closing-formula",
+        "chat-closer",
+        "copula-avoidance"
+      ]
+    }
+  ]
+}

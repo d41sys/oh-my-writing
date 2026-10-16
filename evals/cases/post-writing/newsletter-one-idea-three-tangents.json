@@ -1,0 +1,80 @@
+{
+  "id": "post-writing/newsletter-one-idea-three-tangents",
+  "skill": "post-writing",
+  "description": "Newsletter draft from notes with one main idea and a labelled parking lot of three unrelated items. The issue must stay on the main idea, keep its figures, leave the parking-lot items out, stay near the requested length, and add no link, subscribe prompt, reply request or other call to action the notes never asked for.",
+  "prompt": "Draft this week's newsletter issue from notes.md, around 250 words, and save it to out/issue.md.",
+  "files": {
+    "notes.md": "# Notes for this week's issue (Maya Lindqvist, \"Small Deploys\" newsletter)\n\nMAIN IDEA (the whole issue is about this): write the rollback step before you write the deploy step.\n- On 11 September our deploy of the billing service failed halfway. The rollback script did not exist yet; I wrote it during the incident. Rollback took 47 minutes.\n- Since then every deploy plan has a rollback section first, and we rehearse it on staging. Last rehearsal took 6 minutes.\n- Over the 14 deploys since the change, we rolled back twice and both took under 10 minutes.\n- The point: a rollback you have never run is a guess.\n\nParking lot (other things I jotted down, for other weeks):\n- I am speaking at a conference in Tallinn next spring.\n- I am reading \"The Quiet Pager\" by Ines Vaz and liking it.\n- Rant about standing desks.\n\nNo product to push this week. Tone: plain, a bit dry, first person. Sign off as Maya.\n"
+  },
+  "output": "out/issue.md",
+  "checks": [
+    {
+      "type": "word_count",
+      "min": 140,
+      "max": 340
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "urls",
+        "names",
+        "citations"
+      ],
+      "allow": [
+        "I'm",
+        "I've",
+        "I'd",
+        "I'll",
+        "2"
+      ],
+      "note": "no invented link, figure or name; '2' is the notes' 'twice' written as 'two'"
+    },
+    {
+      "type": "preserves",
+      "source": "notes.md",
+      "categories": [
+        "numbers"
+      ],
+      "allow_lost": [
+        "11"
+      ],
+      "note": "47 minutes, 6 minutes, 14 deploys survive; the calendar date may be paraphrased"
+    },
+    {
+      "type": "not_contains",
+      "values": [
+        "Tallinn",
+        "Quiet Pager",
+        "Ines Vaz",
+        "standing desk"
+      ],
+      "note": "parking-lot items stay out of the issue"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(?:hit reply|reply to this|just reply|forward this|subscribe|sign up|click here|share this|check out our|book a (?:call|demo)|unsubscribe)\\b",
+      "note": "no invented call to action"
+    },
+    {
+      "type": "slop_absent",
+      "patterns": [
+        "era-opener",
+        "scenario-opener",
+        "staged-hook",
+        "endorsement-closer",
+        "engagement-bait",
+        "announce-note",
+        "chat-opener",
+        "chat-closer"
+      ]
+    },
+    {
+      "type": "contains",
+      "values": [
+        "rollback"
+      ],
+      "note": "stays on the main idea"
+    }
+  ]
+}

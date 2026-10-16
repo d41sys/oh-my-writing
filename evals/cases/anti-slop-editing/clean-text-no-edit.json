@@ -1,0 +1,57 @@
+{
+  "id": "anti-slop-editing/clean-text-no-edit",
+  "skill": "anti-slop-editing",
+  "description": "Plain human incident note with opinions, a hedge-free recommendation and a technical 'robust' backed by a number: the right answer is no edit, so the file comes back essentially identical.",
+  "prompt": "Check notes.md for AI-sounding phrasing and clean up whatever needs it. Save the result to out/notes.md.",
+  "files": {
+    "notes.md": "We moved the invoice export to the new queue on Tuesday. It took about three hours, mostly because the old job held a lock on the orders table until 02:10. Nobody lost data, but 41 invoices went out twice; Priya sent the customers a correction on Wednesday.\n\nI think the retry limit of 5 is too high. It hid the lock problem for a week. I'd drop it to 3 and let the alert fire, but that's Dmitri's call, since he owns the pager rotation.\n\nThe estimator in the report is robust to outliers (breakdown point 0.5), so the median delay of 38 minutes isn't skewed by the two runs that stalled overnight.\n"
+  },
+  "output": "out/notes.md",
+  "checks": [
+    {
+      "type": "similarity",
+      "source": "notes.md",
+      "min": 0.97
+    },
+    {
+      "type": "preserves",
+      "source": "notes.md",
+      "categories": [
+        "numbers",
+        "negations",
+        "certainty",
+        "names"
+      ]
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "citations",
+        "urls"
+      ]
+    },
+    {
+      "type": "markers",
+      "min": 0,
+      "max": 0,
+      "target": "output"
+    },
+    {
+      "type": "contains_any",
+      "target": "reply",
+      "values": [
+        "no justified edit",
+        "no edit",
+        "no edits",
+        "no changes",
+        "no change",
+        "unchanged",
+        "left as is",
+        "left it as",
+        "nothing to change",
+        "nothing needed"
+      ]
+    }
+  ]
+}

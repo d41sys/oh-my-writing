@@ -10,36 +10,39 @@ Answer each check pass or fail. Fix every failure before returning.
 4. Is each percentage given with a baseline or context, and is no figure present that is confidential or that the candidate cannot explain?
 5. Is each metric attributed to the right employer and period, with no results from different employers merged into one sentence?
 6. Is scope (budget, headcount, ownership, seniority) exactly what the candidate stated, with nothing enlarged by wording such as "led", "owned" or "managed"?
-7. Are missing facts shown as `[ASK AUTHOR: ...]`, `[CONFIRM: ...]` or `[VERIFY: ...]` or left out, never filled by a plausible guess?
+7. Are missing facts shown as `[ASK AUTHOR: ...]` (only the candidate knows) or `[VERIFY: ...]` (external fact to check), or left out, never filled by a plausible guess? Are no other marker kinds used?
+8. If the user asked for numbers, metrics or a more impressive result and supplied none, does the draft keep the true wording, carry an `[ASK AUTHOR: ...]` marker where each figure belongs, and list the questions, with no typical or placeholder figure inserted?
 
 ## Fit and selection
 
-8. Was the target (posting, prompt, recipient) read in full, and are the requirements ranked and mapped to direct, adjacent or transferable evidence, or named as gaps?
-9. Do posting terms appear only where they describe work the candidate really did, with no keyword pile or hidden text?
-10. Does each reason for a role, program or recipient name something real and checkable, so the sentence would break if the organization name were swapped?
-11. Are gaps (skill, career change, employment gap, stretch role) handled once, in plain words, with the closest true evidence and accurate dates?
-12. Is there no invented faculty link, mutual contact, referral, prior conversation or "loved your work" claim without a named piece of work?
+9. Was the target (posting, prompt, recipient) read in full, and are the requirements ranked and mapped to direct, adjacent or transferable evidence, or named as gaps?
+10. Do posting terms appear only where they describe work the candidate really did, with no keyword pile or hidden text?
+11. Is every required or preferred skill that is missing from the candidate's material kept out of Skills, summary and bullets (including as "familiar with" or "exposure to"), and listed as a gap in the note with the nearest true evidence?
+12. Does each reason for a role, program or recipient name something real and checkable, so the sentence would break if the organization name were swapped?
+13. Are gaps (skill, career change, employment gap, stretch role) handled once, in plain words, with the closest true evidence and accurate dates?
+14. Is there no invented faculty link, mutual contact, referral, prior conversation ("as we discussed") or "loved your work" claim without a named piece of work the user supplied?
 
 ## Format and conventions
 
-13. Does the document type, length, file type and section order match the target's written instructions, or the stated common-practice norm that the user is told to verify?
-14. Were region-dependent items (photo, birth date, marital status, nationality, referees, spelling, date order, sign-off) handled for the stated market, or omitted and flagged when the market is unknown?
-15. For a résumé or CV: is every bullet an action with a scope or result, one to two lines, with varied openers and no duty-list phrasing?
-16. For a résumé or CV: do titles, dates and structure match the master or the candidate's original headings, and is the plain-text reading order coherent?
-17. For a letter or statement: does it answer every prompt question or criterion, include at least one specific true result, and stay inside the governing limit?
-18. For outreach or a form answer: is there one ask, one reader, a source for each fact about the recipient, and a length suited to the channel?
+15. Does the document type, length, file type and section order match the target's written instructions, or the stated common-practice norm that the user is told to verify?
+16. Were region-dependent items (photo, birth date, marital status, nationality, referees, spelling, date order, sign-off) handled for the stated market, or omitted and flagged when the market is unknown?
+17. For a résumé or CV: is every bullet an action with a scope or result, one to two lines, with varied openers and no duty-list phrasing?
+18. For a résumé or CV: do titles, dates and structure match the master or the candidate's original headings, and is the plain-text reading order coherent?
+19. For a letter or statement: does it answer every prompt question or criterion, include at least one specific true result, and stay inside the governing limit?
+20. For outreach or a form answer: is there one ask, one reader, a source for each fact about the recipient, and a length suited to the channel (first message to a stranger or an academic: a few short sentences, well under 200 words)?
+21. For outreach to an academic or program contact: does the message name only work the user said they read, state the user's real relation to it, and avoid implying an agreement or an earlier exchange?
 
 ## Language
 
-19. Are career clichés (for example "results-driven", "passionate", "team player", "proven track record", "responsible for", "excited to leverage") replaced with evidence, or kept only because the posting requires the term or the author really says it?
-20. Do the sentences read as one person writing, with the author's sample or voice profile taking priority over generic rules where one exists?
-21. For a non-English draft: were structural, evidence and preservation checks applied, and is it stated that English lexical lists were skipped?
+22. Are career clichés (for example "results-driven", "passionate", "team player", "proven track record", "responsible for", "excited to leverage") replaced with evidence, or kept only because the posting requires the term or the author really says it?
+23. Do the sentences read as one person writing, with the author's sample or voice profile taking priority over generic rules where one exists?
+24. For a non-English draft: were structural, evidence and preservation checks applied, and is it stated that English lexical lists were skipped?
 
 ## Hand-off
 
-22. Does the note list changes and reasons, assumptions, open items, gaps, and what the user must verify with the target, in short and true statements?
-23. Does the draft avoid claims of measured gains (match scores, readability, interview odds) that nobody measured?
-24. Is the document left as a draft for the user's review, with no sending, submitting or contacting implied?
+25. Does the note list changes and reasons, assumptions, open items, gaps, and what the user must verify with the target, in short and true statements?
+26. Does the draft avoid claims of measured gains (match scores, readability, interview odds) that nobody measured?
+27. Is the document left as a draft for the user's review, with no sending, submitting or contacting implied?
 
 ## Final read
 

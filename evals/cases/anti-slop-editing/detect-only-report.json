@@ -1,0 +1,51 @@
+{
+  "id": "anti-slop-editing/detect-only-report",
+  "skill": "anti-slop-editing",
+  "description": "Detect-only request: the report file must quote the planted findings (era opener, staged contrast, vague attribution, chat closer), must not be a rewritten draft, and must not give an authorship verdict. The runner cannot diff draft.md, so the check is that the output is a report, not an edited copy.",
+  "prompt": "Read draft.md and just tell me what sounds off. Don't change the text. Put your notes in out/report.md.",
+  "files": {
+    "draft.md": "# Meet Lumen\n\nIn today's fast-paced world, search is broken. Lumen isn't just a search tool, it's a movement.\n\nExperts say indexing should take under a second. Lumen's ranker is robust to typos (edit distance up to 2), and it indexed 1.2 million documents in 41 seconds on a laptop. A reviewer called it \"a game-changer for small teams.\"\n\nThe roadmap is public. Whether you're a student or a CTO, Lumen has something for you.\n\nIn conclusion, the future looks bright. I hope this helps! Let me know if you'd like any changes.\n"
+  },
+  "output": "out/report.md",
+  "checks": [
+    {
+      "type": "contains",
+      "values": [
+        "fast-paced",
+        "Experts say",
+        "hope this helps"
+      ]
+    },
+    {
+      "type": "contains_any",
+      "values": [
+        "isn't just a search tool",
+        "not just a search tool",
+        "it's a movement"
+      ]
+    },
+    {
+      "type": "similarity",
+      "source": "draft.md",
+      "max": 0.6
+    },
+    {
+      "type": "word_count",
+      "min": 40
+    },
+    {
+      "type": "not_contains",
+      "target": "both",
+      "values": [
+        "was written by an ai",
+        "was written by ai",
+        "was likely written by",
+        "appears to be ai-generated",
+        "looks ai-generated",
+        "is ai-generated",
+        "probably ai-generated",
+        "written by chatgpt"
+      ]
+    }
+  ]
+}

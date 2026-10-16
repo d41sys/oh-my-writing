@@ -16,7 +16,7 @@ Throat-clearing and necessary context look alike. Test:
 2. If yes, the first sentence was warm-up. Cut it.
 3. If no, keep only the minimum premise and put the artifact right after it.
 
-Examples of warm-up that fails the test: era statements ("in today's fast-changing world"), importance statements ("X is more important than ever"), definitions the reader already holds, thanks and apologies for the post itself. Context that passes: "This is about our job queue, which retries failed jobs three times" before a log excerpt a newcomer could not decode.
+Examples of warm-up that fails the test: era statements ("in today's fast-changing world"), importance statements ("X is more important than ever"), definitions the reader already holds, thanks and apologies for the post itself, and mood announcements on launches ("We're thrilled to announce", "Excited to share", "Big news") that name a feeling instead of the change. Context that passes: "This is about our job queue, which retries failed jobs three times" before a log excerpt a newcomer could not decode.
 
 ## Opening moves
 
@@ -37,6 +37,7 @@ Rotate moves. A feed or a newsletter archive that uses one move every time becom
 - **A curiosity gap must close.** Withholding the key noun is fair if the piece supplies it soon. A gap that never closes is clickbait and costs the reader's trust.
 - **A bold claim must be specific enough to be wrong.** "Most cost spikes come from idle compute, not traffic" can be tested; "efficiency matters" cannot.
 - **Contrarian only if true.** Do not manufacture a counter-intuitive angle to stop the scroll. If the real finding is ordinary, open on the real artifact.
+- **Lived-in detail comes from the author.** A confession, scene or point-of-view opening works only with the specific detail the author has (the time, the number, what was said). A generic version is invisible and an invented one breaks trust; if the detail is missing, `[ASK AUTHOR: ...]` or choose a different move.
 
 ## Titles and headlines
 

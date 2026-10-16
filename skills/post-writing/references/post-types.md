@@ -17,14 +17,15 @@ Each type below names the reader's job, a spine that serves it, the material it 
 | choose between options | Comparison |
 | keep up with one source over time | Newsletter issue |
 
-For formal tutorials and reference-style guides, use `technical-docs`; a how-to post is the conversational, single-sitting version.
+For documentation pages for a product or tool (tutorials, how-to guides, reference), use `technical-docs`; a how-to post is the blog-style, conversational, single-sitting version.
 
 ## How-to post
 
 - **Spine:** the outcome the reader will have, prerequisites, ordered steps each with one action and the result to expect, the common failure and its fix, one next move.
-- **Material needed:** commands, settings or actions the author actually ran, with the expected output. Versions and environment.
+- **Material needed:** commands, settings or actions the author actually ran, with the expected output. Versions and environment. A command or snippet the author did not run, or that you wrote, carries `[UNTESTED]`, and its output is never described as seen.
 - **Failure mode:** a promise of "easy" or "five minutes" with steps that were never run; steps that skip a prerequisite; explaining theory before the first step.
-- **Check:** could a reader who knows nothing but the prerequisites reach the result? Is every command real and copyable? Is the version stated?
+- **Shortest path to a first result.** List every step, then separate what the reader must do from what can wait (extra settings, optional features) and move the optional part after the first working result. Never cut a security step, an authentication prerequisite or a consent or safety requirement to make the path shorter.
+- **Check:** could a reader who knows nothing but the prerequisites reach the result? Is every command real and copyable, or marked `[UNTESTED]`? Is the version stated?
 
 ## Argument or opinion
 
@@ -46,23 +47,31 @@ For formal tutorials and reference-style guides, use `technical-docs`; a how-to 
 - **Material needed:** real details from the author: time, place, people (with permission), what was said or tried, what went wrong. Only the author can supply these. Without them, ask or stop at an outline.
 - **Failure mode:** inventing scenes to make the opening vivid; a lesson announced rather than shown; a tidy moral that the events do not support; vulnerability performed for effect.
 - **Ending.** An earned insight or an honest open question. Do not close with a call to action unless the author wants one.
-- **Check:** is every scene detail from the author's notes? Is there a moment of uncertainty that makes the reader want the next paragraph? Is there exactly one idea?
+- **Check:** is every scene detail from the author's notes, with nothing added for atmosphere ("a rainy Tuesday")? Does each scene carry some uncertainty that makes the reader want the next paragraph, and is a scene without it cut? Is there exactly one idea? When the piece reconstructs a past event the notes only partly record, label what the notes state and what you infer, and never present the inference as remembered.
 
 ## Post-mortem or devlog
+
+A blameless incident post-mortem document (timeline, causes, action items, written for the team) is `report-writing`; this type is the public post that tells the story.
 
 - **Spine:** the starting state, the failure or bottleneck as it appeared, the wrong hypotheses and why they seemed right, the root cause, the fix, the evidence that it worked, what changes now.
 - **Material needed:** timestamps, logs, graphs, the actual rejected alternatives. Keep the cause chain exactly as the author gives it.
 - **Failure mode:** a smoothed story that drops the dead ends; a blameless-sounding paragraph that hides who decided what; summary numbers with no measurement conditions; invented causes for a step the notes do not explain.
 - **Compression rule.** When trimming, cut descriptive background first and keep causal links and the numbers that prove the fix. Move long logs and tables to an appendix or a repository link.
+- **Inferred versus stated.** If the notes jump from one step to the next without a reason, ask for the reason. A reconstruction of motives, or a root cause the author only suspects, is written as the author's belief ("we think"), not as established fact.
 - **Check:** can a reader see why each decision was taken and what the alternatives were?
 
 ## Announcement
+
+Release notes and changelogs are `technical-docs`; this type is the announcement post that tells readers why the release matters to them.
 
 - **Spine:** what is new in one plain sentence, who it is for and what problem it solves, how it works or what changed, proof (a number, a demo, a link), limits and status (beta, gated, unsupported cases), how to try it, where to learn more.
 - **Material needed:** version, date, availability, real benchmark or usage figures with conditions, honest status.
 - **Failure mode:** excitement in place of information; the change buried under thanks and context; features without the problem; claims of "revolutionary" with no number; leaving out known limits.
 - **Check:** after the first paragraph, does the reader know what changed, whether it affects them, and where to go?
 - **Link placement.** Put the link where the reader needs it: after the sentence that makes them want it. Check the channel's current conventions before moving links elsewhere (see [platforms](platforms.md)).
+- **Product introduction versus design story.** An introduction serves a reader deciding whether to adopt: problem, how it works, evidence, a working first step. A design story serves a reader who wants to understand a decision: starting state, the failure, rejected options, the mechanism, verification. Pick one; mixing them gives a brochure that pretends to be a story.
+- **Launch hygiene.** State one core claim up front and have every supporting point prove that claim. Say what is not shipping or not included when readers could assume otherwise (for example what stays local or private). If a likely misreading exists (a rename mistaken for a pivot, a preview mistaken for general availability), name and reject it in one sentence. Publish only what the author says is live; otherwise `[VERIFY: availability]`.
+- **A set of posts around one launch.** The announcement, the short-text post and the professional-network post each carry the same claim and the same numbers. Each version stands alone and is not a shortened copy of another. The call to action, the link and the date come from the author.
 
 ## List with depth
 
@@ -96,6 +105,7 @@ For formal tutorials and reference-style guides, use `technical-docs`; a how-to 
 - **Format.** A single column, short paragraphs, essential images only. Text in images must also appear in text, and images need alt text.
 - **Failure mode:** diary-style warm-up before the point; a link dump with no commentary; every issue structured differently; a roundup that only repeats headlines.
 - **Check:** if the reader only sees the subject and the first screen, do they know what they will get? Does the issue have one main idea?
+- **Internal or team newsletter, and series.** See [email sequences](email-sequences.md).
 - **Compliance.** Marketing email has legal requirements (consent, an unsubscribe route, sender identity) that vary by region. Flag `[VERIFY: applicable email rules]` and leave them to the sender's platform and counsel; do not state legal specifics.
 
 ## Reader psychology, used honestly
@@ -110,6 +120,7 @@ These ideas shape how to present a point. They are not licences to manipulate.
 - **Framing.** The same fact can be framed as 90% success or 10% failure. Pick the frame that is accurate and useful for the reader's decision. If both are accurate, prefer the one that helps them judge.
 - **Loss and risk.** People weigh potential loss heavily. Describe real risks plainly with their real likelihood; do not manufacture fear to move the reader.
 - **Friction.** Say what switching or trying costs: time, migration, learning. A promise of "no effort" for complex work damages trust.
+- **Diagnose what stops the reader before framing.** What should the reader do, what do they believe now, where are they in deciding, and what blocks them? When readers do not act, look first at the situation or the process (too many steps, an unclear next action) before blaming the reader.
 - **One recommended path first.** When there are many options, give the recommended default, then the variations.
 
 ## Differentiation check
