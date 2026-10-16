@@ -126,3 +126,7 @@ A case passes when all its checks pass. The report gives, per skill, host and co
 A host error (the CLI exits or times out without writing the output file) is shown as `ERROR`, not `FAIL`. The (case, repetition) is then left out of both conditions for that host, so the difference always compares the same runs.
 
 Claude Code must be able to run `claude -p` non-interactively with its configured model. If it reports `unrecognized_model` (a gateway model name its catalog does not know), update Claude Code or map the name in its settings, or pass a known model with `--claude-model`; until then every Claude run is a host error.
+
+## omp host
+
+`--host omp` (and `--judge omp`) runs `omp -p --mode json --no-session --no-rules --no-lsp --auto-approve --model <--omp-model, default gpt-6-sol>`. Skills are copied into the workspace's `.agents/skills` in the `skill` condition; user rules and session history are off in both conditions. A skill counts as loaded when the event log shows a `skill://<name>` read. The visual judge receives page screenshots as PNG files in its workspace and opens them with the read tool.

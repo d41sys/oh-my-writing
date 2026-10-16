@@ -8,6 +8,7 @@ Usage:
   python3 evals/run.py --host codex --cases 'style/*' --judge codex   # style track: human register and fidelity judged apart
   python3 evals/run.py --host codex --judge codex --judge-mode style  # judge every case on those two questions
   python3 evals/run.py --host codex --cases 'project-report/*' --repeat 3 --judge codex
+  python3 evals/run.py --host omp --judge omp --repeat 3   # omp host, default model gpt-6-sol
 
 Each run gets a fresh git workspace outside this repository holding copies (not links) of the case files, the case
 fixtures and, in the `skill` condition, every skill under the host's project skill folder; the agent can neither
@@ -36,8 +37,9 @@ import grade  # noqa: E402
 
 REPO = grade.REPO
 SKILLS = sorted(p for p in grade.SKILLS_DIR.iterdir() if (p / "SKILL.md").is_file())
-SKILL_FOLDER = {"codex": ".agents/skills", "claude": ".claude/skills"}
-USER_SKILL_DIRS = [Path.home() / ".agents" / "skills", Path.home() / ".claude" / "skills"]
+SKILL_FOLDER = {"codex": ".agents/skills", "claude": ".claude/skills", "omp": ".agents/skills"}
+USER_SKILL_DIRS = [Path.home() / ".agents" / "skills", Path.home() / ".claude" / "skills",
+                   Path.home() / ".omp" / "agent" / "skills"]
 QUOTA_HIT: set[str] = set()  # hosts that refused a run for usage limits during this invocation
 CLAUDE_TOOLS = ("Read,Write,Edit,Glob,Grep,Skill,Bash(python3:*),Bash(python:*),Bash(ls:*),"
                 "Bash(cat:*),Bash(mkdir:*),Bash(wc:*)")
@@ -87,6 +89,15 @@ def host_command(host: str, prompt: str, ws: Path, reply_file: Path, args, read_
         for image in images or []:
             cmd += ["-i", str(image)]
         return cmd if images else cmd + [prompt]
+    if host == "omp":
+        # Rules and sessions off so the user's own rules and history cannot reach either condition.
+        cmd = ["omp", "-p", "--mode", "json", "--no-session", "--no-rules", "--no-lsp", "--auto-approve",
+               "--model", args.omp_model]
+        if args.omp_thinking:
+            cmd += ["--thinking", args.omp_thinking]
+        if read_only:
+            cmd += ["--tools", "read"]
+        return cmd + [prompt]
     cmd = ["claude", "-p", prompt, "--output-format", "stream-json", "--verbose", "--no-session-persistence",
            "--strict-mcp-config"]
     cmd += ["--allowedTools", "Read"] if read_only else ["--permission-mode", "acceptEdits", "--allowedTools", CLAUDE_TOOLS]
@@ -107,11 +118,28 @@ def parse_claude(log: str) -> str:
     return reply
 
 
+def parse_omp(log: str) -> str:
+    """Text of the last assistant message in omp's JSON event stream."""
+    reply = ""
+    for line in log.splitlines():
+        try:
+            event = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        msg = event.get("message") or {}
+        if event.get("type") == "message_end" and msg.get("role") == "assistant":
+            text = "".join(c.get("text", "") for c in msg.get("content", []) if c.get("type") == "text")
+            reply = text or reply
+    return reply
+
+
 def skill_was_loaded(host: str, skill: str, log: str) -> bool:
     if f"skills/{skill}/SKILL.md" in log:
         return True
     if host == "claude":
         return bool(re.search(r'"name":\s*"Skill".{0,200}?' + re.escape(skill), log))
+    if host == "omp":
+        return f"skill://{skill}" in log
     return False
 
 
@@ -139,6 +167,8 @@ def execute(host: str, prompt: str, ws: Path, out_dir: Path, args, read_only=Fal
     (out_dir / "log.txt").write_text(log, encoding="utf-8")
     if host == "claude":
         reply_file.write_text(parse_claude(log), encoding="utf-8")
+    elif host == "omp":
+        reply_file.write_text(parse_omp(log), encoding="utf-8")
     elif not reply_file.exists():
         reply_file.write_text("", encoding="utf-8")
     return {"log": log, "exit_code": code, "error": error, "duration_s": round(time.monotonic() - start, 1)}
@@ -415,7 +445,7 @@ def judge_once(case, a_text, b_text, judge_host, run_dir, tag, args, shots=None,
     ws = Path(tempfile.mkdtemp(prefix="omw-judge-"))
     subprocess.run(["git", "init", "-q"], cwd=ws, check=True)
     try:
-        if images and judge_host == "claude":
+        if images and judge_host in ("claude", "omp"):
             for image in images:
                 shutil.copyfile(image, ws / image.name)
         execute(judge_host, prompt, ws, out_dir, args, read_only=True, images=images if judge_host == "codex" else None)
@@ -541,14 +571,16 @@ def judge_pair(case, host, rep, run_dir, args) -> dict | None:
 
 def main(argv=None) -> int:
     p = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    p.add_argument("--host", action="append", choices=["codex", "claude"], required=True)
+    p.add_argument("--host", action="append", choices=["codex", "claude", "omp"], required=True)
     p.add_argument("--cases", action="append", help="glob on case id, e.g. 'post-writing/*' (repeatable)")
     p.add_argument("--condition", choices=["skill", "baseline", "both"], default="both")
     p.add_argument("--jobs", type=int, default=3)
     p.add_argument("--timeout", type=int, default=600, help="seconds per agent run (a case's own timeout wins)")
     p.add_argument("--repeat", type=int, default=1, help="repetitions of every (case, host, condition)")
     p.add_argument("--out", help="results directory (default evals/results/<timestamp>)")
-    p.add_argument("--judge", choices=["codex", "claude"], help="blind pairwise judge host")
+    p.add_argument("--judge", choices=["codex", "claude", "omp"], help="blind pairwise judge host")
+    p.add_argument("--omp-model", default="gpt-6-sol", help="model for the omp host (omp --model)")
+    p.add_argument("--omp-thinking", help="omp --thinking level, e.g. medium")
     p.add_argument("--judge-mode", choices=["auto", "style"], default="auto",
                    help="style: judge every case on two separate questions (reads human, faithful to inputs) with "
                         "gap markers stripped; auto: each case's own judge mode")
