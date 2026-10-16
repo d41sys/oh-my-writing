@@ -87,5 +87,8 @@
       "pattern": "(?im)^\\s*(?:note to (?:self|author|you)|here(?:'s| is) (?:the|your|a) (?:draft|email|memo|post|letter|article|update|revised)|draft (?:email|memo|post|letter|article|update)\\b|subject line options)",
       "note": "the file is the deliverable, not a reply with a lead-in or notes about it"
     }
-  ]
+  ],
+  "judge": {
+    "mode": "style"
+  }
 }
