@@ -35,23 +35,28 @@ Then: `/academic-writing rewrite the abstract` or `/academic-writing write the i
 
 Oh My Writing is an independently organized writing knowledge library, separate from the existing academic-writing runtime above. Start with [the subject index](references/knowledge/index.md), [coverage and limitations](references/knowledge-review.md), or the [research report](WRITING_RESEARCH_REPORT.md).
 
-The [reference review report](REFERENCE_REVIEW_REPORT.md) includes a usefulness-first assessment (§14). Older source-fidelity tiers are historical, not an approval of the expanded library.
+The [reference review report](REFERENCE_REVIEW_REPORT.md) records the current source-skill selection (§16), separately from the earlier synthesized-content usefulness audit (§14). Older source-fidelity tiers are historical, not approval of the expanded library.
 
 The [review checklist](REVIEW_CHECKLIST.md) lists the human decisions still needed before the reference library is final.
 
-For human review, open the generated `review/assets-review.html`. It defaults to **original assets by repository**, identified by their original paths—not by K-IDs. K-IDs identify our rewritten knowledge, available separately in the **synthesized methods** and **rewritten knowledge groups** tabs. The five keep / conditional / consolidate / runtime / exclude recommendations assess synthesized entries, not complete original files. Source files without a usefulness assessment are labelled explicitly. Your decisions and notes stay in browser storage; export JSON to back them up. The page does not modify library files.
+For human review, open the generated `review/assets-review.html`. The main view selects **original writing skills and method libraries worth learning from**, not every repository file or internal K-ID. Common README/setup/configuration/release files and platform distributions are filtered with an exclusion ledger; a README containing the entire source prompt collection is an explicit exception. Retained skill instructions and supporting texts are read in full, including bounded parts for long files. Recommendations distinguish broad writing foundations, genre-specific value, redundancy, writing operations and unsuitable material. Each card explains value for our library, concrete overlap with named sources and what is already covered here. Suggestions remain model-assisted editorial opinions, not measured writing improvements. The full file inventory and earlier rewritten-content reviews are secondary tabs.
 
-Rebuild the local review from the existing audit JSON and cached sources:
+Rebuild the local review from completed assessment artifacts and cached sources:
 
 ```bash
 node scripts/build-asset-source-index.mjs
+node scripts/build-skill-scan.mjs
+node scripts/prepare-skill-comparisons.mjs
+node scripts/build-skill-value-review.mjs
 node scripts/build-asset-review.mjs
 open review/assets-review.html
 ```
 
-These commands require local `review/usefulness-audit.json`, the earlier review/provenance artifacts and `.cache/omw_sources/`; they do not download or re-evaluate sources. The generated page and data are local artifacts, not committed assets. Source links attached to a unit establish association, not exact provenance for every restored sentence. Files not usefulness-reviewed are labelled separately from the five recommendations.
+These commands require local `review/usefulness-audit.json`, earlier provenance artifacts, `.cache/omw_sources/`, completed per-repo `review/skill-scan/*.assessment.json` and matching `comparison-results.json`. They do not download or re-judge source value. Full-text assessments and comparisons are separate evidence-backed review work, not a filename classifier hidden in the generators. Missing, changed or incomplete review inputs fail the build instead of generating placeholder suggestions. Source-source overlap is checked against retrieved candidate neighbors, not exhaustive all-pairs proof; candidate novelty is not proof that a method is absent from the whole library. Generated pages and audit data remain local artifacts. No reviewed knowledge file is imported, deleted or rewritten.
 
-The active tab, group chips and results summary show matching counts, not fixed catalogue totals. Changing a source filter clears the selected source group to avoid a hidden intersection with a different repo. “Mọi nhóm” removes only the group selection; “Xóa bộ lọc” clears the group and all filter conditions. Review-state filters update the visible cards immediately when a decision changes; note editing keeps focus when the matching cards are unchanged.
+The final assembly also requires the completed semantic curation files `review/skill-scan/editorial-general.json`, `editorial-specialist.json` and `editorial-library-evidence.json`. The main review hides unrelated/no-writing-method groups and remaining common-role documents after reading; their assessments remain in `skill-value-audit.json` under `excludedAfterReading`. This avoids presenting GPU tools, privacy policies or evaluation fixtures as writing skills.
+
+Decisions and notes stay in browser storage; export JSON to back them up. Skill decisions have their own record kind; older file and rewritten-content decisions remain intact. Matching counts and visible cards update with filters and decisions. “Mọi nhóm” removes only the group selection; “Xóa bộ lọc” clears all filter conditions and the group. Note editing preserves focus when the matching cards are unchanged. Content/assessment fingerprints prevent stale decisions from being treated as current approval.
 
 The [conflicts register](CONFLICTS_REGISTER.md) lists every contradiction found between knowledge units, open or reconciled, so it can be reviewed later.
 
