@@ -12,7 +12,11 @@ lost and items that were added. Categories:
     certainty    may, might, could, must, should, likely, probably, always, ...
     scope        all, every, most, some, only, often, at least, up to, ...
     names        capitalized names and acronyms (a sentence-initial capital
-                 counts only when the same word is capitalized mid-sentence)
+                 counts only when the same word is capitalized mid-sentence).
+                 A name counts as lost or added only when one of its words is
+                 absent from the other text; salutations and titles (Dear, Dr,
+                 Professor, Hi, ...) and contractions such as I'm are not name
+                 words, and the report shows the phrase as written
     urls         bare URLs and Markdown link destinations
     code         inline code spans
     code_blocks  fenced code blocks
@@ -106,6 +110,10 @@ CAP = r"[A-Z][A-Za-z0-9&'\u2019-]*"
 NAME_RE = re.compile(r"\b" + CAP + r"(?:[ \t]+(?:(?:of|de|van|von|der|la|le|del)[ \t]+)?" + CAP + r")*")
 ACRONYM_RE = re.compile(r"^(?:[A-Z]{2,}[A-Za-z0-9]*|(?:[A-Z]\.){2,})$")
 CAMEL_RE = re.compile(r"^[A-Za-z]*[a-z][A-Z][A-Za-z0-9]*$|^[A-Z][a-z]+[A-Z][A-Za-z0-9]*$")
+# Words that start a capitalised run without being part of a name.
+SALUTATIONS = {"dear", "mr", "mrs", "ms", "dr", "prof", "professor", "hi", "hello"}
+PRONOUN_CONTRACTION_RE = re.compile(r"^(?:i|you|he|she|it|we|they|that|there|here|who|what|let)['\u2019](?:m|s|d|ll|ve|re)$", re.I)
+POSSESSIVE_RE = re.compile(r"['\u2019](?:s|m|d|ll|ve|re)$", re.I)
 COMMON_START = {
     "the", "a", "an", "this", "that", "these", "those", "in", "on", "at", "for", "we", "our", "it", "he", "she", "they",
     "however", "but", "and", "also", "if", "when", "while", "as", "after", "before", "because", "since", "so", "there",
@@ -240,7 +248,7 @@ class Extraction:
 
     def _names(self, work: str) -> None:
         for m in NAME_RE.finditer(work):
-            tokens = [re.sub(r"['\u2019](?:s|m|d|ll|ve|re)$", "", t) for t in re.split(r"[ \t]+", m.group(0))]
+            tokens = [POSSESSIVE_RE.sub("", t) for t in re.split(r"[ \t]+", m.group(0)) if not PRONOUN_CONTRACTION_RE.match(t)]
             tokens = [t for t in tokens if t and not (len(t) == 1 and t.isalpha())]
             if not tokens:
                 continue
@@ -269,8 +277,43 @@ def context(text: str, pos: int, width: int = 40) -> str:
     return flat(text[max(0, pos - width): pos + width])
 
 
+def _norm_words(text: str) -> list[str]:
+    """Lower-cased word chunks (letters, digits, & ' -), apostrophes normalised, possessives removed."""
+    text = text.casefold().replace("\u2019", "'")
+    return [w for w in (POSSESSIVE_RE.sub("", c).strip("'-") for c in re.findall(r"[a-z0-9&'-]+", text)) if w]
+
+
+def word_set(text: str) -> set[str]:
+    """Every word in TEXT, whole chunks and their alphanumeric parts, for deciding whether a name word is new."""
+    words = set()
+    for chunk in _norm_words(text):
+        words.add(chunk)
+        words.update(re.findall(r"[a-z0-9]+", chunk))
+    return words
+
+
+def new_name_words(phrase: str, known: set[str]) -> list[str]:
+    """Words of a name phrase that are absent from KNOWN (the other text's word_set).
+
+    Salutations, titles and pronoun contractions are not name words. A chunk with a digit ("GPT-4") must match
+    whole; any other chunk ("Thomas-Smith") matches when each of its parts is known."""
+    new = []
+    for raw in phrase.split():
+        if PRONOUN_CONTRACTION_RE.match(raw):
+            continue
+        for chunk in _norm_words(raw):
+            if chunk in SALUTATIONS:
+                continue
+            parts = re.findall(r"[a-z0-9]+", chunk)
+            if chunk in known or (not re.search(r"\d", chunk) and all(p in known for p in parts)):
+                continue
+            new.append(chunk)
+    return new
+
+
 def compare(before: Extraction, after: Extraction, ignore: set[str]) -> dict:
     cats = {}
+    before_words, after_words = word_set(before.text), word_set(after.text)
     for cat in CATEGORIES:
         if cat in ignore:
             continue
@@ -280,8 +323,12 @@ def compare(before: Extraction, after: Extraction, ignore: set[str]) -> dict:
             nb = b.get(item, [0, 0])[0]
             na = a.get(item, [0, 0])[0]
             if nb > na:
+                if cat == "names" and not new_name_words(item, after_words):
+                    continue
                 lost.append({"item": item, "before": nb, "after": na, "context": context(before.text, b[item][1])})
             elif na > nb:
+                if cat == "names" and not new_name_words(item, before_words):
+                    continue
                 added.append({"item": item, "before": nb, "after": na, "context": context(after.text, a[item][1])})
         cats[cat] = {"before_count": sum(v[0] for v in b.values()), "after_count": sum(v[0] for v in a.values()),
                      "lost": lost, "added": added}
@@ -322,6 +369,28 @@ def render_human(report: dict) -> str:
     return "\n".join(out)
 
 
+def build_report(before_text: str, after_text: str, ignore: set[str] = frozenset()) -> dict:
+    """The full report for two texts. The grader calls this instead of re-implementing the comparison."""
+    before, after = Extraction(before_text), Extraction(after_text)
+    known = before.mid_tokens | after.mid_tokens
+    before.finish(known)
+    after.finish(known)
+    cats = compare(before, after, ignore)
+    lost_total = sum(len(d["lost"]) for d in cats.values())
+    added_total = sum(len(d["added"]) for d in cats.values())
+    return {
+        "before": "",
+        "after": "",
+        "ok": lost_total == 0 and added_total == 0,
+        "lost_total": lost_total,
+        "added_total": added_total,
+        "ignored": sorted(ignore),
+        "categories": cats,
+        "markers_before": before.markers,
+        "markers_after": after.markers,
+    }
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(
         description="Report numbers, negations, certainty words, scope words, names, URLs, code, quotes and "
@@ -342,24 +411,9 @@ def main(argv=None) -> int:
     except OSError as exc:
         print(f"fact_diff: error: {exc.strerror or exc}: {exc.filename or ''}".rstrip(": "), file=sys.stderr)
         return 2
-    before, after = Extraction(before_text), Extraction(after_text)
-    known = before.mid_tokens | after.mid_tokens
-    before.finish(known)
-    after.finish(known)
-    cats = compare(before, after, set(args.ignore))
-    lost_total = sum(len(d["lost"]) for d in cats.values())
-    added_total = sum(len(d["added"]) for d in cats.values())
-    report = {
-        "before": "<stdin>" if args.before == "-" else args.before,
-        "after": "<stdin>" if args.after == "-" else args.after,
-        "ok": lost_total == 0 and added_total == 0,
-        "lost_total": lost_total,
-        "added_total": added_total,
-        "ignored": sorted(set(args.ignore)),
-        "categories": cats,
-        "markers_before": before.markers,
-        "markers_after": after.markers,
-    }
+    report = build_report(before_text, after_text, set(args.ignore))
+    report["before"] = "<stdin>" if args.before == "-" else args.before
+    report["after"] = "<stdin>" if args.after == "-" else args.after
     print(json.dumps(report, ensure_ascii=False, indent=2) if args.json else render_human(report))
     return 0 if report["ok"] else 1
 

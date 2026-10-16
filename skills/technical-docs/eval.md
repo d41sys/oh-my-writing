@@ -19,7 +19,7 @@ Answer each check pass or fail. Fix every failure before returning.
 10. If reference: is every entry in the same layout, free of teaching, selling and design arguments, and shaped like the thing it describes? For a CLI or script: are streams, files written or overwritten, and exit codes stated as the code behaves?
 11. If explanation: does it answer a "why" question with context, alternatives and trade-offs, tied to specific examples, without procedures or parameter tables?
 12. If README: does it say what it is, why, and a quick start before anything else, and link into deeper pages instead of duplicating them?
-13. If PR body: does it state what changed, why, evidence of before and after, door type and blast radius, and reviewer focus, with no preamble and a title that describes the change in about 70 characters or fewer?
+13. If PR body: does it state what changed, why, evidence of before and after, door type and blast radius, and reviewer focus, with no preamble, the title as the first line of the file, and a title that describes the change in about 70 characters or fewer?
 14. If commit message: is the subject imperative, specific and about 50 characters (72 at most), with a body that gives the cause rather than restating the diff?
 15. If ADR: do all three conditions hold (hard to reverse, surprising without context, real trade-off), and are context, options, decision and consequences present, with negatives listed and every reason taken from the author or the repo?
 16. If changelog or release note: is every entry user-facing, grouped under consistent headings, with each breaking change stating what changed and what to do?
@@ -34,7 +34,7 @@ Answer each check pass or fail. Fix every failure before returning.
 22. Are missing facts marked with exactly one of `[VERIFY: ...]`, `[ASK AUTHOR: ...]` or `[UNTESTED]`, with no other marker kinds and no TODO stubs?
 23. Are test results reported as actual run results with the scope the author gave, or "Not run", never implied (no "all tests pass" or "CI is green" without a result)?
 24. Does every "never", "always" or "at most" match the code's order of operations and edge cases, and is a changed default called out as a behaviour change?
-25. Do numbers come from the source or the change, with any conversion shown?
+25. Do numbers come from the source or the change, with any conversion shown, and is no new figure (a sum, ratio or total) used where naming the source's own parts would do?
 
 ## Form and safety
 

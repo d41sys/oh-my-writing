@@ -22,10 +22,6 @@
         "citations"
       ],
       "allow": [
-        "I'm",
-        "I've",
-        "I'd",
-        "I'll",
         "2"
       ],
       "note": "no invented link, figure or name; '2' is the notes' 'twice' written as 'two'"

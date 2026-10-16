@@ -13,7 +13,7 @@ Answer each check pass or fail. Fix every failure before returning.
 
 5. Is every anecdote, client, result, quote, metric and credential in the text traceable to the author's supplied material?
 6. Are all gaps marked with `[ASK AUTHOR: ...]` (only the author knows), `[VERIFY: ...]` (an outside fact or source) or `[UNTESTED]` (a command or snippet nobody ran) rather than filled with a plausible detail, and are no other marker styles used?
-7. Are illustrations that are not real events labelled as hypothetical?
+7. Is every real-looking episode, customer, quote or "imagine a team..." scene either from the author's material or absent? Where the author asked for a story and gave none, is there an `[ASK AUTHOR: a real moment when ...]` in the post at the story slot, and is any hypothetical one the author asked for labelled inside the post?
 8. Do numbers carry their conditions (what was measured, against what, over what period), and are none rounded upward or stripped of a qualifier?
 9. Are limitations, trade-offs or failed attempts that matter to the reader still present?
 10. Is any fear, urgency or vulnerability in the text real and stated plainly, not staged?

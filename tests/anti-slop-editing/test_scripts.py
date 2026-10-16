@@ -494,6 +494,39 @@ def test_contractions_of_pronoun_i_are_not_names(tmp_path):
     assert added_items(report, "names") == set(), report["categories"]["names"]
 
 
+def names_diff(tmp_path, before, after):
+    _, report = diff_json(write(tmp_path, "b.md", before + "\n"), write(tmp_path, "a.md", after + "\n"))
+    return lost_items(report, "names"), added_items(report, "names")
+
+
+def test_names_regrouped_from_words_already_present_are_not_added(tmp_path):
+    cases = [
+        ("Khanh Le writes to Prof. Marchetti.", "Dear Professor Marchetti,\n\nKhanh Le here."),
+        ("We run Jenkins and CI on Linux.", "We run Jenkins CI on Linux."),
+        ("Applying as a prospective student for the MSc Marine Ecology.", "Prospective MSc Marine Ecology student here."),
+        ("Thanks to O'Brien for the review.", "Thanks to O\u2019Brien\u2019s team for the review."),
+        ("Khanh Le wrote this.", "Khanh Le wrote this, and They\u2019re Khanh Le."),
+        ("Khanh Le met Prof. Marchetti.", "Hello Dr Marchetti, Hi Khanh Le."),
+    ]
+    for before, after in cases:
+        lost, added = names_diff(tmp_path, before, after)
+        assert (lost, added) == (set(), set()), (before, after, lost, added)
+
+
+def test_invented_name_word_is_still_added_and_reported_as_written(tmp_path):
+    _, added = names_diff(tmp_path, "Khanh Le writes to Prof. Marchetti.", "Dear Professor Marchetti Rossi,\n\nKhanh Le here.")
+    assert added == {"Dear Professor Marchetti Rossi"}
+    _, added = names_diff(tmp_path, "We run Jenkins on Linux.", "We run Jenkins CI and Terraform on Linux.")
+    assert added == {"Jenkins CI", "Terraform"}
+
+
+def test_dropped_real_name_word_is_still_lost(tmp_path):
+    lost, _ = names_diff(tmp_path, "Khanh Le met Dr Marchetti.", "Khanh Le met the professor.")
+    assert lost == {"Dr Marchetti"}
+    lost, _ = names_diff(tmp_path, "Khanh Le writes to Dear Professor Marchetti Rossi.", "Khanh Le writes to Dear Professor Marchetti.")
+    assert lost == {"Dear Professor Marchetti Rossi"}
+
+
 def test_fenced_code_change_is_caught(tmp_path):
     before = write(tmp_path, "b.md", "Run this:\n\n```sh\nmake test\n```\n")
     after = write(tmp_path, "a.md", "Run this:\n\n```sh\nmake check\n```\n")

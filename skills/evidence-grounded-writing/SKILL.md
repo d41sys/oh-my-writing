@@ -1,10 +1,10 @@
 ---
 name: evidence-grounded-writing
-description: Writes and checks claims against evidence. Builds a claims ledger (claim, evidence location, status, action), sets claim strength to what the evidence supports, separates causal from correlational wording, checks comparisons, numbers and statistics (including against result files), audits whether each citation supports its sentence, keeps quotes honest, replaces vague attribution with named sources, places uncertainty where it matters, and flags health, legal or finance statements for verification. Use when asked to "fact-check this", "check my claims", "audit the citations", "are these numbers right", "tone down the overclaiming", "add sources", "is this claim supported", "build a claims ledger", or "write a literature synthesis". An audit for AI phrasing goes to anti-slop-editing and a whole-draft reader review to independent-review.
+description: Writes and checks claims against evidence. Builds a claims ledger (claim, evidence location, status, action), sets claim strength to what the evidence supports, separates causal from correlational wording, checks comparisons, numbers and statistics (including against result files), audits whether each citation supports its sentence, keeps quotes honest, replaces vague attribution with named sources, places uncertainty where it matters, and flags health, legal or finance statements for verification. Use when asked to "fact-check this", "check my claims", "audit the citations", "are these numbers right", "tone down the overclaiming", "fix whatever we can't back up", "add sources", "is this claim supported", "build a claims ledger", or "write a literature synthesis"; also when asked to shorten, tighten or trim an abstract or passage that reports a result, number, hedge or limit without strengthening it. An audit for AI phrasing goes to anti-slop-editing and a whole-draft reader review to independent-review.
 license: MIT
 compatibility: Optional helper script needs Python 3.10+ standard library; the skill works without it.
 metadata:
-  version: "1.1"
+  version: "1.2"
   skill-author: d41sys
 ---
 
@@ -18,6 +18,7 @@ Every factual sentence should rest on something the author can point to. This sk
 - Writing new text from supplied sources, data or notes so that each statement stays tied to them.
 - Auditing citations, quotes, numbers, statistics, comparisons and causal wording.
 - Synthesising several sources into a themed summary that shows where they disagree.
+- Shortening or tightening a passage that reports a result, a number, a hedge or a limit (an abstract, a results paragraph, a claim in a pitch): the cut must not strengthen a verb, drop a scope word, or lose a figure. Mode: edit guard.
 
 Not for: removing generic AI phrasing without a fact question, including an "audit this draft for AI tells" (use `anti-slop-editing`); matching a personal voice (`author-voice`); planning and drafting from scratch (`structured-drafting`); a fresh-reader critique or review of the whole draft (`independent-review`). For ML paper sections use `academic-writing` if installed; otherwise `structured-drafting` for structure plus this skill for claims. When the text is a post, a decision report, documentation or a career document, `post-writing`, `report-writing`, `technical-docs` and `career-documents` own its structure and voice; this skill still checks the claims in them and works on its own if those skills are absent.
 
@@ -38,7 +39,7 @@ Pick the mode from the request. Modes share steps 1 to 3.
 4. **Resolve each row.**
    - Supported and worded at the right strength: keep.
    - Partial: rewrite to the strongest level the evidence supports (see [claim strength](references/claim-strength.md)); record what is missing.
-   - Unsupported: cut it, or ask the author for the source with `[ASK AUTHOR: ...]`, or, when only an outside lookup can settle it, `[VERIFY: ...]`; never repair it with a plausible number. A cut is listed (change list or the template's cut-claims table), never hidden by rewording until the problem disappears. In formal text, unsupported claims do not stay in the prose.
+   - Unsupported: cut it, or ask the author for the source with `[ASK AUTHOR: ...]`, or, when only an outside lookup can settle it, `[VERIFY: ...]`; never repair it with a plausible number. A cut is listed (change list or the template's cut-claims table), never hidden by rewording until the problem disappears. In formal text, unsupported claims do not stay in the prose. The author's own reported results are not "unsupported" just because the raw values are not in the files; see the rule on the author's own results.
    - Needs-check: put `[VERIFY: what to confirm and against what]` in the text or ledger and tell the author which source would settle it.
 5. **Check the five cross-cutting areas** that single-row review misses:
    - Comparisons: same baseline, metric, conditions and time ([claim strength](references/claim-strength.md)).
@@ -70,7 +71,7 @@ Pick the mode from the request. Modes share steps 1 to 3.
 - **Keep the statement class.** A measured fact, an estimate, a calculation, a forecast, an opinion and a recommendation stay what they are; an estimate is never rewritten as a fact or a scenario as a prediction.
 - **Say what was checked, and by whom.** The report names the sources opened, the ones not opened, and what the check cannot show (a machine screen is not verification; an audit of the text is not a judgment of the study). If you wrote or edited the text yourself, say the audit is not independent and suggest a fresh reader (`independent-review`). Never write "all citations verified" into the document.
 - **Editing never upgrades.** Do not turn "in two trials" into "in trials", "may help" into "helps", or "no difference detected" into "no difference". Strengthening is allowed only after new evidence is on the table and recorded.
-- **The author's own results are evidence.** Figures the author reports from their own data, run or analysis (a dataset named in the notes, a result file, "our analysis of 1,240 students") stay in the text at the strength their design supports; when the raw values are not in the files, keep the figure and add `[VERIFY: check against <the named data>]` instead of cutting it. What the evidence fails to support is usually the interpretation ("raises", "proves"), not the measurement. Reason: deleting a finding to remove an overclaim changes what the author reports and loses the result the reader needs.
+- **The author's own results are evidence.** A figure the author reports from their own data, run or analysis (a dataset named in the notes, a result file, "our analysis of 1,240 students", "mean 78 versus 64") stays in the text, worded at the strength the design supports. When the raw values are not in the files, keep the figure and add `[VERIFY: check against <the named data>]` beside it instead of cutting it. Repair the interpretation, not the measurement: "raises exam scores" becomes "students who used the app scored 14 points higher (mean 78 versus 64)", with the design limits (voluntary use, no prior grades) kept beside it. Cut or mark only what has no supporting evidence at all (an unnamed "studies show", a universal "every school should"). Reason: deleting a finding to remove an overclaim changes what the author reports and loses the result the reader needs; a rewrite that leaves only "we analysed X and Y" has removed the evidence, not fixed the claim.
 - **High-stakes domains (health, law, finance, safety).** Do not give confident advice or specific figures from memory. State what the supplied source says, mark the statement `[VERIFY: qualified source for ...]`, and keep it separate from the author's own opinion.
 - **Lexical lists are English-only.** For other languages (for example Vietnamese) apply the structural checks: ledger, claim level, numbers, citation fit, comparison validity. Do not transfer English word lists; ask a fluent reader for wording checks the script cannot make.
 - **The script is a screen, not a verdict.** It flags wording that usually needs support, with false positives (for example "first" as an ordinal) and false negatives (spelled-out numbers). A flagged sentence may be fine; an unflagged one may not be.
@@ -84,6 +85,8 @@ Three kinds, used the same way everywhere:
 - `[UNTESTED]` for a command or code sample in the text that nobody ran.
 
 Convert any other placeholder spelling (a to-do tag, a citation-needed tag, a confirm tag) to one of these when you touch it. A marker sits beside the claim it concerns and does not excuse leaving a flawed sentence worded as fact.
+
+Describe a gap without repeating the overclaiming word you removed (write `[ASK AUTHOR: source for the claim about other apps]`, not a marker that quotes "always" or "studies show"), so the flawed wording does not come back inside the marker.
 
 ## Output
 

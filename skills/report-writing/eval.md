@@ -15,7 +15,7 @@ Answer each check pass or fail. Fix every failure before returning.
 6. Does every number carry unit, period, scope, baseline, source, and as-of date (or an explicit marker where one is missing)?
 7. Are observation, inference, forecast, and recommendation distinguishable from each other on the page?
 8. Are estimates, vendor claims, and forecasts labeled as such, with the assumptions that drive them visible?
-9. Does every figure, name, quote, and source come from the author's material or a cited source, with nothing invented, and is every source named rather than "studies show"?
+9. Does every figure, name, quote, and source come from the author's material or a cited source, with nothing invented, and is every source named rather than "studies show"? Does every number, threshold, config value, and duration in the notes still appear (with unit), or is each deliberate omission listed?
 10. Are gaps marked as `[ASK AUTHOR: ...]`, `[VERIFY: ...]`, or (for a command or code line that was not run) `[UNTESTED]`, and is the draft banner present if any remain?
 11. Were totals, percentages, growth rates, and conversions recomputed from their parts, do they agree, and is each derived figure labeled a calculation rather than passed off as a source's number?
 12. Do figures in this report match the deck, model, memo, or earlier version they must agree with, including rounding?

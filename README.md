@@ -33,7 +33,7 @@ Then: `/academic-writing rewrite the abstract` or `/academic-writing write the i
 
 ## Oh My Writing skills
 
-`skills/` holds nine general writing skills built from the Oh My Writing library below. They follow the [Agent Skills specification](https://agentskills.io/specification): each skill is `skills/<name>/SKILL.md` with on-demand `references/`, `assets/` templates, optional stdlib-only `scripts/`, a self-check `eval.md` run before returning output, and `agents/openai.yaml` for Codex. The academic-writing skill above stays at the repository root and is not part of the plugin.
+`skills/` holds ten general writing skills built from the Oh My Writing library below. They follow the [Agent Skills specification](https://agentskills.io/specification): each skill is `skills/<name>/SKILL.md` with on-demand `references/`, `assets/` templates, optional stdlib-only `scripts/`, a self-check `eval.md` run before returning output, and `agents/openai.yaml` for Codex. The academic-writing skill above stays at the repository root and is not part of the plugin.
 
 | Skill | Use it to |
 |---|---|
@@ -46,6 +46,15 @@ Then: `/academic-writing rewrite the abstract` or `/academic-writing write the i
 | `report-writing` | Decision memos, research and market reports, executive summaries, post-mortems |
 | `technical-docs` | Tutorials, how-to guides, reference, explanation, READMEs, PR descriptions, changelogs |
 | `career-documents` | Truthful résumés, CVs, cover letters, statements of purpose, profiles and outreach |
+| `project-report` | Turn a folder of project documents into a sourced, professional project report with designed diagrams, as one print-ready HTML file |
+
+`project-report` draws its diagrams with the separate [diagram-design](https://github.com/cathrynlavery/diagram-design) skill when it is installed, and falls back to Mermaid blocks otherwise. Install it next to these skills:
+
+```bash
+git clone https://github.com/cathrynlavery/diagram-design.git ~/diagram-design
+ln -s ~/diagram-design/skills/diagram-design ~/.agents/skills/diagram-design
+ln -s ~/diagram-design/skills/diagram-design ~/.claude/skills/diagram-design
+```
 
 Install by linking the skill folders where each host looks for them. Claude Code reads `~/.claude/skills`; Codex reads `~/.agents/skills`; omp reads its own `~/.omp/agent/skills` and, with its Claude and Agents providers enabled (the default on this setup), the two folders above:
 
@@ -156,6 +165,7 @@ Thanks to the following projects and their contributors. Their work informed the
 | [ResumeSkills](https://github.com/Paramchoudhary/ResumeSkills) | Résumé, CV, cover-letter, LinkedIn-profile and portfolio methods |
 | [proficiently-claude-skills](https://github.com/proficientlyjobs/proficiently-claude-skills) | Truthful cover-letter and résumé tailoring |
 | [jezweb/claude-skills](https://github.com/jezweb/claude-skills) | Award applications, proposals and regional business English |
+| [diagram-design](https://github.com/cathrynlavery/diagram-design) | Diagram drawing for `project-report`; used as a separately installed skill, not bundled |
 | University career and writing centers, DAAD, European Education Area | Statement-of-purpose, personal-statement and motivation-letter guidance (cited per unit) |
 
 Copyright and license notices are preserved in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). In particular, the identified Diátaxis adaptations remain CC-BY-SA 4.0. Acknowledgment does not replace license compliance.

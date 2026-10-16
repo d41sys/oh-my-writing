@@ -78,10 +78,17 @@ def test_names_are_compared_word_by_word_not_as_whole_phrases():
     assert not result["passed"] and "Terraform Labs" in result["detail"]
 
 
+def test_salutation_and_title_are_not_new_names_but_new_words_still_are():
+    assert names_check("Dear Professor Marchetti,\n\nI want the MSc Marine Ecology.")["passed"]
+    assert names_check("Hi Dr Marchetti, I’m an Environmental Science student.")["passed"]
+    result = names_check("Dear Professor Marchetti Rossi,\n\nI want the MSc Marine Ecology.")
+    assert not result["passed"] and "Dear Professor Marchetti Rossi" in result["detail"]
+
+
 def test_names_allow_lists_single_words_of_a_phrase():
-    out = "Dear Professor Marchetti,\n\nI want the MSc Marine Ecology."
+    out = "Dear Professor Marchetti,\n\nI want the MSc Marine Ecology at Northgate University."
     assert not names_check(out)["passed"]
-    assert names_check(out, allow=["Dear", "Professor"])["passed"]
+    assert names_check(out, allow=["Northgate"])["passed"]
 
 
 def test_link_to_an_input_file_is_not_an_added_url():
@@ -159,6 +166,11 @@ def test_host_errors_are_excluded_from_both_rates(tmp_path, monkeypatch):
         (d / "meta.json").write_text(json.dumps({"case": c["id"], "skill": c["skill"], "host": "claude",
                                                  "condition": cond, "skill_loaded": cond == "skill", "error": error}))
     total = grade.grade_run(tmp_path)["summary"]["by"]["claude/ALL"]
-    assert (total["skill_n"], total["baseline_n"], total["errors"]) == (1, 1, 1)
+    assert (total["skill_n"], total["baseline_n"], total["excluded"]) == (1, 1, 1)
     assert total["delta"] == 1.0
     assert "| ERROR |" in (tmp_path / "report.md").read_text()
+
+    # A case with only one condition on disk is unpaired and must not count either.
+    (tmp_path / "runs" / "anti-slop-editing__other__claude__skill").rename(tmp_path / "gone")
+    total = grade.grade_run(tmp_path)["summary"]["by"]["claude/ALL"]
+    assert (total["skill_n"], total["baseline_n"], total["excluded"]) == (1, 1, 1)

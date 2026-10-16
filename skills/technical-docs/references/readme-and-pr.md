@@ -20,6 +20,7 @@ Rules that matter:
 
 - Why before how. A reader who does not know why they would use it will not read the install steps.
 - Do not paste reference or architecture into the README; link.
+- For a script or command-line tool, read the argument parser and the code paths before writing: document only the options it defines, where output goes (standard output, standard error, files it writes), and the exit codes it returns (see [reference and API](reference-and-api.md)). Install is what the source shows (copy the file, the interpreter version, standard library only); do not add a package-manager command, a package name or a supported format the source does not show.
 - Badges, logos and tables of contents are optional; keep what helps a reader decide or navigate.
 - Stay free of private paths, credentials, internal hostnames, account names, and private logs. Replace them with repo-relative paths, placeholders or role labels (for example "workspace owner"). Describe credentials by provider name only.
 - Include a last-verified version or date only if someone will keep it current.
@@ -56,7 +57,7 @@ Gather first: the full branch commit log, the full diff against the base branch,
 
 Default body:
 
-1. **Title**: under about 70 characters, describes the change (not the branch name), conventional style such as `fix: ...` or `feat: ...` using the dominant type.
+1. **Title**: the first line of the saved file, as a `# ` heading, so the file is paste-ready. Under about 70 characters including the type prefix, describes the change (not the branch name), conventional style such as `fix: ...` or `feat: ...` using the dominant type.
 2. **Summary**: two to four sentences at product level: the problem and what the change does about it. Add the smallest visual that makes the shape clear (a file tree, call tree, pseudocode or small diagram) next to the sentence it supports. No preamble before the Summary.
 3. **Changes**: bullets by area. Files grouped as source, tests, docs, config, migrations when many.
 4. **Evidence**: before and after. A screenshot pair, the failing test now passing, or console output that changed. "Tests are green" alone is a claim; show the command and its result, or say "Not run". Give steps a reviewer can rerun, with expected output.
@@ -83,7 +84,7 @@ Notes:
 - Keep separate judgements separate (correctness, risk, style); a pass on one axis must not hide a fail on another.
 - Report what was run exactly as the author states it, with its scope. "Ran the parser tests locally, 7 passed" does not become "tests pass"; the untouched suite and CI are "Not run" until someone says otherwise. Never write "CI is green" without a pipeline result in front of you.
 - Numbers come from the diff, the notes or a run you made. If you convert or combine them (hours to minutes), show the arithmetic or leave them as given.
-- Check the strength of every guarantee against the code before repeating it (see rule 15 in SKILL.md). If an adjustment is applied after a limit (an offset added after a clamp), a reviewer needs that order stated, because it decides whether "never exceeds" is true.
+- Check the strength of every guarantee against the code before repeating it (see rule 15 in SKILL.md). If an adjustment is applied after a limit (an offset added after a clamp), a reviewer needs that order stated, because it decides whether "never exceeds" is true. State it with the source's own values ("at most 30 seconds, then jitter is added"), not a sum you computed that no source prints.
 - A changed default or a new limit is a behaviour change for existing callers even when no signature changed. Name who is affected (a named job or consumer from the notes) under Risk or Breaking changes.
 - Put thresholds in "Watch after merge" only when the author or a spec gives them; otherwise write "nothing specific" or `[ASK AUTHOR: what should be watched?]`. A vague "works fine" is not a success criterion.
 

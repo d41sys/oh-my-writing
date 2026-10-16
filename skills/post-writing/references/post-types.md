@@ -116,7 +116,7 @@ These ideas shape how to present a point. They are not licences to manipulate.
 - **The curse of knowledge.** Experts skip steps they no longer see. Test the draft on someone outside the field, or imagine reading it with only the prerequisites you listed.
 - **Admit a real limit.** Naming one genuine weakness or trade-off makes the rest more believable. Do not invent a flaw as a rhetorical device.
 - **Immediate benefit.** Say what the reader gets now before what they might get later. Describe outcomes, not feature names.
-- **Concrete cases.** A specific case is easier to picture than a category. The case must be real or labelled as hypothetical.
+- **Concrete cases.** A specific case is easier to picture than a category. The case must be real, from the author's material. A hypothetical told as a story is an invented case; use it only when the author asked for one, and label it inside the post.
 - **Framing.** The same fact can be framed as 90% success or 10% failure. Pick the frame that is accurate and useful for the reader's decision. If both are accurate, prefer the one that helps them judge.
 - **Loss and risk.** People weigh potential loss heavily. Describe real risks plainly with their real likelihood; do not manufacture fear to move the reader.
 - **Friction.** Say what switching or trying costs: time, migration, learning. A promise of "no effort" for complex work damages trust.

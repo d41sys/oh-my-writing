@@ -14,6 +14,7 @@ from __future__ import annotations
 import argparse
 import difflib
 import fnmatch
+import importlib.util
 import json
 import re
 import subprocess
@@ -115,12 +116,22 @@ def _run_json(cmd: list[str], ok_codes=(0, 1)) -> dict:
     return json.loads(proc.stdout)
 
 
+def _load_fact_diff():
+    spec = importlib.util.spec_from_file_location("fact_diff", FACT_DIFF)
+    module = importlib.util.module_from_spec(spec)
+    keep, sys.dont_write_bytecode = sys.dont_write_bytecode, True  # no __pycache__ inside the shipped skill
+    try:
+        spec.loader.exec_module(module)
+    finally:
+        sys.dont_write_bytecode = keep
+    return module
+
+
+FACT = _load_fact_diff()
+
+
 def fact_diff(before: str, after: str) -> dict:
-    with tempfile.TemporaryDirectory() as tmp:
-        b, a = Path(tmp) / "before.md", Path(tmp) / "after.md"
-        b.write_text(before, encoding="utf-8")
-        a.write_text(after, encoding="utf-8")
-        return _run_json([sys.executable, str(FACT_DIFF), "--json", str(b), str(a)])
+    return FACT.build_report(before, after)
 
 
 def slop_findings(text: str, profile: str) -> list[dict]:
@@ -179,24 +190,6 @@ def _items(report: dict, cat: str, kind: str) -> list[dict]:
     return report["categories"].get(cat, {}).get(kind, [])
 
 
-def _lexicon(text: str) -> set[str]:
-    return set(re.findall(r"[a-z0-9]+", text.casefold()))
-
-
-def _new_name(item: str, lexicon: set[str], allow: set[str]) -> bool:
-    """A name phrase is new only when one of its words appears nowhere in the sources and is not allowed.
-
-    fact_diff compares whole phrases, so "BSc Environmental Science" becoming "Environmental Science" or
-    "Norwind Software (their API team)" becoming "Norwind Software's API team" reads as a different name. For a
-    benchmark about invented facts the question is whether a word is new, not how the words are grouped."""
-    for token in item.split():
-        if token.casefold() in allow:
-            continue
-        if not set(re.findall(r"[a-z0-9]+", token.casefold())) <= lexicon:
-            return True
-    return False
-
-
 def _is_input_file_link(item: str, case: dict) -> bool:
     """A relative link to one of the case's own input files (a memo citing its source) is not a new URL."""
     return "://" not in item and item.split("#")[0].replace("\\", "/").rsplit("/", 1)[-1] in case["files"]
@@ -207,13 +200,13 @@ def check_no_added_facts(check, text, case):
     sources = "\n\n".join([case["files"][n] for n in names] + [case["prompt"]])
     report = fact_diff(sources, text)
     allow = {a.casefold() for a in check.get("allow", [])}
-    lexicon = _lexicon(sources)
+    lexicon = FACT.word_set(sources)
     added = []
     for cat in check.get("categories", ["numbers", "citations", "urls"]):
         for it in _items(report, cat, "added"):
             if it["before"] != 0 or it["item"].casefold() in allow:
                 continue
-            if cat == "names" and not _new_name(it["item"], lexicon, allow):
+            if cat == "names" and not [w for w in FACT.new_name_words(it["item"], lexicon) if w not in allow]:
                 continue
             if cat == "urls" and _is_input_file_link(it["item"], case):
                 continue
@@ -333,6 +326,11 @@ def summarize(runs: list[dict], judge: list[dict]) -> dict:
     hosts = sorted({r["host"] for r in runs})
     skills = sorted({r["skill"] for r in runs})
     broken = {(r["case"], r["host"]) for r in runs if host_failed(r)}
+    present: dict[tuple, set] = {}
+    for r in runs:
+        present.setdefault((r["case"], r["host"]), set()).add(r["condition"])
+    conditions = {r["condition"] for r in runs}
+    broken |= {pair for pair, conds in present.items() if conds != conditions}  # one side missing: unpaired
     by = {}
     for host in hosts:
         for skill in skills + ["ALL"]:
@@ -347,7 +345,7 @@ def summarize(runs: list[dict], judge: list[dict]) -> dict:
                 "delta": None if ps is None or pb is None else ps - pb,
                 "skill_n": len(s), "baseline_n": len(b),
                 "skill_loaded": _rate([{"passed": bool(r["skill_loaded"])} for r in s]),
-                "errors": sum(1 for r in rows if host_failed(r)),
+                "excluded": len({r["case"] for r in rows if (r["case"], r["host"]) in broken}),
             }
     failing = {}
     for r in runs:
@@ -378,15 +376,16 @@ def render_report(results: dict) -> str:
                           "seen them."]
         lines += [""]
     lines += ["## Pass rate by skill", "",
-              "Cases where either condition hit a host error (crash or timeout with no output) are left out of both "
-              "rates and counted under host errors.", "",
-              "| host / skill | with skills | baseline | difference | skill loaded | n | host errors |",
+              "A case counts only when both conditions produced a gradable run. Cases with a host error (crash, "
+              "quota or timeout with no output) or with one condition missing are left out of both rates and "
+              "counted as excluded.", "",
+              "| host / skill | with skills | baseline | difference | skill loaded | n | excluded cases |",
               "|---|---:|---:|---:|---:|---:|---:|"]
     for key, v in summary["by"].items():
         diff = "n/a" if v["delta"] is None else f"{v['delta'] * 100:+.0f} pts"
         label = f"**{key}**" if key.endswith("/ALL") else key
         lines.append(f"| {label} | {_pct(v['skill_pass'])} | {_pct(v['baseline_pass'])} | {diff} | "
-                     f"{_pct(v['skill_loaded'])} | {v['skill_n']}+{v['baseline_n']} | {v['errors']} |")
+                     f"{_pct(v['skill_loaded'])} | {v['skill_n']}+{v['baseline_n']} | {v['excluded']} |")
     lines += ["", "## Cases", "", "| case | host | baseline | with skills | failed checks (with skills / baseline) |",
               "|---|---|:---:|:---:|---|"]
     index = {(r["case"], r["host"], r["condition"]): r for r in runs}

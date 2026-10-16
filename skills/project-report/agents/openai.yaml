@@ -1,0 +1,4 @@
+interface:
+  display_name: "Project Report"
+  short_description: "Turn a folder of project documents into a sourced, professional report with designed diagrams."
+  default_prompt: "Use $project-report to build a project report with diagrams from the documents in this folder."

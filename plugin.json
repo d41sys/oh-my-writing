@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "oh-my-writing",
-  "version": "1.1.0",
-  "description": "Writing skills for AI-assisted drafting and editing: anti-slop editing, author voice, structured drafting, evidence-grounded claims, independent review, and genre skills for posts, reports, technical docs, and career documents.",
+  "version": "1.2.0",
+  "description": "Writing skills for AI-assisted drafting and editing: anti-slop editing, author voice, structured drafting, evidence-grounded claims, independent review, and genre skills for posts, reports, technical docs, career documents, and project reports with diagrams built from a folder of documents.",
   "author": {
     "name": "d41sys"
   },

@@ -1,9 +1,9 @@
 ---
 name: technical-docs
-description: Writes and revises technical documentation by first deciding what the reader needs (learn by doing, achieve a goal, look up a fact, or understand why), then producing the matching page type. Covers tutorials, how-to guides, reference and API/CLI pages, architecture explanations, READMEs, code walkthroughs, pull request descriptions, commit messages, changelogs, release notes, migration guides and decision records (ADRs). Use when asked to "write a README", "document this API", "write a tutorial", "write a how-to guide for this tool", "explain this architecture", "walk through this code", "write the PR description", "write a commit message", "write an ADR", "write release notes", "write a changelog", "write a migration guide", or "fix our docs structure". A blog-style how-to post or a launch announcement post goes to post-writing.
+description: Writes and revises technical documentation by first deciding what the reader needs (learn by doing, achieve a goal, look up a fact, or understand why), then producing the matching page type. Covers tutorials and getting-started guides, how-to guides, reference and API/CLI/config pages, architecture explanations, READMEs, code walkthroughs, pull request descriptions, commit messages, changelogs, release notes, migration guides and decision records (ADRs). Use when asked to "write a README", "document this API", "write a tutorial", "write a getting-started guide", "write a how-to guide for this tool", "explain this architecture", "walk through this code", "write the PR description", "write a commit message", "write an ADR", "write release notes", "write a changelog", "write a migration guide", or "fix our docs structure". A blog-style how-to post or a launch announcement post goes to post-writing.
 license: CC-BY-SA-4.0
 metadata:
-  version: "1.1"
+  version: "1.2"
   skill-author: d41sys
 ---
 
@@ -64,7 +64,7 @@ Other artifacts map onto these: a README is a front door that links into all fou
 6. **Describe the thing as it is now.** Do not narrate the edit that produced it ("this replaces the old approach"). Change history lives in the changelog, release notes, migration guide, commit message or decision record.
 7. **Run it or mark it.** A sample that was never run is a claim, not a sample. Mark it `[UNTESTED]` rather than let it pass as working. Reason: docs that do not match reality are worse than none. Exception: placeholder values in a sample are fine when they are visibly marked as placeholders.
 8. **State versions and environment.** Every install, command and API page names the version and platform it was checked against. Take them from files, not recall.
-9. **Never invent.** No endpoints, flags, defaults, benchmarks, user counts, customer quotes or "supports X" claims that the source does not show. Numbers in a changelog or PR come from the change itself.
+9. **Never invent.** No endpoints, flags, config keys, defaults, install steps, package names, supported formats, benchmarks, user counts, customer quotes or "supports X" claims that the source does not show. A script's install step is what the source shows (the file, the interpreter version, "standard library only"), not a package-manager command. Numbers in a changelog or PR come from the change itself; name the parts ("the cap plus jitter") instead of a sum or ratio you computed that appears in no source.
 10. **Lead with what the reader does.** First screen: what this is and the first action. Plain verbs, short sentences, active voice. Cut filler openers ("Please note that", "In order to"). Clarity beats completeness beats elegance.
 11. **Write for the new teammate.** If they would have to ask a question to follow it, the page is not done.
 12. **Markdown discipline.** One H1, no skipped levels, descriptive sentence-case headings, fenced code blocks with a language tag (`text` for plain output), tables for reference data (about five columns at most, header row), relative links with meaningful text, numbered lists only for ordered steps. Details: [reference and API](references/reference-and-api.md#markdown-conventions).

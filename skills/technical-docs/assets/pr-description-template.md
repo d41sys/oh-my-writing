@@ -1,4 +1,5 @@
-<!-- Title: type(scope): what changed. About 70 characters or fewer; not the branch name. -->
+# type(scope): what changed
+<!-- The title is the first line of the file. About 70 characters or fewer including the type prefix; not the branch name. Delete this comment. -->
 
 ## Summary
 

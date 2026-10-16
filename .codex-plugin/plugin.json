@@ -1,7 +1,7 @@
 {
   "name": "oh-my-writing",
-  "version": "1.1.0",
-  "description": "Writing skills for AI-assisted drafting and editing without AI slop, invented facts, or a flattened author voice.",
+  "version": "1.2.0",
+  "description": "Writing skills for AI-assisted drafting and editing without AI slop, invented facts, or a flattened author voice, including project reports with designed diagrams.",
   "author": {
     "name": "d41sys"
   },

@@ -199,7 +199,7 @@ This is the blameless document written for the team. A public blog post that tel
 
 1. Summary: what happened, impact (who, how many, how long, cost), and the main cause in plain terms, in a few sentences.
 2. Impact: measured, with source. Separate what was measured from what is estimated.
-3. Timeline: timestamped events with the information available at each point. Decisions are judged against what was known then. Times and durations are the author's; compute a duration only from given timestamps and show the arithmetic.
+3. Timeline: timestamped events with the information available at each point. Decisions are judged against what was known then. Times and durations are the author's; compute a duration only from given timestamps and show the arithmetic. Carry every value in the notes into the document (a config value and the value it should have had, a timeout, a threshold, a policy interval), because the cause is often one number.
 4. Causes: the chain from trigger to impact, and the conditions that let it happen. Use why-questions until you reach something a change can fix, typically three to five levels. Each causal link has evidence (log, metric, measurement), or is marked as probable.
 5. What went well and where luck helped. Luck is a finding too.
 6. Action items: each tied to a verified cause and specific enough to check (name the system, threshold, document, or step; "improve monitoring" is not an action), with an owner, a date, and the evidence that will show it worked. Prefer changes to systems and checks over retraining or reminders. If the author gave no owner or date, mark `[ASK AUTHOR: owner and date]` rather than assigning one.

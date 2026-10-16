@@ -10,7 +10,7 @@
   "output": "out/email.md",
   "checks": [
     { "type": "word_count", "min": 40, "max": 180 },
-    { "type": "no_added_facts", "categories": ["numbers", "names", "citations", "urls"], "allow": ["Dear", "Professor"], "note": "names are compared word by word; the salutation and the expansion of 'Prof.' are not new facts" },
+    { "type": "no_added_facts", "categories": ["numbers", "names", "citations", "urls"], "note": "no invented figure, name, citation or link; a salutation or title is not a name" },
     { "type": "not_contains", "values": ["as we discussed", "as discussed", "following up on our", "our conversation", "our previous", "when we met", "great catching up", "mutual", "I hope this email finds you well", "I hope this finds you well", "groundbreaking"] },
     { "type": "contains", "values": ["Marchetti", "Khanh"] },
     { "type": "contains_any", "values": ["seagrass", "heatwave"] }

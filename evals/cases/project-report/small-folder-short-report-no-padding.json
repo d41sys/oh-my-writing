@@ -1,0 +1,68 @@
+{
+  "id": "project-report/small-folder-short-report-no-padding",
+  "skill": "project-report",
+  "description": "Two short documents support a one-page report: no padded objectives or lessons sections, at most one diagram, the unknown legal review date and owner stay open as markers, and no invented figures.",
+  "prompt": "The website refresh documents are in the folder docs/. Write a short project status report from them for Ben, with a diagram only if it helps. Save it to out/report.md. I'm not available today, so don't wait for me.",
+  "files": {
+    "docs/status-email.txt": "From: Amira Haddad\nTo: Ben Cole\nDate: 12 September 2026\nSubject: Website refresh status\n\nBen, quick update. The new site pages are 8 of 12 done. Copy for the last 4 pages is waiting on legal review; I asked on 5 September and have no date back. Hosting stays at $240 per month. Next: I will publish the 8 finished pages on 19 September.\n\nAmira\n",
+    "docs/costs.csv": "item,monthly_cost_usd\nhosting,240\nanalytics,35\n"
+  },
+  "output": "out/report.md",
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "allow": [
+        "240",
+        "240 usd",
+        "35",
+        "35 usd",
+        "275",
+        "275 usd"
+      ],
+      "note": "source amounts with or without a currency sign, and the sum of the two monthly costs"
+    },
+    {
+      "type": "contains_any",
+      "values": [
+        "8 of 12",
+        "8 out of 12",
+        "eight of 12",
+        "8/12",
+        "eight of the 12",
+        "8 of the 12"
+      ]
+    },
+    {
+      "type": "contains",
+      "values": [
+        "19 September",
+        "5 September"
+      ]
+    },
+    {
+      "type": "markers",
+      "min": 1,
+      "max": 5,
+      "target": "output"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?im)^#{1,4}\\s+.*\\b(objectives?|lessons learned|results and metrics)\\b",
+      "note": "sections the documents cannot support are dropped, not padded"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?is)(```mermaid.*```mermaid|!\\[.*\\n.*!\\[)",
+      "note": "at most one diagram for a two-file folder"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)legal (review )?(is |was |has been )?(approved|complete|completed|signed off)"
+    },
+    {
+      "type": "word_count",
+      "min": 60,
+      "max": 550
+    }
+  ]
+}
