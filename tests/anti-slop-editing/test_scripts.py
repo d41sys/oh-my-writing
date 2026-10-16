@@ -1,0 +1,453 @@
+"""Consumer-visible behavior of the anti-slop-editing helper scripts.
+
+The scripts run as subprocesses, the way an agent or a user runs them.
+"""
+import json
+import subprocess
+import sys
+from pathlib import Path
+
+import pytest
+
+SKILL_ROOT = Path(__file__).resolve().parents[2] / "skills" / "anti-slop-editing"
+SCAN = SKILL_ROOT / "scripts" / "slop_scan.py"
+DIFF = SKILL_ROOT / "scripts" / "fact_diff.py"
+FIX = Path(__file__).resolve().parent / "fixtures"
+
+
+def run(script, *args, stdin=None):
+    return subprocess.run([sys.executable, str(script), *args], input=stdin,
+                          capture_output=True, text=True, timeout=60)
+
+
+def scan_json(path_or_none, *args, stdin=None):
+    cmd = [*args, "--json"]
+    if path_or_none is not None:
+        cmd.append(str(path_or_none))
+    proc = run(SCAN, *cmd, stdin=stdin)
+    assert proc.returncode == 0, proc.stderr
+    return json.loads(proc.stdout)
+
+
+def write(tmp_path, name, text):
+    path = tmp_path / name
+    path.write_text(text, encoding="utf-8")
+    return path
+
+
+def patterns(result):
+    return {f["pattern"] for f in result["findings"]}
+
+
+# ---------------------------------------------------------------- slop_scan
+
+
+def test_true_positives_cover_the_families():
+    result = scan_json(FIX / "slop_sample.md")
+    families = {f["family"] for f in result["findings"]}
+    assert {"lexical", "framing", "contrast", "puffery", "ending", "residue"} <= families
+    by_pattern = {f["pattern"]: f for f in result["findings"]}
+    assert by_pattern["delve"]["line"] == 3 and by_pattern["delve"]["text"].lower() == "delve"
+    assert by_pattern["era-opener"]["line"] == 3
+    assert by_pattern["not-just"]["line"] == 5
+    assert by_pattern["vague-attribution"]["line"] == 7
+    assert by_pattern["closing-formula"]["line"] == 9
+    assert by_pattern["chat-closer"]["line"] == 11
+    assert "game-changer" in {f["text"] for f in result["findings"] if f["pattern"] == "promo-wording"}
+
+
+def test_every_finding_names_the_exception_to_consider():
+    result = scan_json(FIX / "slop_sample.md")
+    for f in result["findings"]:
+        assert set(f) >= {"line", "col", "family", "pattern", "text", "consider", "strength"}
+        assert f["consider"].strip() and f["line"] >= 1 and f["col"] >= 1
+        assert f["strength"] in {"strong", "weak"}
+
+
+def test_json_shape_and_exit_code_with_findings():
+    proc = run(SCAN, "--json", str(FIX / "slop_sample.md"))
+    assert proc.returncode == 0
+    data = json.loads(proc.stdout)
+    assert set(data) >= {"profile", "words", "findings", "summary", "notes", "file"}
+    assert set(data["summary"]) == {"total", "per_1000_words", "by_family"}
+    assert data["summary"]["total"] == len(data["findings"])
+    assert data["profile"] == "professional"
+
+
+def test_human_output_uses_ascii_markers():
+    proc = run(SCAN, str(FIX / "slop_sample.md"))
+    assert proc.returncode == 0
+    assert "[FLAG]" in proc.stdout and "-> consider:" in proc.stdout
+    assert "candidates, not verdicts" in proc.stdout
+    proc.stdout.encode("ascii")
+
+
+def test_protected_regions_are_not_scanned():
+    result = scan_json(FIX / "protected.md")
+    assert result["findings"] == [], result["findings"]
+
+
+def test_chat_residue_inside_quotes_and_code_is_also_skipped(tmp_path):
+    path = write(tmp_path, "q.md", 'He wrote "I hope this helps!" in the margin.\n\n`Certainly!` is a string.\n')
+    assert scan_json(path)["findings"] == []
+
+
+def test_clean_text_is_a_no_op():
+    proc = run(SCAN, str(FIX / "clean.md"))
+    assert proc.returncode == 0
+    assert "[OK]" in proc.stdout and "[FLAG]" not in proc.stdout
+    result = scan_json(FIX / "clean.md")
+    assert result["findings"] == [] and result["summary"]["total"] == 0 and result["summary"]["by_family"] == {}
+
+
+def test_profile_effect_on_engineering_vocabulary(tmp_path):
+    path = write(tmp_path, "eng.md", "We leverage a seamless pipeline. The proxy serves as a gateway.\n")
+    professional = patterns(scan_json(path, "--profile", "professional"))
+    technical = patterns(scan_json(path, "--profile", "technical"))
+    assert {"leverage-verb", "seamless", "copula-avoidance"} <= professional
+    assert not ({"leverage-verb", "seamless", "copula-avoidance"} & technical)
+
+
+def test_casual_profile_reports_only_chat_residue(tmp_path):
+    path = write(tmp_path, "c.md", "We delve into the pivotal tapestry. In conclusion, it's not just a plan, it's a shift.\n\n[Insert name]\n")
+    assert patterns(scan_json(path, "--profile", "professional")) >= {"delve", "closing-formula", "not-just", "placeholder"}
+    assert patterns(scan_json(path, "--profile", "casual")) == {"placeholder"}
+
+
+def test_academic_profile_adds_paper_openers(tmp_path):
+    path = write(tmp_path, "a.md", "In recent years, the field has grown quickly.\n")
+    assert "academic-opener" in patterns(scan_json(path, "--profile", "academic"))
+    assert "academic-opener" not in patterns(scan_json(path, "--profile", "professional"))
+
+
+def test_documented_exceptions_are_not_reported(tmp_path):
+    text = (
+        "In today's meeting we agreed to ship on Friday. "
+        "The test harness runs nightly. "
+        "The effect was statistically significant. "
+        "That was a crucial step.\n\n"
+        "Studies show that sleep matters (Walker, 2017). "
+        "Moreover, the second run was faster.\n"
+    )
+    result = scan_json(write(tmp_path, "e.md", text))
+    assert result["findings"] == [], result["findings"]
+
+
+def test_stock_phrases_are_reported_when_the_exception_does_not_apply(tmp_path):
+    text = "We harness the power of data. Studies show that sleep matters. In today's fast-paced world, speed wins.\n"
+    found = patterns(scan_json(write(tmp_path, "p.md", text)))
+    assert {"harness-verb", "vague-attribution", "era-opener"} <= found
+
+
+def test_tier2_words_count_only_as_a_cluster(tmp_path):
+    single = scan_json(write(tmp_path, "s.md", "This is a crucial decision for the team.\n"))
+    assert "tier2-word" not in patterns(single)
+    cluster = scan_json(write(tmp_path, "c.md", "This crucial decision offers valuable insights and effectively helps the team.\n"))
+    assert [f["text"].lower() for f in cluster["findings"] if f["pattern"] == "tier2-word"] == [
+        "crucial", "valuable", "insights", "effectively"]
+
+
+def test_transition_openers_need_three(tmp_path):
+    two = scan_json(write(tmp_path, "t2.md", "Moreover, it ran. Furthermore, it passed.\n"))
+    three = scan_json(write(tmp_path, "t3.md", "Moreover, it ran. Furthermore, it passed. Additionally, it shipped.\n"))
+    assert "transition-opener" not in patterns(two)
+    assert sum(1 for f in three["findings"] if f["pattern"] == "transition-opener") == 3
+
+
+def test_em_dash_density_threshold_and_profiles(tmp_path):
+    many = write(tmp_path, "many.md", "The launch \u2014 delayed twice \u2014 finally shipped \u2014 and the team \u2014 tired but proud \u2014 went home.\n")
+    one = write(tmp_path, "one.md", "We shipped late \u2014 twice \u2014 and said so in the notes we published after the release went out to everyone.\n")
+    assert sum(1 for f in scan_json(many)["findings"] if f["pattern"] == "em-dash-density") == 5
+    assert "em-dash-density" not in patterns(scan_json(one))
+    assert "em-dash-density" not in patterns(scan_json(many, "--profile", "casual"))
+
+
+def test_em_dash_in_bold_term_list_is_exempt(tmp_path):
+    text = "- **Alpha** \u2014 first\n- **Beta** \u2014 second\n- **Gamma** \u2014 third\n- **Delta** \u2014 fourth\n"
+    assert "em-dash-density" not in patterns(scan_json(write(tmp_path, "l.md", text)))
+
+
+def test_rhythm_patterns_and_technical_skip(tmp_path):
+    opener = write(tmp_path, "o.md", "We tested the cache. We measured the latency. We compared the results. We wrote the report.\n")
+    assert "same-opener-run" in patterns(scan_json(opener))
+    frag = write(tmp_path, "f.md", "Fast. Cheap. Reliable. Done.\n")
+    assert "fragment-run" in patterns(scan_json(frag))
+    uniform = write(tmp_path, "u.md", (
+        "The first batch of records arrived late on Monday after the upstream export failed twice. "
+        "The second batch of records arrived early on Tuesday once the upstream export was fixed properly. "
+        "The third batch of records arrived late on Wednesday because the network link dropped again. "
+        "The fourth batch of records arrived on Thursday after the manual import finally succeeded.\n"))
+    assert "uniform-length-run" in patterns(scan_json(uniform))
+    assert not {f["family"] for f in scan_json(uniform, "--profile", "technical")["findings"]} & {"rhythm"}
+    assert not {f["family"] for f in scan_json(FIX / "clean.md")["findings"]} & {"rhythm"}
+
+
+def test_format_patterns(tmp_path):
+    text = (
+        "## \U0001F680 What this means\n\n"
+        "We think **speed**, **safety** and **cost** all matter here.\n\n"
+        "- **Speed**: fast\n- **Safety**: safe\n- **Cost**: low\n\n"
+        "#ai #tech #future #growth #innovation\n"
+    )
+    path = write(tmp_path, "fmt.md", text)
+    found = patterns(scan_json(path))
+    assert {"heading-emoji", "decorative-bold", "label-bullet-list", "hashtag-block"} <= found
+    tech = patterns(scan_json(path, "--profile", "technical"))
+    assert "decorative-bold" not in tech and "label-bullet-list" not in tech
+
+
+def test_residue_family_details(tmp_path):
+    text = (
+        "Here is a revised version of your paragraph:\n\n"
+        "As of my last knowledge update, the API was stable. See the source:oaicite:0 for more.\n\n"
+        "Read more at https://example.com/post?utm_source=chatgpt.com and https://example.com/post.\n\n"
+        "Zero\u200bwidth here.\n"
+    )
+    result = scan_json(write(tmp_path, "r.md", text))
+    found = {f["pattern"]: f for f in result["findings"]}
+    assert {"rewrite-wrapper", "assistant-self-reference", "citation-leak", "ai-referral-parameter", "hidden-character"} <= set(found)
+    assert found["ai-referral-parameter"]["line"] == 5
+
+
+def test_document_ask_markers_are_not_placeholders(tmp_path):
+    result = scan_json(write(tmp_path, "m.md", "The budget was [ASK AUTHOR: amount] last year. See [VERIFY: source].\n"))
+    assert "placeholder" not in patterns(result)
+
+
+def test_density_summary(tmp_path):
+    result = scan_json(write(tmp_path, "d.md", "We delve into five topics today.\n"))
+    assert result["words"] == 6
+    assert result["summary"]["total"] == 1
+    assert result["summary"]["per_1000_words"] == 166.7
+    assert result["summary"]["by_family"]["lexical"] == {"count": 1, "per_1000_words": 166.7}
+
+
+def test_non_english_text_gets_a_note(tmp_path):
+    vi = "Ch\u00fang t\u00f4i \u0111\u00e3 ho\u00e0n th\u00e0nh vi\u1ec7c di chuy\u1ec3n d\u1eef li\u1ec7u trong ba ng\u00e0y v\u00e0 ki\u1ec3m tra t\u1eebng l\u00f4 b\u1eb1ng checksum.\n"
+    result = scan_json(write(tmp_path, "vi.md", vi))
+    assert any("English only" in n for n in result["notes"])
+    assert scan_json(FIX / "clean.md")["notes"] == []
+
+
+def test_reads_stdin_and_never_modifies_input(tmp_path):
+    path = write(tmp_path, "orig.md", "We delve into it.\n")
+    before = path.read_bytes()
+    result = scan_json(None, stdin=path.read_text(encoding="utf-8"))
+    assert result["file"] == "<stdin>" and "delve" in patterns(result)
+    scan_json(path)
+    assert path.read_bytes() == before
+
+
+def test_input_errors_exit_2(tmp_path):
+    proc = run(SCAN, str(tmp_path / "missing.md"))
+    assert proc.returncode == 2 and "error" in proc.stderr
+    assert run(SCAN, str(tmp_path)).returncode == 2
+    assert run(SCAN, "--profile", "nonsense", str(FIX / "clean.md")).returncode == 2
+
+
+def test_help_exits_zero():
+    for script in (SCAN, DIFF):
+        proc = run(script, "--help")
+        assert proc.returncode == 0 and "usage" in proc.stdout.lower()
+
+
+# ---------------------------------------------------------------- fact_diff
+
+
+def diff_json(before, after, *args, stdin=None):
+    proc = run(DIFF, "--json", *args, str(before), str(after), stdin=stdin)
+    return proc, (json.loads(proc.stdout) if proc.stdout.strip() else None)
+
+
+def edit(tmp_path, old, new, name="after.md"):
+    text = (FIX / "before.md").read_text(encoding="utf-8")
+    assert old in text, old
+    return write(tmp_path, name, text.replace(old, new))
+
+
+def lost_items(report, cat):
+    return {i["item"] for i in report["categories"][cat]["lost"]}
+
+
+def added_items(report, cat):
+    return {i["item"] for i in report["categories"][cat]["added"]}
+
+
+def test_pure_reword_passes():
+    proc, report = diff_json(FIX / "before.md", FIX / "after_reword.md")
+    assert proc.returncode == 0, proc.stdout
+    assert report["ok"] is True and report["lost_total"] == 0 and report["added_total"] == 0
+    human = run(DIFF, str(FIX / "before.md"), str(FIX / "after_reword.md"))
+    assert human.returncode == 0 and "[OK] no mechanical preservation errors found" in human.stdout
+    assert "does not confirm meaning" in human.stdout
+
+
+def test_identical_text_passes():
+    proc, report = diff_json(FIX / "before.md", FIX / "before.md")
+    assert proc.returncode == 0 and report["ok"]
+
+
+def test_dropped_negation_is_caught(tmp_path):
+    after = edit(tmp_path, "did not confirm it", "confirmed it")
+    proc, report = diff_json(FIX / "before.md", after)
+    assert proc.returncode == 1
+    assert "not" in lost_items(report, "negations")
+    assert report["lost_total"] >= 1
+    human = run(DIFF, str(FIX / "before.md"), str(after))
+    assert human.returncode == 1 and "[FLAG] negations lost" in human.stdout
+
+
+def test_changed_number_is_caught(tmp_path):
+    after = edit(tmp_path, "12%", "21%")
+    proc, report = diff_json(FIX / "before.md", after)
+    assert proc.returncode == 1
+    assert lost_items(report, "numbers") == {"12%"} and added_items(report, "numbers") == {"21%"}
+
+
+def test_changed_currency_amount_is_caught(tmp_path):
+    after = edit(tmp_path, "$1,000", "$100")
+    _, report = diff_json(FIX / "before.md", after)
+    assert lost_items(report, "numbers") == {"1000 usd"} and added_items(report, "numbers") == {"100 usd"}
+
+
+def test_added_citation_is_caught(tmp_path):
+    after = edit(tmp_path, "Only 3 of 5 sites are affected.", "Only 3 of 5 sites are affected [12].")
+    proc, report = diff_json(FIX / "before.md", after)
+    assert proc.returncode == 1 and added_items(report, "citations") == {"[12]"}
+    assert report["categories"]["citations"]["lost"] == []
+
+
+def test_dropped_citation_and_author_year_are_caught(tmp_path):
+    after = edit(tmp_path, " [4]", "")
+    assert lost_items(diff_json(FIX / "before.md", after)[1], "citations") == {"[4]"}
+    after = edit(tmp_path, "According to Smith (2020), ", "")
+    assert lost_items(diff_json(FIX / "before.md", after)[1], "citations") == {"Smith (2020)"}
+
+
+def test_weakened_certainty_is_caught(tmp_path):
+    after = edit(tmp_path, "may reduce", "reduces")
+    proc, report = diff_json(FIX / "before.md", after)
+    assert proc.returncode == 1 and lost_items(report, "certainty") == {"may"}
+
+
+def test_changed_scope_word_is_caught(tmp_path):
+    after = edit(tmp_path, "Only 3 of 5", "All 3 of 5")
+    _, report = diff_json(FIX / "before.md", after)
+    assert lost_items(report, "scope") == {"only"} and added_items(report, "scope") == {"all"}
+
+
+def test_lost_name_url_code_and_quote_are_caught(tmp_path):
+    cases = [
+        ("Acme Corp reported", "The company reported", "names", "Acme Corp"),
+        ("https://example.com/report", "the report page", "urls", "https://example.com/report"),
+        ("`make audit`", "the audit command", "code", "make audit"),
+        ('"costs never fall quickly"', '"costs rarely fall quickly"', "quotes", "costs never fall quickly"),
+    ]
+    for old, new, cat, item in cases:
+        proc, report = diff_json(FIX / "before.md", edit(tmp_path, old, new))
+        assert proc.returncode == 1, (cat, proc.stdout)
+        assert item in lost_items(report, cat), (cat, report["categories"][cat])
+
+
+def test_unit_change_is_caught(tmp_path):
+    before = write(tmp_path, "b.md", "Latency fell to 10 ms on average.\n")
+    after = write(tmp_path, "a.md", "Latency fell to 10 s on average.\n")
+    proc, report = diff_json(before, after)
+    assert proc.returncode == 1
+    assert lost_items(report, "numbers") == {"10 ms"} and added_items(report, "numbers") == {"10 s"}
+
+
+def test_equivalent_spellings_do_not_flag(tmp_path):
+    pairs = [
+        ("It does not work.", "It doesn't work."),
+        ("It cannot work.", "It can't work."),
+        ("We shipped 1,000 units.", "We shipped 1000 units."),
+        ("Growth was 5 percent.", "Growth was 5%."),
+        ("There were three failures.", "There were 3 failures."),
+        ("It costs $5.", "It costs 5 dollars."),
+    ]
+    for old, new in pairs:
+        proc, report = diff_json(write(tmp_path, "b.md", old + "\n"), write(tmp_path, "a.md", new + "\n"))
+        assert proc.returncode == 0, (old, new, proc.stdout)
+
+
+def test_spelled_number_change_is_caught(tmp_path):
+    proc, _ = diff_json(write(tmp_path, "b.md", "There were three failures.\n"), write(tmp_path, "a.md", "There were four failures.\n"))
+    assert proc.returncode == 1
+
+
+def test_decimal_precision_change_is_caught(tmp_path):
+    proc, report = diff_json(write(tmp_path, "b.md", "The score was 0.50.\n"), write(tmp_path, "a.md", "The score was 0.5.\n"))
+    assert proc.returncode == 1 and lost_items(report, "numbers") == {"0.50"}
+
+
+def test_sentence_initial_capitals_are_not_names(tmp_path):
+    proc, _ = diff_json(write(tmp_path, "b.md", "Moreover, the run finished. Overall it was fine.\n"),
+                        write(tmp_path, "a.md", "The run finished and it was fine.\n"))
+    assert proc.returncode == 0
+
+
+def test_fenced_code_change_is_caught(tmp_path):
+    before = write(tmp_path, "b.md", "Run this:\n\n```sh\nmake test\n```\n")
+    after = write(tmp_path, "a.md", "Run this:\n\n```sh\nmake check\n```\n")
+    proc, report = diff_json(before, after)
+    assert proc.returncode == 1
+    assert lost_items(report, "code_blocks") == {"make test"} and added_items(report, "code_blocks") == {"make check"}
+
+
+def test_numbers_inside_code_and_urls_are_not_double_counted(tmp_path):
+    before = write(tmp_path, "b.md", "Use `retry(3)` and https://example.com/v2/items.\n")
+    after = write(tmp_path, "a.md", "Call `retry(3)` and https://example.com/v2/items.\n")
+    proc, report = diff_json(before, after)
+    assert proc.returncode == 0
+    assert report["categories"]["numbers"]["before_count"] == 0
+
+
+def test_ignore_category(tmp_path):
+    after = edit(tmp_path, "Acme Corp reported", "The company reported")
+    assert diff_json(FIX / "before.md", after)[0].returncode == 1
+    proc, report = diff_json(FIX / "before.md", after, "--ignore", "names")
+    assert proc.returncode == 0 and report["ignored"] == ["names"] and "names" not in report["categories"]
+
+
+def test_json_shape(tmp_path):
+    after = edit(tmp_path, "12%", "21%")
+    _, report = diff_json(FIX / "before.md", after)
+    assert set(report) == {"before", "after", "ok", "lost_total", "added_total", "ignored", "categories",
+                           "markers_before", "markers_after"}
+    assert set(report["categories"]["numbers"]) == {"before_count", "after_count", "lost", "added"}
+    entry = report["categories"]["numbers"]["lost"][0]
+    assert set(entry) == {"item", "before", "after", "context"} and entry["before"] == 1 and entry["after"] == 0
+    assert "12%" in entry["context"]
+
+
+def test_inserted_author_markers_are_not_counted_as_added_facts(tmp_path):
+    before = write(tmp_path, "b.md", "This was a cultural shift. Studies show builds matter.\n")
+    after = write(tmp_path, "a.md", "This was a cultural shift. [ASK AUTHOR: What changed beyond run time?] "
+                                    "Studies show builds matter. [VERIFY: Cite the study.]\n")
+    proc, report = diff_json(before, after)
+    assert proc.returncode == 0, proc.stdout
+    assert report["markers_after"] == 2 and report["markers_before"] == 0
+    assert "not compared" in run(DIFF, str(before), str(after)).stdout
+
+
+def test_stdin_for_one_side_and_error_exits(tmp_path):
+    after_text = (FIX / "after_reword.md").read_text(encoding="utf-8")
+    proc = run(DIFF, "--json", str(FIX / "before.md"), "-", stdin=after_text)
+    assert proc.returncode == 0 and json.loads(proc.stdout)["after"] == "<stdin>"
+    assert run(DIFF, str(tmp_path / "nope.md"), str(FIX / "before.md")).returncode == 2
+    assert run(DIFF, "-", "-", stdin="x").returncode == 2
+
+
+def test_never_modifies_inputs(tmp_path):
+    after = edit(tmp_path, "12%", "21%")
+    snapshot = (after.read_bytes(), (FIX / "before.md").read_bytes())
+    run(DIFF, str(FIX / "before.md"), str(after))
+    assert snapshot == (after.read_bytes(), (FIX / "before.md").read_bytes())
+
+
+@pytest.mark.parametrize("script", [SCAN, DIFF])
+def test_scripts_are_stdlib_only_and_documented(script):
+    source = script.read_text(encoding="utf-8")
+    assert source.startswith("#!/usr/bin/env python3") and '"""' in source[:200]
+    assert 'if __name__ == "__main__":' in source

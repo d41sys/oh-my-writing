@@ -1,0 +1,121 @@
+"""Repository-wide structural contract for every skill under skills/.
+
+Run: uv run --with pytest --with pyyaml python -m pytest tests/_meta -q
+"""
+
+import json
+import re
+from pathlib import Path
+
+import pytest
+import yaml
+
+REPO = Path(__file__).resolve().parents[2]
+SKILLS = REPO / "skills"
+SKILL_DIRS = sorted(p for p in SKILLS.iterdir() if p.is_dir()) if SKILLS.is_dir() else []
+IDS = [p.name for p in SKILL_DIRS]
+
+ALLOWED_KEYS = {"name", "description", "license", "compatibility", "allowed-tools", "metadata"}
+NAME_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
+LINK_RE = re.compile(r"\]\(([^)\s]+)\)")
+INTERNAL_ID_RE = re.compile(r"\bK-[A-Z]+-\d+\b|\bSLOP-[A-Z]+-\d+\b")
+# Skills are written in our own words; source projects are thanked in README only.
+SOURCE_FINGERPRINTS = [
+    "conorbronsdon", "avoid-ai-writing", "blader", "humanizer", "affaan", "everything-claude-code",
+    "d-wwei", "great-writer", "greatwriter", "mattpocock", "wanshuiyin", "auto-claude-code",
+    "k-dense", "garden-skills", "conardli", "resumeskills", "paramchoudhary", "proficiently",
+    "jezweb", "leey21", "orchestra-research", "coreyhaines", "marketingskills", "no-ai-slop",
+]
+
+
+def split_frontmatter(path: Path):
+    text = path.read_text(encoding="utf-8")
+    assert text.startswith("---\n"), f"{path} must start with YAML frontmatter"
+    end = text.index("\n---\n", 4)
+    return text[4:end], text[end + 5:]
+
+
+def skill_files(skill: Path):
+    return [p for p in skill.rglob("*") if p.is_file()]
+
+
+@pytest.fixture(params=SKILL_DIRS, ids=IDS)
+def skill(request):
+    return request.param
+
+
+def test_skills_exist():
+    assert SKILL_DIRS, "skills/ must contain at least one skill"
+
+
+def test_frontmatter_contract(skill):
+    raw, _ = split_frontmatter(skill / "SKILL.md")
+    assert "{" not in raw and "[" not in raw, "use block-style YAML, not flow style"
+    meta = yaml.safe_load(raw)
+    assert set(meta) <= ALLOWED_KEYS, f"unexpected keys: {set(meta) - ALLOWED_KEYS}"
+    assert meta["name"] == skill.name and NAME_RE.match(meta["name"]) and len(meta["name"]) <= 64
+    assert 1 <= len(meta["description"]) <= 1024
+    assert "Use when" in meta["description"], "description must say when to use the skill"
+    metadata = meta.get("metadata") or {}
+    assert isinstance(metadata.get("version"), str), "metadata.version must be a quoted string"
+    assert re.search(r'^\s+version:\s*"[0-9.]+"\s*$', raw, re.M), "quote metadata.version"
+    assert all(isinstance(v, str) for v in metadata.values()), "metadata values must be strings"
+
+
+def test_body_limits_and_sections(skill):
+    text = (skill / "SKILL.md").read_text(encoding="utf-8")
+    assert len(text.splitlines()) < 500, "keep SKILL.md under 500 lines"
+    for heading in ("## When to use", "## Workflow"):
+        assert heading in text, f"SKILL.md needs a '{heading}' section"
+
+
+def test_eval_and_codex_metadata(skill):
+    evals = (skill / "eval.md").read_text(encoding="utf-8")
+    assert re.search(r"^1\. ", evals, re.M), "eval.md needs numbered pass/fail checks"
+    ui = yaml.safe_load((skill / "agents" / "openai.yaml").read_text(encoding="utf-8"))["interface"]
+    assert ui["display_name"] and ui["short_description"]
+    assert f"${skill.name}" in ui["default_prompt"]
+
+
+def test_local_links_resolve_inside_skill(skill):
+    for f in skill_files(skill):
+        if f.suffix != ".md":
+            continue
+        for target in LINK_RE.findall(f.read_text(encoding="utf-8")):
+            if re.match(r"^[a-z]+:", target) or target.startswith("#"):
+                continue
+            path = target.split("#", 1)[0]
+            resolved = (f.parent / path).resolve()
+            assert resolved.is_relative_to(skill.resolve()), f"{f}: link leaves the skill: {target}"
+            assert resolved.exists(), f"{f}: broken link {target}"
+
+
+def test_ships_only_loadable_files(skill):
+    for f in skill_files(skill):
+        rel = f.relative_to(skill).as_posix()
+        assert "__pycache__" not in rel and not rel.startswith("tests/") and f.suffix != ".pyc", rel
+        assert "/Users/" not in f.read_text(encoding="utf-8", errors="ignore"), f"hardcoded local path in {rel}"
+    if (skill / "scripts").is_dir():
+        assert (REPO / "tests" / skill.name).is_dir(), "skills with scripts/ need tests/<name>/"
+
+
+def test_own_words_without_source_fingerprints(skill):
+    for f in skill_files(skill):
+        if f.suffix not in {".md", ".yaml", ".py"}:
+            continue
+        text = f.read_text(encoding="utf-8")
+        assert not INTERNAL_ID_RE.search(text), f"internal library ID in {f.relative_to(skill)}"
+        lowered = text.lower()
+        hits = [s for s in SOURCE_FINGERPRINTS if s in lowered]
+        assert not hits, f"source-repository name {hits} in {f.relative_to(skill)}"
+
+
+def test_plugin_manifests_agree():
+    versions = {}
+    for rel in ("plugin.json", ".codex-plugin/plugin.json", ".claude-plugin/plugin.json"):
+        data = json.loads((REPO / rel).read_text(encoding="utf-8"))
+        assert data["name"] == "oh-my-writing"
+        versions[rel] = data["version"]
+    assert len(set(versions.values())) == 1, versions
+    codex = json.loads((REPO / ".codex-plugin/plugin.json").read_text(encoding="utf-8"))
+    assert (REPO / codex["skills"]).resolve() == SKILLS.resolve()

@@ -1,0 +1,108 @@
+Load when: sorting reviewer findings into accept, reject or needs-author, defining severity, choosing fixes, or deciding whether to run another round.
+
+# Finding triage and stop rules
+
+A review is a list of proposals, not orders. Every finding gets one decision and a reason you could defend to the reviewer.
+
+## 1. Severity by reader impact
+
+Judge by what happens to the stated reader, not by how loud the reviewer sounds.
+
+| Level | Reader impact | Examples | Default action |
+|---|---|---|---|
+| Critical | The reader reaches a wrong conclusion, acts wrongly, or cannot tell what the document claims or asks. Also: a claim, number or quote the sources do not support; a contradiction between sections. | Number differs from source; missing step that breaks a procedure; main point absent | Fix before release |
+| Major | The reader stalls, misreads an important part, or loses trust in the document. | Undefined term the brief does not cover; conclusion stronger than the evidence; answer buried under background | Fix before release, or record why not |
+| Minor | The reader notices friction but recovers on their own. | Repeated example narrative; slightly loose heading; one long paragraph | Fix if cheap |
+| Nit | A preference; the document works either way. | Synonym choice, comma habit, rhythm taste | Skip unless the author agrees |
+
+Notes:
+
+- A presentation problem and a structural flaw have different fixes. Do not label a missing experiment, source, or decision as a wording problem; wording cannot repair it. Name it, state it once, and stop rewording.
+- Taste findings ("make it punchier") are nits unless tied to a reader consequence. Where a real author sample disagrees with a reviewer's taste, the sample wins.
+- A severity you disagree with can be changed in triage; write the new level and why.
+
+## 2. The three decisions
+
+For each finding, choose exactly one.
+
+**Accept.** The finding is true of the text, matters to the stated reader, and has a fix that stays within the material. Write the planned smallest edit.
+
+**Reject.** Write one line with evidence. Valid reasons:
+
+- The text already says it, at a quoted location.
+- The finding contradicts the source; cite the source line.
+- The reader brief says the reader already knows this (audience boundary).
+- The fix would add a claim, number, quote, name, credential or example the material does not support.
+- The finding is a style preference against the author's sample or stated style.
+- The reviewer misread: quote the passage and say how.
+- The finding is out of scope for the document type or the length limit.
+- The author has already confirmed this choice (give where).
+
+Invalid reasons: "I disagree", "that was intended" (a reader cannot see intent), "too much work" (that is a cost decision: accept it and list it under remaining), "the reviewer is a model".
+
+**Needs author.** The finding is plausible but only the author can answer: a missing fact, a choice between two reasonable framings, an unstated audience, a claim the author must confirm. Phrase it as a single question or insert `[ASK AUTHOR: <question>]` / `[VERIFY: <what, against which source>]` in place of the gap. Do not fill the gap yourself.
+
+## 3. Findings that would add unsupported content
+
+Reviewers, especially models, like to propose "add a concrete example", "include a statistic", "mention the benefit". When the example or number is not in the material:
+
+1. Reject the fix as written.
+2. If the gap is real (the reader would stall), convert it to needs-author with the exact missing item.
+3. If the author supplies it, accept the finding then.
+
+Specificity comes from the user's material, never from the reviewer or from you.
+
+## 4. Choosing and ordering fixes
+
+1. Fix in dependency order: purpose and structure, then claims and evidence, then paragraph flow, then sentences, then surface. Do not polish a paragraph that may be cut.
+2. Make the smallest edit that removes the defect. Keep the author's voice, claims, qualifiers, negations, numbers, names and structure unless one of those is the defect.
+3. One finding, one edit. Do not bundle a "while I was there" rewrite.
+4. Prefer deleting a repeated passage to rewording it. A repeated example is told fully once and called back briefly later.
+5. Reviewer-required qualifiers (a hedge a reviewer asked for earlier) stay unless the reader impact changed; wording may change if meaning, scope and strength stay identical.
+6. After fixes, diff the text against the version the reviewer saw. Small softenings across rounds can add up to a changed claim; undo any that changed meaning.
+
+## 5. Multiple reviewers and repeated findings
+
+- Two reviewers raise the same finding: raise confidence, not severity automatically.
+- Reviewers contradict each other: record both, apply the reader brief and the author's sample, and send the unresolved ones to the author. Do not split the difference in the text.
+- A finding repeated in round two that you rejected in round one: reconsider once, and keep the rejection only with a stronger reason.
+- Reply with no verdict line: treat as `revise`.
+- Reply with only praise: valid as a result, but check that the prompt did not contain leading language; if it did, rerun in a new session with a cleaned prompt.
+
+## 6. Stop rules
+
+Stop when any of these holds:
+
+1. No accepted critical or major findings remain after a fresh round.
+2. The second round is complete. The cap is two by default; a third needs the user's approval.
+3. What remains needs evidence, a decision or a specialist you do not have; list it as open.
+4. Only minor findings and nits remain; list them, apply the cheap ones, and stop.
+5. Three revisions in a row changed nothing substantial; ask whether something can be cut, then stop rewording.
+6. The user says stop.
+
+Do not loop on "edit, re-review, repeat until clean". The reviewer is a sensor; using it as a target teaches the editor to please it. Re-run only to confirm that a named accepted finding is gone, in a new session.
+
+If the cap is hit with critical or major findings open, say so plainly, name each with the effort needed, and recommend either manual follow-up or a different approach. Do not claim the text is verified.
+
+## 7. Human gates
+
+Stop for a person when the finding touches:
+
+- Safety, security, medical, legal or financial statements: a domain expert or the author signs off; record what changed, why a human must look, and a risk level.
+- Facts only the author can know: credentials, experiences, opinions, quotes.
+- Anything that would send the text outside the author's control (publishing, emailing) unless the user asked for it.
+
+## 8. Report format
+
+Short and true. List what changed and why; what was rejected and why; what needs the author; what remains.
+
+```
+Findings: <n> total (critical <n>, major <n>, minor <n>, nit <n>)
+Accepted: <n>   Rejected: <n>   Needs author: <n>
+- F2 major, "<short quote>": added the deadline to the first paragraph. Reader impact: could not tell by when to act.
+- F5 critical -> reject: "add a customer quote"; no quote exists in the material. Converted to [ASK AUTHOR: customer quote?].
+Remaining: <unresolved items, with reason>
+Cost: <sessions, rounds>
+```
+
+For a clean text: "no accepted findings".

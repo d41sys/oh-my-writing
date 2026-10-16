@@ -1,0 +1,16 @@
+{
+  "name": "oh-my-writing",
+  "version": "1.0.0",
+  "description": "Writing skills for AI-assisted drafting and editing without AI slop, invented facts, or a flattened author voice.",
+  "author": {
+    "name": "d41sys"
+  },
+  "homepage": "https://github.com/d41sys/academic-writing-skill",
+  "repository": "https://github.com/d41sys/academic-writing-skill",
+  "keywords": [
+    "writing",
+    "editing",
+    "anti-slop",
+    "voice"
+  ]
+}

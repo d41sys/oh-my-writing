@@ -1,0 +1,119 @@
+Load when: writing API, CLI, configuration, script or library reference; generating or updating docs from source files; applying markdown, table, code-fence or diagram conventions.
+
+# Reference, API and markdown conventions
+
+## Principles for reference pages
+
+- The reader scans mid-task. Put the fact first, in the same place in every entry.
+- Short sentences, active voice, no ambiguity. When clarity, completeness and elegance conflict, choose in that order.
+- Describe; do not teach, sell or defend. Link to a how-to or explanation instead.
+- State constraints as rules: "Required. Cannot be combined with `--stdin`."
+- Lists for enumerations ("Sub-commands: `init`, `build`, `serve`"); tables for fields.
+- One default, plus a narrow escape hatch, instead of a menu of equal options.
+- Give every numeric value a reason or a source (a default of 30 seconds says why, or links to where).
+- Avoid wording tied to a date ("before March 2025 ..."). Describe the current method; put legacy behaviour in a collapsed "Older versions" block.
+- Specific beats hedged. "Often" and "sometimes" belong in reference only when the real behaviour is conditional; then state the condition.
+- Reference quality is several checks: accuracy, completeness, consistency, usefulness, precision. A page can be accurate and incomplete, or complete and wrong. Check each.
+
+## Build from source of truth
+
+1. Extract facts from code, not recall: package scripts for the command list, example env files for environment variables, route definitions or an OpenAPI file for endpoints, exports for the public API, container files for infrastructure.
+2. Take versions from package or lock files.
+3. Copy response shapes from types or schemas, or from a real response.
+4. Generate what can be generated. Wrap generated sections in markers (for example `<!-- AUTO-GENERATED -->` and `<!-- /AUTO-GENERATED -->`), update only inside them, and preserve hand-written prose around them.
+5. When updating an existing page: read it, compare it with the current code, show the user what differs, apply updates while keeping hand-written notes. Never silently overwrite custom content.
+6. Validate: files and paths exist, links resolve, examples run, snippets compile. Add or change an example only when it can be validated; otherwise mark `[UNTESTED]`.
+7. Document what exists. Do not list planned endpoints or undocumented tables as if finished; flag gaps with `[VERIFY: ...]` instead.
+8. After a pass, report per page: Updated (what changed), Flagged (why, how stale), or Skipped (why).
+
+## HTTP API entry
+
+Order the page: Base URLs (production, development), Authentication (method: bearer token, session cookie, API key or none; where the credential goes), then endpoints grouped by resource. For each endpoint use the same layout:
+
+1. **Heading**: method and path, for example `POST /v1/documents/convert`.
+2. **Summary**: one neutral sentence stating the operation.
+3. **Auth**: required scope or "none".
+4. **Request**: table of fields.
+
+   | Field | Type | Required | Description |
+   |---|---|---|---|
+   | `format` | string | yes | Target format. One of `pdf`, `html`. |
+   | `timeout` | integer | no | Seconds. Default 30. Range 1 to 120. |
+
+5. **Example request**: a complete, runnable call with realistic values and the headers it needs.
+6. **Response**: success status and an exact payload, plus a field table when fields are non-obvious.
+7. **Errors**: a table of each status code the endpoint can return and its trigger.
+
+   | Status | Meaning | Typical cause |
+   |---|---|---|
+   | 401 | Unauthorized | Missing or expired token |
+   | 422 | Unprocessable | `format` not in the allowed set |
+
+Request and response schemas must agree exactly with the implementation, and every listed error code needs a meaning. Never print examples that cannot run or that leave out required authentication.
+
+If a task needs several endpoints in sequence, write a how-to and link to each entry.
+
+## CLI, script and config reference
+
+CLI or script entry:
+
+1. Name and one-line description.
+2. **Usage**: syntax line(s) in a `text` fence.
+3. **Arguments and options**: table with name, type, default, description. Put options shared by every command in one table at the top instead of repeating them.
+4. **Examples**: basic, with options, verbose; each with a short comment and a sample output block.
+5. **Exit codes**: 0 on success, non-zero on failure; say which non-zero values mean what.
+6. **Errors**: the message format, with an example, if it is machine-readable.
+
+Configuration reference: group keys as the config file groups them; for each key give type, default, allowed values or range, effect, and the version it appeared in if relevant. Mark deprecated keys. For tuning parameters and heuristics, say what the value controls, why it has that default, and the bounds in which it is safe.
+
+Library reference: mirror the public module layout; for each public symbol give signature, parameters, return value, errors raised, one short example.
+
+## Markdown conventions
+
+- **Headings**: exactly one H1; no skipped levels; sentence case unless a proper noun; descriptive ("Authentication flow", not "Details"). One idea per heading. Avoid H5 and deeper; restructure.
+- **Emphasis**: bold for key terms and real emphasis, sparingly; never whole sentences. Inline code for commands, file names, config values, environment variables.
+- **Lists**: numbered only for ordered steps; parallel grammar within a list; at most two levels of nesting; items short (promote paragraph-length items to subsections). End items with a period only if they are full sentences. Lead into a step list with a short sentence.
+- **Code fences**: always a language tag (`bash`, `json`, `python`, `text` for plain output). Keep each snippet focused on one point. Show the expected output in a separate `text` fence.
+- **Tables**: a header row; about five columns at most; short cells; left-align text, right-align numbers. Use tables for reference data and comparisons, not narrative.
+- **Links**: meaningful text, never "click here". Relative paths inside the repo, full `https://` URLs outside. When a URL repeats, use reference-style links. Test every link before delivery.
+- **Callouts**: one to three lines in a blockquote with a bold label (`> **Warning:** ...`). Do not nest them.
+- **Images**: next to the text they illustrate, with descriptive alt text and a caption; relative paths. Take screenshots from the running product, not mock-ups.
+- **Collapsible detail**: `<details>` with a descriptive `<summary>` and a blank line after it so markdown inside renders. Use it for verbose logs, alternatives and optional deep dives, not to hide required steps.
+- **Whitespace**: blank lines around headings, code fences, tables and blockquotes; tight list items; no trailing spaces; horizontal rules only after title metadata or before a references block.
+- **Emoji**: none in technical docs by default. Exception: a changelog may use them as category markers if the project already does. Never in the H1, code, link text or table cells.
+- **Accessibility**: alt text on every image, no colour-only meaning, contrast checked in light and dark themes when you set colours.
+- **Freshness**: add a last-updated line only if someone will maintain it.
+
+## Diagrams
+
+Use a diagram when structure beats prose: flows, sequences, lifecycles, data models, architectures. Use a screenshot or photo for a real interface.
+
+| Content | Diagram type |
+|---|---|
+| Process with decisions | flowchart |
+| Who calls whom, in time order | sequence diagram |
+| Lifecycle of one object | state diagram |
+| Data model | entity-relationship |
+| Schedule or roadmap | timeline or Gantt |
+| Classes or modules | class diagram |
+| System context and containers | architecture or C4 style |
+
+Guidelines:
+
+- Choose the most specific type; do not default to a flowchart.
+- Keep it small: about ten nodes flat; group by subgraph up to about twenty; beyond about thirty, split into an overview plus detail diagrams.
+- One main flow direction. Short active labels (three to six words). Semantic identifiers (`run_lint`, not `A`).
+- Meaning must survive without colour: shape and label first.
+- Add an accessible title and a one- or two-sentence description where the renderer supports it; otherwise add a visible text description under the figure.
+- For a before/after pair, draw both with the same layout and direction.
+- Check the renderer on the real destination. Some hosts and terminals show raw source; if so, keep a rendered image with a text description alongside the source.
+- Label example or protocol sketches as illustrative, not complete implementations.
+
+## Pre-delivery checks for reference work
+
+1. Every path, flag, field and status code appears in the source.
+2. Every example was run, or carries `[UNTESTED]`.
+3. Versions are stated and come from files.
+4. Layout is identical across entries of the same kind.
+5. No instruction, selling or design argument inside a reference entry; links instead.
+6. Generated sections are marked; hand-written text is intact.

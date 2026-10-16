@@ -8,6 +8,8 @@ The English writing references were merged, rewritten, reorganized by editorial 
 
 Diátaxis-derived adaptations in `references/knowledge/structure-and-argument.md`, `references/knowledge/structure-and-argument/documentation-navigation.md`, `references/knowledge/structure-and-argument/tutorial-vs-howto-construction.md`, and `references/writing-report.md` are provided under CC-BY-SA 4.0, with attribution to Daniele Procida and contributors. The project’s default license does not override this scope. The source work was reorganized, paraphrased, combined with writing guidance, and extended with examples and evaluation boundaries.
 
+The skills under `skills/` were written from this library in new wording and organization; they do not bundle source skill files. The `skills/technical-docs/` skill adapts the Diátaxis documentation model and is provided under CC-BY-SA 4.0 with the same attribution. The notices below continue to apply to any adapted expression these skills retain.
+
 ## avoid-ai-writing
 
 Source: https://github.com/conorbronsdon/avoid-ai-writing

@@ -1,0 +1,1 @@
+Acme Corp reported that revenue grew 12% in 2023 [4]. The change may reduce costs by $1,000 per unit, but the team did not confirm it. See https://example.com/report and run `make audit`. According to Smith (2020), "costs never fall quickly". Only 3 of 5 sites are affected.

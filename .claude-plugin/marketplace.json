@@ -1,0 +1,13 @@
+{
+  "name": "oh-my-writing",
+  "owner": {
+    "name": "d41sys"
+  },
+  "plugins": [
+    {
+      "name": "oh-my-writing",
+      "source": "./",
+      "description": "Writing skills for AI-assisted drafting and editing without AI slop, invented facts, or a flattened author voice."
+    }
+  ]
+}

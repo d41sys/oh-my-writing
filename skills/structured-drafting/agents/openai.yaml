@@ -1,0 +1,4 @@
+interface:
+  display_name: "Structured Drafting"
+  short_description: "Turn notes and sources into a first draft through a brief, outline and block-by-block writing."
+  default_prompt: "Use $structured-drafting to turn these notes into an outline and a first draft."

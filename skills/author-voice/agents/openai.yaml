@@ -1,0 +1,4 @@
+interface:
+  display_name: "Author Voice"
+  short_description: "Build a voice profile from your samples, then write and check in your voice"
+  default_prompt: "Use $author-voice to build a voice profile from my writing samples and draft in it."

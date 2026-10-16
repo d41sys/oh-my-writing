@@ -1,0 +1,4 @@
+interface:
+  display_name: "Career Documents"
+  short_description: "Truthful resumes, CVs, cover letters, statements, profiles and outreach."
+  default_prompt: "Use $career-documents to tailor my resume and write a cover letter for this job posting."

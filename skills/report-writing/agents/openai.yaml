@@ -1,0 +1,4 @@
+interface:
+  display_name: "Report Writing"
+  short_description: "Decision memos, research and market reports, status updates, and post-mortems that lead with the answer."
+  default_prompt: "Use $report-writing to turn these findings into a decision memo with a clear recommendation."

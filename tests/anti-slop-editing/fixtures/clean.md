@@ -1,0 +1,1 @@
+The migration took three days. We moved 4,200 rows from the old table to the new one and checked each batch against a checksum. Two batches failed because of duplicate keys; Maria fixed them by hand. After that, the nightly job ran without errors for a week. The next step is removing the old table, which needs sign-off from finance.

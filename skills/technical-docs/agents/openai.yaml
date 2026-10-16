@@ -1,0 +1,4 @@
+interface:
+  display_name: "Technical Docs"
+  short_description: "Pick the right doc type and write READMEs, guides, reference, PRs and changelogs"
+  default_prompt: "Use $technical-docs to write a README for this repository, with a quick start that actually runs."

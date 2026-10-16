@@ -1,0 +1,4 @@
+interface:
+  display_name: "Independent Review"
+  short_description: "Review a draft with a fresh reader or independent reviewer, triage findings, and stop on time"
+  default_prompt: "Use $independent-review to test this draft with a fresh reader and an independent reviewer, then triage the findings."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Evidence-Grounded Writing"
+  short_description: "Check claims, numbers and citations against evidence and set honest claim strength."
+  default_prompt: "Use $evidence-grounded-writing to build a claims ledger for this draft and fix any claim its evidence does not support."

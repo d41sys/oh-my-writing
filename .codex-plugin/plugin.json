@@ -1,0 +1,36 @@
+{
+  "name": "oh-my-writing",
+  "version": "1.0.0",
+  "description": "Writing skills for AI-assisted drafting and editing without AI slop, invented facts, or a flattened author voice.",
+  "author": {
+    "name": "d41sys"
+  },
+  "homepage": "https://github.com/d41sys/academic-writing-skill",
+  "repository": "https://github.com/d41sys/academic-writing-skill",
+  "keywords": [
+    "writing",
+    "editing",
+    "voice",
+    "AI slop",
+    "evidence"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Oh My Writing",
+    "shortDescription": "Draft, edit, and review writing without AI slop",
+    "longDescription": "Nine writing skills: anti-slop editing with meaning preservation, author voice profiles from real samples, structured drafting from material, evidence-grounded claims, independent review, and genre skills for posts, reports, technical documentation, and career documents.",
+    "developerName": "d41sys",
+    "category": "Productivity",
+    "capabilities": [
+      "Edit",
+      "Detect",
+      "Draft",
+      "Review",
+      "Preserve voice"
+    ],
+    "defaultPrompt": [
+      "Use $anti-slop-editing on this draft: (text)",
+      "Use $structured-drafting to turn these notes into a draft: (notes)"
+    ]
+  }
+}

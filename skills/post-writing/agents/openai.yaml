@@ -1,0 +1,4 @@
+interface:
+  display_name: "Post Writing"
+  short_description: "Write and repurpose blog posts, essays, newsletters, and social posts from your own material."
+  default_prompt: "Use $post-writing to turn my notes into a LinkedIn post and a blog article."

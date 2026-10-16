@@ -1,0 +1,4 @@
+interface:
+  display_name: "Anti-Slop Editing"
+  short_description: "Find and fix AI-writing patterns without losing meaning or voice"
+  default_prompt: "Use $anti-slop-editing to edit this draft for AI-sounding patterns while keeping my meaning and voice."

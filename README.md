@@ -31,6 +31,45 @@ mkdir -p ~/.claude/commands && ln -s ~/academic-writing-skill/commands/academic-
 ```
 Then: `/academic-writing rewrite the abstract` or `/academic-writing write the introduction, example paper: arXiv 2505.23941`.
 
+## Oh My Writing skills
+
+`skills/` holds nine general writing skills built from the Oh My Writing library below. They follow the [Agent Skills specification](https://agentskills.io/specification): each skill is `skills/<name>/SKILL.md` with on-demand `references/`, `assets/` templates, optional stdlib-only `scripts/`, a self-check `eval.md` run before returning output, and `agents/openai.yaml` for Codex. The academic-writing skill above stays at the repository root and is not part of the plugin.
+
+| Skill | Use it to |
+|---|---|
+| `anti-slop-editing` | Detect or remove AI-writing patterns while preserving meaning, facts and the author's voice |
+| `author-voice` | Build a voice profile from real samples, then draft or check text against it |
+| `structured-drafting` | Turn notes and sources into a brief, outline and first draft, alone or section by section with the user |
+| `evidence-grounded-writing` | Keep every claim at the strength its evidence supports: claims ledger, numbers, citations |
+| `independent-review` | Review with a reader who lacks the writer's context; calibrate rubrics and triage findings |
+| `post-writing` | Blog posts, essays, newsletters, social posts and repurposing |
+| `report-writing` | Decision memos, research and market reports, executive summaries, post-mortems |
+| `technical-docs` | Tutorials, how-to guides, reference, explanation, READMEs, PR descriptions, changelogs |
+| `career-documents` | Truthful résumés, CVs, cover letters, statements of purpose, profiles and outreach |
+
+Install by linking the skill folders where each host looks for them. Claude Code and omp read `~/.claude/skills`; Codex reads `~/.agents/skills`:
+
+```bash
+git clone git@github.com:d41sys/academic-writing-skill.git ~/academic-writing-skill
+mkdir -p ~/.agents/skills ~/.claude/skills
+for d in ~/academic-writing-skill/skills/*/; do
+  ln -s "${d%/}" ~/.agents/skills/
+  ln -s "${d%/}" ~/.claude/skills/
+done
+```
+
+As a plugin: the repository root has `plugin.json` ([Agent Plugins](https://agent-plugins.org/) 1.0.0), `.codex-plugin/plugin.json` and `.claude-plugin/` (Claude Code: `/plugin marketplace add d41sys/academic-writing-skill`, then `/plugin install oh-my-writing@oh-my-writing`).
+
+Validate and test:
+
+```bash
+for d in skills/*/; do uvx --from 'git+https://github.com/agentskills/agentskills.git#subdirectory=skills-ref' skills-ref validate "$d"; done
+uv run --with pytest --with pyyaml python -m pytest tests/_meta -q
+for t in tests/*/; do [ -d "$t" ] && [ "$(basename "$t")" != _meta ] && uv run --with pytest python -m pytest "$t" -q; done
+```
+
+`tests/_meta` checks the shared contract for every skill: allowed frontmatter keys, quoted `metadata.version`, the 500-line limit, `eval.md` and `agents/openai.yaml`, links that stay inside the skill, tests for any `scripts/`, and the absence of internal library IDs and source-repository names. Skill text is written in our own words; sources are thanked in Acknowledgments. The `technical-docs` skill adapts the Diátaxis documentation model and is licensed CC-BY-SA 4.0.
+
 ## Oh My Writing: local knowledge and evaluation
 
 Oh My Writing is an independently organized writing knowledge library, separate from the existing academic-writing runtime above. Start with [the subject index](references/knowledge/index.md), [coverage and limitations](references/knowledge-review.md), or the [research report](WRITING_RESEARCH_REPORT.md).
