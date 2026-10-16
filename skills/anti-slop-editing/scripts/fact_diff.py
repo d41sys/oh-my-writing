@@ -192,6 +192,9 @@ class Extraction:
                 spans.append((m.start(), m.end()))
         work = mask(work, spans)
 
+        # Quotes form their own category, but the numbers, words and names inside them are still facts
+        # of the text: a figure quoted in the source and restated unquoted is not invented.
+        facts = LIST_MARKER_RE.sub(lambda m: " " * len(m.group(0)), work)
         spans = []
         for rx in (STRAIGHT_QUOTE_RE, CURLY_QUOTE_RE):
             for m in rx.finditer(work):
@@ -202,9 +205,9 @@ class Extraction:
         work = LIST_MARKER_RE.sub(lambda m: " " * len(m.group(0)), work)
         self.work = work
 
-        self._numbers(work)
-        self._words(work)
-        self._names(work)
+        self._numbers(facts)
+        self._words(facts)
+        self._names(facts)
 
     def _numbers(self, work: str) -> None:
         for m in DIGIT_RE.finditer(work):

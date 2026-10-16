@@ -345,6 +345,17 @@ def edit(tmp_path, old, new, name="after.md"):
 def lost_items(report, cat):
     return {i["item"] for i in report["categories"][cat]["lost"]}
 
+def test_number_quoted_in_source_and_restated_unquoted_is_not_added(tmp_path):
+    before = write(tmp_path, "before.md", 'The status email said "we have spent $104,300 so far".\n')
+    after = write(tmp_path, "after.md", "Spend to date is $104,300 according to the status email.\n")
+    _, report = diff_json(before, after)
+    added = {i["item"] for i in report["categories"]["numbers"]["added"]}
+    assert added == set()
+    invented = write(tmp_path, "invented.md", "Spend to date is $110,000 according to the status email.\n")
+    _, report = diff_json(before, invented)
+    assert {i["item"] for i in report["categories"]["numbers"]["added"]} == {"110000 usd"}
+
+
 
 def added_items(report, cat):
     return {i["item"] for i in report["categories"][cat]["added"]}
