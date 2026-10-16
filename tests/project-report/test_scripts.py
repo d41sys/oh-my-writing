@@ -262,8 +262,8 @@ Spend is **$48,200** (*budget.csv*), see `code` and <script>alert(1)</script> an
     assert "<title>Atlas report</title>" in doc and 'class="kicker">Project status report' in doc
     assert re.search(r'<h2 id="summary"><span class="secnum">1</span>Summary</h2>', doc)
     assert re.search(r'<h3 id="detail"><span class="secnum">1\.1</span>', doc)
-    assert 'id="appendix-a-sources">Appendix A.' in doc and "secnum\">2</span>Appendix" not in doc
-    assert 'class="toc"' in doc
+    assert 'id="appendix-a-sources" class="appendix">Appendix A.' in doc and "secnum\">2</span>Appendix" not in doc
+    assert 'class="toc"' not in doc  # two top-level sections: no contents list
     assert '<blockquote class="callout">' in doc
     assert '<mark class="marker marker-ask">[ASK AUTHOR: who owns QA?]</mark>' in doc
     assert "<strong>$48,200</strong>" in doc and "<em>budget.csv</em>" in doc
@@ -386,3 +386,77 @@ def test_marker_counts_in_summary(tmp_path):
     md = "# T\n\nA [ASK AUTHOR: x] b [VERIFY: y] c [UNTESTED] d.\n"
     proc, _ = build(tmp_path, md, "--json", diagrams=None)
     assert json.loads(proc.stdout)["markers"] == {"ask": 1, "verify": 1, "untested": 1}
+
+
+def toc_md(sections):
+    return "# T\n\n" + "".join(f"## Section {k}\n\ntext\n\n" for k in range(1, sections + 1))
+
+
+def test_figure_cross_reference_renders_once(tmp_path):
+    md = ("# T\n\nFigure [[fig:example-gantt]] shows it. See figure [[fig:example-gantt]], "
+          "Fig. [[fig:example-gantt]], and [[fig:example-gantt]].\n\n![Plan](example-gantt.html \"Source: plan.xlsx\")\n")
+    proc, doc = build(tmp_path, md)
+    assert proc.returncode == 0, proc.stderr
+    body = re.sub(r"<[^>]+>", "", doc.split('<main class="report">')[1])
+    assert "Figure Figure" not in body and "FigureFigure" not in body and "Fig. Figure" not in body
+    assert "Figure 1 shows it. See Figure 1, Figure 1, and Figure 1." in body
+    assert doc.count('<a href="#fig-example-gantt">Figure 1</a>') == 4
+
+
+def test_contents_list_appears_only_with_six_top_level_sections(tmp_path):
+    proc, doc = build(tmp_path, toc_md(5), diagrams=None)
+    assert 'class="toc"' not in doc
+    proc, doc = build(tmp_path, toc_md(6), diagrams=None)
+    assert 'class="toc"' in doc and doc.count('<li class="l2">') == 6
+
+
+def test_toc_option_forces_contents_on_or_off(tmp_path):
+    proc, doc = build(tmp_path, toc_md(2), "--toc", "on", diagrams=None)
+    assert proc.returncode == 0 and 'class="toc"' in doc
+    proc, doc = build(tmp_path, toc_md(8), "--toc", "off", diagrams=None)
+    assert proc.returncode == 0 and 'class="toc"' not in doc
+
+
+def test_no_forced_page_break_after_title_or_contents(tmp_path):
+    proc, doc = build(tmp_path, toc_md(6), diagrams=None)
+    css = doc.split("<style>")[1].split("</style>")[0]
+    assert not re.search(r"\.toc\s*\{[^}]*break-after\s*:\s*page", css)
+    assert not re.search(r"\.title-block\s*\{[^}]*break-after\s*:\s*(page|always)", css)
+    assert not re.search(r"break-(after|before)\s*:\s*(page|always)", css)
+    # long tables may split across pages with a repeated header; rows and figures stay whole
+    assert re.search(r"thead\s*\{[^}]*display\s*:\s*table-header-group", css)
+    assert re.search(r"\btr\s*\{[^}]*break-inside\s*:\s*avoid", css)
+    assert re.search(r"figure\.figure\s*\{[^}]*break-inside\s*:\s*avoid", css)
+    assert not re.search(r"(?m)^table\s*\{[^}]*break-inside", css)
+
+
+def test_markers_stay_highlighted_in_author_drafts(tmp_path):
+    md = "# T\n\n## One\n\nOwner is [ASK AUTHOR: who owns QA?]; spend [VERIFY: 5% fee] and [UNTESTED].\n"
+    proc, doc = build(tmp_path, md, "--json", diagrams=None)
+    html_text = (tmp_path / "report.html").read_text(encoding="utf-8")
+    assert '<mark class="marker marker-ask">[ASK AUTHOR: who owns QA?]</mark>' in html_text
+    assert '<mark class="marker marker-verify">[VERIFY: 5% fee]</mark>' in html_text
+    assert '<mark class="marker marker-untested">[UNTESTED]</mark>' in html_text
+    assert json.loads(proc.stdout)["markers"] == {"ask": 1, "verify": 1, "untested": 1}
+    assert re.search(r"\.marker\s*\{[^}]*background", html_text)
+
+
+def test_title_repeated_as_first_heading_is_not_a_section(tmp_path):
+    proc, doc = build(tmp_path, "---\ntitle: Atlas status\n---\n\n# Atlas status\n\n## One\n\ntext\n", diagrams=None)
+    assert 'secnum">1</span>One' in doc and 'id="atlas-status"' not in doc
+
+
+def test_appendix_is_compact_and_source_lines_are_styled(tmp_path):
+    md = "# T\n\n## One\n\n| A | B |\n|---|---|\n| 1 | 2 |\n\nSource: plan.md\n\n## Appendix A. Sources\n\n- plan.md\n"
+    proc, doc = build(tmp_path, md, diagrams=None)
+    assert '<p class="source-line">Source: plan.md</p>' in doc
+    assert doc.index('<section class="appendix-body">') < doc.index("Appendix A.") and doc.rstrip().endswith("</html>")
+    assert '<div class="table-wrap short">' in doc
+
+
+def test_diagram_is_not_enlarged_past_its_drawn_width(tmp_path):
+    md = "# T\n\n![Plan](example-gantt.html \"Source: plan.xlsx\")\n"
+    proc, doc = build(tmp_path, md, "--json")
+    width = re.search(r'<div class="figure-art" style="--vbw:(\d+)">', (tmp_path / "report.html").read_text(encoding="utf-8"))
+    assert width and int(width.group(1)) > 0
+    assert json.loads(proc.stdout)["figures"][0]["print_scale"] <= 1

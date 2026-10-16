@@ -1,0 +1,12 @@
+From: Hanna Berg
+To: Johan Lindgren (CTO)
+Date: 24 August 2026
+Subject: Tracking migration, week 1 after cutover
+
+Johan,
+
+Cutover happened on 15 August as planned. Scan intake was paused for 70 minutes. In the first week the new service is faster and cheaper than TrackerLegacy (figures in metrics.csv). One incident during rehearsal on 11 August, now fixed (see the incident note). TrackerLegacy stays available for rollback until 29 August.
+
+Open: nobody owns removal of the old cron export yet.
+
+Hanna

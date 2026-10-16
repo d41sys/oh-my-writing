@@ -1,0 +1,7 @@
+metric,unit,TrackerLegacy July 2026,New service week of 17 Aug 2026
+Tracking lookup p95 latency,ms,840,190
+Scan ingest throughput,scans per second,55,210
+Nightly partner export duration,minutes,95,22
+Monthly infrastructure cost,USD,11800,8300
+Availability,percent,99.2,99.95
+Scan to SMS delay p95,seconds,290,6

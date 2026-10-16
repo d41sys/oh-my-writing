@@ -1,0 +1,407 @@
+{
+  "id": "project-report/noisy-folder-final-report",
+  "skill": "project-report",
+  "description": "A closing project report from an unsorted folder of 17 files: plan v1 and its copy, plan v2 FINAL that supersedes it, a change request, four meeting notes in non-chronological order, duplicate KPI files, a stale newsletter, a document about an unrelated project, a lessons-learned note and a handover checklist with two ownerless items. The report treats v2 figures and dates as current, never presents v1 as current, leaves out the other project, marks the open items and delivers diagrams and a printable HTML page.",
+  "prompt": "Helpdesk One is finished. Everything we have about it is in the folder docs/, I did not clean it up. Please write the final project report for Sofia Marin, who sponsored the project. Professional tone, and well-designed diagrams please. Save the report to out/report.md and also an HTML version to out/report.html that I can read and print. I'm not available today, so don't wait for me.",
+  "fixtures": "evals/fixtures/noisy-folder-final-report",
+  "files": {},
+  "output": "out/report.md",
+  "deliverables": [
+    "out/report.md",
+    "out/report.html"
+  ],
+  "timeout": 2400,
+  "judge": {
+    "mode": "visual",
+    "render": "out/report.html"
+  },
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "urls"
+      ],
+      "allow": [
+        "0",
+        "0 usd",
+        "1",
+        "11",
+        "12",
+        "120",
+        "120 usd",
+        "126",
+        "126 usd",
+        "13100",
+        "13100 usd",
+        "14.20",
+        "14.20 usd",
+        "14000",
+        "14000 usd",
+        "17",
+        "18400",
+        "18400 usd",
+        "19",
+        "2",
+        "20",
+        "2026",
+        "2026 usd",
+        "22",
+        "22000",
+        "22000 usd",
+        "2300",
+        "2300 usd",
+        "240000",
+        "240000 usd",
+        "27",
+        "29",
+        "3",
+        "30",
+        "31",
+        "36000",
+        "36000 usd",
+        "38500",
+        "38500 usd",
+        "4",
+        "4000",
+        "4000 usd",
+        "410",
+        "410 usd",
+        "5",
+        "6",
+        "7",
+        "7000",
+        "7000 usd",
+        "7400",
+        "7400 usd",
+        "7900",
+        "7900 usd",
+        "8",
+        "82800",
+        "82800 usd",
+        "85000",
+        "85000 usd",
+        "9.80",
+        "9.80 usd",
+        "900",
+        "900 usd",
+        "9000",
+        "9000 usd",
+        "92000",
+        "92000 usd",
+        "9200",
+        "9200 usd",
+        "3600",
+        "3600 usd",
+        "1600",
+        "1600 usd",
+        "4.4",
+        "4.4 usd",
+        "90%",
+        "90.0%",
+        "84%",
+        "84.1%",
+        "71%",
+        "70.5%",
+        "31%",
+        "31.0%",
+        "53%",
+        "52.9%",
+        "21 day",
+        "6.7",
+        "6.7 h",
+        "345",
+        "4.40",
+        "4.40 usd",
+        "17 pp",
+        "9",
+        "9.5 h",
+        "2.8 h",
+        "88%"
+      ],
+      "note": "categories are numbers and urls only: a month and year in brackets such as (July 2026) reads as an author-year citation to the fact checker and no document here cites papers. Allowed: money with or without a currency sign, zero-stripped day and month numbers from ISO dates in the plans, and derived values for a closing report: remaining budget (9,200), per-line savings, 90% of budget spent, before/after differences and percentage changes of the five KPIs, the 21-day go-live slip"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?s)(?=.*92,?000)(?=.*82,?800)",
+      "note": "final budget (plan v2 / CR-03 / budget-final.csv) and actual spend"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)(?<!original )(?<!originally )(?<!initial )(?<!initially )(approved|final|total|project) budget(?:(?!original|initial|first|v1|baseline|before|increas|rais|from|plus|\\+)[^.\\n]){0,25}\\$?85,?000",
+      "note": "plan v1's 85,000 is not presented as the approved budget; v2 (92,000) supersedes it"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)(went live|launched|live since|live on|go-?live (took place|happened|occurred|was completed))[^.\\n]{0,25}\\b(1 June|June 1|2026-06-01)\\b",
+      "note": "the 1 June go-live of plan v1 and the May newsletter is not what happened; v2 moved it to 22 June"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b(22 June|June 22|2026-06-22)\\b"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)(240,?000|Bremen|Rahim|Leona|\\bpallets?\\b|label printers|cafeteria|hot dishes|service vouchers|town hall)",
+      "note": "facts of Project Tern (other project) and the newsletter must not appear"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)lessons? learn(ed|t)|what (worked|did not work)|do next time|what we learn",
+      "note": "the lessons-learned document is reflected"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\ball\\b[^.\\n]{0,30}(handover|hand-over|closure)[^.\\n]{0,30}(complete|completed|done|finished)",
+      "note": "two handover items are still open; completion is not overstated"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)decommission[^\\n]{0,300}(no owner|unassigned|not assigned|nobody|no one|no (set |agreed |confirmed )?date|not (yet )?(scheduled|dated|set|planned|assigned|named)|(owner|date)[^.\\n]{0,40}(missing|open|needed|tbd|unknown|not (yet )?(named|assigned|set|agreed|confirmed))|ASK AUTHOR)",
+      "note": "the legacy decommission has no owner or date in any document: the report says so (any wording), rather than leaving it out or guessing"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)(decommission\\w*|legacy[^.\\n]{0,40}(systems?|tools?))[^.\\n]{0,80}(owned by|owner is|owner:|assigned to|led by|will be (done|run|led) by)\\s*(Karl|Nadia|Pavel|Ines|Sofia|Osei|Haddad|Novak|Duarte|Marin|Datamove)|\\b(Karl|Nadia|Pavel|Ines|Sofia|Osei|Haddad|Novak|Duarte|Marin|Datamove)\\b[^.\\n]{0,30}\\bwill (own|decommission|lead|run|handle)\\b[^.\\n]{0,60}(decommission|legacy)",
+      "note": "no owner may be invented for the decommissioning"
+    },
+    {
+      "type": "facts_recalled",
+      "facts": [
+        {
+          "id": "final-budget",
+          "any": [
+            "92,?000"
+          ]
+        },
+        {
+          "id": "final-actual",
+          "any": [
+            "82,?800"
+          ]
+        },
+        {
+          "id": "go-live",
+          "any": [
+            "\\b22 jun(e)?\\b",
+            "\\bjun(e)? 22\\b",
+            "2026-06-22"
+          ]
+        },
+        {
+          "id": "cr-03",
+          "any": [
+            "CR-?03"
+          ]
+        },
+        {
+          "id": "phone-overrun",
+          "any": [
+            "7,?900",
+            "\\$900\\b",
+            "900 over"
+          ]
+        },
+        {
+          "id": "kpi-first-response",
+          "any": [
+            "(?s)9\\.5.{0,80}2\\.8",
+            "(?s)2\\.8.{0,80}9\\.5"
+          ]
+        },
+        {
+          "id": "kpi-backlog",
+          "any": [
+            "(?s)\\b410\\b.{0,80}\\b65\\b",
+            "(?s)\\b65\\b.{0,80}\\b410\\b"
+          ]
+        },
+        {
+          "id": "kpi-csat",
+          "any": [
+            "(?s)\\b71\\s?%?.{0,60}\\b88\\s?%?",
+            "(?s)\\b88\\s?%?.{0,60}\\b71\\s?%?"
+          ]
+        },
+        {
+          "id": "kpi-cost-per-ticket",
+          "any": [
+            "(?s)14\\.20.{0,60}9\\.80",
+            "(?s)9\\.80.{0,60}14\\.20"
+          ]
+        },
+        {
+          "id": "hypercare-end",
+          "any": [
+            "\\b17 jul(y)?\\b",
+            "\\bjul(y)? 17\\b",
+            "2026-07-17"
+          ]
+        },
+        {
+          "id": "closure",
+          "any": [
+            "\\b31 jul(y)?\\b",
+            "\\bjul(y)? 31\\b",
+            "2026-07-31"
+          ]
+        },
+        {
+          "id": "migrated-tickets",
+          "any": [
+            "38,?500"
+          ]
+        },
+        {
+          "id": "duplicates",
+          "any": [
+            "2,?300"
+          ]
+        },
+        {
+          "id": "agents",
+          "any": [
+            "(?s)\\b14\\b.{0,25}agents",
+            "(?s)agents.{0,25}\\b14\\b"
+          ]
+        },
+        {
+          "id": "open-decommission",
+          "any": [
+            "(?is)decommission.{0,250}(no owner|not set|not assigned|unassigned|ASK AUTHOR|owner[^.\\n]{0,20}(missing|open|needed))",
+            "(?is)(no owner|not set|not assigned|unassigned|ASK AUTHOR).{0,250}decommission"
+          ]
+        }
+      ],
+      "min": 0.75,
+      "note": "answer key from plan v2, CR-03, budget-final.csv, kpi csv, lessons, handover and the invoice PDF"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?im)^#{1,4}\\s+.*\\b(executive summary|summary|overview|outcome)\\b"
+    },
+    {
+      "type": "diagrams",
+      "min": 2,
+      "max": 8,
+      "numbers_from_sources": true,
+      "allow": [
+        "0",
+        "0 usd",
+        "1",
+        "11",
+        "12",
+        "120",
+        "120 usd",
+        "126",
+        "126 usd",
+        "13100",
+        "13100 usd",
+        "14.20",
+        "14.20 usd",
+        "14000",
+        "14000 usd",
+        "17",
+        "18400",
+        "18400 usd",
+        "19",
+        "2",
+        "20",
+        "2026",
+        "2026 usd",
+        "22",
+        "22000",
+        "22000 usd",
+        "2300",
+        "2300 usd",
+        "240000",
+        "240000 usd",
+        "27",
+        "29",
+        "3",
+        "30",
+        "31",
+        "36000",
+        "36000 usd",
+        "38500",
+        "38500 usd",
+        "4",
+        "4000",
+        "4000 usd",
+        "410",
+        "410 usd",
+        "5",
+        "6",
+        "7",
+        "7000",
+        "7000 usd",
+        "7400",
+        "7400 usd",
+        "7900",
+        "7900 usd",
+        "8",
+        "82800",
+        "82800 usd",
+        "85000",
+        "85000 usd",
+        "9.80",
+        "9.80 usd",
+        "900",
+        "900 usd",
+        "9000",
+        "9000 usd",
+        "92000",
+        "92000 usd",
+        "9200",
+        "9200 usd",
+        "3600",
+        "3600 usd",
+        "1600",
+        "1600 usd",
+        "4.4",
+        "4.4 usd",
+        "90%",
+        "90.0%",
+        "84%",
+        "84.1%",
+        "71%",
+        "70.5%",
+        "31%",
+        "31.0%",
+        "53%",
+        "52.9%",
+        "21 day",
+        "6.7",
+        "6.7 h",
+        "345",
+        "4.40",
+        "4.40 usd",
+        "17 pp",
+        "9",
+        "9.5 h",
+        "2.8 h",
+        "88%"
+      ],
+      "self_check": true,
+      "note": "the user asked for diagrams; every number a diagram shows must come from the documents (or be a listed derived value); diagram-design's checker runs on any diagram .html file"
+    },
+    {
+      "type": "html_deliverable",
+      "path": "out/report.html",
+      "no_script": true,
+      "self_contained": true,
+      "min_figures": 2,
+      "note": "the HTML version the user asked to read and print: no scripts, nothing loaded from outside, at least two figures"
+    },
+    {
+      "type": "max_slop",
+      "max": 5,
+      "profile": "professional"
+    },
+    {
+      "type": "word_count",
+      "min": 500,
+      "max": 4000
+    }
+  ]
+}

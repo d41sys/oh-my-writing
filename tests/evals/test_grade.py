@@ -147,7 +147,7 @@ def test_grade_run_reports_difference_between_conditions(tmp_path, monkeypatch):
     total = results["summary"]["by"]["codex/ALL"]
     assert total["skill_pass"] == 1.0 and total["baseline_pass"] == 0.0 and total["delta"] == 1.0
     report = (tmp_path / "report.md").read_text()
-    assert "+100 pts" in report and "anti-slop-editing/sample | codex | FAIL | PASS" in report
+    assert "+100 pts" in report and "anti-slop-editing/sample | codex | 1 | FAIL | PASS" in report
 
 
 def test_host_errors_are_excluded_from_both_rates(tmp_path, monkeypatch):

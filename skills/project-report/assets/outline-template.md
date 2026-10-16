@@ -4,11 +4,12 @@
 
 - **Reader:** [who reads it, what they already know]
 - **Purpose:** [the decision they make, or what they must understand or do afterwards]
-- **Type:** [status / progress / milestone / final or closing]
+- **Type:** [status / progress / milestone / final or closing / migration]
 - **Period and report date:** [from - to]; [date] (assumed from [source] / given by the author)
 - **Scope:** [what the report covers and what it leaves out]
 - **Tone:** professional: plain, specific, active, no hype, numbers with unit and date, owners named
-- **Length and format:** [pages or words]; HTML (printable to PDF); language [x]
+- **Length and format:** [pages or words; a status report is about 2-4 printed pages]; HTML (printable to PDF); language [x]
+- **Delivery:** [reader-facing (default): no markers in the report / draft the author edits: markers stay in the body]; evidence cut-off [date] and report date [date] kept separate
 - **Assumptions:** [each guess, marked as an assumption]
 
 ## Outline
@@ -17,15 +18,14 @@ One line per section, each line a full message that the ledger supports. Reading
 
 | # | Section | Message (a complete sentence) | Ledger IDs | Table or figure |
 |---|---------|-------------------------------|------------|-----------------|
-| 1 | Executive summary | [overall state; the three to five points; the decision needed] | [IDs] | none |
-| 2 | Objectives and scope | [what the project set out to do, what is excluded] | [IDs] | |
-| 3 | Progress against plan | [planned vs actual, and what moved] | [IDs] | [Figure 1 / Table 1] |
-| 4 | Results and metrics | [measured outcomes with units and dates] | [IDs] | [Table 2] |
-| 5 | Timeline | [dates achieved and ahead] | [IDs] | [Figure 2] |
-| 6 | Risks and issues | [each with owner and status] | [IDs] | [Table 3] |
-| 7 | Decisions needed | [question, decider, deadline] | [IDs] | |
-| 8 | Next steps | [action, owner, date] | [IDs] | |
-| 9 | Appendix: sources | [documents used, not read, unresolved conflicts] | all | |
+| 1 | Summary: assessment and key points | [one-line overall assessment, labelled as the report's own, or "the records do not support one"; three to five key points, including any material constraint] | [IDs] | none |
+| 2 | Decisions and actions | [priority, action (report's proposal unless a document says agreed), owner from a document or "to be assigned", timing from a document or "not set"] | [IDs] | [Table 1] |
+| 3 | Progress against plan | [planned vs actual, and what moved] | [IDs] | [Figure 1] |
+| 4 | Budget and results | [measured outcomes and spend with units and dates; limits and sign-off steps] | [IDs] | [Table 2] |
+| 5 | Risks and issues | [only items not already in the actions table, with status] | [IDs] | |
+| A | Appendix: sources | [file, as-of date, used for; not read; unresolved conflicts] | all | [Table 3] |
+
+Status report spine shown. A final or closing report opens with outcome against objectives, key points and outstanding items and handover; a migration report opens with what changed, current state and what remains (see `references/report-structure.md#spine`). Target length for a status report: about two to four printed pages.
 
 ## Decisions about scope
 
@@ -35,4 +35,4 @@ One line per section, each line a full message that the ledger supports. Reading
 
 ## Open questions for the author
 
-1. [question; the marker the report carries until it is answered]
+1. [question as `[ASK AUTHOR: ...]` or `[VERIFY: ...]`; goes to `open-questions.md` and the reply. The report states the gap in reader language and carries no marker, unless the author asked for a draft]

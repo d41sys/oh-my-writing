@@ -1,0 +1,8 @@
+TrackerLegacy: notes from the operations team (written 2 June 2026)
+
+- One Java application on two on-premises servers (tracker-a and tracker-b). It does everything: scan intake, tracking pages, SMS.
+- One Oracle database holds all parcels and scans. Vendor support ends 31 October 2026.
+- Tracking pages query Oracle directly; there is no cache. Busy mornings are slow.
+- SMS updates are sent by a batch job every 5 minutes, so customers wait up to 5 minutes for a message.
+- A cron job on tracker-a writes the partner file every night and uploads it by SFTP. It takes about 95 minutes.
+- Deployments need a 20-minute outage.

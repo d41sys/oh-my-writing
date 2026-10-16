@@ -1,0 +1,6 @@
+metric,unit,Before Jan-Mar 2026,After July 2026
+Average first response time,hours,9.5,2.8
+Open backlog,tickets,410,65
+Customer satisfaction,percent,71,88
+Cost per ticket,USD,14.20,9.80
+Tickets handled per agent per day,tickets,17,26

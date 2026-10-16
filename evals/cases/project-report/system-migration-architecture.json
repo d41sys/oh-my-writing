@@ -1,0 +1,332 @@
+{
+  "id": "project-report/system-migration-architecture",
+  "skill": "project-report",
+  "description": "A parcel-tracking system migration documented in a design doc, a runbook, a cutover checklist, an incident note (docx), legacy notes, a metrics csv and a status email. The report needs an architecture / data-flow diagram that shows only components that exist in the documents, before/after charts that match metrics.csv, the cutover and rollback facts, and a marker for the ownerless cron export removal.",
+  "prompt": "We moved the parcel tracking system to the new platform. The documents are in the folder docs/. Please make a migration report for Hanna Berg, the engineering director, that shows the architecture and how data flows, and what changed in the numbers. Professional tone, and well-designed diagrams please. Save the report to out/report.md and also an HTML version to out/report.html that I can read and print. I'm not available today, so don't wait for me.",
+  "fixtures": "evals/fixtures/system-migration-architecture",
+  "files": {},
+  "output": "out/report.md",
+  "deliverables": [
+    "out/report.md",
+    "out/report.html"
+  ],
+  "timeout": 2400,
+  "judge": {
+    "mode": "visual",
+    "render": "out/report.html"
+  },
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "urls"
+      ],
+      "allow": [
+        "11",
+        "11800",
+        "11800 usd",
+        "1240",
+        "1240 usd",
+        "190",
+        "190 usd",
+        "2026",
+        "2026 usd",
+        "210",
+        "210 usd",
+        "24",
+        "290",
+        "290 usd",
+        "8",
+        "8300",
+        "8300 usd",
+        "840",
+        "840 usd",
+        "99.2",
+        "99.2 usd",
+        "99.95",
+        "99.95 usd",
+        "3500",
+        "3500 usd",
+        "77%",
+        "77.4%",
+        "282%",
+        "281.8%",
+        "76.8%",
+        "30%",
+        "29.7%",
+        "98%",
+        "97.9%",
+        "7",
+        "650",
+        "650 ms",
+        "155",
+        "73",
+        "73 min",
+        "284",
+        "284 s",
+        "0.75",
+        "0.75 pp",
+        "4.4 x",
+        "3.8 x",
+        "840 ms",
+        "190 ms",
+        "95 min",
+        "22 min",
+        "99.2%",
+        "99.95%",
+        "290 s",
+        "6 s"
+      ],
+      "note": "categories are numbers and urls only: a month and year in brackets such as (July 2026) reads as an author-year citation to the fact checker and no document here cites papers. Allowed: money with or without a currency sign, zero-stripped day and month numbers from ISO dates, and derived before/after values: differences and percentage changes of the six metrics in metrics.csv (650 ms, 155 scans/s, 73 min, $3,500 a month, 284 s, 0.75 pp) and 7, the number of components the design doc lists"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(Kafka|MongoDB|Elasticsearch|Kubernetes|Cassandra|Lambda|Memcached|DynamoDB|MySQL|Nginx|HAProxy|Istio|Snowflake|Redshift|ActiveMQ|Prometheus|Grafana)\\b",
+      "note": "no component or product the documents never mention (they never mention Kafka, MongoDB, Kubernetes and the like)"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)(?=.*Oracle)(?=.*TrackerLegacy)",
+      "note": "the legacy side (TrackerLegacy on Oracle) is described, not only the target"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)(rollback|TrackerLegacy)[^.\\n]{0,60}(was|has been|is) (shut down|decommissioned|switched off|retired)\\b",
+      "note": "the checklist plans the TrackerLegacy shutdown after 29 August; it is not done"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)cron[^\\n]{0,250}(no owner|unassigned|not assigned|nobody|no one|owner[^.\\n]{0,30}(missing|blank|open|needed|tbd|unknown|not (yet )?(named|assigned))|ASK AUTHOR)",
+      "note": "the open owner of the cron export removal is stated"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)cron[^.\\n]{0,80}(owned by|owner is|owner:|assigned to|led by|will be (done|removed|handled) by)\\s*(Sven|Mira|Hanna|Johan|Aalto|Costa|Berg|Lindgren)|\\b(Sven|Mira|Hanna|Johan|Aalto|Costa|Berg|Lindgren)\\b[^.\\n]{0,25}\\b(owns|will own|is responsible for|will remove|removes)\\b[^.\\n]{0,40}cron",
+      "note": "no owner may be invented for the cron export removal"
+    },
+    {
+      "type": "facts_recalled",
+      "facts": [
+        {
+          "id": "cutover-date",
+          "any": [
+            "\\b15 aug(ust)?\\b",
+            "\\baug(ust)? 15\\b",
+            "2026-08-15"
+          ]
+        },
+        {
+          "id": "intake-pause",
+          "any": [
+            "\\b70[- ]min"
+          ]
+        },
+        {
+          "id": "duplicate-rows",
+          "any": [
+            "1,?240"
+          ]
+        },
+        {
+          "id": "idempotency-fix",
+          "any": [
+            "idempoten"
+          ]
+        },
+        {
+          "id": "latency",
+          "any": [
+            "(?s)\\b840\\b.{0,80}\\b190\\b",
+            "(?s)\\b190\\b.{0,80}\\b840\\b"
+          ]
+        },
+        {
+          "id": "throughput",
+          "any": [
+            "(?s)\\b55\\b.{0,80}\\b210\\b",
+            "(?s)\\b210\\b.{0,80}\\b55\\b"
+          ]
+        },
+        {
+          "id": "export-duration",
+          "any": [
+            "(?s)\\b95\\b.{0,80}\\b22\\b",
+            "(?s)\\b22\\b.{0,80}\\b95\\b"
+          ]
+        },
+        {
+          "id": "infra-cost",
+          "any": [
+            "(?s)11,?800.{0,80}8,?300",
+            "(?s)8,?300.{0,80}11,?800"
+          ]
+        },
+        {
+          "id": "availability",
+          "any": [
+            "99\\.95"
+          ]
+        },
+        {
+          "id": "sms-delay",
+          "any": [
+            "\\b290\\b"
+          ]
+        },
+        {
+          "id": "rollback-window-end",
+          "any": [
+            "\\b29 aug(ust)?\\b",
+            "\\baug(ust)? 29\\b",
+            "2026-08-29"
+          ]
+        },
+        {
+          "id": "oracle-support-end",
+          "any": [
+            "\\b31 oct(ober)?\\b",
+            "\\boct(ober)? 31\\b"
+          ]
+        },
+        {
+          "id": "rollback-trigger",
+          "any": [
+            "(?s)\\b2\\s?%.{0,100}10 min",
+            "(?s)10 min.{0,100}\\b2\\s?%"
+          ]
+        },
+        {
+          "id": "three-rehearsals",
+          "any": [
+            "(?s)(three|3).{0,30}rehears",
+            "(?s)rehears.{0,40}(three|3)"
+          ]
+        }
+      ],
+      "min": 0.75,
+      "note": "answer key from the design doc, runbook, checklist, incident note (docx), metrics.csv and the status email"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?im)^#{1,4}\\s+.*\\b(executive summary|summary|overview|at a glance)\\b"
+    },
+    {
+      "type": "diagrams",
+      "min": 2,
+      "max": 8,
+      "numbers_from_sources": true,
+      "allow": [
+        "11",
+        "11800",
+        "11800 usd",
+        "1240",
+        "1240 usd",
+        "190",
+        "190 usd",
+        "2026",
+        "2026 usd",
+        "210",
+        "210 usd",
+        "24",
+        "290",
+        "290 usd",
+        "8",
+        "8300",
+        "8300 usd",
+        "840",
+        "840 usd",
+        "99.2",
+        "99.2 usd",
+        "99.95",
+        "99.95 usd",
+        "3500",
+        "3500 usd",
+        "77%",
+        "77.4%",
+        "282%",
+        "281.8%",
+        "76.8%",
+        "30%",
+        "29.7%",
+        "98%",
+        "97.9%",
+        "7",
+        "650",
+        "650 ms",
+        "155",
+        "73",
+        "73 min",
+        "284",
+        "284 s",
+        "0.75",
+        "0.75 pp",
+        "4.4 x",
+        "3.8 x",
+        "840 ms",
+        "190 ms",
+        "95 min",
+        "22 min",
+        "99.2%",
+        "99.95%",
+        "290 s",
+        "6 s"
+      ],
+      "self_check": true,
+      "note": "architecture and data-flow diagrams name only components that exist in the documents (Tracking API, Scan Ingest Worker, RabbitMQ, PostgreSQL, Notification Service ...), invent none, and chart numbers come from metrics.csv",
+      "labels_any": [
+        {
+          "id": "tracking-api",
+          "any": [
+            "Tracking API"
+          ]
+        },
+        {
+          "id": "scan-ingest",
+          "any": [
+            "Scan Ingest|Ingest Worker"
+          ]
+        },
+        {
+          "id": "queue",
+          "any": [
+            "RabbitMQ"
+          ]
+        },
+        {
+          "id": "database",
+          "any": [
+            "Postgres"
+          ]
+        },
+        {
+          "id": "notification",
+          "any": [
+            "Notification"
+          ]
+        }
+      ],
+      "labels_none": [
+        "Kafka|MongoDB|Elasticsearch|Kubernetes|Cassandra|Lambda|Memcached|DynamoDB|MySQL|Nginx|HAProxy|Istio|Snowflake|Redshift|ActiveMQ|Prometheus|Grafana"
+      ]
+    },
+    {
+      "type": "html_deliverable",
+      "path": "out/report.html",
+      "no_script": true,
+      "self_contained": true,
+      "min_figures": 2,
+      "note": "the HTML version the user asked to read and print: no scripts, nothing loaded from outside, at least two figures"
+    },
+    {
+      "type": "max_slop",
+      "max": 5,
+      "profile": "professional"
+    },
+    {
+      "type": "word_count",
+      "min": 500,
+      "max": 3500
+    }
+  ]
+}

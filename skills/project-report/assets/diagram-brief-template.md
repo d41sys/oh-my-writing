@@ -1,6 +1,6 @@
 # Diagram plan: [project name]
 
-One brief per candidate, kept in `diagram-plan.md`. A brief is also the complete instruction passed to the drawing skill, so it must stand alone.
+One brief per candidate, kept in `work/diagram-plan.md`. A brief is also the complete instruction passed to the drawing skill, so it must stand alone.
 
 Default two to five diagrams. Drop any that a table or a sentence does better, and record the drop below.
 
@@ -10,7 +10,7 @@ Default two to five diagrams. Drop any that a table or a sentence does better, a
 - **Why a diagram beats text or a table:** [one sentence: dependencies, overlap, flow, trend, or position that a table hides]
 - **Report section and caption:** [section]; "[caption as it will appear]"
 - **diagram-design visual type:** [Gantt / Timeline / Architecture / Data flow / Swimlane / Process / Bar / Line / Waterfall / Fishbone / Quadrant / Kanban / ...] (semantic pattern, if its guide routes to one: [name or none])
-- **Size preset:** [`doc-inline` (default) / `doc-wide`]
+- **Size and drawn width:** [canvas near the printed text width, about 680 units (`fit`); or `doc-inline` 960 when the type needs the width (prints at about 70%); `doc-wide` only if the schedule cannot be split]
 - **Audience:** [`executive` / `mixed` / `engineer`]
 - **Variant and style:** minimal light; style [default / marker / profile name]; fonts [web / system]
 - **Focal elements (at most two):** [the late milestone, the over-budget line]

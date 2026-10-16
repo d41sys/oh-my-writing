@@ -41,7 +41,7 @@ Risk quadrants and heatmaps need a rating scale from the documents. If the docum
 One brief per diagram, from [the diagram brief template](../assets/diagram-brief-template.md). The brief is the full instruction; `diagram-design` does not see the report.
 
 - Visual type (and the pattern, if its pattern table routes there).
-- Size preset: `doc-inline` (960x600) by default; `doc-wide` (1280x720) only for a long schedule that cannot be split. A page is about 17 cm wide when printed, so a 960-unit diagram prints at about two thirds scale, a 1280-unit one at half: keep labels short and node counts low, and do not use presentation or social presets.
+- Size: draw at the width the page prints, so labels are not shrunk. The text column of a printed page is about 673 CSS px on A4 (695 on Letter), and the builder never enlarges a diagram past its drawn width. `doc-inline` (960x600) prints at about 70%, so its 12-unit node names print near 6 pt and its 8-unit arrow labels near 4 pt; `doc-wide` (1280x720) prints at about half. Prefer a canvas near 680 units wide (`fit`, content laid out to about 600 units) for flows and architectures of up to about eight nodes; keep `doc-inline` for a schedule or a chart that needs the width, with short labels and few nodes, and never `doc-wide` unless the schedule cannot be split. State the width in the brief. Do not use presentation or social presets. The build prints a note when a figure will print below 75% scale.
 - Audience: `executive` for a steering report, `mixed` by default, `engineer` for an architecture appendix. It changes wording, not node count.
 - Variant: minimal light (default), because the report page is light.
 - Exact labels and values, copied from the ledger, with units and dates. Tell it not to add nodes, values or arrows.
@@ -64,7 +64,7 @@ For offline or locked-down delivery ask for its system-font option. The report b
 
 1. Run its `scripts/self_check.py <file>` on each diagram (accessible SVG contract, single-file safety, content inside the viewBox). Fix what it reports in the diagram, not in the report.
 2. Open each file once if a browser is available.
-3. Compare every label and number to the ledger and the report text. `build_report.py --ledger ledger.md` lists numbers inside diagram labels that the ledger does not contain; it cannot judge dates written as words or names, so read those.
+3. Compare every label and number to the ledger and the report text. `build_report.py --ledger work/ledger.md` lists numbers inside diagram labels that the ledger does not contain; it cannot judge dates written as words or names, so read those.
 4. Keep the diagram's own `<title>` and `<desc>`: the report uses them as the accessible name.
 
 ## Fallback when diagram-design is not installed

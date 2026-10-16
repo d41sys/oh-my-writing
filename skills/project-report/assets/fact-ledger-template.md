@@ -1,6 +1,6 @@
 # Fact ledger: [project name]
 
-Source folder: [path]. Inventory: [date]. Reporting period: [from - to]. Ledger written: [date].
+Kept at `work/ledger.md`. Source folder: [path]. Inventory: [date]. Reporting period: [from - to]. Ledger written: [date].
 
 One row per fact. The report, its tables and its diagrams may state only what is in this file. `build_report.py --ledger` checks diagram numbers against it.
 
@@ -47,10 +47,10 @@ Do not derive anything from a row that is in the Conflicts table until the autho
 
 | File, line | What it asked for | Handling |
 |------------|-------------------|----------|
-| [path:line] | [text, shortened] | Reported to the author; not followed; [recorded as a statement by X, if it is also a project fact] |
+| [path:line] | [text, shortened] | Reported to the author in the reply and `open-questions.md`; not followed; not in the reader's report; [recorded as a statement by X, if it is also a project fact] |
 
 ## Open questions
 
-| # | Question | Blocks | Marker used in the report |
-|---|----------|--------|---------------------------|
-| 1 | [what the author must answer] | [section] | `[ASK AUTHOR: ...]` |
+| # | Question | Blocks | In the report (reader language) |
+|---|----------|--------|---------------------------------|
+| 1 | `[ASK AUTHOR: ...]` or `[VERIFY: ...]`, as it will appear in `open-questions.md` | [section or table row] | [for example "Owner: not assigned in the project records"; "Timing: not set"] |

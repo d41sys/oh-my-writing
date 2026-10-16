@@ -20,7 +20,10 @@ Input is a Markdown subset (standard library converter, no pandoc needed):
     Mermaid        ```mermaid caption="..." source="..." id="slug"  (fallback
                    when no designed diagram exists; shown as labelled source,
                    never executed)
-    cross-refs     [[fig:slug]] becomes a link reading "Figure N"
+    cross-refs     [[fig:slug]] becomes a link reading "Figure N". A typed
+                   "Figure ", "figure " or "Fig. " in front of it is absorbed,
+                   so "Figure [[fig:x]]" reads "Figure 1", not "Figure Figure 1"
+    contents       listed only with 6+ top-level sections (--toc auto|on|off)
     raw HTML       is escaped, never passed through
 
 Diagram embedding (see references/assembly.md):
@@ -65,7 +68,12 @@ FIG_RE = re.compile(r'^!\[(.*?)\]\(([^)\s]+)(?:\s+"(.*)")?\)\s*$')
 FENCE_RE = re.compile(r"^(```+|~~~+)\s*(.*)$")
 HEADING_RE = re.compile(r"^(#{1,6})\s+(.*?)\s*#*\s*$")
 HR_RE = re.compile(r"^\s*([-*_])(\s*\1){2,}\s*$")
-CALLOUT_RE = re.compile(r"^\*\*(?:Decision needed|Decisions needed|Key points|Bottom line|Recommendation)[^*]*\*\*", re.I)
+CALLOUT_RE = re.compile(r"^\*\*(?:Decision needed|Decisions needed|Key points|Bottom line|Recommendation|Overall assessment|Assessment|Outcome)[^*]*\*\*", re.I)
+SOURCE_LINE_RE = re.compile(r"^(?:\*|_)?Sources?(?:\*|_)?\s*:", re.I)
+SHORT_TABLE_ROWS = 8
+TOC_MIN_SECTIONS = 6
+TEXT_WIDTH_PX = {"a4": 673, "letter": 695}
+LEGIBLE_PRINT_SCALE = 0.75
 
 META_ORDER = [("project", "Project"), ("prepared_for", "Prepared for"), ("prepared_by", "Prepared by"),
               ("period", "Period"), ("date", "Date"), ("version", "Version"), ("status", "Status")]
@@ -114,6 +122,7 @@ class Context:
         self.fig_slugs: dict[str, int] = {}
         self.markers = {"ask": 0, "verify": 0, "untested": 0}
         self.warnings: list[str] = []
+        self.notes: list[str] = []
         self.css_blocks: list[str] = []
         self.font_links: list[str] = []
         self.svg_texts: list[tuple[int, str]] = []
@@ -134,6 +143,8 @@ def inline(text: str, ctx: Context) -> str:
 
     text = re.sub(r"(`+)(.+?)\1", lambda m: keep(f"<code>{esc(m.group(2).strip())}</code>"), text)
     text = MARKER_RE.sub(lambda m: keep(ctx.marker(m.group(0))), text)
+    # "Figure [[fig:x]]", "figure [[fig:x]]" and "Fig. [[fig:x]]" render once, as "Figure N".
+    text = re.sub(r"(?<![\w-])(?:[Ff]igure|[Ff]ig\.?)[ \t]+(?=\[\[fig:)", "", text)
     text = re.sub(r"\[\[fig:([\w-]+)\]\]", lambda m: keep(f"\x01{m.group(1)}\x01"), text)
     text = esc(text)
 
@@ -463,7 +474,8 @@ def render_table(lines: list[str], i: int, ctx: Context) -> tuple[str, int]:
         cls = f' class="{a}"' if a else ""
         return f"<{tag}{cls}>{inline(text, ctx)}</{tag}>"
 
-    out = ['<div class="table-wrap"><table>', "<thead><tr>" + "".join(cell("th", h, aligns[k]) for k, h in enumerate(head)) + "</tr></thead>", "<tbody>"]
+    short = " short" if len(rows) <= SHORT_TABLE_ROWS else ""
+    out = [f'<div class="table-wrap{short}"><table>', "<thead><tr>" + "".join(cell("th", h, aligns[k]) for k, h in enumerate(head)) + "</tr></thead>", "<tbody>"]
     for r in rows:
         out.append("<tr>" + "".join(cell("td", v, aligns[k]) for k, v in enumerate(r)) + "</tr>")
     out.append("</tbody></table></div>")
@@ -522,13 +534,23 @@ def resolve_target(target: str, ctx: Context) -> Path | None:
     return next((c for c in cands if c.is_file()), None)
 
 
-def figure_html(ctx: Context, art: str, caption: str, source: str, slug: str, note: str = "") -> str:
+def viewbox_width(svg: str) -> float | None:
+    root = re.match(r"<svg\b(?:\"[^\"]*\"|'[^']*'|[^>\"'])*>", svg, re.I)
+    m = re.search(r"\sviewBox\s*=\s*[\"']\s*[-\d.]+[\s,]+[-\d.]+[\s,]+([\d.]+)[\s,]+[\d.]+", root.group(0)) if root else None
+    return float(m.group(1)) if m else None
+
+
+def figure_html(ctx: Context, art: str, caption: str, source: str, slug: str, note: str = "", vbw: float | None = None) -> str:
     n = len(ctx.figures) + 1
     base, k = slug, 2
     while slug in ctx.fig_slugs:
         slug, k = f"{base}-{k}", k + 1
     ctx.fig_slugs[slug] = n
-    ctx.figures.append({"n": n, "slug": slug, "caption": caption, "source": source})
+    scale = round(min(1.0, TEXT_WIDTH_PX[ctx.args.paper] / vbw), 2) if vbw else None
+    ctx.figures.append({"n": n, "slug": slug, "caption": caption, "source": source, "print_scale": scale})
+    if scale is not None and scale < LEGIBLE_PRINT_SCALE:
+        ctx.notes.append(f"figure {n} ({slug}) is {vbw:g} units wide and prints at about {scale:.0%} scale; "
+                         f"labels may be too small on paper (draw it nearer {TEXT_WIDTH_PX[ctx.args.paper]} units wide, or fewer nodes)")
     if not caption:
         ctx.warnings.append(f"figure {n} ({slug}) has no caption")
     if not source:
@@ -540,7 +562,8 @@ def figure_html(ctx: Context, art: str, caption: str, source: str, slug: str, no
     if note:
         lines.append(note)
     src = "".join(f'<span class="fig-source">{inline(t, ctx)}</span>' for t in lines)
-    return (f'<figure class="figure" id="fig-{slug}">\n<div class="figure-art">{art}</div>\n'
+    style = f' style="--vbw:{vbw:g}"' if vbw else ""
+    return (f'<figure class="figure" id="fig-{slug}">\n<div class="figure-art"{style}>{art}</div>\n'
             f'<figcaption><span class="fig-label">Figure {n}.</span>{cap}{src}</figcaption>\n</figure>')
 
 
@@ -561,7 +584,7 @@ def embed_figure(caption: str, target: str, source: str, ctx: Context) -> str:
         if css.strip():
             ctx.css_blocks.append(css)
         ctx.svg_texts.append((n, "\n".join(svg_labels(svg))))
-        return figure_html(ctx, svg, caption, source, slug)
+        return figure_html(ctx, svg, caption, source, slug, vbw=viewbox_width(svg))
     if ext in {".png", ".jpg", ".jpeg", ".gif", ".webp"}:
         mime = mimetypes.guess_type(path.name)[0] or "image/png"
         data = base64.b64encode(path.read_bytes()).decode("ascii")
@@ -572,6 +595,8 @@ def embed_figure(caption: str, target: str, source: str, ctx: Context) -> str:
 
 def add_heading(level: int, raw: str, ctx: Context) -> str:
     text = inline(raw, ctx)
+    if level == 1 and ctx.title is not None and plain(text) == ctx.title:
+        return ""  # the title block already shows it
     if level == 1 and ctx.title is None:
         ctx.title = plain(text)
         return ""
@@ -592,7 +617,8 @@ def add_heading(level: int, raw: str, ctx: Context) -> str:
     ctx.used_ids.add(hid)
     ctx.headings.append({"level": level, "id": hid, "number": number, "text": text})
     num = f'<span class="secnum">{number}</span>' if number else ""
-    return f'<h{level} id="{hid}">{num}{text}</h{level}>'
+    cls = ' class="appendix"' if level == 2 and re.match(r"(?i)appendix\b", plain(text)) else ""
+    return f'<h{level} id="{hid}"{cls}>{num}{text}</h{level}>'
 
 
 def starts_block(lines: list[str], i: int) -> bool:
@@ -672,7 +698,8 @@ def convert_blocks(lines: list[str], ctx: Context) -> str:
             para.append(lines[i].strip())
             i += 1
         text = " ".join(para)
-        out.append(f"<p>{inline(text, ctx)}</p>")
+        cls = ' class="source-line"' if SOURCE_LINE_RE.match(text) else ""
+        out.append(f"<p{cls}>{inline(text, ctx)}</p>")
     return "\n".join(out)
 
 
@@ -695,9 +722,19 @@ def parse_front_matter(text: str) -> tuple[dict[str, str], str]:
 # Assembly
 # --------------------------------------------------------------------------
 
+def wrap_appendix(main_html: str) -> str:
+    """Wrap everything from the first appendix heading on in one compact section."""
+    m = re.search(r'<h2 id="[^"]*" class="appendix">', main_html)
+    if not m:
+        return main_html
+    return main_html[:m.start()] + '<section class="appendix-body">\n' + main_html[m.start():] + "\n</section>"
+
+
 def render_toc(ctx: Context) -> str:
     items = [h for h in ctx.headings if h["level"] in (2, 3)]
-    if len(items) < 3 or ctx.args.no_toc:
+    sections = [h for h in ctx.headings if h["level"] == 2]
+    mode = ctx.args.toc
+    if mode == "off" or not items or (mode == "auto" and len(sections) < TOC_MIN_SECTIONS):
         return ""
     out = ['<nav class="toc" aria-label="Contents"><h2>Contents</h2>', "<ol>"]
     for h in items:
@@ -743,7 +780,7 @@ def build(report_md: Path, args) -> tuple[str, dict]:
         ctx.warnings.append(f"unresolved cross-reference [[fig:{slug}]]")
         return f'<mark class="marker marker-ask">[ASK AUTHOR: figure {esc(slug)} not found]</mark>'
     toc = render_toc(ctx)
-    block = render_title_block(meta, title, ctx) + "\n" + toc + "\n" + main_html
+    block = render_title_block(meta, title, ctx) + "\n" + toc + "\n" + wrap_appendix(main_html)
     block = re.sub(r"\x01([\w-]+)\x01", fig_ref, block)
 
     report_css = ASSET_CSS.read_text(encoding="utf-8") if ASSET_CSS.is_file() else ""
@@ -781,7 +818,7 @@ def build(report_md: Path, args) -> tuple[str, dict]:
         "title": title, "output": str(args.out), "figures": ctx.figures, "headings": len(ctx.headings),
         "markers": dict(ctx.markers), "missing_diagrams": ctx.pending, "numbers_not_in_reference": unmatched,
         "font_links": list(dict.fromkeys(ctx.font_links)) if args.fonts == "auto" else [],
-        "warnings": ctx.warnings, "generated": dt.date.today().isoformat(),
+        "warnings": ctx.warnings, "notes": ctx.notes, "generated": dt.date.today().isoformat(),
     }
     return doc, summary
 
@@ -795,7 +832,8 @@ def main(argv=None) -> int:
     ap.add_argument("--fonts", choices=["auto", "system"], default="auto",
                     help="auto: keep the font stylesheet link the diagrams use; system: no external request")
     ap.add_argument("--ledger", type=Path, help="fact ledger; diagram numbers are checked against it")
-    ap.add_argument("--no-toc", action="store_true")
+    ap.add_argument("--toc", choices=["auto", "on", "off"], default="auto",
+                    help=f"contents list: auto (only with {TOC_MIN_SECTIONS}+ top-level sections), on, off")
     ap.add_argument("--no-number", action="store_true", help="do not number headings")
     ap.add_argument("--allow-missing", action="store_true", help="render a visible placeholder for a missing diagram")
     ap.add_argument("--strict", action="store_true", help="exit 1 when any warning remains")
@@ -819,6 +857,8 @@ def main(argv=None) -> int:
         print(json.dumps(summary, indent=2, ensure_ascii=False))
     else:
         print(f"wrote {args.out} ({len(doc) // 1024} KB): {len(summary['figures'])} figure(s), {summary['headings']} heading(s)")
+        for n in summary["notes"]:
+            print(f"  note: {n}")
         for w in summary["warnings"]:
             print(f"  warning: {w}")
     return 1 if args.strict and summary["warnings"] else 0

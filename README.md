@@ -79,10 +79,12 @@ for t in tests/*/; do [ -d "$t" ] && [ "$(basename "$t")" != _meta ] && uv run -
 
 `tests/_meta` checks the shared contract for every skill: allowed frontmatter keys, quoted `metadata.version`, the license, the 500-line limit, `eval.md` and `agents/openai.yaml`, links that stay inside the skill, tests for any `scripts/`, and the absence of internal library IDs and source-repository names. Skill text is written in our own words; sources are thanked in Acknowledgments.
 
-Benchmark: `evals/` runs realistic writing tasks on Codex and Claude Code with and without the skills and grades them mechanically (invented facts, lost negations and qualifiers, missing gap markers, leftover stock phrasing, leaked context), with an optional blind pairwise judge. See [evals/README.md](evals/README.md):
+Benchmark: `evals/` runs realistic writing tasks on Codex and Claude Code with and without the skills and grades them mechanically (invented facts, lost negations and qualifiers, missing gap markers, leftover stock phrasing, leaked context), with an optional blind pairwise judge. `project-report` cases use real document folders in `evals/fixtures/` (docx, xlsx, pptx, pdf, eml, csv, md, with conflicts, superseded versions, noise and an embedded instruction), answer keys, diagram and HTML checks, repeated runs and a visual judge that scores page screenshots. `evals/review_pairs.py` builds a blind A/B page for rating the outputs yourself. See [evals/README.md](evals/README.md):
 
 ```bash
 python3 evals/run.py --host codex --host claude --jobs 4
+python3 evals/run.py --host codex --cases 'project-report/*' --repeat 3 --jobs 6 --judge codex
+python3 evals/review_pairs.py evals/results/<run>
 ```
 
 ## License
