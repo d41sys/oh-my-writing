@@ -4,6 +4,8 @@ Load when: building or filling the claims ledger for a text (workflow step 3).
 
 Checked on: <date> | Evidence folder or links: <where> | Checked by: <name or agent>
 
+This ledger is for the author. Gap markers belong here and in the reply; the prose a reader sees (the revised or newly written text) carries none, and states each gap plainly or leaves the sentence out.
+
 ## How to fill it
 
 - **Claim**: one checkable statement, in the author's words, shortened if needed. Split compound sentences so each row has one claim.
@@ -11,8 +13,8 @@ Checked on: <date> | Evidence folder or links: <where> | Checked by: <name or ag
 - **Level**: the strength the text asserts now: `existence`, `narrow`, `systematic`, `guarantee` (see claim strength reference).
 - **Evidence**: where the support lives, precise enough to open: file and line, table, page, URL with the passage. Write `none` or `memory` if that is the truth. Mark `secondary` when the location is a summary of the real source.
 - **Status**: `supported` (evidence opened and it says this, at this level), `partial` (evidence supports a weaker or narrower claim), `unsupported` (no evidence, or evidence says otherwise), `needs-check` (evidence exists but was not opened, is unclear, or the domain is high-stakes).
-- **Action**: `keep`, `narrow` (rewrite to the supported level), `cut`, `ask` (author must supply the source or number).
-- **Revised wording**: only for `narrow`; the exact replacement sentence. For results, add `confirmatory` or `exploratory` in the note when it matters.
+- **Action**: `keep`, `narrow` (rewrite to the supported level), `cut`, `ask` (the author must supply the source or number; the text meanwhile states the gap plainly or omits the sentence, and the question goes to Open items).
+- **Revised wording**: only for `narrow`; the exact replacement sentence, written as it will stand in the reader's text, with no marker in it. For results, add `confirmatory` or `exploratory` in the note when it matters.
 
 ## Ledger
 
@@ -49,6 +51,8 @@ Claims removed from the text because no evidence supports them. List each so the
 |----|------------------|---------|
 
 ## Open items for the author
+
+Also copy these into the reply and, when output files are saved, into `open-questions.md` beside them.
 
 - [ASK AUTHOR: ...]
 - [VERIFY: ...]

@@ -173,7 +173,7 @@ Investor, customer or partner outreach messages (cold emails, pitches, sales fol
 
 **Golden rule: the materials must agree with each other.** Before drafting any piece, create or confirm one list of canonical facts: traction metrics, pricing and revenue assumptions, raise size and instrument, use of funds, team names and titles, milestones and dates. If drafts or assets disagree, stop and resolve it before writing more. Check every number in every asset against that list before sending.
 
-**Workflow:** list canonical facts; list missing assumptions and mark them for the author; choose the asset; draft with the logic visible; cross-check every number.
+**Workflow:** list canonical facts; list missing assumptions and log them as questions for the author in the reply; choose the asset; draft with the logic visible, stating each missing assumption plainly in the asset ("The notes give no churn figure for the downside case.") or leaving the claim out; cross-check every number.
 
 **Default deck sequence** (a sensible order, not a rule; shorten only on purpose, never by burying the ask): company and wedge, problem, solution, product or demo, market, business model, traction, team, competition and differentiation, the ask, use of funds and milestones, appendix.
 
@@ -202,7 +202,7 @@ This is the blameless document written for the team. A public blog post that tel
 3. Timeline: timestamped events with the information available at each point. Decisions are judged against what was known then. Times and durations are the author's; compute a duration only from given timestamps and show the arithmetic. Carry every value in the notes into the document (a config value and the value it should have had, a timeout, a threshold, a policy interval), because the cause is often one number.
 4. Causes: the chain from trigger to impact, and the conditions that let it happen. Use why-questions until you reach something a change can fix, typically three to five levels. Each causal link has evidence (log, metric, measurement), or is marked as probable.
 5. What went well and where luck helped. Luck is a finding too.
-6. Action items: each tied to a verified cause and specific enough to check (name the system, threshold, document, or step; "improve monitoring" is not an action), with an owner, a date, and the evidence that will show it worked. Prefer changes to systems and checks over retraining or reminders. If the author gave no owner or date, mark `[ASK AUTHOR: owner and date]` rather than assigning one.
+6. Action items: each tied to a verified cause and specific enough to check (name the system, threshold, document, or step; "improve monitoring" is not an action), with an owner, a date, and the evidence that will show it worked. Prefer changes to systems and checks over retraining or reminders. If the author gave no owner or date, the document says "Owner: to be assigned" and "Date: not set", and the question goes to the reply and `open-questions.md`; do not assign one, and do not leave a marker in the document.
 7. Open questions and what is not known.
 
 **Blameless is a method, not a tone.** People are not the cause; the conditions in which a reasonable person acted that way are. Name roles and systems, not culprits, unless the people consented. If a statement ends at "human error," "carelessness," or "operator did not follow the procedure," keep going: why did the system allow, encourage, or fail to catch that? A root cause that restates the problem or whose only fix is "remind the team" is still a symptom.
@@ -234,3 +234,33 @@ When the report checks something against a standard and finds problems.
 - "Could not check X" is different from "X is broken." Do not call the audit complete if a required source failed to load; say what was not examined.
 - If nothing is found, state the scope and assumptions and say the surface is clean in one line.
 - Close with a clear verdict (pass or fail, or the needed fix).
+
+## Gaps in a reader-facing report
+
+A gap is something the notes do not say. The reader's document states it as a fact about the material, or omits the sentence; the author's question goes to the reply and `open-questions.md`. Never fill the gap with an estimate. Process narration ("as requested", "I checked with a scanner") and `[source: ...]` tags stay out of the document too.
+
+| Gap | In the document (reader language) | Marker line, in the reply and `open-questions.md` |
+|---|---|---|
+| no recommendation in the notes | "The source analysis makes no recommendation. Two options are supported: A (...) and B (...)." Lead with the findings | `[ASK AUTHOR: notes support A or B; which do you recommend?]` |
+| no owner or date | "Owner: to be assigned." "Date: not set." | `[ASK AUTHOR: who owns the runbook update, and by when?]` |
+| missing figure (cost, lift, baseline) | "The notes give no cost for this option." or omit the sentence | `[ASK AUTHOR: is there a cost estimate for option B?]` |
+| cause not established | "The cause of the 7-minute alert delay is not known." | `[ASK AUTHOR: has the alert delay been investigated?]` |
+| external fact to confirm | state what the notes say and that it is not confirmed beyond them | `[VERIFY: price quoted in the vendor note against the current list]` |
+| command or query quoted but not run | omit it, or "This command was not run for this report." | `[UNTESTED: ...]` |
+
+`open-questions.md` format (beside the saved report; skip it when nothing is open):
+
+```markdown
+# Open questions: <report title>
+
+1. [ASK AUTHOR: notes support A or B; which do you recommend?]
+   Blocks: Recommendation. The summary says: "The source analysis makes no recommendation."
+2. [VERIFY: ...]
+   Blocks: ...
+```
+
+List the same items in the reply, in full, with the same numbering.
+
+Exception: the author asked for a draft to edit. Then the markers stay in the file at the gap, with a one-line draft banner at the top, and `open-questions.md` still exists.
+
+Author-facing by nature, so markers may stay: the reply, `open-questions.md`, the revise-mode change list, and any worksheet or notes shown to the author before the report is sent.

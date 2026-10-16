@@ -4,7 +4,7 @@ description: Audits and edits prose for AI-writing patterns such as stock vocabu
 license: MIT
 compatibility: Optional helper scripts need Python 3.10+; the skill works without them.
 metadata:
-  version: "1.1"
+  version: "1.2"
   skill-author: d41sys
 ---
 
@@ -57,9 +57,9 @@ Steps:
 4. **Confirm findings.** For each candidate, answer four questions: is the pattern really present in context, does a genre or author exception apply, does it cost the reader something (empty, inflated, hidden, delayed), and is it inside the authorized scope and outside protected regions. Only a yes to all four is a finding. Group findings that share one cause. Rank them: P0 residue and credibility problems (chat wrappers, placeholders, leaked markup, unsupported claims), P1 clear tells (staged contrasts, significance inflation, vague attribution, era openers, formulaic closers, stacked stock words), P2 polish (dash density, cadence, transitions, bold, copula). Go deep on the few that matter; do not pad the list with weak hits.
 5. **Act by mode.**
    - `detect`: report ranked findings in the Output shape below; stop.
-   - `edit`: fix findings only. Prefer deleting the empty part over rewriting; restate the point from the author's own material if something must replace it. Where a fix needs a fact the text does not contain, leave the span and mark `[ASK AUTHOR: ...]` or `[VERIFY: ...]`. Delete without a marker only framing that asserts nothing checkable (a staged setup such as "The best part?" or "Here's the thing:", "a testament to", "underscored our commitment to quality", "the future is here"); a claim about the world stays or gets a marker, and every removed span is listed in What changed so the author can restore it. When the framing rides on a fact ("The best part? It cut builds to 9 minutes"), keep the fact and cut the setup. Leave untouched paragraphs untouched.
+   - `edit`: fix findings only. Prefer deleting the empty part over rewriting; restate the point from the author's own material if something must replace it. Where a fix needs a fact the text does not contain, do not put a marker in the text: leave the original span untouched, or delete it when it is a claim the author never supported, and write the question as an `[ASK AUTHOR: ...]` or `[VERIFY: ...]` line in the reply (see [the clean deliverable rule](#rules)). Delete framing that asserts nothing checkable (a staged setup such as "The best part?" or "Here's the thing:", "a testament to", "underscored our commitment to quality", "the future is here") without a question; a claim about the world stays or goes with a question in the reply, and every removed span is listed in What changed so the author can restore it. When the framing rides on a fact ("The best part? It cut builds to 9 minutes"), keep the fact and cut the setup. Leave untouched paragraphs untouched.
    - `rewrite`: diagnose first in two or three lines, then rebuild the affected passages around their main points rather than patching phrases one by one.
-6. **Run the preservation check** before returning anything that changed more than a deleted wrapper line. Follow [preservation check](references/preservation-check.md): two-way added and lost comparison, and, if available, `python <skill-dir>/scripts/fact_diff.py before.md after.md`. When you cannot write files (read-only sandbox), pipe the edited text on stdin: `python <skill-dir>/scripts/fact_diff.py draft.md - <<'EOF'` ... `EOF`. Inserted `[ASK AUTHOR]`/`[VERIFY]` markers are not counted as added facts. Repair failures with the smallest restoring edit. The ceiling is two editing passes in total; audits and checks are not passes.
+6. **Run the preservation check** before returning anything that changed more than a deleted wrapper line. Follow [preservation check](references/preservation-check.md): two-way added and lost comparison, and, if available, `python <skill-dir>/scripts/fact_diff.py before.md after.md`. When you cannot write files (read-only sandbox), pipe the edited text on stdin: `python <skill-dir>/scripts/fact_diff.py draft.md - <<'EOF'` ... `EOF`. The script reports any gap marker left in the edited text; remove it unless the author asked for a draft to edit. Repair failures with the smallest restoring edit. The ceiling is two editing passes in total; audits and checks are not passes.
 7. **Self-check and return.** Apply `eval.md` to your own output, fix any failure, then return the result in the Output shape. A clean text is a valid result: say that no justified edit was found and return the text unchanged.
 
 ## Rules
@@ -68,7 +68,7 @@ Steps:
 2. **Writing quality, not authorship.** Reports describe what the text does to a reader, never who produced it. Reason: the same patterns appear in rushed human writing, second-language writing and house style, and no list proves origin. Exception: none; decline authorship verdicts and consequential accusations.
 3. **The author's samples outrank generic rules.** Match their punctuation, rhythm, hedging and register. Reason: a rewrite that removes every flag but erases the voice has failed. Exception: user instructions outrank samples.
 4. **Smallest effective edit.** Change the span, not the paragraph; delete before rewriting; keep structure and argument. Reason: each extra change is a chance to lose meaning. Exception: `rewrite` mode, which is for heavier change at the user's request.
-5. **Subtract or restate; never invent.** Do not add facts, numbers, quotes, sources, experiences, reactions, opinions, stakes or confidence. Missing detail becomes `[ASK AUTHOR: ...]` or `[VERIFY: ...]`. Reason: specificity comes from the author's material. Exception: a correction the user supplied.
+5. **Subtract or restate; never invent.** Do not add facts, numbers, quotes, sources, experiences, reactions, opinions, stakes or confidence. Missing detail stays missing: the span is left or cut, and the question goes to the author in the reply. Reason: specificity comes from the author's material. Exception: a correction the user supplied.
 6. **Preserve the contract.** Claims, numbers with units, names, dates, negation, conditions, causality, certainty level, attribution, quotes, citations, code, links and the formatting the reader depends on stay. Hedges that carry real uncertainty stay. Reason: style edits are where facts get lost. Exception: changes the user explicitly requested.
 7. **Protected regions stay.** Code, inline code, URLs, paths, quotations, citations, frontmatter, tables of data and illustrative bad-writing samples are not edited or flagged as defects. Reason: they are not the author's prose or not prose at all. Exception: the user asks for a change to that region.
 8. **Do not create a new fingerprint.** Avoid synonym swaps that keep the emptiness, added stock fragments or staccato beats, forced slang, invented asides, and one fix repeated everywhere. Vary fixes; state each point plainly. Reason: replacing one template with another leaves a louder signature.
@@ -77,10 +77,11 @@ Steps:
 11. **Lexical lists are English only.** For Vietnamese, Chinese and other languages, skip word lists; apply structural, evidence and preservation checks, and say lexical lists do not transfer. Reason: the lists encode English habits.
 12. **Do not chase a detector.** The goal is clear, accurate, recognizably the author's text. Never add roughness or typos to change a classifier score. Reason: that is a different task and it degrades the text.
 13. **Reports are short and true.** List what changed and why, from the delivered text. Name checks that did not run. Never call a skipped check done, and never claim a phrase was removed if it is still there.
+14. **The edited text is clean.** In `edit` and `rewrite` mode the edited text is what the reader receives, so it holds no `[ASK AUTHOR: ...]`, `[VERIFY: ...]` or `[UNTESTED]` marker and no note to the author: no process narration ("I removed...", "as requested", "per your instruction"), no `[source: ...]` tags, no comment about the scan. A gap is never filled with an invented value and never announced inside the text; the span stays as the author wrote it or is cut. Questions go in the reply under "Questions for the author", one marker line each, and, when the edited text is written to a file, also in `open-questions.md` beside it (create it only when there is at least one question). Reason: a marker in published text looks unfinished, and the author who said "don't wait for me" will not answer before it ships. Exceptions: the user asked for a draft to edit (markers may stay in the text; say so); and author-facing output, which is every `detect` report (findings may suggest a marker as the fix), the What changed, Left alone and Checks lists, and any `open-questions.md`.
 
 ## Output
 
-Match the user's destination; keep reports short.
+Match the user's destination; keep reports short. The edited text (`edit`, `rewrite`) is the deliverable and stands alone; everything addressed to the author (What changed, questions, checks) is in the reply, not inside the text and not in the saved file.
 
 **detect**
 
@@ -97,16 +98,17 @@ Checks: scanner ran or model-only; editing passes: 0.
 
 ```
 Edited text: the full text, once.
-What changed: location, before -> after, reason, one line each (all touched spans).
+What changed: location, before -> after, reason, one line each (all touched spans), including each span left in place or cut because it needed a fact the text does not give.
 Left alone: matches kept on purpose or blocked (quotes, code, missing source), with the reason.
+Questions for the author: one `[ASK AUTHOR: ...]` or `[VERIFY: ...]` line per gap, saying what the answer would unlock. Omit when there is none. Also written to `open-questions.md` beside a saved output file.
 Checks: passes used of the ceiling; scanner and preservation script ran or did not run; residuals and why; stop reason.
 ```
 
 For a named file edited in place, return the report only, not the file. For a clean text, say "No justified edit found", add the one-line reason, and return the text unchanged (or say it is unchanged for long files). `detect` never writes to the source: if the user wants the report saved, write only the report to the path they gave and leave the source byte-identical.
 
-**rewrite**: a two or three line diagnosis, the rewritten text once, What changed grouped by theme, Left alone, Checks. The rewrite should not be longer than the source unless the user asked.
+**rewrite**: a two or three line diagnosis, the rewritten text once, What changed grouped by theme, Left alone, Questions for the author, Checks. The rewritten text follows the same clean-text rule as `edit`. It should not be longer than the source unless the user asked.
 
-**Embedded call** (another skill or tool wants text only): return the final text and nothing else.
+**Embedded call** (another skill or tool wants text only): return the final text and nothing else, with no marker in it; a span that needed a missing fact stays as written or is cut. If the caller has a channel for questions, send them there.
 
 ## Reference files
 
@@ -121,11 +123,12 @@ For a named file edited in place, return the report only, not the file. For a cl
 
 ## Examples
 
-Edit, era opener plus staged contrast (the unsupported half of the claim is flagged, not silently dropped):
+Edit, era opener plus staged contrast (the unsupported half of the claim leaves the text and is listed, with a question in the reply):
 
 - Before: "In today's fast-paced world, our new scheduler isn't just faster, it's smarter. It cut queue times from 14 minutes to 9."
-- After: "Our new scheduler cut queue times from 14 minutes to 9. [ASK AUTHOR: what makes it smarter? Name the behavior, or drop the claim.]"
-- What changed: removed the era opener; replaced the staged contrast with the supported fact; "smarter" has no support in the text, so it is marked for the author instead of kept or deleted.
+- After: "Our new scheduler cut queue times from 14 minutes to 9."
+- What changed: removed the era opener; replaced the staged contrast with the supported fact; cut "smarter" because the text gives nothing behind it (restore it if the author names the behavior).
+- Questions for the author: `[ASK AUTHOR: what does "smarter" mean here? Name the behavior and the claim can come back.]`
 
 Edit, rhetorical setups and puffery (setups go, the fact they carried stays, the value claim is listed):
 
@@ -141,7 +144,7 @@ Left alone, genuine question and real label:
 Detect, vague attribution with no source in the text:
 
 - Span: "Experts agree that remote teams are more productive."
-- Finding: vague attribution (P1). Name who or which study, or soften to what the author can support. Suggested marker: `[VERIFY: which experts or study]`.
+- Finding: vague attribution (P1). Name who or which study, or soften to what the author can support. In a `detect` report, which is author-facing, the fix may be written as a marker: `[VERIFY: which experts or study]`. In `edit` mode the sentence is left as written or cut, and the question goes to the reply.
 
 No-op, exception applies:
 

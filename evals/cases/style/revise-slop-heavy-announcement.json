@@ -1,0 +1,112 @@
+{
+  "id": "style/revise-slop-heavy-announcement",
+  "skill": "anti-slop-editing",
+  "description": "A staff announcement stuffed with chatbot framing, adjective stacks, bold-label bullets and a closing pleasantry: the revision keeps every date, number, negation and hedge, gets slop density down, is shorter, and reads like an internal note a colleague would send.",
+  "prompt": "This announcement in draft.md sounds like a chatbot wrote it and nobody will read it. Rewrite it so it reads like a person on the finance team wrote it. Keep every fact. Save it to out/draft.md.",
+  "files": {
+    "draft.md": "Subject: Exciting news about our new expense platform!\n\nIn today's fast-paced business landscape, managing expenses efficiently is more important than ever. That's why we're thrilled to announce the launch of Ledgerly, a game-changing, seamless solution that will revolutionize the way you submit and track expenses.\n\nLedgerly isn't just another tool; it's a robust, comprehensive platform designed to empower every employee. Whether you're a frequent traveler, an occasional claimant, or a manager reviewing approvals, Ledgerly has you covered.\n\nKey benefits:\n- **Streamlined submission:** Simply snap a photo of your receipt and Ledgerly reads the amount automatically. It does not read the date or the vendor, so you still type those.\n- **Faster reimbursements:** Claims are now paid within 5 working days, down from 14.\n- **Enhanced visibility:** Managers can approve claims from their phone.\n\nIt is worth noting that Ledgerly goes live on 3 November, and the old system will be switched off on 30 November. Employees may potentially wish to submit any outstanding claims in the old system before then. Please note that Ledgerly does not yet support foreign-currency claims; these should still be emailed to finance until the end of the year, we expect.\n\nTraining sessions will be held on 28 and 29 October at 12:00, and each will last 45 minutes. We encourage you to reach out to the finance helpdesk at finance-help@northwind.example with any questions. We hope this helps you navigate the transition smoothly, and we look forward to hearing your valuable feedback!\n"
+  },
+  "output": "out/draft.md",
+  "checks": [
+    {
+      "type": "preserves",
+      "source": "draft.md",
+      "categories": [
+        "numbers"
+      ]
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "urls",
+        "citations"
+      ],
+      "allow": [
+        "2"
+      ],
+      "note": "'28 and 29 October' may become 'two sessions'"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\bwe expect|\\bexpect(?:ed)?\\b",
+      "note": "the hedge on the year-end date stays"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)not yet|does not (?:yet )?support|doesn't (?:yet )?support|no (?:support|foreign)",
+      "note": "the known gap stays a gap"
+    },
+    {
+      "type": "contains",
+      "values": [
+        "Ledgerly",
+        "finance-help@northwind.example"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)(?:not|n't)[^.\\n]{0,60}(?:date|vendor)|(?:date|vendor)[^.\\n]{0,60}(?:not|n't|still)",
+      "note": "the receipt-reading limit stays"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)foreign[- ]currency",
+      "note": "the known gap stays"
+    },
+    {
+      "type": "not_contains",
+      "values": [
+        "thrilled",
+        "game-changing",
+        "revolutionize",
+        "seamless",
+        "robust",
+        "comprehensive",
+        "empower",
+        "in today's",
+        "it is worth noting",
+        "we hope this helps",
+        "valuable feedback",
+        "has you covered",
+        "key benefits"
+      ]
+    },
+    {
+      "type": "word_count",
+      "min": 80,
+      "max": 190,
+      "note": "the draft is about 230 words; the facts need fewer"
+    },
+    {
+      "type": "slop_density",
+      "max": 7
+    },
+    {
+      "type": "rhythm",
+      "min_cv": 0.35
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)hope (?:this|you)[^.\\n]{0,40}(?:finds you|well)|don'?t hesitate|do not hesitate|reach out|any inconvenience|valued customer|sincerely apologi[sz]e|look forward to hearing|(?:thank you|thanks) (?:so much )?for your (?:patience|understanding|time and consideration|continued)|first and foremost|i wanted to (?:reach out|provide)|as a (?:result|reminder),? ",
+      "note": "no stock email opener or closer"
+    },
+    {
+      "type": "markers",
+      "min": 0,
+      "max": 0,
+      "target": "output",
+      "note": "The deliverable goes straight to its reader and the notes hold every fact the text needs, so no gap marker belongs in the saved file; a question for the author goes in the reply."
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\[(?:insert|your|name|date|company|tbd|add|link|recipient|sender)\\b[^\\]\\n]*\\]|\\bTBD\\b|\\blorem ipsum\\b",
+      "note": "no fill-in placeholder in text for a reader"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?im)^\\s*(?:note to (?:self|author|you)|here(?:'s| is) (?:the|your|a) (?:draft|email|memo|post|letter|article|update|revised)|draft (?:email|memo|post|letter|article|update)\\b|subject line options)",
+      "note": "the file is the deliverable, not a reply with a lead-in or notes about it"
+    }
+  ]
+}

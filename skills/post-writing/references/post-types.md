@@ -22,10 +22,10 @@ For documentation pages for a product or tool (tutorials, how-to guides, referen
 ## How-to post
 
 - **Spine:** the outcome the reader will have, prerequisites, ordered steps each with one action and the result to expect, the common failure and its fix, one next move.
-- **Material needed:** commands, settings or actions the author actually ran, with the expected output. Versions and environment. A command or snippet the author did not run, or that you wrote, carries `[UNTESTED]`, and its output is never described as seen.
+- **Material needed:** commands, settings or actions the author actually ran, with the expected output. Versions and environment. A command or snippet the author did not run, or that you wrote, gets no observed output; if a reader could assume it was run, the post says plainly that it was not ("This command was not run for this post."), and the reply lists it as `[UNTESTED]`.
 - **Failure mode:** a promise of "easy" or "five minutes" with steps that were never run; steps that skip a prerequisite; explaining theory before the first step.
 - **Shortest path to a first result.** List every step, then separate what the reader must do from what can wait (extra settings, optional features) and move the optional part after the first working result. Never cut a security step, an authentication prerequisite or a consent or safety requirement to make the path shorter.
-- **Check:** could a reader who knows nothing but the prerequisites reach the result? Is every command real and copyable, or marked `[UNTESTED]`? Is the version stated?
+- **Check:** could a reader who knows nothing but the prerequisites reach the result? Is every command real and copyable, or stated as not run? Is the version stated? Does the post text hold no `[UNTESTED]` marker (that goes in the reply)?
 
 ## Argument or opinion
 
@@ -70,7 +70,7 @@ Release notes and changelogs are `technical-docs`; this type is the announcement
 - **Check:** after the first paragraph, does the reader know what changed, whether it affects them, and where to go?
 - **Link placement.** Put the link where the reader needs it: after the sentence that makes them want it. Check the channel's current conventions before moving links elsewhere (see [platforms](platforms.md)).
 - **Product introduction versus design story.** An introduction serves a reader deciding whether to adopt: problem, how it works, evidence, a working first step. A design story serves a reader who wants to understand a decision: starting state, the failure, rejected options, the mechanism, verification. Pick one; mixing them gives a brochure that pretends to be a story.
-- **Launch hygiene.** State one core claim up front and have every supporting point prove that claim. Say what is not shipping or not included when readers could assume otherwise (for example what stays local or private). If a likely misreading exists (a rename mistaken for a pivot, a preview mistaken for general availability), name and reject it in one sentence. Publish only what the author says is live; otherwise `[VERIFY: availability]`.
+- **Launch hygiene.** State one core claim up front and have every supporting point prove that claim. Say what is not shipping or not included when readers could assume otherwise (for example what stays local or private). If a likely misreading exists (a rename mistaken for a pivot, a preview mistaken for general availability), name and reject it in one sentence. Publish only what the author says is live; when status is unclear, state the weaker one (for example "in beta") and ask in the reply: `[VERIFY: availability]`.
 - **A set of posts around one launch.** The announcement, the short-text post and the professional-network post each carry the same claim and the same numbers. Each version stands alone and is not a shortened copy of another. The call to action, the link and the date come from the author.
 
 ## List with depth
@@ -106,7 +106,7 @@ Release notes and changelogs are `technical-docs`; this type is the announcement
 - **Failure mode:** diary-style warm-up before the point; a link dump with no commentary; every issue structured differently; a roundup that only repeats headlines.
 - **Check:** if the reader only sees the subject and the first screen, do they know what they will get? Does the issue have one main idea?
 - **Internal or team newsletter, and series.** See [email sequences](email-sequences.md).
-- **Compliance.** Marketing email has legal requirements (consent, an unsubscribe route, sender identity) that vary by region. Flag `[VERIFY: applicable email rules]` and leave them to the sender's platform and counsel; do not state legal specifics.
+- **Compliance.** Marketing email has legal requirements (consent, an unsubscribe route, sender identity) that vary by region. Leave them to the sender's platform and counsel; do not state legal specifics in the email, and list `[VERIFY: applicable email rules]` in the reply.
 
 ## Reader psychology, used honestly
 
@@ -125,4 +125,4 @@ These ideas shape how to present a point. They are not licences to manipulate.
 
 ## Differentiation check
 
-Replace the author's or product's name with a competitor's. If the sentence stays true and nothing changes, it is generic. Fix it with something specific to this author or product: a measured figure, a mechanism, a constraint. If the material has nothing specific, mark `[ASK AUTHOR: what is specific to this?]` rather than inventing a distinction.
+Replace the author's or product's name with a competitor's. If the sentence stays true and nothing changes, it is generic. Fix it with something specific to this author or product: a measured figure, a mechanism, a constraint. If the material has nothing specific, cut the sentence or state only what is true of this product, and ask in the reply (`[ASK AUTHOR: what is specific to this?]`) rather than inventing a distinction.

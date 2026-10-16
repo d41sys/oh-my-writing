@@ -4,7 +4,7 @@ Load when: you need the detail behind a candidate (what the pattern is, what it 
 
 Every entry is a signal to inspect, not a rule to enforce. A pattern becomes a finding only after you have read the sentence, checked the genre (see [genre calibration](genre-calibration.md)) and compared it with the author's own samples. The lexical entries are English only; for other languages use the structural, evidence and preservation checks and say that word lists do not transfer.
 
-Fix principle for all entries: subtract, or restate the point from the author's material. If the sentence needs a fact the text does not contain, mark `[ASK AUTHOR: ...]` or ask. Do not swap one stock word for another; that hides the symptom and keeps the emptiness.
+Fix principle for all entries: subtract, or restate the point from the author's material. If the sentence needs a fact the text does not contain, leave the span as written or cut it, and put the question to the author in the reply; in `edit` and `rewrite` mode no marker goes into the text itself. A `detect` report is author-facing, so there a fix may name the question as `[ASK AUTHOR: ...]` or `[VERIFY: ...]`. Do not swap one stock word for another; that hides the symptom and keeps the emptiness.
 
 Scanner names appear in parentheses where `scripts/slop_scan.py` has a matching check.
 
@@ -172,7 +172,7 @@ Claims of importance or consensus with nothing behind them.
 - Looks like: "Experts believe", "Studies show", "It is widely known", "critics argue".
 - Cost: the reader cannot check the source; an editor who silently turns it into the author's own assertion adds a claim.
 - Fine when: a name, citation or link in the same sentence says who.
-- Fix: cite the source if the author supplied one; otherwise `[VERIFY: source for ...]`, or soften to what the author can stand behind, or cut.
+- Fix: cite the source if the author supplied one; otherwise soften to what the author can stand behind, or cut, and ask the author for the source in the reply (`[VERIFY: source for ...]`, not inside the text).
 
 ### Trailing commentary riders (`trailing-rider`)
 - Looks like: "..., highlighting the importance of collaboration", "..., underscoring its value".
@@ -208,7 +208,7 @@ Claims of importance or consensus with nothing behind them.
 - Looks like: "Trust is the currency of teams.", "At its core, what really matters is...", "real product-market fit", "genuine utility", "a failure mode nobody talks about", "she coined the phrase".
 - Cost: profundity by template; "real" implies fake alternatives without saying which; "coined" and "nobody talks about" are priority claims the text may not support.
 - Fine when: the contrast is explicit ("real revenue from paying customers, not grants"), the line is literal (the currency of a country), or the author's voice uses aphorisms deliberately.
-- Fix: replace the template with the assertion the material supports; drop the adjective; define a term on first use instead of claiming to have coined it. An unsupported priority claim gets `[VERIFY: ...]` or goes.
+- Fix: replace the template with the assertion the material supports; drop the adjective; define a term on first use instead of claiming to have coined it. An unsupported priority claim goes, with the question in the reply (`[VERIFY: ...]`).
 
 ### False concession and invented antonyms (`false-concession`)
 - Looks like: "While X is impressive, Y remains a challenge.", "false precision rather than genuine accuracy".
@@ -220,7 +220,7 @@ Claims of importance or consensus with nothing behind them.
 - Looks like: "He is associated with the leadership of ExampleCorp.", "tied to economic modernization".
 - Cost: implies a role or link while hiding what it was.
 - Fine when: the source leaves the relationship unspecified, or a measured statistical association is the correct term (epidemiology, social science).
-- Fix: name the relationship the text gives. If it does not give one, keep the vague wording or mark `[ASK AUTHOR: what was the role?]`; never invent a title or mechanism.
+- Fix: name the relationship the text gives. If it does not give one, keep the vague wording and ask in the reply (`[ASK AUTHOR: what was the role?]`); never invent a title or mechanism.
 
 ### Parenthetical hedges (`parenthetical-hedge`)
 - Looks like: "(and, increasingly, Z)", "(or, more precisely, Y)", "(and perhaps more importantly, W)".
@@ -266,7 +266,7 @@ Found by reading shape, not words. Scanner hits here are always weak.
 - Looks like: "We planned for every failure mode. Except the one that happened.", "The tool died; the data didn't.", "Not always. Not perfectly."
 - Cost: a twist or a beat stands where the specific event should be; one is style, a repeated habit is a template.
 - Fine when: one earned short sentence carries real weight, or the passage is comic or theatrical by design.
-- Fix: keep one if earned; turn the rest into a sentence with the actual subject and cause. If the source does not say what the missed failure mode was, mark `[ASK AUTHOR: which failure mode?]` instead of guessing.
+- Fix: keep one if earned; turn the rest into a sentence with the actual subject and cause. If the source does not say what the missed failure mode was, keep the original beat or cut it, and ask in the reply (`[ASK AUTHOR: which failure mode?]`) instead of guessing.
 
 ### Colon into a forced triple (found by reading)
 - Looks like: "The architecture provides: separate ports, processes, and local state."
@@ -376,13 +376,13 @@ Highest priority because it is never part of the message. Remove only the wrappe
 - Looks like: "As an AI language model", "As of my last update".
 - Cost: undermines the claim it excuses.
 - Fine when: the text is about language models.
-- Fix: delete the wrapper; check the claim, and mark `[VERIFY: current status of ...]` if it may be stale.
+- Fix: delete the wrapper; check the claim, and if it may be stale keep it as written and ask in the reply (`[VERIFY: current status of ...]`).
 
 ### Leaked scaffolding, placeholders and markup (`reasoning-leak`, `placeholder`, `template-braces`, `citation-leak`, `ai-referral-parameter`, `hidden-character`)
 - Looks like: "Okay, so the user wants...", "[Insert name]", "oaicite", a link ending `?utm_source=chatgpt.com`, zero-width characters.
 - Cost: visible debris, or broken cited claims.
 - Fine when: template braces in docs, or zero-width characters pasted by accident from a web page (neither indicates authorship).
-- Fix: delete the debris; fill placeholders from the author's material or mark `[ASK AUTHOR: ...]`; re-check any claim whose citation markup leaked.
+- Fix: delete the debris; fill placeholders from the author's material; where the material has no value, cut the sentence that needed it or leave the slot out, and ask in the reply (`[ASK AUTHOR: ...]`); re-check any claim whose citation markup leaked.
 
 ### Acknowledgment loops and wrong-reader re-explanations
 - Looks like: "You're asking about X. To answer your question..." before the answer; re-explaining what the reader already knows.

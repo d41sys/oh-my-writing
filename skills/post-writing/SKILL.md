@@ -3,7 +3,7 @@ name: post-writing
 description: Drafts, restructures and repurposes public posts such as blog posts, long-form articles, essays, newsletters, short email sequences, LinkedIn and X or Threads posts and threads, launch announcements, and adaptations of one piece across channels. Starts from the reader and one takeaway, opens on a concrete artifact, keeps proof ahead of adjectives, and never invents anecdotes, metrics, clients, links or calls to action. Use when asked to write or improve a blog post, article, essay, newsletter issue, LinkedIn post, X thread, announcement, launch post, welcome or onboarding email series, or to turn one piece into several channel versions.
 license: MIT
 metadata:
-  version: "1.2"
+  version: "1.3"
   skill-author: d41sys
 ---
 
@@ -11,7 +11,7 @@ metadata:
 
 Public posts are read by people who owe the author nothing: they can stop at the first line. This skill turns the author's real material into a post that earns the next paragraph. It starts from one reader and one takeaway, chooses a structure by the job the piece must do, and fits the result to the channel without changing what the piece claims.
 
-The author's experience, numbers and opinions come only from the author. Where material is missing, the draft carries a marker or a question, never an invented stand-in.
+The author's experience, numbers and opinions come only from the author. Where material is missing, the post states the claim only at the strength the facts support, or leaves it out; the question goes to the author in the reply. A post is read by the public, so it carries no marker, no bracket placeholder and no process note.
 
 ## When to use
 
@@ -31,7 +31,7 @@ Not for:
 - Decision, research or market reports and executive summaries, and the blameless incident post-mortem document written for a team: use `report-writing`. A public blog post that tells an incident's story stays here.
 - Documentation pages for a product or tool (tutorials, how-to guides, READMEs, PR descriptions, release notes, changelogs): use `technical-docs`. A blog-style how-to post and a launch announcement post stay here.
 - Résumés, cover letters, profiles and personal outreach emails for jobs or academia (cold, networking, referral, prospective supervisor): use `career-documents`. Email sequences and newsletters stay here.
-- Paid ad copy, app-store listings, conversion landing pages and compliance-heavy SMS or WhatsApp programs are not covered in depth here. If asked, apply the grounding rules (no invented proof, no invented urgency), write to the strictest field limit first, and mark every limit `[VERIFY: limit]`.
+- Paid ad copy, app-store listings, conversion landing pages and compliance-heavy SMS or WhatsApp programs are not covered in depth here. If asked, apply the grounding rules (no invented proof, no invented urgency), write to the strictest field limit first, and list every limit that needs checking in the reply.
 - Machine-learning paper sections: use `academic-writing` if installed; otherwise `structured-drafting` for structure plus `evidence-grounded-writing` for claims.
 
 ## Inputs
@@ -55,9 +55,9 @@ Also take from the author, and never from memory or invention: the exact product
 Pick a mode first. **Draft** (material to post), **Repair** (existing draft to better draft), **Repurpose** (finished piece to other channels). Repurpose mode follows [repurposing](references/repurposing.md) after step 2 here.
 
 1. **Fix the brief.** Write reader, takeaway, action, channel and assumptions as five short lines. If the takeaway will not fit one sentence, the author has two posts; say so and pick one.
-2. **Inventory the material.** List the concrete things available: numbers with their conditions, an incident with its sequence, code or output, a quote with its source, a screenshot, the link to the canonical piece. List what is missing and what the piece would need. Mark each gap `[ASK AUTHOR: ...]` (the author knows or decides it), `[VERIFY: ...]` (a source exists or must be found and checked) or `[UNTESTED]` (a command or snippet nobody ran). Do not fill a gap with a plausible detail.
+2. **Inventory the material.** List the concrete things available: numbers with their conditions, an incident with its sequence, code or output, a quote with its source, a screenshot, the link to the canonical piece. List what is missing and what the piece would need. This list is a working note for the author, not post text. Record each gap as a question for the reply: `[ASK AUTHOR: ...]` (the author knows or decides it), `[VERIFY: ...]` (a source exists or must be found and checked) or `[UNTESTED]` (a command or snippet nobody ran). In the post, a gap is handled as in [gaps in a published post](#gaps-in-a-published-post). Do not fill a gap with a plausible detail.
 3. **Choose the post type.** Match the job to a type in [post types](references/post-types.md): how-to, argument or opinion, story or reflection, post-mortem or devlog, announcement, list with depth, explainer, comparison, newsletter issue. The type sets the spine; do not reuse one template for everything.
-4. **Open on the concrete thing.** Draft the opening from the best artifact, example, number or scene. When the angle is still open, write two or three candidate openings that imply different pieces and let the author pick; see [openings and endings](references/openings-and-endings.md). Allow a line of context first when a cold reader cannot parse the artifact without it.
+4. **Open on the concrete thing.** Draft the opening from the best artifact, example, number or scene. When the angle is still open, offer two or three candidate openings that imply different pieces, in the reply, for the author to pick; the post itself carries one. See [openings and endings](references/openings-and-endings.md). Allow a line of context first when a cold reader cannot parse the artifact without it.
 5. **Build the body by job.** Give each section one job, and say it in a heading or first sentence when the piece is long enough to need headings. Show the example before explaining the mechanism. Introduce a concept before a later paragraph leans on it. Keep the author's real sequence for incident and design stories: starting point, blocker, attempt, turn, result. Never invent why the author moved from one step to the next; ask.
 6. **Package it.** Write the title or first line so it promises exactly what the piece delivers. Add headings, lists and tables in proportion to length and only where the content has that shape. For long web posts, state the answer to the likely query plainly near the top and use descriptive headings; do not repeat keywords for their own sake. Platform limits and conventions are in [platforms](references/platforms.md); treat every number there as something to verify before relying on it.
 7. **End where the piece ends.** Close on the last concrete point, a real next action, or a real open question. Do not recap what the reader just read, and do not add a moral or an engagement prompt the material did not earn.
@@ -74,36 +74,43 @@ When the author has raw notes but no settled angle, use Explore mode and the mov
 
 ### Short posts (under about 300 words)
 
-Skip the heavy steps. Write the brief in your head, pick one opening move, write the post, check the first line against the channel's display limit, run the final pass, and return it with the open items. A short post still needs a real artifact, claim or question in its first line, and still carries no invented detail.
+Skip the heavy steps. Write the brief in your head, pick one opening move, write the post, check the first line against the channel's display limit, run the final pass, and return it with the open questions in the reply. A short post still needs a real artifact, claim or question in its first line, and still carries no invented detail.
 
-### Missing material
+### Gaps in a published post
 
-| Situation | Do this |
-|---|---|
-| The author has a topic but no examples or numbers | Ask for the one best real example; if none exists, draft with `[ASK AUTHOR: ...]` markers and label any illustration as hypothetical |
-| A needed fact is plausible but unverified | Keep it out of the text or mark it `[VERIFY: ...]`; never state it as fact |
-| The author gives a statistic with no source | Keep it with `[VERIFY: source]` and do not strengthen the claim |
-| The author asks for "a relatable story" and supplied none | Ask for a real one when the session is interactive. When it is not, still deliver the post: build relatability from what is real (the author's own numbers in their real order, or the reader's situation stated plainly as a condition from the material: "if your containers start cold on every job"). Put one `[ASK AUTHOR: a real moment when ...]` in the post itself, at the slot where the story would go (for example after the opening fact), naming the kind of moment wanted; list it in Open items. Do not write a scene, a character or an "Imagine ..." passage to fill the slot: a hypothetical told as narrative is an invented anecdote, and a note in the reply does not make it honest. Write a labelled hypothetical only when the author asked for one, and label it inside the post |
-| The author supplied a command or code sample they did not say they ran, or you wrote one | Mark it `[UNTESTED]`; do not describe its output as observed |
-| The post needs a link, handle, screenshot or testimonial that was not supplied | Leave `[ASK AUTHOR: link]` (or image, quote) where it belongs, or leave it out; never write a URL, handle, quote or "customer said" from memory |
-| The notes hold one main idea plus unrelated tangents | Build the piece on the one takeaway. List each tangent under "Left out" in the reply, or give it a short labelled secondary item only if the author wants one and it is short; do not force it into the main argument |
-| Two pieces of evidence conflict | Show both and the condition that explains the difference, or ask |
+A gap is something the material does not give. The post either makes the claim at the strength the facts support or leaves the sentence out; when the reader would otherwise assume something false, it says plainly what the material does not cover. The author's question goes to the reply.
+
+| Situation | In the post | In the reply (and `open-questions.md` when the post is saved to a file) |
+|---|---|---|
+| The author has a topic but no examples or numbers | Argue from what is stated, with no figure, no scene and no "recently"; or write the claim at the strength the facts give and stop | `[ASK AUTHOR: the one best real example or number, with its conditions]`; ask it first when the session is interactive |
+| A needed fact is plausible but unverified | Leave it out, or state it as the author's own claim ("by our count", "the vendor says") when that is what the material gives | `[VERIFY: ...]` naming the fact and where to check it |
+| The author gives a statistic with no source | Keep the figure at the author's strength and attribute it to them; add no "studies show" | `[VERIFY: source for the statistic]` |
+| The author asks for "a relatable story" and supplied none | Deliver the post anyway. Build relatability from what is real: the author's numbers in their real order, or the reader's situation as a plain condition from the material ("if your containers start cold on every job"). Write no scene, character or "Imagine ..." passage: a hypothetical told as narrative is an invented anecdote. Write a labelled hypothetical only when the author asked for one, and label it inside the post | `[ASK AUTHOR: a real moment when ... (what kind of moment, where it would go)]`; say that the post has no story slot filled |
+| The author supplied a command or code sample they did not say they ran, or you wrote one | Show it only if the post needs it, give no output as observed, and say plainly that it was not run here ("This command was not run for this post.") when a reader could assume it was | `[UNTESTED]` naming the snippet |
+| The post needs a link, handle, screenshot or testimonial that was not supplied | Leave it out and write the sentence so it still works; never write a URL, handle, quote or "customer said" from memory | `[ASK AUTHOR: link]` (or image, quote), saying where it would go |
+| The post needs a call to action, deadline or sign-off that was not supplied | End on the last concrete point | `[ASK AUTHOR: ...]` stating what was not given |
+| The notes hold one main idea plus unrelated tangents | Build the post on the one takeaway | "Left out" in the reply, one line per tangent; a short labelled secondary item only if the author wants one |
+| Two pieces of evidence conflict | Show both and the condition that explains the difference, or leave the contested figure out | `[ASK AUTHOR: which figure is current?]` |
+| Status, availability or a date is unclear | State what the notes say, at that strength ("in beta", "planned") | `[VERIFY: availability]` |
+
+Exception: the author asks for a draft to edit, or for slots to fill. Then markers may stay in the post, and the reply says so. Author-facing artifacts shown with the post (candidate openings, a brief, a change note, a left-out list) are working material and live in the reply, never inside the post text.
 
 ## Rules
 
 - **Start from the reader, not from the topic.** A post about "our caching layer" has no reader; a post for "a developer whose p95 doubled after adding a cache" does. Exception: a personal essay may start from the author's question when the reader is a general audience that follows the author.
 - **Open on something the reader can see.** An artifact, number, scene or sharp claim lets the reader judge the piece in one line. Warm-up sentences make the reader do that work for you. Exception: when the artifact is meaningless without a premise (a stack trace for a newcomer), give one line of context first.
 - **Proof over adjectives.** Replace "powerful", "seamless", "game-changing" with the fact that would justify the word. If no fact exists, delete the adjective; do not manufacture the fact. Exception: a subjective judgment the author genuinely holds can stay as clearly their opinion.
-- **Author experience comes only from the author.** Never write "last week a client told me", "in our production tests", or a number that the material does not contain, even as an illustration. A hypothetical scenario told as a story ("Imagine a team that...", "Picture a container that...", "Say a developer...") is an invented anecdote with a disclaimer, and it is also a scenario opener; do not use it to open or carry a post. Where a real moment belongs, leave `[ASK AUTHOR: a real moment when ...]` in the text. Write an illustration only when the author asked for one or an explanation cannot work without it; then label it as hypothetical in the post itself, keep it to the mechanism with no named people or invented figures, and never present it as something that happened. Exception: stating the reader's situation as a plain condition taken from the material ("if you run flags in short-lived containers") is not an anecdote.
+- **Author experience comes only from the author.** Never write "last week a client told me", "in our production tests", or a number that the material does not contain, even as an illustration. A hypothetical scenario told as a story ("Imagine a team that...", "Picture a container that...", "Say a developer...") is an invented anecdote with a disclaimer, and it is also a scenario opener; do not use it to open or carry a post. Where a real moment belongs, write the post without it and ask for it in the reply. Write an illustration only when the author asked for one or an explanation cannot work without it; then label it as hypothetical in the post itself, keep it to the mechanism with no named people or invented figures, and never present it as something that happened. Exception: stating the reader's situation as a plain condition taken from the material ("if you run flags in short-lived containers") is not an anecdote.
+- **The post reads as finished.** Unless the author asked for a draft to edit, the post holds no `[ASK AUTHOR]`, `[VERIFY]` or `[UNTESTED]` marker, no bracket placeholder ("[add a number here]", "[link]", "[Name]"), no `[source: ...]` tag and no process narration ("as requested", "I kept this short", "I ran a scan", "per your notes"). Missing proof is handled as in [gaps in a published post](#gaps-in-a-published-post). Questions, assumptions, alternatives and left-out items go to the reply. Reason: a published post with a blank in it is unfinished, and a note to the author in a feed is read as the author's own words. Exception: the author asked for a draft to edit, or for a template with slots; then markers may stay and the reply says so.
 - **Structure by job, not by template.** A how-to wants ordered steps, an argument wants claim then reasons then the strongest objection, a story wants the real sequence. A fixed formula (hook, three bullets, question) makes unlike pieces look alike and drains the specific content. Exception: a recurring newsletter benefits from a stable skeleton, because the reader returns for it.
 - **Formatting is proportional to length.** A 120-word post needs no headings; a 2,000-word guide needs them. Use a list for parallel items and a table for repeated fields; use prose for reasoning. Do not break every sentence onto its own line to fake emphasis. Exception: platforms where short lines are the norm (some feeds); even then keep the breaks for real pauses.
 - **A title or hook is a promise.** Say what the piece delivers, with the specifics the reader would search or care about. A curiosity gap is fine only if the piece closes it. If the best title overstates the content, change the title or change the piece.
 - **Endings stop on content.** A recap repeats what the reader just finished; an aphorism claims a significance the piece should have shown. Exception: a long guide can end with a short "where to go next" or a checklist that adds a usable artifact.
 - **Platform guidance is current practice, not ranking science.** Length bands, fold points and posting habits drift. Present them as things to check, and do not claim that a format, link placement or hashtag count boosts distribution. Write for the reader; adjust only for display limits and conventions.
 - **Honest framing.** Name a real limitation when it is relevant; do not stage fear, urgency or vulnerability the material does not support. Exception: none for fabricated stakes; a real deadline or a real risk is fair to state plainly.
-- **Nothing added at the edges.** The call to action, link, hashtag set, sign-off line, discount, deadline or "reply to this email" prompt must come from the author's material or request. If the post needs one and none was given, mark it `[ASK AUTHOR: ...]` or end on the last concrete point. This holds hardest for launches, newsletters and email sequences, where stock CTAs, fake urgency and invented testimonials are the usual fabrications.
+- **Nothing added at the edges.** The call to action, link, hashtag set, sign-off line, discount, deadline or "reply to this email" prompt must come from the author's material or request. If the post needs one and none was given, end on the last concrete point and ask in the reply. This holds hardest for launches, newsletters and email sequences, where stock CTAs, fake urgency and invented testimonials are the usual fabrications.
 - **One post, one job.** Material that does not serve the takeaway is cut or moved to its own post, and the reply says what was left out. A post that touches four topics proves none of them.
-- **State what the material states.** Availability, status and dates of a launch are as the author gave them: do not present a beta as general availability or a plan as shipped. If status is unclear, `[VERIFY: availability]`.
+- **State what the material states.** Availability, status and dates of a launch are as the author gave them: do not present a beta as general availability or a plan as shipped. If status is unclear, state it at the weaker strength and put the question in the reply.
 - **Search and answer-engine visibility follows clarity.** Answer the query in plain words early, use descriptive headings, label units and versions, date what ages. One version serves people and machines; keyword repetition and machine-only variants help neither.
 - **Other languages.** The lexical pattern lists in the sibling skills are English-only. For Vietnamese or any other language, apply the structural, evidence and preservation checks here and say plainly that word-level lists do not transfer. Keep technical terms, commands and code as the community writes them. When adapting from an English source, rewrite in the target language's own rhythm instead of translating sentence by sentence; carry over numbers, units and qualifiers unchanged, and avoid calquing English openers and closers.
 
@@ -111,29 +118,31 @@ Skip the heavy steps. Write the brief in your head, pick one opening move, write
 
 Return, in this order:
 
-1. **Assumptions** (one line): reader, takeaway, channel, any assumed length.
-2. **The post**, ready to paste, in the target format. For long pieces include the title and, if wanted, two alternative titles.
-3. **Open items**: every `[ASK AUTHOR: ...]`, `[VERIFY: ...]` and `[UNTESTED]` in the text, each with what is needed to resolve it. If none, say "No open items."
+1. **Assumptions** (one line, in the reply): reader, takeaway, channel, any assumed length.
+2. **The post**, ready to paste, in the target format and free of markers and notes. For long pieces include the title and, if wanted, two alternative titles. When the post is saved to a file, the file holds the post only; when there are open questions, also write `open-questions.md` beside it, numbered, each as a marker line with what it blocks and what the post says meanwhile.
+3. **Open questions** (in the reply): every `[ASK AUTHOR: ...]`, `[VERIFY: ...]` and `[UNTESTED]` item, each with what is needed to resolve it and how the post handles the gap now. If none, say "No open questions."
 4. **Left out** (when material was cut or did not fit): one line per item and the reason.
 5. **Change note** (Repair and Repurpose only): short list of what changed and why, including anything deliberately left alone.
 
-Deliver a draft. Do not say a post was published, scheduled or sent; publishing and timing are the author's.
+Deliver a draft in the sense that publishing and timing are the author's: do not say a post was published, scheduled or sent. "Draft" does not mean markers in the text.
 
-For Repurpose mode, give each channel as a labelled block with its own opening and ending, plus the carried-over core claim in one line and any publishing constraints still unresolved.
+For Repurpose mode, give each channel as a labelled block with its own opening and ending, plus the carried-over core claim in one line and any publishing constraints still unresolved. The core-claim line and the constraints are reply notes, not part of any channel's post text; when the versions are saved to one file, keep them in the reply or in a clearly separated author-facing section that is not copied into a post.
 
 ## Examples
 
-Opening, before and after (illustrative; the numbers are placeholders the author must replace):
+Opening, before and after (the figures are illustrative; real ones come from the author's notes):
 
 - Before: "In today's fast-moving world of software, performance matters more than ever, and caching is a key technique."
-- After: "Our p95 went from `[ASK AUTHOR: before]` to `[ASK AUTHOR: after]` after we changed one cache setting. Here is the setting and what it broke."
+- After, with the numbers in the notes: "Our p95 went from 420 ms to 95 ms after we changed one cache setting. Here is the setting and what it broke."
+- After, when the notes give no numbers: "We changed one cache setting and p95 dropped. Here is the setting and what it broke." The reply asks: `[ASK AUTHOR: p95 before and after, and how it was measured]`.
 
 Ending, before and after:
 
 - Before: "In conclusion, caching is powerful when used wisely. What do you think?"
-- After: "If you run the same workload, set the TTL to `[VERIFY: value]` and watch the miss rate for a day before you trust it. I would like to hear what your numbers look like."
+- After, when the notes give the TTL: "If you run the same workload, set the TTL to 60 seconds and watch the miss rate for a day before you trust it. I would like to hear what your numbers look like."
+- After, when the notes give no TTL: "Watch the miss rate for a day after you change the setting before you trust it." The reply asks: `[VERIFY: recommended TTL value]`.
 
-The second ending is acceptable only if the author does want replies; otherwise stop one sentence earlier.
+The reply-seeking sentence in the first ending is acceptable only if the author does want replies; otherwise stop one sentence earlier.
 
 ## Reference files
 

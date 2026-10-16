@@ -15,6 +15,7 @@
     { "type": "preserves", "source": "draft.md", "categories": ["numbers"] },
     { "type": "not_contains", "values": ["it is important to note", "it should also be pointed out", "on the basis of the results"] },
     { "type": "word_count", "min": 18, "max": 60 },
+    { "type": "not_regex", "pattern": "\\[(?:ASK AUTHOR|VERIFY|UNTESTED)\\b", "target": "output", "note": "the tighter paragraph is abstract text for readers and the task leaves nothing open, so no placeholder belongs in it" },
     { "type": "similarity", "source": "draft.md", "min": 0.1 }
   ]
 }

@@ -26,24 +26,25 @@ Answer each check pass or fail. Fix every failure before returning.
 14. Are causal links, ordering, ranking and attribution unchanged, including after any merged or split sentences?
 15. Are quotes, citations, code, inline code, URLs, paths, frontmatter and data tables byte-identical, unless the user asked to change them?
 16. Did you add nothing new: no fact, number, quote, source, experience, reaction, opinion, stake or confidence that the source or the user did not provide?
-17. Where a fix needed a missing fact, did you leave the span and mark it `[ASK AUTHOR: ...]` or `[VERIFY: ...]`?
-18. Did you delete without a marker only framing that asserts nothing checkable (a staged setup, "a testament to", a bare value claim), keep the fact such framing rode on, and list each removed span in What changed?
+17. Where a fix needed a missing fact, did you leave the original span or cut it (listed in What changed), without inventing a value and without a marker in the edited text, and put the question in the reply as an `[ASK AUTHOR: ...]` or `[VERIFY: ...]` line?
+18. Did you delete without a question only framing that asserts nothing checkable (a staged setup, "a testament to", a bare value claim), keep the fact such framing rode on, and list each removed span in What changed?
 19. Did you run the two-way check (what was lost, what was added) and tie every changed span to a finding or a requested change?
+20. In `edit` and `rewrite` mode, is the edited text free of gap markers (`[ASK AUTHOR]`, `[VERIFY]`, `[UNTESTED]`), notes to the author, process narration ("I removed", "as requested") and `[source: ...]` tags, with gaps left as written or cut, and every question in the reply (also in `open-questions.md` beside a saved file)? Exception: the user asked for a draft to edit.
 
 ## Voice and no new fingerprint
 
-20. Would the author still recognize their voice, with register, rhythm and quirks intact?
-21. Did you avoid swapping stock words for other stock words, adding staccato fragments, forced slang or invented asides?
-22. Did you vary your fixes so the edit does not repeat one new formula?
+21. Would the author still recognize their voice, with register, rhythm and quirks intact?
+22. Did you avoid swapping stock words for other stock words, adding staccato fragments, forced slang or invented asides?
+23. Did you vary your fixes so the edit does not repeat one new formula?
 
 ## Honesty of the report
 
-23. Does the What changed list match the delivered text, with no phrase listed as removed that is still present?
-24. Does the report say which checks ran (scanner, preservation script) and which did not, labelling reading-only checks as model-only, and calling a clean script run "no mechanical errors" rather than "meaning verified"?
-25. Are residuals (kept, protected, source-blocked, pass limit) listed with a one-line reason each?
-26. Did you stay within two editing passes, and state how many were used and why you stopped?
-27. For non-English text, did you skip the English word lists and say that lexical lists do not transfer?
-28. Did the output avoid any claim or hint about who wrote the text?
+24. Does the What changed list match the delivered text, with no phrase listed as removed that is still present?
+25. Does the report say which checks ran (scanner, preservation script) and which did not, labelling reading-only checks as model-only, and calling a clean script run "no mechanical errors" rather than "meaning verified"?
+26. Are residuals (kept, protected, source-blocked, pass limit) listed with a one-line reason each?
+27. Did you stay within two editing passes, and state how many were used and why you stopped?
+28. For non-English text, did you skip the English word lists and say that lexical lists do not transfer?
+29. Did the output avoid any claim or hint about who wrote the text?
 
 ## Final read
 

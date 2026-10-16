@@ -25,9 +25,9 @@ A cover letter is a short argument that the candidate meets this employer's stat
 
 ### 2.2 Before drafting
 1. List three to five requirements from the posting and the two or three true achievements that answer them.
-2. Find one organization-specific hook that is publicly checkable (a product, method, public project, stated problem in the posting). If none can be found, say so and write without a fake one.
+2. Find one organization-specific hook that is publicly checkable (a product, method, public project, stated problem in the posting). If none can be found, write without a fake one and tell the user in the reply that the letter has no organization-specific hook.
 3. Write a one-sentence thesis of fit naming two or three true qualifications mapped to the requirements. The body proves it.
-4. Check each fact against the candidate's material. A claim without support is removed or marked `[ASK AUTHOR: ...]`.
+4. Check each fact against the candidate's material. A claim without support is removed from the letter; if it matters, the question goes to the reply as an `[ASK AUTHOR: ...]` line, never into the letter.
 
 ### 2.3 Structure (about three to four short paragraphs)
 1. **Opening (two to three sentences):** name the role (and the requisition ID if the employer uses one), land a specific hook, and state the thesis. If the candidate has a direct link to the role (uses the product, knows someone who works there and has permission to name them, has deep field knowledge), put it first.
@@ -68,7 +68,7 @@ Test: a reader who knows the company can tell which company and which role the o
 - Natural first person, confident and approachable, no template phrases ("aligns perfectly", "excited about the opportunity" as filler).
 
 ### 2.8 Format and regional conventions
-- Salutation: a named person if findable; otherwise "Dear Hiring Manager" or "Dear [Team or Search Committee]". Avoid "To Whom It May Concern".
+- Salutation: a named person if findable; otherwise "Dear Hiring Manager" or "Dear Search Committee" (or the team's own name, if the posting gives it). Never a bracket slot. Avoid "To Whom It May Concern".
 - Sign-off by region: US usually "Sincerely" or "Best regards"; UK "Kind regards", and "Yours sincerely" with a named recipient or "Yours faithfully" with "Dear Sir or Madam"; Australia and New Zealand "Kind regards", with "Cheers" only once rapport exists and the organization is informal.
 - Full business-letter block (date, recipient, address, RE line) when the letter is a separate document; omit the address block when the letter is the body of an email or a portal text. Add a reference line with the requisition ID for large employers.
 - Email submission: subject with name and role; attach or paste as the instructions say; mention attachments; proofread the address and subject.
@@ -114,7 +114,7 @@ Aids for the reader: strong topic sentences, the main claim at paragraph edges, 
 - Goals: honest and scaled. Not empty ("find myself") and not out of proportion with the path.
 - Uniqueness test: if hundreds of other applicants could copy the sentence unchanged, replace it with an operational detail. Delete the university name: if the fit paragraph still works, it is not fit.
 - Preparation: state languages, methods and grade context truthfully. A recent weak grade may get one plain explanation when it informs readiness.
-- The user must check faculty and program details against the current department pages. Mark them `[VERIFY: ...]` when the user supplied them from memory.
+- The user must check faculty and program details against the current department pages. Use them in the statement only as the user supplied them, and list each in the reply as a `[VERIFY: ...]` line when they came from memory; the statement carries no marker or "to be checked" note.
 
 ### 3.5 What to avoid
 - Clichés ("always dreamed", "passion for helping", "make a difference") with no scene behind them.
@@ -165,4 +165,19 @@ Each program needs its own version. Swapping a faculty name is not tailoring. Ke
 5. Length is verified against the governing limit, not against these heuristics.
 6. Clichés and template phrases replaced by evidence, in the author's voice.
 7. Regional salutation, sign-off and spelling consistent.
-8. Open items and `[VERIFY: ...]` markers listed for the user.
+8. The statement or letter itself holds no marker, bracket placeholder or note to the author; open items and `[VERIFY: ...]` lines are in the reply (and in `open-questions.md` when a file is written).
+
+## 6. Gaps in a letter or statement
+
+The reader is a hiring manager or a committee. A gap is stated as a fact about the candidate's record, in one plain sentence, or the sentence is left out; the question goes to the author.
+
+| Gap | In the letter or statement | In the reply and `open-questions.md` |
+| --- | --- | --- |
+| no result or figure for an example | the action and what is known to have happened, without a number | `[ASK AUTHOR: how many users, and what changed after the migration?]` |
+| no fit detail about the employer or program | a shorter fit paragraph naming only what the user supplied or the posting states; no flattery filler | `[ASK AUTHOR: one course, lab or project at the program that matters to you, and why?]` |
+| no faculty or lab the user has read | directions of interest and the expertise wanted, no named person | `[ASK AUTHOR: a faculty member whose current work you have read?]` |
+| prompt question with no material (a failure, a leadership example) | omitted, or one plain sentence on the situation as it is ("My thesis is my first research project.") | `[ASK AUTHOR: is there an example for the prompt on teamwork?]` |
+| a program fact from memory (deadline, limit, course name) | used only as the user stated it; no hedge in the text | `[VERIFY: course name against the current curriculum page]` |
+| weak grade or career gap that informs readiness | one factual line, dates accurate | none unless the cause is unknown: `[ASK AUTHOR: one-line reason for the gap in 2022?]` |
+
+Exception: the user asked for a draft to edit. Then markers sit in the text at the gap and the reply says it is a draft. Process material stays out of the letter in every case: no per-paragraph source notes, no "this paragraph answers prompt 2", no outline or guiding questions (a European motivation letter is continuous prose, not the questionnaire). An outline or requirement map shown to the user beside the letter is author-facing.

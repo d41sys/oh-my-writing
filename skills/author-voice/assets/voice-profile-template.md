@@ -2,7 +2,9 @@
 
 <!-- Copy this file to a place you own, for example voice-profile.md. Delete the guidance comments
 once the profile is filled in. Keep the finished profile short: one line per trait, each traceable
-to a sample. A voice profile holds style only. Do not store biography, opinions or facts here. -->
+to a sample. A voice profile holds style only. Do not store biography, opinions or facts here.
+This file is author-facing: open questions may stay in it as `[ASK AUTHOR: ...]` lines. Text drafted
+from it for a reader never carries them. -->
 
 ## Header
 

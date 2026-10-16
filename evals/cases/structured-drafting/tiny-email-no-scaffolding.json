@@ -56,7 +56,18 @@
       "type": "markers",
       "min": 0,
       "max": 2,
-      "target": "output"
+      "target": "both",
+      "note": "the email is sent to Ravi, so the file need not carry a gap marker; the reply may list at most two open items"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "\\[(?:ASK AUTHOR|VERIFY|UNTESTED)\\b|(?i:\\[source:)",
+      "note": "a bracketed gap marker or source tag inside an email addressed to Ravi would reach him as written"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)\\blegal\\b[^\\n]{0,200}\\?|(?:let me know|please (?:confirm|tell)|your (?:ok|okay|approval|go-ahead))[^\\n]{0,200}\\blegal\\b|\\blegal\\b[^\\n]{0,200}(?:let me know|your (?:ok|okay|approval|go-ahead)|please (?:confirm|tell))",
+      "note": "the notes say it is unknown whether Ravi wants legal involved and tell the author to ask him; the email must put that question to Ravi instead of assuming either answer"
     }
   ]
 }

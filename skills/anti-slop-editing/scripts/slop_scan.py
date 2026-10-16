@@ -363,7 +363,7 @@ PATTERNS: list[Pattern] = [
        "Leaked working notes. Delete them and check that nothing the reader needs went with them.", flags=re.I | re.M),
     _p("placeholder", "residue",
        r"\[(?:insert|your|company|recipient|client|name|date|city|link|url|title)[^\]\n]{0,40}\]|\bLorem ipsum\b",
-       "An unfilled template slot. Fill it from the author's material or mark it [ASK AUTHOR: ...]; never invent the value."),
+       "An unfilled template slot. Fill it from the author's material; if the material has no value, cut the sentence that needs it and ask the author in the reply. Never invent the value."),
     _p("template-braces", "residue", r"\{\{[^}\n]{1,40}\}\}",
        "Template syntax in docs or code may be intentional.", skip=TECH),
     _p("citation-leak", "residue",

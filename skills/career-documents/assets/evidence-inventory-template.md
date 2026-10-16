@@ -1,6 +1,6 @@
 # Evidence inventory
 
-Fill this in with the candidate before writing any career document. It is the source of truth for facts and numbers. Leave a field blank rather than guessing. Mark every estimate and keep anything confidential out of public documents.
+Fill this in with the candidate before writing any career document. It is the source of truth for facts and numbers. Leave a field blank rather than guessing. Mark every estimate and keep anything confidential out of public documents. This inventory is a working file for the candidate, not a document a reader sees: blanks, `[ASK AUTHOR: ...]` notes and estimate marks belong here and never get copied into a résumé, letter or message. A blank field means the fact is left out of the document.
 
 Privacy: when pasting this into a hosted tool, replace name, address, phone, ID numbers and birth date with placeholders.
 

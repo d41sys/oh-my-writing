@@ -68,6 +68,21 @@
         "can't wait",
         "see you there"
       ]
+    },
+    {
+      "type": "not_regex",
+      "pattern": "\\[(?:ASK AUTHOR|VERIFY|UNTESTED)",
+      "note": "the update goes to the studio's mailing list, so the saved post must read as finished: no gap markers or questions to Ines inside it"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)as (?:requested|you asked)|per (?:the|your) notes|your notes|the notes (?:say|mention|do not)|the samples|voice profile|\\[source",
+      "note": "the post is addressed to subscribers, not to Ines: no process narration or references to her notes or samples inside it"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)crack\\w*[^.\\n]{0,80}\\b(?:because|due to|caused|too fast|too quickly|thermal|moisture|air bubbles?|trapped)",
+      "note": "the notes give no cause for the two cracked bowls; the post must leave the cause out or say plainly it is unknown, not invent one"
     }
   ]
 }

@@ -101,8 +101,8 @@ General Markdown conventions are owned by `technical-docs` (its Markdown convent
 
 - Use short typed callouts for evidence that needs flagging (Observed, Calculation, Assumption, Limit, Warning), one to three lines, not nested. Prefer these to a generic "Key insight" box.
 - A footnote or reference must actually support the claim, not merely sit near it.
-- Use clean semantic Markdown while the draft is unfinished so evidence gaps stay visible. Elaborate formatting must not cover missing content.
-- Unfinished sections keep their markers and the draft banner until resolved; never substitute boilerplate to make a document look complete.
+- Use clean semantic Markdown while the draft is unfinished so evidence gaps stay visible to you. Elaborate formatting must not cover missing content.
+- A section with a gap is finished before delivery by stating the gap plainly or cutting the claim; never substitute boilerplate to make a document look complete, and never ship a section with a marker or banner in it unless the author asked for a draft.
 
 ## 10. Visual audit before delivery
 

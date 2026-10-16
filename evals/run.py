@@ -5,6 +5,8 @@ Usage:
   python3 evals/run.py --host codex --host claude --jobs 4
   python3 evals/run.py --host codex --cases 'anti-slop-editing/*' --condition skill
   python3 evals/run.py --host codex --judge claude        # add blind pairwise preference
+  python3 evals/run.py --host codex --cases 'style/*' --judge codex   # style track: human register and fidelity judged apart
+  python3 evals/run.py --host codex --judge codex --judge-mode style  # judge every case on those two questions
   python3 evals/run.py --host codex --cases 'project-report/*' --repeat 3 --judge codex
 
 Each run gets a fresh git workspace outside this repository holding copies (not links) of the case files, the case
@@ -270,6 +272,38 @@ Response B (contents of {output}):
 Judge which response better serves the task's reader: it does what was asked, keeps every fact from the inputs accurate and invents none (numbers, names, quotes, sources, experiences), marks missing information instead of filling it, and reads as clear, specific, natural prose without stock phrasing. Length is not a virtue.
 Give three to six short reasons, then end with exactly one line: VERDICT: A, VERDICT: B, or VERDICT: TIE"""
 
+STYLE_JUDGE_PROMPT = """You are judging two responses to the same writing task. You do not know how either was produced.
+
+Task given to the writer:
+<task>
+{prompt}
+</task>
+
+Input the writer had{source_note}:
+{files}
+
+Response A (contents of {output}):
+<a>
+{a}
+</a>
+
+Response B (contents of {output}):
+<b>
+{b}
+</b>
+
+Bracketed gap markers were removed from both responses before you see them. Do not reward or penalise either response for a sentence that reads as if something was removed, and do not guess what was there.
+
+Answer two separate questions. A response can win one and lose the other; decide each on its own.
+
+Question 1, HUMAN: which response reads as written by a skilled human professional in this role, with fewer AI tells? Tells to look for: stock phrases and empty openers or closers (a greeting-line pleasantry, a scene-setting first sentence, an offer to help further, a summary that repeats the text), hedging fog (may, might, potentially, it is worth noting), symmetric lists and forced triplets, "not X but Y" contrasts, inflated adjectives, uniform sentence rhythm, headings and bullets where a person would write sentences, labels or meta-commentary about the text itself. Prefer the plain, specific, correctly pitched register a colleague would actually send. Do not judge facts here, and length is not a virtue.
+
+Question 2, FAITHFUL: which response is more faithful to the input? Every number, name, date, commitment, limit and condition matches the input; nothing is invented (figures, quotes, reasons, outcomes, experiences); nothing the reader needs is dropped or softened. Do not judge style here.
+
+Give two to four short reasons for each question. Then end with exactly these two lines, each with one of A, B or TIE:
+VERDICT HUMAN: <A|B|TIE>
+VERDICT FAITHFUL: <A|B|TIE>"""
+
 VISUAL_JUDGE_PROMPT = """You are judging two project reports written for the same task from the same folder of documents. You do not know how either was produced.
 
 Task given to the writer:
@@ -324,12 +358,23 @@ def source_block(case: dict) -> tuple[str, str]:
     return "\n".join(parts), (f"{truncated} of {len(parts)} files truncated" if truncated else "complete")
 
 
+def judge_mode(case: dict, args) -> str:
+    """'style' when --judge-mode style is given or the case asks for it, 'visual' for a visual case, else 'text'."""
+    if getattr(args, "judge_mode", None) == "style":
+        return "style"
+    return case.get("judge", {}).get("mode") or "text"
+
+
 def judge_once(case, a_text, b_text, judge_host, run_dir, tag, args, shots=None, shot_note="") -> tuple:
-    """One judging call. Returns (verdict, reply, scores) where scores is {"A": {criterion: int}, "B": ...}.
-    shots is {"A": [png...], "B": [png...]} for a visual case whose pages rendered, else None."""
+    """One judging call. Returns (verdict, reply, extra). For text and visual judging verdict is A, B, TIE or ERROR
+    and extra holds the visual scores {"A": {criterion: int}, "B": ...}. For style judging verdict is STYLE (ERROR
+    when either answer is missing) and extra is the two verdicts {"human": "A", "faithful": "TIE"}; a_text and
+    b_text must already have their gap markers stripped. shots is {"A": [png...], "B": [png...]} for a visual
+    case whose pages rendered, else None."""
     if judge_host in QUOTA_HIT:
         return "ERROR", "", {}
-    visual = case.get("judge", {}).get("mode") == "visual"
+    mode = judge_mode(case, args)
+    visual = mode == "visual"
     out_dir = run_dir / "judge" / f"{case['id'].replace('/', '__')}__{tag}"
     out_dir.mkdir(parents=True, exist_ok=True)
     images: list[Path] = []
@@ -360,6 +405,10 @@ def judge_once(case, a_text, b_text, judge_host, run_dir, tag, args, shots=None,
         prompt = VISUAL_JUDGE_PROMPT.format(
             prompt=case["prompt"], files=files, source_note=source_note, output=case["output"], a=a_clip, b=b_clip,
             a_note=a_cut, b_note=b_cut, shots=shot_text)
+    elif mode == "style":
+        files, source_note = source_block(case)
+        prompt = STYLE_JUDGE_PROMPT.format(prompt=case["prompt"], files=files, output=case["output"], a=a_text,
+                                           b=b_text, source_note="" if source_note == "complete" else f" ({source_note})")
     else:
         files = "\n".join(f"<file name=\"{n}\">\n{t}\n</file>" for n, t in grade.source_texts(case).items())
         prompt = JUDGE_PROMPT.format(prompt=case["prompt"], files=files, output=case["output"], a=a_text, b=b_text)
@@ -373,8 +422,28 @@ def judge_once(case, a_text, b_text, judge_host, run_dir, tag, args, shots=None,
     finally:
         shutil.rmtree(ws, ignore_errors=True)
     reply = (out_dir / "reply.md").read_text(encoding="utf-8", errors="replace")
+    if mode == "style":
+        verdicts = parse_style_verdicts(reply)
+        return ("STYLE" if len(verdicts) == 2 else "ERROR"), reply, verdicts
     m = re.findall(r"VERDICT:\s*(A|B|TIE)", reply)
     return (m[-1] if m else "ERROR"), reply, (parse_scores(reply) if visual else {})
+
+
+def parse_style_verdicts(reply: str) -> dict[str, str]:
+    """Last 'VERDICT HUMAN: A' and 'VERDICT FAITHFUL: B' lines; an axis without a valid verdict is left out."""
+    out = {}
+    for axis in ("human", "faithful"):
+        found = re.findall(rf"VERDICT\s+{axis}\s*:\s*\**\s*(A|B|TIE)\b", reply, re.I)
+        if found:
+            out[axis] = found[-1].upper()
+    return out
+
+
+def combine_picks(picks: list[str]) -> str:
+    """Winner over the two presentation orders: the same side twice, else tie / inconsistent / error."""
+    if "error" in picks:
+        return "error"
+    return picks[0] if picks[0] == picks[1] else ("tie" if "tie" in picks else "inconsistent")
 
 
 def parse_scores(reply: str) -> dict[str, dict[str, float]]:
@@ -404,7 +473,10 @@ def judge_pair(case, host, rep, run_dir, args) -> dict | None:
     texts = {cond: side_text(case, ws) for cond, ws in workspaces.items()}
     if any(t is None for t in texts.values()):
         return None
-    visual = case.get("judge", {}).get("mode") == "visual"
+    mode = judge_mode(case, args)
+    visual = mode == "visual"
+    if mode == "style":
+        texts = {cond: grade.strip_markers(t) for cond, t in texts.items()}
     shots, render_note = None, None
     tail = f"{host}" + (f"__r{rep}" if args.repeat > 1 else "")
     if visual:
@@ -428,21 +500,30 @@ def judge_pair(case, host, rep, run_dir, args) -> dict | None:
     first = random.Random(seed).choice(["skill", "baseline"])
     second = "baseline" if first == "skill" else "skill"
     picks, collected, last_reply = [], {"skill": [], "baseline": []}, ""
+    style_picks = {"human": [], "faithful": []}
     for tag, (a, b) in {"order1": (first, second), "order2": (second, first)}.items():
-        verdict, reply, scores = judge_once(
+        verdict, reply, extra = judge_once(
             case, texts[a], texts[b], args.judge, run_dir, f"{tail}__{tag}", args,
             shots={"A": shots[a], "B": shots[b]} if shots else None, shot_note=render_note or "")
-        picks.append({"A": a, "B": b, "TIE": "tie"}.get(verdict, "error"))
         last_reply = reply
+        if mode == "style":
+            for axis in style_picks:
+                style_picks[axis].append({"A": a, "B": b, "TIE": "tie"}.get(extra.get(axis), "error"))
+            continue
+        picks.append({"A": a, "B": b, "TIE": "tie"}.get(verdict, "error"))
         for side, cond in (("A", a), ("B", b)):
-            if side in scores:
-                collected[cond].append(scores[side])
-    if "error" in picks:
-        winner = "error"
-    else:
-        winner = picks[0] if picks[0] == picks[1] else ("tie" if "tie" in picks else "inconsistent")
+            if side in extra:
+                collected[cond].append(extra[side])
     reason = " ".join(l.strip() for l in last_reply.splitlines()
                       if l.strip() and not l.startswith(("VERDICT", "SCORES")))
+    if mode == "style":
+        human, faithful = (combine_picks(style_picks[axis]) for axis in ("human", "faithful"))
+        entry = {"case": case["id"], "host": host, "rep": rep, "judge": args.judge, "mode": "style",
+                 "winner": "error" if "error" in (human, faithful) else "style", "human": human,
+                 "faithful": faithful, "picks": style_picks, "reason": reason[:400]}
+        print(f"[judge] {case['id']} {host} r{rep}: human={human} faithful={faithful}", flush=True)
+        return entry
+    winner = combine_picks(picks)
     entry = {"case": case["id"], "host": host, "rep": rep, "judge": args.judge, "winner": winner, "picks": picks,
              "reason": reason[:400]}
     if visual:
@@ -468,6 +549,9 @@ def main(argv=None) -> int:
     p.add_argument("--repeat", type=int, default=1, help="repetitions of every (case, host, condition)")
     p.add_argument("--out", help="results directory (default evals/results/<timestamp>)")
     p.add_argument("--judge", choices=["codex", "claude"], help="blind pairwise judge host")
+    p.add_argument("--judge-mode", choices=["auto", "style"], default="auto",
+                   help="style: judge every case on two separate questions (reads human, faithful to inputs) with "
+                        "gap markers stripped; auto: each case's own judge mode")
     p.add_argument("--codex-model")
     p.add_argument("--codex-effort", help="Codex model_reasoning_effort, e.g. medium")
     p.add_argument("--claude-model")

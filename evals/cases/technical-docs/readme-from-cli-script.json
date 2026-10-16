@@ -70,6 +70,21 @@
       "type": "word_count",
       "min": 60,
       "max": 600
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\[(ASK AUTHOR|VERIFY|UNTESTED)\\b|\\b(TODO|TBD)\\b",
+      "note": "the README goes to teammates as written; the task gives no license, repository address or contact, so a marker or TODO would be a visible gap in the finished file (the questions belong in the reply)"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "\\b(MIT|Apache|GPL|LGPL|BSD|MPL|ISC)\\b|(?i:\\blicensed under\\b|git clone|github\\.com|gitlab\\.com|https?://)",
+      "note": "csvtrim.py and sample.csv state no license, repository address or hosting; a README that names one fills the gap with an invented value"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(as requested|as you asked|per your (request|instructions?)|based on (the|your) (script|code|source)|\\[source:)",
+      "note": "process narration and source tags do not belong in a README the team will read; the user only asked for a README"
     }
   ]
 }

@@ -1,0 +1,94 @@
+{
+  "id": "style/cover-letter-from-background",
+  "skill": "career-documents",
+  "description": "Cover letter from a posting and a short background: it uses only the supplied achievements and figures, does not claim the posting's nice-to-have tool the applicant has never used, addresses the named manager, and avoids the 'I am excited to apply' opener, adjective stacking and a generic closer.",
+  "prompt": "I'm applying for the data analyst job in posting.md. My background is in background.md. Write the cover letter, one page, to the hiring manager. Save it to out/letter.md.",
+  "files": {
+    "posting.md": "Data Analyst, Northgate Library Network (full-time)\n\nNorthgate runs 14 branch libraries. You will report to Hannah Okoye, head of data and planning.\n\nYou will:\n- build and maintain monthly usage reports for branch managers\n- clean and join data from our loans system and the door counters\n- answer ad hoc questions from the board\n\nWe need: SQL, a dashboard tool (we use Power BI), and clear writing for readers who are not technical. Tableau is nice to have, not required.\n\nClosing date: 7 November.\n",
+    "background.md": "Priya Raman. Reporting analyst at Tessel Transit, a regional bus operator, for 3 years 2 months.\n\n- Wrote the SQL behind the weekly ridership report used by 11 route managers; its run time went from 40 minutes to 6.\n- Rebuilt the monthly punctuality dashboard in Power BI. Route managers now use it in place of a 14-page PDF.\n- Found that 2.1% of fare-tap records were double counted when two data feeds were joined. Fixed the join, corrected 8 months of figures and wrote a one-page note for managers explaining the change.\n- Since 2023 volunteers on Saturdays at the Aldgate Road library homework club. Mention it in one line, do not make it the story.\n\nHas not used Tableau.\n"
+  },
+  "output": "out/letter.md",
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "urls",
+        "citations"
+      ],
+      "allow": [
+        "1 page"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)hannah",
+      "note": "addressed to the manager the posting names"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)northgate",
+      "note": "names the employer"
+    },
+    {
+      "type": "regex",
+      "pattern": "40 minutes[^.\\n]{0,40}\\b6\\b|\\b6 minutes",
+      "note": "SQL result kept with its units"
+    },
+    {
+      "type": "regex",
+      "pattern": "2\\.1\\s?%",
+      "note": "data-quality find kept"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)aldgate",
+      "note": "volunteering mentioned"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)\\A(?!.*tableau)|\\b(?:not|n't|never|no|without|yet to)\\b[^.\\n]{0,80}tableau|tableau[^.\\n]{0,80}\\b(?:not|n't|never|no|without)\\b",
+      "note": "if Tableau comes up, it is said she has not used it"
+    },
+    {
+      "type": "word_count",
+      "min": 190,
+      "max": 380
+    },
+    {
+      "type": "slop_density",
+      "max": 7
+    },
+    {
+      "type": "rhythm",
+      "min_cv": 0.35
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(?:enthusiastic|passionate|passion for|highly motivated|detail-oriented|fast learner|ideal candidate|excited (?:to|about) (?:apply|contribute|the opportunity)|express my (?:interest|enthusiasm))\\b",
+      "note": "no stock cover-letter self-praise"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)hope (?:this|you)[^.\\n]{0,40}(?:finds you|well)|don'?t hesitate|do not hesitate|reach out|any inconvenience|valued customer|sincerely apologi[sz]e|look forward to hearing|(?:thank you|thanks) (?:so much )?for your (?:patience|understanding|time and consideration|continued)|first and foremost|i wanted to (?:reach out|provide)|as a (?:result|reminder),? ",
+      "note": "no stock email opener or closer"
+    },
+    {
+      "type": "markers",
+      "min": 0,
+      "max": 0,
+      "target": "output",
+      "note": "The deliverable goes straight to its reader and the notes hold every fact the text needs, so no gap marker belongs in the saved file; a question for the author goes in the reply."
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\[(?:insert|your|name|date|company|tbd|add|link|recipient|sender)\\b[^\\]\\n]*\\]|\\bTBD\\b|\\blorem ipsum\\b",
+      "note": "no fill-in placeholder in text for a reader"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?im)^\\s*(?:note to (?:self|author|you)|here(?:'s| is) (?:the|your|a) (?:draft|email|memo|post|letter|article|update|revised)|draft (?:email|memo|post|letter|article|update)\\b|subject line options)",
+      "note": "the file is the deliverable, not a reply with a lead-in or notes about it"
+    }
+  ]
+}

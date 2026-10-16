@@ -4,7 +4,7 @@ Measures whether each skill changes agent behavior on realistic writing tasks, c
 
 ```text
 evals/
-├── cases/<skill>/<case>.json   # one task per file
+├── cases/<skill>/<case>.json   # one task per file; cases/style/ is the style track (below)
 ├── fixtures/<case-slug>/       # document folders copied into a case's workspace (binary files allowed)
 ├── run.py                      # runs cases on agent hosts (with repetitions), then grades
 ├── grade.py                    # deterministic checks; re-grades a results directory
@@ -18,6 +18,8 @@ evals/
 python3 evals/run.py --host codex --host claude --jobs 4          # all cases, with and without skills
 python3 evals/run.py --host codex --cases 'anti-slop-editing/*'    # one skill
 python3 evals/run.py --host codex --judge codex                    # add blind pairwise preference
+python3 evals/run.py --host codex --cases 'style/*' --judge codex   # style track: human register and fidelity judged apart
+python3 evals/run.py --host codex --judge codex --judge-mode style  # judge every selected case on those two questions
 python3 evals/run.py --host codex --cases 'project-report/*' --repeat 3 --jobs 4 \
     --judge codex --out evals/results/project-report-bench          # report benchmark: 3 repetitions, visual judge
 python3 evals/review_pairs.py evals/results/project-report-bench    # blind A/B page for you -> review/<run-id>.html
@@ -52,14 +54,14 @@ The runner refuses to run when a skill with the same name is installed at user l
 }
 ```
 
-- `id` equals `<skill>/<file name without .json>`; `skill` is a directory under `skills/`.
+- `id` equals `<folder>/<file name without .json>`; the folder is the skill's name, or `style` for the style track. `skill` is a directory under `skills/` and is what the report groups by.
 - `files` are written into the workspace; keep inputs short (under about 500 words) and fictional.
 - `output` is the deliverable file the agent must write. A missing output file fails the case.
 - Each check may set `"target"`: `output` (default), `reply` (the agent's final message) or `both`.
 - Optional `fixtures`: `"evals/fixtures/<case-slug>"`, a folder copied verbatim (binary-safe, relative paths and modification times kept) into the workspace root. `files` may then be `{}`, or both may be used. For text checks the grader extracts the fixtures' text (docx, xlsx, pptx, pdf via `pdftotext`, eml, html, csv ... through `skills/project-report/scripts/inventory.py`), so `no_added_facts`, `preserves` and `similarity` see Office and PDF content; a fixture is named in `source`/`sources` by its path inside the folder (`docs/budget.xlsx`). `no_added_facts` also treats the input file names, and relative links to inputs or into the output folder, as known. CSV/TSV sources are read cell by cell so `14,171` is not one number.
 - Optional `timeout` (seconds) overrides `--timeout` for this case (report cases use 2400).
 - Optional `deliverables`: files the agent is asked to write, e.g. `["out/report.md", "out/report.html"]`. `output` stays the primary text file; the grader records in `results.json` which deliverables exist.
-- Optional `judge`: `{"mode": "visual", "render": "out/report.html"}` switches the blind judge for this case to the visual judge (below). `render` must be listed in `deliverables`. Other cases keep the text judge.
+- Optional `judge`: `{"mode": "visual", "render": "out/report.html"}` switches the blind judge for this case to the visual judge (below). `render` must be listed in `deliverables`. `{"mode": "style"}` switches it to the style judge (below) and takes no `render`. Other cases keep the text judge.
 
 Check types:
 
@@ -73,6 +75,8 @@ Check types:
 | `preserves` | `source`, `categories`, `allow_lost` | no item of those categories in `source` is lost from the output (fact_diff "lost") |
 | `slop_absent` | `patterns` (slop_scan pattern ids), `profile` | none of those patterns is found in the output |
 | `max_slop` | `max`, `profile` | slop_scan reports at most `max` findings in the output |
+| `slop_density` | `max`, `profile` | slop_scan findings per 1000 prose words is at most `max` (fails when the text has no prose words); use it where length varies |
+| `rhythm` | `min_cv` (default 0.4), `min_sentences` (default 5) | the coefficient of variation (standard deviation / mean) of words per sentence in running prose is at least `min_cv`; passes unjudged below `min_sentences` sentences |
 | `markers` | `min`, `max`, `kinds` (default `ASK AUTHOR`, `VERIFY`, `UNTESTED`) | the count of `[KIND ...]` markers is within range (target defaults to `both`) |
 | `similarity` | `source`, `min`, `max` | word-level similarity ratio (0–1) between source and output is within range |
 | `word_count` | `min`, `max` | output word count is within range |
@@ -88,6 +92,26 @@ A diagram is any of: an `.svg` file under the output folder (`out/`); an `.html`
 - `html_deliverable.no_script`: no `<script>`, no `on*` attributes, no `javascript:` URLs. `self_contained`: every local `src`/`href`/CSS `url()` resolves to a file inside the workspace, and nothing is loaded from the network except fonts.googleapis.com and fonts.gstatic.com (plain `<a href="https://...">` hyperlinks are not resources). `min_figures`: at least that many visible inline `<svg>`, `<img>` and `<object>` elements.
 
 fact_diff categories: `numbers`, `negations`, `certainty`, `scope`, `names`, `urls`, `code`, `code_blocks`, `quotes`, `citations`. Inserted `[ASK AUTHOR]`/`[VERIFY]` markers are never counted as facts.
+
+## Style track
+
+`cases/style/` holds eight cases about the register of text a reader receives: a client email, a decision memo, a project update, a LinkedIn post, a cover letter and an incident email, each written from the user's notes; an 800-word article written from an outline; and the revision of a slop-heavy announcement. The prompts read like a real user's, never name a skill, and the inputs hold every fact the text needs, so a gap is rare. Each case checks:
+
+- `no_added_facts` (and `preserves` where the deliverable should carry every figure): nothing invented, nothing dropped.
+- `slop_density`: slop_scan findings per 1000 words. A short text is allowed one stray finding; the article only about three. The scanner imports with bytecode off.
+- `rhythm`: sentence-length variation, which catches the uniform cadence of generated prose.
+- Case-specific facts, bans from the user's own prompt (no hashtags, no promise of "never again"), stock openers and closers of the genre, and `markers` with `max` 0 on the output. The notes carry every fact the text needs and the text goes to its reader, so a gap marker in the saved file is a defect; a question for the author goes in the reply.
+
+The mechanical checks find tells that a word list can see and facts that a diff can see. They do not decide which text reads better, so the track also uses the style judge.
+
+### Style judge
+
+`judge.mode: "style"` in a case, or `--judge-mode style` for every case in the run, replaces the single-preference judge with two separate questions answered in both presentation orders:
+
+1. **Human**: which reads as written by a skilled human professional, with fewer AI tells (stock phrases, hedging fog, symmetric lists, empty openers and closers)?
+2. **Faithful**: which is more faithful to the inputs (every figure, name, date, limit and commitment kept; nothing invented; nothing material dropped)?
+
+Gap markers (`[ASK AUTHOR: ...]`, `[VERIFY: ...]`, `[UNTESTED ...]`) are stripped from both texts before the judge sees them (`grade.strip_markers`: a marker inside a sentence is cut out, a line or heading left empty is dropped), so a text is neither rewarded nor punished for how it handles a gap; whether a marker belongs in the file is the `markers` check's job. A response can win one question and lose the other. `judge.json` stores `human` and `faithful` (each `skill`, `baseline`, `tie`, `inconsistent` or `error`) and both pick lists per entry; `winner` is `style`, or `error` when either answer is missing. The report has a separate "Blind style judge" section with one column per question, and style entries are never added to the overall pairwise tally. `--judge-mode style` on a visual case judges its extracted text, without page images.
 
 ## Visual judge and review page
 

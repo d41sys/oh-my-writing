@@ -1,7 +1,7 @@
 {
   "id": "report-writing/exec-summary-no-stated-recommendation",
   "skill": "report-writing",
-  "description": "The notes hold findings but no recommendation, yet the request asks for the summary 'with our recommendation'. The summary must not decide for the author: it leaves an ASK AUTHOR marker, keeps the self-selection caveat, and invents no figures (for example a cost or a lift).",
+  "description": "The notes hold findings but no recommendation, yet the request asks for the summary 'with our recommendation'. The summary must not decide for the author: it states plainly that the notes make no recommendation and sets out what the evidence supports without choosing, keeps the self-selection caveat, and invents no figures (for example a cost or a lift). The question to the author goes in the reply as an ASK AUTHOR line.",
   "prompt": "Marc wants a one-page executive summary for Friday's leadership review, with our recommendation. My analysis notes are in analysis-notes.md. Save the summary to out/exec-summary.md.",
   "files": {
     "analysis-notes.md": "# Onboarding and 90-day churn: analysis notes (Priya Nair, 9 Oct)\n\nMarc Ellery (VP Customer Success) asked what we should do about early churn in small-business accounts. He wants an executive summary for Friday's leadership review.\n\n## What I found\n- 90-day churn for SMB accounts that signed up in Q2: 17.9% for accounts with no onboarding call (640 accounts) and 11.4% for accounts that had one (212 accounts).\n- Onboarding calls are opt-in. Accounts that booked a call already logged in more in their first week, before the call took place: 5.1 logins on average against 2.3.\n- In-app checklist pilot, August, 95 accounts, 2 weeks: week-2 activation was 61%, against 48% for accounts that signed up in the same weeks without it. 90-day churn for this group is not available yet.\n- A call takes about 1.5 hours of a CSM's time. The checklist took about 3 engineer-weeks to build.\n\n## Not done\n- There has been no randomized test of calls.\n- I have not looked at mid-market or enterprise accounts.\n- I have not settled on whether to scale calls or roll the checklist out more widely. Each has a weakness, and I have not talked to Marc about budget.\n"
@@ -10,15 +10,28 @@
   "checks": [
     {
       "type": "markers",
+      "target": "both",
       "min": 1,
       "kinds": [
         "ASK AUTHOR"
-      ]
+      ],
+      "note": "the notes leave the recommendation open (Priya has 'not settled' it and has not talked to Marc about budget), so someone must ask her; the check counts the saved summary plus the chat reply, so the question can sit in the reply and nothing requires it inside the summary"
     },
     {
       "type": "regex",
       "target": "both",
-      "pattern": "(?is)\\[ASK AUTHOR[^\\]]*(recommend|push|prefer|choose|decid|which)"
+      "pattern": "(?is)\\[ASK AUTHOR[^\\]]*(recommend|push|prefer|choose|decid|which)",
+      "note": "the question put to the author must be about the open recommendation, not a side detail"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)(no (stated |settled |final |single )?recommendation|(not|n't)( yet)? (settled|decided|chosen|recommend\\w*|made a (recommendation|choice|decision)|(make|give|state) a recommendation)|undecided|open decision|decision (is|remains) (open|yours|for)|recommendation (is|was|has been) (not|left|pending|open)|pending (a )?(choice|decision|recommendation)|without (recommending|choosing|deciding))",
+      "note": "the request asks for 'our recommendation' but the notes say it is not settled; the summary Marc reads must say so in plain words instead of leaving the point silent or filling it"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(we|I) (recommend|propose|advise)\\b|\\bour recommendation (is|:)|\\b(recommended|recommendation)\\s*:\\s*(scale|roll|expand|fund|adopt|invest|prioriti[sz]e|launch|ship|hire)",
+      "note": "the notes say Priya has not settled between scaling calls and wider checklist rollout, so the summary must not state a choice as the team's recommendation"
     },
     {
       "type": "no_added_facts",

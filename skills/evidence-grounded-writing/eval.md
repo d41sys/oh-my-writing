@@ -23,7 +23,7 @@ Answer each check pass or fail. Fix every failure before returning.
 
 12. Does every comparison name or imply the same baseline, metric, conditions and time, or state the differences?
 13. Does every percentage change say its base, and is it clear whether the change is relative or in percentage points?
-14. Does each important figure carry its unit, denominator and period, or a marker asking the author for it?
+14. Does each important figure carry its unit, denominator and period, or is the missing item stated plainly (or the figure left out of the reader's text) with the question in the reply?
 15. Did you recompute the arithmetic (changes, sums, ratios) rather than trusting the text?
 16. Is each number that appears more than once identical everywhere, or is the difference named?
 17. Is rounding free of changes to meaning, and is precision no finer than the measurement?
@@ -41,9 +41,9 @@ Answer each check pass or fail. Fix every failure before returning.
 ## Uncertainty, stakes and preservation
 
 25. Is each real limit stated once, beside the claim it limits, without blanket caveats?
-26. Are health, legal, financial and safety statements either quoted from a supplied source or marked `[VERIFY: qualified source for ...]`, with no confident advice from memory?
+26. Are health, legal, financial and safety statements in the prose either quoted from or attributed to a supplied source, with `[VERIFY: qualified source for ...]` kept in the ledger and reply, and no confident advice from memory?
 27. Did editing keep every qualifier, negation, number, name, scope word (species, population, setting, period) and the author's voice unless the ledger says it was the defect, and did no edit raise a claim's strength?
-28. Is every gap handled with an `[ASK AUTHOR: ...]`, `[VERIFY: ...]` or `[UNTESTED]` marker or one question, with no invented fact, number, source or experience and no other marker spelling left (to-do, citation-needed or confirm tags)?
+28. Is every gap either stated plainly in the reader's text ("the sources do not report X") or left out, and logged in the ledger, reply and (for saved files) `open-questions.md` as an `[ASK AUTHOR: ...]`, `[VERIFY: ...]` or `[UNTESTED]` line, with no invented fact, number, source or experience and no other marker spelling (to-do, citation-needed or confirm tags) left anywhere?
 29. If the text is not English, were only structural checks applied and the limits of lexical checks stated?
 
 ## Final read
@@ -52,3 +52,4 @@ Answer each check pass or fail. Fix every failure before returning.
 31. Is the change list short and true: each line names what changed and why, with nothing claimed that was not done?
 32. Does the report say what was checked and what was not, avoid claiming "all verified", and note that the check is not independent if you wrote the text?
 33. Would the author be able to reopen every cited location and confirm each supported row without asking you anything?
+34. Is the reader-facing text (revised passage, written draft) free of `[ASK AUTHOR]`, `[VERIFY]`, `[UNTESTED]` markers and of meta-notes (process narration, "as requested", per-paragraph evidence remarks, `[source: ...]` tags), with the change list, ledger and questions in the reply, and `open-questions.md` written when files were saved? If the author asked for a draft to edit, are the markers beside the gaps and is it said to be a draft? (Audit reports, ledgers and citation checks are author-facing and keep markers.)

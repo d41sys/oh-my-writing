@@ -1,0 +1,93 @@
+{
+  "id": "style/linkedin-post-from-notes",
+  "skill": "post-writing",
+  "description": "First-person LinkedIn post from notes that already hold a real experiment: it keeps the figures, the downsides and the one-time-zone limit, uses no hashtags or engagement bait, opens on the content instead of a hook or era line, and avoids symmetric lists and a moral closer.",
+  "prompt": "Draft a LinkedIn post from the notes in async.md, in my voice. Save it to out/post.md.",
+  "files": {
+    "async.md": "Post for my own LinkedIn. I'm Kofi Adjei, engineering manager of a 9-person product team in Lisbon. First person; I ran this.\n\nWhat happened: in September we replaced the daily 15-minute standup with a written update in Slack, due by 10:00, for 4 weeks.\n\nResults\n- Team meetings went from 5 a week to 2 (planning and the retro).\n- Two of the nine people said they missed the standup. One of them said it was the only time she heard what the backend people were doing.\n- Blocked work surfaced more slowly at first. Median time from \"blocked\" to someone replying went from 1 hour to 3 hours in week 1, then came back to 1.5 hours by week 4 once we added a \"blocked\" tag.\n- We kept the written updates and added an optional 10-minute call on Thursdays.\n\nLimits: one team, one time zone. I am not claiming this works elsewhere.\n\nNo hashtags. Do not tell people to comment.\n"
+  },
+  "output": "out/post.md",
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "urls",
+        "citations"
+      ],
+      "allow": [
+        "4 x"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b(?:1\\.5|one and a half)\\b",
+      "note": "week-4 reply time"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b3 hours?\\b|\\bthree hours?\\b|1 hour to 3\\b",
+      "note": "week-1 reply time"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b(?:5|five) (?:a|per|each) week|\\b5 to 2\\b|\\bfrom (?:5|five)\\b",
+      "note": "meeting count change"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)(?:two|2) of (?:the )?(?:nine|9)|two (?:people|of us|teammates)|2 (?:people|teammates)",
+      "note": "the downside is kept"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)one (?:team|time ?zone)|(?:one|single|same) time ?zone|(?:not|n't) (?:claiming|saying|suggesting)",
+      "note": "limit stated"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?m)(?<![\\w&])#[A-Za-z]\\w+",
+      "note": "no hashtags (the user said so)"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(?:comment below|drop a comment|let me know (?:in the comments|what you think)|what do you think\\?|thoughts\\?|agree\\?|share your)\\b",
+      "note": "no engagement bait (the user said so)"
+    },
+    {
+      "type": "word_count",
+      "min": 110,
+      "max": 260
+    },
+    {
+      "type": "slop_density",
+      "max": 7
+    },
+    {
+      "type": "rhythm",
+      "min_cv": 0.35
+    },
+    {
+      "type": "not_regex",
+      "pattern": "[🌀-🫿✅❌⭐]",
+      "note": "no emoji bullets or openers in a post written in the author's plain voice"
+    },
+    {
+      "type": "markers",
+      "min": 0,
+      "max": 0,
+      "target": "output",
+      "note": "The deliverable goes straight to its reader and the notes hold every fact the text needs, so no gap marker belongs in the saved file; a question for the author goes in the reply."
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\[(?:insert|your|name|date|company|tbd|add|link|recipient|sender)\\b[^\\]\\n]*\\]|\\bTBD\\b|\\blorem ipsum\\b",
+      "note": "no fill-in placeholder in text for a reader"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?im)^\\s*(?:note to (?:self|author|you)|here(?:'s| is) (?:the|your|a) (?:draft|email|memo|post|letter|article|update|revised)|draft (?:email|memo|post|letter|article|update)\\b|subject line options)",
+      "note": "the file is the deliverable, not a reply with a lead-in or notes about it"
+    }
+  ]
+}

@@ -16,8 +16,8 @@ Answer each check pass or fail. Fix every failure before returning.
 ## Material and gaps
 
 6. Is every unit in the draft traceable to supplied material, and are authors' views labelled as such?
-7. Is every missing example, number, quote, source, credential or opinion handled as `[ASK AUTHOR: ...]`, `[VERIFY: ...]` or a question, with nothing invented?
-8. Are contradictions in the material surfaced, with both values and their sources kept and a marker in the draft when the author could not be asked, and nothing downstream computed from either?
+7. Is every missing example, number, quote, source, credential or opinion handled as a plain stated gap or an omitted sentence in the draft, and as a question to the author (marker line in the reply), with nothing invented?
+8. Are contradictions in the material surfaced, with both values and who gave each kept in the draft, a plain statement that the material does not settle which is right when the author could not be asked, and nothing downstream computed from either?
 9. Do tentative, unconfirmed and attributed items keep that status in the draft (nothing decided, confirmed or stated as fact that the material left open)?
 10. Is the author's material unchanged on disk (draft written separately)?
 
@@ -43,23 +43,25 @@ Answer each check pass or fail. Fix every failure before returning.
 22. Does each block open with its message (or deliberately hold it for a stated turn), give evidence, and hand off?
 23. Are claims, qualifiers, numbers, names, negations and status the same strength as in the material?
 24. Is each block's form (prose, list, table, quote, code) a deliberate choice, and are real lists kept as lists?
-25. Does the ending serve the reader's next need, with no stock closer, recap padding or invented conclusion? If the shape expects a recommendation or next step that the material lacks, is that a marker, not a guess?
+25. Does the ending serve the reader's next need, with no stock closer, recap padding or invented conclusion? If the shape expects a recommendation or next step that the material lacks, does the draft say so plainly (or leave it out) and the reply carry the question, not a guess?
 26. Were bridges added only where the relation exists in the material?
 
-## Deliverable file
+## Deliverable file and reader-facing text
 
-27. When a save path was given, does the file hold the draft alone (no label, brief, outline, decision list or note), with gap markers as its only additions, and only as long as the task size calls for?
+27. When a save path was given, does the file hold the draft alone (no label, brief, outline, decision list or note), and only as long as the task size calls for?
+28. Is the reader-facing draft free of `[ASK AUTHOR]`, `[VERIFY]` and `[UNTESTED]` markers, `[source: ...]` tags, outline or source comment lines, and process narration ("as requested", "based on your notes"), unless the author asked for a draft to edit?
+29. Are gaps stated plainly (a fact about the material) or omitted, with the author's questions in the reply as marker lines, and also in `open-questions.md` beside a saved file when any question is open?
 
 ## Co-author mode (skip if not used)
 
-28. Was the author asked for context in a few targeted questions, with a free dump allowed, instead of a long questionnaire?
-29. For each section, did the author curate options (keep / remove with reason / combine) before drafting, and was the section drafted only from kept items?
-30. Were edits after feedback local, leaving everything not named unchanged, and were the author's own edits preserved?
-31. Was a fresh-reader test run or routed to `independent-review`, and was its limit stated (tests self-sufficiency, not correctness)?
+30. Was the author asked for context in a few targeted questions, with a free dump allowed, instead of a long questionnaire?
+31. For each section, did the author curate options (keep / remove with reason / combine) before drafting, and was the section drafted only from kept items?
+32. Were edits after feedback local, leaving everything not named unchanged, and were the author's own edits preserved?
+33. Was a fresh-reader test run or routed to `independent-review`, and was its limit stated (tests self-sufficiency, not correctness)?
 
 ## Hand-off
 
-32. Does the final note say what was not verified and which sibling skill to run next (`evidence-grounded-writing`, `anti-slop-editing`, `author-voice`, `independent-review`)?
+34. Does the final note say what was not verified and which sibling skill to run next (`evidence-grounded-writing`, `anti-slop-editing`, `author-voice`, `independent-review`)?
 
 ## Final read
 

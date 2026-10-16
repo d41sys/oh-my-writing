@@ -19,7 +19,7 @@ For each important figure, make sure the reader can answer:
 
 Not every number needs every item. Version labels, dates, port numbers and plain counts of things listed in the text do not need denominators or intervals. Measured or inferred results do.
 
-If the author has not supplied a unit, denominator or period, do not guess it: `[ASK AUTHOR: denominator for the 40%]`.
+If the author has not supplied a unit, denominator or period, do not guess it: leave the figure out of the reader's text, or give it only as far as the notes do, and ask in the reply (`[ASK AUTHOR: denominator for the 40%]`).
 
 ## 2. Arithmetic checks
 
@@ -94,7 +94,7 @@ Related traps:
 
 ## 8. When the data cannot support an estimate
 
-Say so. "The data do not allow an estimate of X" is a valid result. Do not fill the gap with a typical value, a plausible range from memory, or a number from a similar case. Offer the next step: what measurement would settle it. Mark `[ASK AUTHOR: ...]` or `[VERIFY: ...]` in the text.
+Say so. "The data do not allow an estimate of X" is a valid result and belongs in the text. Do not fill the gap with a typical value, a plausible range from memory, or a number from a similar case. Offer the next step: what measurement would settle it, as `[ASK AUTHOR: ...]` or `[VERIFY: ...]` in the reply, not in the reader's text.
 
 ## 9. Category swaps to catch
 

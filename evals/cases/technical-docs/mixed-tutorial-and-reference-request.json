@@ -43,6 +43,16 @@
         "two pages"
       ],
       "target": "reply"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\[(ASK AUTHOR|VERIFY|UNTESTED)\\b|\\b(TODO|TBD)\\b",
+      "note": "the getting-started guide is read by new users as saved; the task gives the full config in tailr.toml.example, so nothing needs a marker, and a marker or TODO would be a visible gap in the file"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(as requested|as you asked|I (split|moved|created|wrote)|this guide was split|\\[source:)",
+      "note": "the user asked that other pages go in out/; how the pages were divided is explained in the reply, not in the guide text"
     }
   ]
 }

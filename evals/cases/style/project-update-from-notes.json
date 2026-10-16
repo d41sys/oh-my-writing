@@ -1,0 +1,102 @@
+{
+  "id": "style/project-update-from-notes",
+  "skill": "structured-drafting",
+  "description": "Weekly steering-group update from notes: done, blocked and asks are stated with the supplied figures, the unconfirmed vendor date stays unconfirmed, the pilot's limit (one aisle) is not generalised, and the email avoids status-report filler, hedging fog and a recap closer.",
+  "prompt": "Turn the notes in week6.md into this week's update email for the steering group. Save it to out/update.md.",
+  "files": {
+    "week6.md": "Weekly update for the barcode migration steering group: Rosa Anders, Kwame Mensah, Li Wen. Sent by Ines Cardoso, project manager. Week 6 of 10. Go-live is 17 November.\n\nDone this week\n- New scanner firmware is on 22 of 30 handhelds.\n- The pilot in aisle 4 finished: 3 pickers, 5 days. Mis-scans fell from 6.1% to 2.3%. No lost orders.\n\nBlocked\n- The label printer driver for the ZT410 printers fails on the new firmware. The vendor promised a patch by 28 October but has not confirmed that in writing.\n- If the patch comes after 28 October, go-live slips by up to one week. If it arrives on time, 17 November holds.\n\nNeeds from the group\n- Kwame: release 8 handhelds from receiving by Friday 23 October so we can finish the firmware rollout.\n- Rosa and Li: nothing this week.\n\nNot known yet: whether aisles 7 to 12 will show the same mis-scan rate. The pilot covered aisle 4 only.\n"
+  },
+  "output": "out/update.md",
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "urls",
+        "citations"
+      ]
+    },
+    {
+      "type": "preserves",
+      "source": "week6.md",
+      "categories": [
+        "numbers"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "22 of 30|22/30|22 (?:out )?of (?:the )?30",
+      "note": "firmware progress"
+    },
+    {
+      "type": "regex",
+      "pattern": "6\\.1\\s?%",
+      "note": "pilot before"
+    },
+    {
+      "type": "regex",
+      "pattern": "2\\.3\\s?%",
+      "note": "pilot after"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)(?:not|n't|never|no)[^.\\n]{0,60}(?:written|writing|confirm)|(?:written|writing|confirm)[^.\\n]{0,60}(?:not|n't|no)|unconfirmed",
+      "note": "the vendor date is not confirmed in writing"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)(?:aisle 4|one aisle|single aisle)[^.\\n]{0,80}(?:only|alone)|(?:only|alone)[^.\\n]{0,40}aisle 4|(?:7|seven)\\s*(?:to|-|–)\\s*12",
+      "note": "pilot scope kept"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)23 oct|oct(?:ober)? 23",
+      "note": "ask deadline"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b8 handhelds|eight handhelds|8 (?:of the )?(?:units|scanners|devices)",
+      "note": "the ask for Kwame"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(?:guarantee[sd]?|definitely|certainly will)\\b[^.\\n]{0,50}17 nov",
+      "note": "17 November is conditional"
+    },
+    {
+      "type": "word_count",
+      "min": 110,
+      "max": 280
+    },
+    {
+      "type": "slop_density",
+      "max": 7
+    },
+    {
+      "type": "rhythm",
+      "min_cv": 0.35
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)hope (?:this|you)[^.\\n]{0,40}(?:finds you|well)|don'?t hesitate|do not hesitate|reach out|any inconvenience|valued customer|sincerely apologi[sz]e|look forward to hearing|(?:thank you|thanks) (?:so much )?for your (?:patience|understanding|time and consideration|continued)|first and foremost|i wanted to (?:reach out|provide)|as a (?:result|reminder),? ",
+      "note": "no stock email opener or closer"
+    },
+    {
+      "type": "markers",
+      "min": 0,
+      "max": 0,
+      "target": "output",
+      "note": "The deliverable goes straight to its reader and the notes hold every fact the text needs, so no gap marker belongs in the saved file; a question for the author goes in the reply."
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\[(?:insert|your|name|date|company|tbd|add|link|recipient|sender)\\b[^\\]\\n]*\\]|\\bTBD\\b|\\blorem ipsum\\b",
+      "note": "no fill-in placeholder in text for a reader"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?im)^\\s*(?:note to (?:self|author|you)|here(?:'s| is) (?:the|your|a) (?:draft|email|memo|post|letter|article|update|revised)|draft (?:email|memo|post|letter|article|update)\\b|subject line options)",
+      "note": "the file is the deliverable, not a reply with a lead-in or notes about it"
+    }
+  ]
+}

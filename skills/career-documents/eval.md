@@ -10,8 +10,8 @@ Answer each check pass or fail. Fix every failure before returning.
 4. Is each percentage given with a baseline or context, and is no figure present that is confidential or that the candidate cannot explain?
 5. Is each metric attributed to the right employer and period, with no results from different employers merged into one sentence?
 6. Is scope (budget, headcount, ownership, seniority) exactly what the candidate stated, with nothing enlarged by wording such as "led", "owned" or "managed"?
-7. Are missing facts shown as `[ASK AUTHOR: ...]` (only the candidate knows) or `[VERIFY: ...]` (external fact to check), or left out, never filled by a plausible guess? Are no other marker kinds used?
-8. If the user asked for numbers, metrics or a more impressive result and supplied none, does the draft keep the true wording, carry an `[ASK AUTHOR: ...]` marker where each figure belongs, and list the questions, with no typical or placeholder figure inserted?
+7. Are missing facts left out or kept at the level the facts support in the document, never filled by a plausible guess, with the question in the reply as an `[ASK AUTHOR: ...]` line (the candidate knows) or a `[VERIFY: ...]` line (external fact to check) and no other marker kind?
+8. If the user asked for numbers, metrics or a more impressive result and supplied none, does the document keep the true wording with no figure and no `[X]` slot, and does the reply list the questions, with no typical or placeholder figure inserted?
 
 ## Fit and selection
 
@@ -42,7 +42,8 @@ Answer each check pass or fail. Fix every failure before returning.
 
 25. Does the note list changes and reasons, assumptions, open items, gaps, and what the user must verify with the target, in short and true statements?
 26. Does the draft avoid claims of measured gains (match scores, readability, interview odds) that nobody measured?
-27. Is the document left as a draft for the user's review, with no sending, submitting or contacting implied?
+27. Is the document ready for the user's review, with no sending, submitting or contacting implied?
+28. Is the reader's document free of `[ASK AUTHOR]`, `[VERIFY]` and `[UNTESTED]` markers, bracket placeholders (`[Company]`, `[N]`, `[Name]`) and notes to the author ("as requested", "tailored for", source notes, process narration), unless the user asked for a draft to edit? Are gaps stated plainly or omitted, and are the questions in the reply (and in `open-questions.md` when a file is written and the user did not limit the output to one file)? The reply note, fit analysis, gap list and evidence inventory are author-facing and may carry markers.
 
 ## Final read
 

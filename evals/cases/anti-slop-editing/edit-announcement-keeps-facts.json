@@ -45,7 +45,21 @@
       "type": "markers",
       "min": 1,
       "max": 4,
-      "target": "both"
+      "target": "both",
+      "note": "The announcement says 'Experts say' with no source and the text gives none, so the author has to be asked who; the question may sit in the reply or the file, and both count."
+    },
+    {
+      "type": "markers",
+      "min": 0,
+      "max": 0,
+      "target": "output",
+      "note": "The edited announcement is published text for customers and the prompt does not ask for a draft to edit, so no gap marker belongs in the saved file; questions go in the reply."
+    },
+    {
+      "type": "not_regex",
+      "target": "output",
+      "pattern": "(?i)according to (?:a|an|the|our) (?:study|survey|report|analysis|benchmark|review)|(?:studies|surveys|research|analysts|industry experts|engineers) (?:show|shows|found|find|say|agree|confirm)",
+      "note": "The source never says who the experts are or what study supports the claim; the edit must cut or keep the sentence, not put a made-up source or a new attribution in its place."
     },
     {
       "type": "contains",

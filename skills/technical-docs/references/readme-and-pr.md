@@ -86,7 +86,7 @@ Notes:
 - Numbers come from the diff, the notes or a run you made. If you convert or combine them (hours to minutes), show the arithmetic or leave them as given.
 - Check the strength of every guarantee against the code before repeating it (see rule 15 in SKILL.md). If an adjustment is applied after a limit (an offset added after a clamp), a reviewer needs that order stated, because it decides whether "never exceeds" is true. State it with the source's own values ("at most 30 seconds, then jitter is added"), not a sum you computed that no source prints.
 - A changed default or a new limit is a behaviour change for existing callers even when no signature changed. Name who is affected (a named job or consumer from the notes) under Risk or Breaking changes.
-- Put thresholds in "Watch after merge" only when the author or a spec gives them; otherwise write "nothing specific" or `[ASK AUTHOR: what should be watched?]`. A vague "works fine" is not a success criterion.
+- Put thresholds in "Watch after merge" only when the author or a spec gives them; otherwise write "nothing specific". A vague "works fine" is not a success criterion. The question "what should be watched?" goes in the reply.
 
 Start from [assets/pr-description-template.md](../assets/pr-description-template.md).
 
@@ -122,7 +122,7 @@ Skeleton:
 
 Rules:
 
-- The reasoning is the author's. If the thread, code or notes do not show which alternatives were weighed or why one won, ask with `[ASK AUTHOR: ...]`; do not construct a convincing history.
+- The reasoning is the author's. If the thread, code or notes do not show which alternatives were weighed or why one won, the record says so in plain words ("The notes do not say which alternatives were weighed.") or omits that section, and the reply asks `[ASK AUTHOR: ...]`; do not construct a convincing history.
 - A record is append-only. When the decision changes, write a new ADR and mark the old one Superseded; correct a factual mistake with a dated correction line, not a silent rewrite.
 - Keep it to about one page. Procedures go to a how-to, parameters to reference, and the full multi-option analysis for stakeholders to a decision report.
 
@@ -159,6 +159,36 @@ A migration guide is a how-to for moving between versions, with a precise before
 8. Link to the changelog entry and the reference for the new interface.
 
 This is one of the documents where narrating change is correct. Elsewhere, describe the current state only.
+
+## Gaps in a reader-facing page
+
+A gap is something the source does not say. The page states it as a fact about the material, or leaves the sentence out. The author's question goes to the reply and, when files are written, to `open-questions.md`. Never fill a gap with a plausible value.
+
+| Gap | In the page (reader language) | In the reply and `open-questions.md` |
+|---|---|---|
+| no license | "No license is stated in this repository." Or omit the section. | `[ASK AUTHOR: which license applies?]` |
+| problem or audience unknown | write only what the code shows ("Prints lines from a log file."); skip "Why use it" claims | `[ASK AUTHOR: who is this for and what problem does it solve?]` |
+| command or step not run | omit it, or "These steps were not run in this environment." when the reader gains from knowing | `[UNTESTED: install steps in the quick start; needs Python 3.11]` |
+| external fact (a limit, a version's behaviour) | leave the claim out, or "The service documentation states X." with the link | `[VERIFY: rate limit quoted in the vendor docs against the current docs]` |
+| no test result | "Test status: Not run." or the run the author reported, with its scope | `[ASK AUTHOR: has CI run on this branch?]` |
+| no rollout or watch signal | "Watch after merge: nothing specific." | `[ASK AUTHOR: what should be watched after merge?]` |
+| ADR reasons not shown | "The record does not show which alternatives were weighed." Or omit the Options section. | `[ASK AUTHOR: which alternatives were weighed?]` |
+| default or value with no stated reason | give the value; omit the reason | `[ASK AUTHOR: why this default?]` |
+
+Also keep process narration out of the page: no "as requested", "I checked the diff", "based on your notes", per-section source notes or `[source: ...]` tags. Those belong in the reply.
+
+`open-questions.md` format (written beside the page files, same lines as the reply, numbering matching):
+
+```markdown
+# Open questions: tailr README
+
+1. [ASK AUTHOR: which license applies?]
+   Blocks: License section. The README says: "No license is stated in this repository."
+2. [UNTESTED: quick start commands; needs Python 3.11]
+   Blocks: Quick start. The README says which version it was written for.
+```
+
+Exception: the author asked for a draft to edit, or the output is an author-facing artifact such as a comment review or staleness report. Markers may stay in those, and the reply says so.
 
 ## Safety pass before publishing
 

@@ -1,0 +1,91 @@
+{
+  "id": "style/client-email-from-notes",
+  "skill": "structured-drafting",
+  "description": "Rough notes to a freelance client about a delayed launch: the email states the new date, the reason, the unchanged fee and two asks in plain first-name register, invents no figure, and carries no stock opener, closer, hedging or placeholder.",
+  "prompt": "Write the email to Marta from my notes in notes.md. Keep it short, she reads email on her phone. Save it to out/email.md.",
+  "files": {
+    "notes.md": "Client: Marta Lindqvist, owner of Lindqvist Ceramics (online shop). We have worked together since April and she signs her emails \"Marta\".\nMe: Jonas Eklund, freelance developer.\n\nWhere the checkout rebuild stands:\n- Staging is ready for her to try: https://staging.lindqvistceramics.example/checkout\n- Launch moves from 3 November to 10 November. Reason: in testing, VAT came out wrong by 1 cent on orders that mix two VAT rates (11 of 240 test orders). The fix is in; it needs another full test pass, which takes 4 working days.\n- Price unchanged: still the agreed fixed fee of 4,800 EUR. No extra charge for the delay, that one is on me.\n- She does not need to change anything in her product data.\n\nWhat I need from her:\n1. Place 5 test orders on staging (at least one with a 19% item and a 7% item in the same basket) and tell me if anything looks off. By Wednesday 28 October.\n2. Decide whether to keep guest checkout. I recommend keeping it; removing it would not save any build time.\n"
+  },
+  "output": "out/email.md",
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "urls",
+        "citations"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)10 nov|nov(?:ember)? 10",
+      "note": "new launch date"
+    },
+    {
+      "type": "regex",
+      "pattern": "4,?800",
+      "note": "fee"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)no (?:extra|additional) (?:charge|cost|fee)|(?:won't|will not|not) (?:be )?(?:charg|cost|bill)|unchanged|same (?:fixed )?(?:fee|price)",
+      "note": "fee stays the same, said plainly"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)28 oct|oct(?:ober)? 28",
+      "note": "deadline for her test orders"
+    },
+    {
+      "type": "contains",
+      "values": [
+        "https://staging.lindqvistceramics.example/checkout"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)guest checkout",
+      "note": "second ask"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?im)^\\s*(?:hi|hello|dear)\\s+marta\\b",
+      "note": "first-name greeting"
+    },
+    {
+      "type": "word_count",
+      "min": 80,
+      "max": 220
+    },
+    {
+      "type": "slop_density",
+      "max": 7
+    },
+    {
+      "type": "rhythm",
+      "min_cv": 0.35
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)hope (?:this|you)[^.\\n]{0,40}(?:finds you|well)|don'?t hesitate|do not hesitate|reach out|any inconvenience|valued customer|sincerely apologi[sz]e|look forward to hearing|(?:thank you|thanks) (?:so much )?for your (?:patience|understanding|time and consideration|continued)|first and foremost|i wanted to (?:reach out|provide)|as a (?:result|reminder),? ",
+      "note": "no stock email opener or closer"
+    },
+    {
+      "type": "markers",
+      "min": 0,
+      "max": 0,
+      "target": "output",
+      "note": "The deliverable goes straight to its reader and the notes hold every fact the text needs, so no gap marker belongs in the saved file; a question for the author goes in the reply."
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\[(?:insert|your|name|date|company|tbd|add|link|recipient|sender)\\b[^\\]\\n]*\\]|\\bTBD\\b|\\blorem ipsum\\b",
+      "note": "no fill-in placeholder in text for a reader"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?im)^\\s*(?:note to (?:self|author|you)|here(?:'s| is) (?:the|your|a) (?:draft|email|memo|post|letter|article|update|revised)|draft (?:email|memo|post|letter|article|update)\\b|subject line options)",
+      "note": "the file is the deliverable, not a reply with a lead-in or notes about it"
+    }
+  ]
+}

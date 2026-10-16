@@ -12,11 +12,11 @@ Answer each check pass or fail. Fix every failure before returning.
 
 ## Evidence and claims
 
-6. Does every number carry unit, period, scope, baseline, source, and as-of date (or an explicit marker where one is missing)?
+6. Does every number carry unit, period, scope, baseline, source, and as-of date (or does the report state plainly that the notes do not give the missing item)?
 7. Are observation, inference, forecast, and recommendation distinguishable from each other on the page?
 8. Are estimates, vendor claims, and forecasts labeled as such, with the assumptions that drive them visible?
-9. Does every figure, name, quote, and source come from the author's material or a cited source, with nothing invented, and is every source named rather than "studies show"? Does every number, threshold, config value, and duration in the notes still appear (with unit), or is each deliberate omission listed?
-10. Are gaps marked as `[ASK AUTHOR: ...]`, `[VERIFY: ...]`, or (for a command or code line that was not run) `[UNTESTED]`, and is the draft banner present if any remain?
+9. Does every figure, name, quote, and source come from the author's material or a cited source, with nothing invented, and is every source named rather than "studies show"? Does every number, threshold, config value, and duration in the notes still appear (with unit), or is each deliberate omission listed in the reply?
+10. Is the deliverable free of `[ASK AUTHOR]`, `[VERIFY]`, `[UNTESTED]` markers, draft banners, and meta-notes (process narration, "as requested", `[source: ...]` tags, per-paragraph source notes)? Is each gap stated in reader language or the sentence omitted, with nothing invented to fill it, and does each question appear as a marker line in the reply (and in `open-questions.md` when a file was saved)? Exception: the author asked for a draft to edit.
 11. Were totals, percentages, growth rates, and conversions recomputed from their parts, do they agree, and is each derived figure labeled a calculation rather than passed off as a source's number?
 12. Do figures in this report match the deck, model, memo, or earlier version they must agree with, including rounding?
 
@@ -29,7 +29,7 @@ Answer each check pass or fail. Fix every failure before returning.
 17. Is each key claim about a candidate tagged proven, asserted, or unknown, and is unknown never presented as no?
 18. Is each matrix row followed by a line of interpretation, and is the candidate set justified, including the status quo?
 19. Does the recommendation give action, expected impact (qualitative if unmeasured), effort or cost, and a condition that would reverse it?
-20. Is the recommendation the author's own, either stated in the notes or confirmed, with an `[ASK AUTHOR: ...]` marker where the notes gave none and the evidence-based lean shown as analysis, not as the author's position?
+20. Is the recommendation the author's own, either stated in the notes or confirmed? Where the notes gave none, does the document say plainly that no recommendation is made, set out the options and the evidence-based lean as analysis (not as the author's position), and does the question sit in the reply instead of a marker in the document?
 
 ## Structure, visuals, and voice
 

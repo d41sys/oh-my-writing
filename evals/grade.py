@@ -42,6 +42,8 @@ DIAGRAM_SKILL = Path.home() / ".agents" / "skills" / "diagram-design"
 DIAGRAM_SELF_CHECK = DIAGRAM_SKILL / "scripts" / "self_check.py"
 FONT_HOSTS = {"fonts.googleapis.com", "fonts.gstatic.com"}
 RASTER_EXT = {".png", ".jpg", ".jpeg", ".webp"}
+SLOP_PROFILES = {"casual", "professional", "technical", "academic"}
+JUDGE_MODES = {"visual", "style"}
 
 FACT_CATEGORIES = {"numbers", "negations", "certainty", "scope", "names", "urls", "code", "code_blocks",
                    "quotes", "citations"}
@@ -52,7 +54,7 @@ CHECK_FIELDS = {
     "contains": {"values"}, "contains_any": {"values"}, "not_contains": {"values"},
     "regex": {"pattern"}, "not_regex": {"pattern"},
     "no_added_facts": set(), "preserves": {"source"},
-    "slop_absent": {"patterns"}, "max_slop": {"max"},
+    "slop_absent": {"patterns"}, "max_slop": {"max"}, "slop_density": {"max"}, "rhythm": set(),
     "markers": set(), "similarity": {"source"}, "word_count": set(),
     "facts_recalled": {"facts"}, "diagrams": set(), "html_deliverable": {"path"},
 }
@@ -143,6 +145,18 @@ def _validate_new_check(kind: str, check: dict, where: str) -> list[str]:
                 errs.append(f"{where}: labels_none must be a non-empty list of regex strings")
             else:
                 errs += _regex_errors(check["labels_none"], f"{where}.labels_none")
+    elif kind == "slop_density":
+        if not (_is_num(check["max"]) and check["max"] >= 0):
+            errs.append(f"{where}: max must be a non-negative number (findings per 1000 words)")
+        if "profile" in check and check["profile"] not in SLOP_PROFILES:
+            errs.append(f"{where}: profile must be one of {sorted(SLOP_PROFILES)}")
+    elif kind == "rhythm":
+        if "min_cv" in check and not (_is_num(check["min_cv"]) and 0 <= check["min_cv"] <= 2):
+            errs.append(f"{where}: min_cv must be a number from 0 to 2")
+        if "min_sentences" in check and not (isinstance(check["min_sentences"], int)
+                                             and not isinstance(check["min_sentences"], bool)
+                                             and check["min_sentences"] >= 2):
+            errs.append(f"{where}: min_sentences must be an integer of at least 2")
     elif kind == "html_deliverable":
         if not _rel_path_ok(check["path"]):
             errs.append(f"{where}: path must be a relative path inside the workspace")
@@ -178,8 +192,11 @@ def _validate_extras(case: dict) -> list[str]:
             errs.append("deliverables must not repeat a path")
     if "judge" in case:
         judge = case["judge"]
-        if not isinstance(judge, dict) or judge.get("mode") != "visual":
-            errs.append("judge must be an object with mode 'visual'")
+        if not isinstance(judge, dict) or judge.get("mode") not in JUDGE_MODES:
+            errs.append("judge must be an object with mode 'visual' or 'style'")
+        elif judge["mode"] == "style":
+            if "render" in judge:
+                errs.append("judge.render belongs to mode 'visual' only")
         elif not _rel_path_ok(judge.get("render")):
             errs.append("judge.render must be a relative path to the HTML to screenshot")
         elif not (isinstance(deliverables, list) and judge["render"] in deliverables):
@@ -238,7 +255,7 @@ def validate_case(case: dict) -> list[str]:
         for src in check.get("sources", []):
             if src not in names:
                 errs.append(f"{where}: source {src!r} is not an input file")
-        if not missing and kind in {"facts_recalled", "diagrams", "html_deliverable"}:
+        if not missing and kind in {"facts_recalled", "diagrams", "html_deliverable", "slop_density", "rhythm"}:
             errs += _validate_new_check(kind, check, where)
     return errs
 
@@ -256,8 +273,12 @@ def _load_script(name: str, path: Path):
     spec = importlib.util.spec_from_file_location(name, path)
     module = importlib.util.module_from_spec(spec)
     keep, sys.dont_write_bytecode = sys.dont_write_bytecode, True  # no __pycache__ inside the shipped skill
+    sys.modules[name] = module  # dataclasses look the defining module up here
     try:
         spec.loader.exec_module(module)
+    except BaseException:
+        sys.modules.pop(name, None)
+        raise
     finally:
         sys.dont_write_bytecode = keep
     return module
@@ -324,12 +345,56 @@ def source_texts(case: dict) -> dict[str, str]:
     return {**case["files"], **fixture_texts(case)}
 
 
+@functools.lru_cache(maxsize=1)
+def _slop_scan():
+    return _load_script("slop_scan", SLOP_SCAN)
+
+
+def slop_scan_result(text: str, profile: str) -> dict:
+    """slop_scan's own result for text (imported with bytecode off, no subprocess)."""
+    return _slop_scan().scan(text, profile)
+
+
 def slop_findings(text: str, profile: str) -> list[dict]:
     with tempfile.TemporaryDirectory() as tmp:
         path = Path(tmp) / "text.md"
         path.write_text(text, encoding="utf-8")
         return _run_json([sys.executable, str(SLOP_SCAN), "--json", "--profile", profile, str(path)],
                          ok_codes=(0,))["findings"]
+
+
+# ---------------------------------------------------------------- gap markers
+
+_MARKER_TOKEN = re.compile(r"(?:\*{1,2}|_{1,2})?\[(?:" + "|".join(map(re.escape, MARKER_KINDS)) + r")\b[^\]\n]*\](?:\*{1,2}|_{1,2})?")
+_EMPTY_LINE = re.compile(r"^[\s>*+\-\u2022]*(?:\d+[.)])?[\s>*]*$")
+_HEADING = re.compile(r"^\s*#{1,6}\s")
+
+
+def strip_markers(text: str) -> str:
+    """Remove gap markers ([ASK AUTHOR: ...], [VERIFY: ...], [UNTESTED ...]) so a judge sees prose only.
+    A marker inside a sentence is cut out with its surrounding space; a line left empty by the removal (a marker
+    line, a bullet holding only a marker) is dropped, and so is a heading whose whole section was markers."""
+    lines = text.split("\n")
+    out: list[str | None] = []
+    for line in lines:
+        if not _MARKER_TOKEN.search(line):
+            out.append(line)
+            continue
+        indent = line[:len(line) - len(line.lstrip(" \t"))]
+        cut = _MARKER_TOKEN.sub(" ", line)
+        cut = re.sub(r"(?<=\S)[ \t]{2,}", " ", cut)
+        cut = re.sub(r" +([.,;:!?)])", r"\1", cut).rstrip()
+        out.append(None if _EMPTY_LINE.match(cut) else indent + cut.lstrip(" \t"))
+    for i, line in enumerate(lines):
+        if out[i] is not None and _HEADING.match(line):
+            j, saw_removed = i + 1, False
+            while j < len(lines) and not _HEADING.match(lines[j]) and (out[j] is None or not out[j].strip()):
+                saw_removed |= out[j] is None
+                j += 1
+            if saw_removed:
+                out[i] = None
+    joined = re.sub(r"\n{3,}", "\n\n", "\n".join(l for l in out if l is not None)).strip("\n")
+    return joined + "\n" if joined and text.endswith("\n") else joined
 
 
 # ---------------------------------------------------------------- checks
@@ -458,6 +523,40 @@ def check_slop_absent(check, text, case):
 def check_max_slop(check, text, case):
     n = len(slop_findings(text, check.get("profile", "professional")))
     return n <= check["max"], f"{n} findings (max {check['max']})"
+
+
+def check_slop_density(check, text, case):
+    result = slop_scan_result(text, check.get("profile", "professional"))
+    words, n = result["words"], result["summary"]["total"]
+    if not words:
+        return False, "no prose words to scan"
+    density = n * 1000 / words
+    return density <= check["max"], f"{n} findings in {words} words = {density:.1f} per 1000 (max {check['max']})"
+
+
+def sentence_lengths(text: str) -> list[int]:
+    """Words per sentence in running prose (headings, list items, code, quotes and URLs are not counted)."""
+    scan = _slop_scan()
+    masked = scan.mask_protected(text)
+    lengths = []
+    for start, end in scan.prose_blocks(masked):
+        for s, e in scan._sentences(masked[start:end], start):
+            n = len(scan.WORD_RE.findall(masked[s:e]))
+            if n:
+                lengths.append(n)
+    return lengths
+
+
+def check_rhythm(check, text, case):
+    """Sentence-length variation: coefficient of variation (std / mean) of words per sentence is at least min_cv.
+    Uniform sentence lengths are a tell; the check is skipped (passes) when there are too few sentences to judge."""
+    lengths = sentence_lengths(text)
+    lo_n, lo = check.get("min_sentences", 5), check.get("min_cv", 0.4)
+    if len(lengths) < lo_n:
+        return True, f"{len(lengths)} sentences, fewer than {lo_n}: not judged"
+    mean = sum(lengths) / len(lengths)
+    cv = (sum((x - mean) ** 2 for x in lengths) / len(lengths)) ** 0.5 / mean
+    return cv >= lo, f"sentence length cv {cv:.2f} over {len(lengths)} sentences, mean {mean:.1f} (min {lo})"
 
 
 def check_markers(check, text, case):
@@ -887,6 +986,8 @@ def grade_case(case: dict, output: str | None, reply: str, workspace: Path | Non
 
 # ---------------------------------------------------------------- run directories
 
+STYLE_AXES = {"human": "reads as a skilled human professional (fewer AI tells)",
+              "faithful": "more faithful to the inputs"}
 JUDGE_CRITERIA = {"accuracy": "factual accuracy vs sources", "needs": "covers what the reader needs",
                   "tone": "professional tone", "diagrams": "diagram usefulness and design",
                   "layout": "layout and readability"}
@@ -988,10 +1089,20 @@ def summarize(runs: list[dict], judge: list[dict]) -> dict:
                 key = f"{r['condition']}:{c['type']}"
                 failing[key] = failing.get(key, 0) + 1
     verdicts = {"skill": 0, "baseline": 0, "tie": 0, "inconsistent": 0, "error": 0}
+    style = {axis: dict.fromkeys(verdicts, 0) for axis in STYLE_AXES}
     for j in judge:
+        if j.get("mode") == "style":  # two verdicts, counted per question and never added to the overall tally
+            if j["winner"] == "error":
+                for axis in STYLE_AXES:
+                    style[axis]["error"] += 1
+                continue
+            for axis in STYLE_AXES:
+                style[axis][j[axis]] = style[axis].get(j[axis], 0) + 1
+            continue
         verdicts[j["winner"]] = verdicts.get(j["winner"], 0) + 1
     return {"by": by, "failing_checks": dict(sorted(failing.items())), "judge": verdicts,
-            "judge_scores": _judge_scores(judge)}
+            "judge_scores": _judge_scores(judge), "judge_style": style if any(j.get("mode") == "style" for j in judge)
+            else {}}
 
 
 def _pct(x):
@@ -1061,7 +1172,9 @@ def render_report(results: dict) -> str:
     if summary["failing_checks"]:
         lines += ["", "## Failed checks by type", "", "| condition:check | failures |", "|---|---:|"]
         lines += [f"| {k} | {v} |" for k, v in summary["failing_checks"].items()]
-    if results["judge"]:
+    pairwise = [r for r in results["judge"] if r.get("mode") != "style"]
+    styled = [r for r in results["judge"] if r.get("mode") == "style"]
+    if pairwise:
         j = summary["judge"]
         lines += ["", "## Blind pairwise judge", "",
                   f"Preferred with-skills output: {j['skill']}; baseline: {j['baseline']}; tie: {j['tie']}; "
@@ -1076,10 +1189,26 @@ def render_report(results: dict) -> str:
                 lines.append(f"| {label} | {cell('skill')} | {cell('baseline')} |")
             lines.append(f"| pairs scored | {js.get('skill', {}).get('n', 0)} | {js.get('baseline', {}).get('n', 0)} |")
         lines += ["", "| case | host | rep | judge | winner | reason |", "|---|---|---:|---|---|---|"]
-        for r in results["judge"]:
+        for r in pairwise:
             reason = (r.get("reason") or "").replace("|", "/").replace("\n", " ")[:160]
             lines.append(f"| {r['case']} | {r['host']} | {r.get('rep', 1)} | {r['judge']} | {r['winner']} | "
                          f"{reason} |")
+    if styled:
+        lines += ["", "## Blind style judge", "",
+                  "Two separate questions, each decided over both presentation orders, with gap markers removed from "
+                  "both texts first. Human: which reads as written by a skilled human professional, with fewer AI "
+                  "tells (stock phrases, hedging fog, symmetric lists, empty openers and closers). Faithful: which "
+                  "is more faithful to the inputs. A response can win one and lose the other.", "",
+                  "| question | with skills | baseline | tie | inconsistent | error |", "|---|---:|---:|---:|---:|---:|"]
+        for axis, label in STYLE_AXES.items():
+            c = summary["judge_style"][axis]
+            lines.append(f"| {label} | {c['skill']} | {c['baseline']} | {c['tie']} | {c['inconsistent']} | "
+                         f"{c.get('error', 0)} |")
+        lines += ["", "| case | host | rep | judge | reads human | faithful | reason |", "|---|---|---:|---|---|---|---|"]
+        for r in styled:
+            reason = (r.get("reason") or "").replace("|", "/").replace("\n", " ")[:160]
+            lines.append(f"| {r['case']} | {r['host']} | {r.get('rep', 1)} | {r['judge']} | "
+                         f"{r.get('human', 'error')} | {r.get('faithful', 'error')} | {reason} |")
     lines += ["", "## Limits", "",
               "Checks are mechanical: they detect invented numbers, names and citations, lost negations and qualifiers, "
               "missing gap markers, leftover stock patterns and leaked context, and for report cases missed facts, "

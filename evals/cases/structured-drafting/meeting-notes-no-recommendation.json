@@ -1,7 +1,7 @@
 {
   "id": "structured-drafting/meeting-notes-no-recommendation",
   "skill": "structured-drafting",
-  "description": "Meeting notes with no recommendation and an unconfirmed partner become a team update: no invented numbers or names, the missing recommendation is a marker, the partner stays unconfirmed.",
+  "description": "Meeting notes with no recommendation and an unconfirmed partner become a team update: no invented numbers or names, the missing recommendation is stated plainly as an open choice (no gap marker in the update), the partner stays unconfirmed.",
   "prompt": "Turn my meeting notes in notes.md into a short update for the wider product team and save it to out/update.md. They need to know where we stand and what is needed from them.",
   "files": {
     "notes.md": "Billing sync - Tuesday\nAttendees: Lena Okafor (billing lead), Marcus Dell (support), Priya Raman (finance)\n\n- Invoice export failures: 41 in September, up from 12 in August.\n- Cause so far: the nightly export job times out when an account has more than 5,000 line items. Lena says that explains \"most\" of the failures, not all of them.\n- Two options on the table:\n  1. Split the nightly job by region. About 3 weeks of work.\n  2. Raise the timeout to 20 minutes. About 2 days of work, but Priya worries it only hides the problem.\n- Marcus: 9 customers asked for a manual export and he sent each one by hand.\n- Possible help from Norwind Software (their API team) on the export format. NOT confirmed - Lena is still waiting for a reply.\n- Nobody said which option to pick. Decision wanted by Oct 24 because quarter-end invoicing starts Oct 31.\n"
@@ -58,6 +58,11 @@
         "Grounding ledger"
       ],
       "case_sensitive": true
+    },
+    {
+      "type": "not_regex",
+      "pattern": "\\[(?:ASK AUTHOR|VERIFY|UNTESTED)\\b|(?i:\\[source:)",
+      "note": "the update is written for the wider product team to read as it stands; the missing recommendation is stated in it (see the regex check on 'no option selected') and any question for the author belongs in the reply"
     },
     {
       "type": "word_count",

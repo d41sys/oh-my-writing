@@ -3,7 +3,7 @@ name: structured-drafting
 description: Turns raw material (notes, meeting notes, source excerpts, interview transcripts, bullet ideas, or an existing rough draft) into a first draft, short update, email or article through explicit, size-scaled stages - brief, material inventory, core message, grounding order, shape, outline, block-by-block drafting - and offers a section-by-section co-authoring mode when the author wants to steer. Use when asked to "turn these notes into a draft", "turn my meeting notes into an update", "write a short email from these notes", "write a first draft from this", "outline this for me", "structure this document", "help me write this together", "draft from my transcript", "write an article from this interview", or "organize my rough ideas into an article".
 license: MIT
 metadata:
-  version: "1.2"
+  version: "1.3"
   skill-author: d41sys
 ---
 
@@ -31,7 +31,7 @@ Needed for the brief (fill from the request and material before asking anything)
 
 Ask at most three questions, fewer for short tasks, and only when the answer changes the structure (for example, who the reader is, or which of two conflicting goals wins). In non-interactive runs proceed on stated assumptions and list them in the brief (or in one line of the reply for short tasks). If the type of document is ambiguous, ask once rather than guess the form.
 
-No material at all, and no way to ask: do not draft content. Return the questions or an outline of what is needed (a skeleton with `[ASK AUTHOR: ...]` slots) and say so.
+No material at all, and no way to ask: do not draft content. Return the questions or an outline of what is needed (a skeleton with `[ASK AUTHOR: ...]` slots) and say so. That skeleton is an author-facing artifact, not a draft, so the markers stay.
 
 ## Workflow
 
@@ -66,20 +66,21 @@ A stage that adds no decision for this task is skipped and not mentioned. Never 
 6. **Choose the shape.** Pick by purpose: argument, explanation, narrative, decision, or instruction (see [shapes](references/shapes.md)). Mixed purposes get a primary shape with a labelled secondary one. Do not impose one template on every task. If the document is a repackaging of a longer source, also decide how much of it is kept (default: keep everything that serves the purpose and say what was cut).
 7. **Outline.** Use [the outline template](assets/outline-template.md). One line per block, each line a complete message, so that reading the lines alone tells the story. Give blocks unequal weight on purpose: more room for what is new or central, less for what the reader knows or can infer. Note for each block its source units and what it grounds.
 8. **Test each block and decide keep/cut/merge.** For every block ask: what does the reader lose if this is removed? If nothing, cut it or fold it into a neighbour. Check that headings alone carry the argument, and that swapping two body blocks would break something. Check coverage too: does the outline say who is affected and what could go wrong or be objected to, not only the happy path? Add such a block only when the material supports it; otherwise record it as a gap. Record the decisions where the author can see them: kept, cut (with the reason), merged, and left over. Surplus material is expected; the piece ends when its argument is complete, not when the pile is used up.
-9. **Draft block by block.** Per block: the message first (or when the shape needs a different order, such as a story that turns), then the evidence from the inventory, then a hand-off to the next block. Paraphrase, split or merge the material so the piece reads in one voice; quote only when the original wording is the point. Choose the form of each block deliberately (prose for reasoning, a list for parallel items, a table when the same fields repeat). Sentence-level craft is in [paragraphs and sentences](references/paragraph-and-sentence.md). When a block needs something the material lacks, insert `[ASK AUTHOR: ...]` or `[VERIFY: ...]` and keep going.
+9. **Draft block by block.** Per block: the message first (or when the shape needs a different order, such as a story that turns), then the evidence from the inventory, then a hand-off to the next block. Paraphrase, split or merge the material so the piece reads in one voice; quote only when the original wording is the point. Choose the form of each block deliberately (prose for reasoning, a list for parallel items, a table when the same fields repeat). Sentence-level craft is in [paragraphs and sentences](references/paragraph-and-sentence.md). When a block needs something the material lacks, state the gap in the reader's language or leave that sentence out (see [gaps in the draft](references/gaps-in-the-draft.md)), write the author's question as a marker line for the reply, and keep going. The brief, inventory source labels, outline and decisions are for the author; none of their notes go into the draft text.
 10. **Close and hand off.** Make the ending serve the reader's next need (a decision, an action, a verified result, an earned implication), not a template. Run the checks in [eval.md](eval.md). Then route: sentence-level polish to `anti-slop-editing`, voice to `author-voice`, factual and number checks to `evidence-grounded-writing`, a cold read to `independent-review`. If those skills are absent, apply the matching checks in eval.md yourself and say what was not checked.
 
 ## Rules
 
 - **Brief before prose.** Without a reader and a purpose, every structural choice is a coin flip. Exception: for a tiny message the brief is two lines of thinking, not a form.
 - **Reader path, not discovery path.** The order in which the author learned things is rarely the order the reader needs. Order by what the reader lacks. Exception: a narrative whose point is the discovery itself.
-- **No invention.** Missing example, number, quote, source, credential, or opinion becomes a marker or a question. A slot the chosen shape expects but the material cannot fill (for example the recommendation in a decision piece) also becomes a marker, never a guess. A figure you compute from the material (a difference, a ratio, "doubled", an average) is also a new claim: give the inputs as stated, and compute only when the author asked. Reason: an invented detail is a fabricated claim in the author's name. No exception.
+- **No invention.** Missing example, number, quote, source, credential, or opinion becomes a stated gap or an omission in the draft, and a question to the author. A slot the chosen shape expects but the material cannot fill (for example the recommendation in a decision piece) is handled the same way, never guessed. A figure you compute from the material (a difference, a ratio, "doubled", an average) is also a new claim: give the inputs as stated, and compute only when the author asked. Reason: an invented detail is a fabricated claim in the author's name. No exception.
+- **The draft reads as finished.** Unless the author asked for a draft to edit, the draft the reader receives (the saved file, or the text labelled as ready to use) holds no `[ASK AUTHOR]`, `[VERIFY]` or `[UNTESTED]` marker, no `[source: ...]` tag, no comment lines carrying outline or source notes, and no process narration ("as requested", "based on your notes", "I checked"). A gap is stated as a fact about the material ("The notes give no launch date.") or the sentence is left out. The author's question goes to the reply as a marker line and, when a file was saved, also to `open-questions.md` beside it. Reason: a placeholder in text sent to a reader looks unfinished, and "don't wait for me" means nobody answers before it goes out. Exception: the author asked for a draft to edit; then markers stay in place and the reply says it is a draft. The brief, decisions, outline with its grounding ledger and the no-material skeleton are author-facing and keep their markers and source labels.
 - **One block, one message.** Two points need two blocks. Exception: a short list of genuinely parallel items can share a block.
 - **Ground before use.** A concept used before it is introduced loses the reader, even if no jargon is visible. Exception: a deliberate hook that names a puzzle the piece will resolve, said to be a puzzle.
 - **Shape follows purpose, not genre label.** The word "report" or "guide" does not give an outline. Exception: a venue or house template that fixes the structure; then gather material against that template.
 - **Keep decisions visible.** Cut, merged, and left-over material is reported in a line or two. Reason: silent cuts erase things the author wanted; silent keeps bury the point.
 - **Do not shuffle the author's claims.** Restructuring may reorder and merge; it must not strengthen, weaken, or drop qualifiers, numbers, names, negations, or status (a tentative plan stays tentative, an unconfirmed partner stays unconfirmed, an attributed opinion stays attributed). Exception: the author asks for a stronger or softer claim.
-- **Contradictions stay visible.** When the material gives two values or positions for one thing, ask; when the author cannot be asked, the draft reports both with their sources and an `[ASK AUTHOR: which is right]` marker, and nothing downstream (totals, percentages, conclusions, "up from X") leans on either. Reason: picking or averaging creates a figure nobody gave. Exception: the material itself says which one supersedes, in the speaker's own words (a stated correction, "the final number is", "I misspoke"). A later restatement, a rounder figure or an answer to a clarifying question is not a correction; when in doubt keep both.
+- **Contradictions stay visible.** When the material gives two values or positions for one thing, ask; when the author cannot be asked, the draft reports both with who gave each and says plainly that the material does not settle which is right ("the interview gives about 40% in one answer and 30% in another"), nothing downstream (totals, percentages, conclusions, "up from X") leans on either, and the question goes to the reply as an `[ASK AUTHOR: which is right]` line. Reason: picking or averaging creates a figure nobody gave. Exception: the material itself says which one supersedes, in the speaker's own words (a stated correction, "the final number is", "I misspoke"). A later restatement, a rounder figure or an answer to a clarifying question is not a correction; when in doubt keep both.
 - **Bridge only real relations.** Add connective tissue only where the relationship exists in the material. If it does not, report a missing through-line instead of papering over it.
 - **Scale the process.** More stages are not more quality. If the author signals "just write it", write; list assumptions in the reply, not in the deliverable.
 - **Language.** Structure, grounding and evidence checks apply in any language. Lexical word lists and English sentence-position advice do not transfer automatically; when drafting in another language (for example Vietnamese), keep the structural stages and write sentence-level choices by that language's own norms.
@@ -89,14 +90,15 @@ A stage that adds no decision for this task is skipped and not mentioned. Never 
 Return, in this order, only the parts the task size calls for:
 
 1. **Brief**, as filled fields with assumptions marked (omit for tiny tasks beyond a one-line restatement).
-2. **Decisions**: kept / cut (reason) / merged / leftover, and the open questions the author must answer.
-3. **Outline**: one line per block.
-4. **Draft**, with `[ASK AUTHOR: ...]` and `[VERIFY: ...]` markers in place.
-5. **Short note**: what the draft depends on that was not verified, and which sibling skill to run next.
+2. **Decisions**: kept / cut (reason) / merged / leftover.
+3. **Outline**: one line per block. Brief, decisions and outline are author-facing: they may carry source labels and markers.
+4. **Draft**, free of markers and notes as the rule above says. Gaps appear as plain statements or omissions.
+5. **Questions for the author**: each `[ASK AUTHOR: ...]` and `[VERIFY: ...]` item in full, with what it blocks and what the draft says meanwhile.
+6. **Short note**: what the draft depends on that was not verified, and which sibling skill to run next.
 
-When the request names a file or place to save, that file holds the draft only: no label, brief, outline, decisions or note, and nothing added except gap markers. Scaffolding goes in the reply (for short tasks, one line of assumptions). Otherwise label the draft so it can be used as is (for example "Draft (ready to post)"); brief, decisions, outline and note are scaffolding for the author and never appear inside it. A short deliverable stays short: a three-sentence email is three sentences. When the author cannot be asked, proceed with stated assumptions and markers instead of questions.
+When the request names a file or place to save, that file holds the draft only: no label, brief, outline, decisions, note, marker or source tag. Scaffolding goes in the reply (for short tasks, one line of assumptions). When there is at least one open question, also write `open-questions.md` in the same folder, one numbered item per question with what it blocks and what the draft says instead, and repeat the same items in the reply. A deliverable with no open question needs no such file. Otherwise label the draft so it can be used as is (for example "Draft (ready to post)"); brief, decisions, outline and note are scaffolding for the author and never appear inside it. A short deliverable stays short: a three-sentence email is three sentences, and an unknown the email can ask its recipient about is asked in the email, in plain words. When the author cannot be asked, proceed with stated assumptions and stated gaps instead of questions.
 
-In co-author mode the deliverable is one section at a time, each followed by the next question, not the whole document.
+In co-author mode the deliverable is one section at a time, each followed by the next question, not the whole document. The section text is clean like any draft; its gap questions are listed under it in the reply.
 
 ## Examples
 
@@ -108,15 +110,17 @@ Outline lines that carry the story alone (a decision piece from meeting notes):
 Gap handling:
 
 - Weak: adding "a recent survey found most users prefer shorter forms".
-- Strong: `[ASK AUTHOR: one real example or number showing users abandon the long form]` and continue with the next block.
+- Weak: leaving `[ASK AUTHOR: one real example showing users abandon the long form]` inside the article that goes to readers.
+- Strong, in the draft: "The notes do not say how many users abandon the long form." (or drop the sentence), and in the reply and `open-questions.md`: `[ASK AUTHOR: one real example or number showing users abandon the long form]`. Continue with the next block.
 
 ## Reference files
 
 | File | Load when |
 |---|---|
 | [shapes.md](references/shapes.md) | Choosing a shape (stage 6), building block patterns, weighting blocks, doing the material inventory |
+| [gaps-in-the-draft.md](references/gaps-in-the-draft.md) | Stage 9, whenever the material lacks something the draft needs; wording, `open-questions.md` format |
 | [co-authoring.md](references/co-authoring.md) | The author wants to write together, the angle is open (explore mode), or the document is large |
 | [paragraph-and-sentence.md](references/paragraph-and-sentence.md) | Drafting blocks (stage 9), or fixing paragraphs that read as lists of points |
 | [brief-template.md](assets/brief-template.md) | Writing the brief (stage 2) |
-| [outline-template.md](assets/outline-template.md) | Writing the outline and ledger (stages 5-8) |
+| [outline-template.md](assets/outline-template.md) | Writing the outline and ledger (stages 5-8); author-facing |
 | [eval.md](eval.md) | Before returning any output |

@@ -86,11 +86,11 @@ A bullet shows what the candidate did and what it led to. Lines such as "Respons
 
 Role prompts: sales (quota attainment, pipeline, retention); marketing (leads, engagement, conversion); support (tickets, response time, resolution rate); operations (throughput, cost, error rate); engineering (latency, uptime, deploy frequency, coverage); project work (count, budget, on-time rate, stakeholders); administration or HR (hires, time to fill, training completion). Use these as questions to the candidate, never as values.
 
-**Finding numbers without inventing them.** A request such as "make it more impressive with numbers" is not a source of numbers. When the candidate has supplied none, do not add any: keep the bullet's true content, mark the missing figure on the line (`[ASK AUTHOR: how many tickets a week, and from what baseline?]`), and give a short list of the questions to answer. A placeholder range or a typical figure for the role is still invention.
+**Finding numbers without inventing them.** A request such as "make it more impressive with numbers" is not a source of numbers. When the candidate has supplied none, do not add any: the résumé keeps the bullet's true content, with no figure, no `[X]` slot and no marker on the line, and the reply gives a short list of the questions to answer (`[ASK AUTHOR: how many tickets a week, and from what baseline?]`; with a file written, the same lines go to `open-questions.md`). The bullet may still be sharpened with true scope or outcome words from the candidate's own material. A placeholder range or a typical figure for the role is still invention.
 
 1. Ask scale, frequency, before and after, and who benefited.
 2. If outcomes are confidential or unknown, quantify what the candidate controlled: interviews run, items processed, pages written, people trained.
-3. If a figure can be derived, show the derivation to the candidate (five client meetings a week for fifty weeks is about 250 a year) and mark it as an estimate for confirmation.
+3. If a figure can be derived, show the derivation to the candidate in the reply (five client meetings a week for fifty weeks is about 250 a year) and use it in the résumé only after the candidate confirms it; mention it as an estimate in the reply, not in the résumé.
 4. Round down. A remembered "about half" becomes "roughly 40%" only if the candidate agrees.
 5. For team results, state the candidate's share only if they confirm it.
 6. Entry-level work can still carry numbers on volume, accuracy and speed of learning.
@@ -99,7 +99,7 @@ Role prompts: sales (quota attainment, pipeline, retention); marketing (leads, e
 
 **Failure modes:** passive voice; no result; vague nouns ("stakeholders", "processes"); a stack of three claims in one bullet; trailing "demonstrating leadership" or "showcasing expertise" clauses; every bullet in the same shape; adjective chains; "leveraging" as a prefix. Fix by moving the verb to the front, splitting the bullet, or replacing the tail with the real result.
 
-**Quantified-bullet note (give to the user when numbers were added):** the figure, where it came from, whether it is exact or estimated, and what is still unknown.
+**Quantified-bullet note (give to the user in the reply when numbers were added):** the figure, where it came from, whether it is exact or estimated, and what is still unknown. This note, the change report and the requirement map are for the candidate; none of them goes into the résumé file.
 
 Examples (invented; replace with the candidate's facts):
 
@@ -108,7 +108,7 @@ Examples (invented; replace with the candidate's facts):
 
 ## 5. Tailoring to a posting
 
-1. **Prerequisites.** A base résumé is required. A work-history file (the evidence inventory) is strongly preferred. If it is missing, list every assumption you make about company, scope and tools, and ask the candidate to confirm before treating the draft as final.
+1. **Prerequisites.** A base résumé is required. A work-history file (the evidence inventory) is strongly preferred. If it is missing, list every assumption you make about company, scope and tools in the reply and ask the candidate to confirm before treating the résumé as final; the résumé itself carries no assumption notes.
 2. **Parse the posting** into: must-have requirements (education, years, licenses, core skills), preferred items, day-to-day responsibilities, tools and domain terms, level (individual contributor, manager, executive), and stated team context. Read "required", "must" and a Requirements heading as must-have; "preferred", "ideally", "a plus" as preferred. A term repeated several times often carries more weight; treat that as a hint, not a rule.
 3. **Map each requirement** to direct, adjacent or transferable evidence, or to a gap. Rank gaps as critical (possible deal-breaker), major (address in the letter), minor (let related strength carry it).
 4. **Dealbreakers** to raise before any writing: a required license or clearance the candidate lacks, a required degree not held, a location or travel requirement the candidate cannot meet, or experience far below the stated level. Slightly fewer years, a missing preferred degree, or a learnable tool are usually not deal-breakers. The candidate decides. A required or preferred tool, language or credential that is absent from the candidate's material stays out of Skills, summary and bullets, including softened as "familiar with", "exposure to" or "working knowledge", unless the candidate confirms real use at that level. Put the nearest true evidence in its own words (a related tool, a course, a project) and list the gap in the note; one plain line on learning is allowed only if the candidate says it is true.
@@ -126,7 +126,7 @@ Examples (invented; replace with the candidate's facts):
 10. **Preserve the candidate's structure.** Use the headings the original résumé uses. Add sections only when agreed.
 11. **Version discipline.** One master; copy for each application; name versions by role and organization and date; keep a tracker (organization, role, version, date, channel, status); archive rather than delete. Update the master after promotions, finished projects, new credentials, and on a regular refresh.
 12. **Pre-submit read.** Summary names the role or function; top skills match top requirements; the first bullet of each role answers a key requirement; every claim is true; titles and dates match the master.
-13. **Change report.** Show summary before and after, skill order changes, bullets moved or rewritten (before and after), terms added and where, and anything dropped.
+13. **Change report.** Show summary before and after, skill order changes, bullets moved or rewritten (before and after), terms added and where, and anything dropped. It goes in the reply; the tailored résumé file holds the résumé only, with no "tailored for" line or comment.
 
 Volume note: a few deeply tailored applications to roles that match well usually serve the candidate better than many identical sends. Offer this as advice, not as a quota.
 

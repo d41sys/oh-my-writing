@@ -12,14 +12,14 @@ Answer each check pass or fail. Fix every failure before returning.
 ## Grounding and honesty
 
 5. Is every anecdote, client, result, quote, metric and credential in the text traceable to the author's supplied material?
-6. Are all gaps marked with `[ASK AUTHOR: ...]` (only the author knows), `[VERIFY: ...]` (an outside fact or source) or `[UNTESTED]` (a command or snippet nobody ran) rather than filled with a plausible detail, and are no other marker styles used?
-7. Is every real-looking episode, customer, quote or "imagine a team..." scene either from the author's material or absent? Where the author asked for a story and gave none, is there an `[ASK AUTHOR: a real moment when ...]` in the post at the story slot, and is any hypothetical one the author asked for labelled inside the post?
+6. Is every gap handled by stating the claim at the strength the facts support, stating plainly what the material does not give, or leaving the sentence out, rather than filled with a plausible detail, and is each question for the author (`[ASK AUTHOR: ...]`, `[VERIFY: ...]`, `[UNTESTED]`) in the reply and not in the post?
+7. Is every real-looking episode, customer, quote or "imagine a team..." scene either from the author's material or absent? Where the author asked for a story and gave none, does the post have no invented scene and no blank at the story slot, with the question for a real moment in the reply, and is any hypothetical one the author asked for labelled inside the post?
 8. Do numbers carry their conditions (what was measured, against what, over what period), and are none rounded upward or stripped of a qualifier?
 9. Are limitations, trade-offs or failed attempts that matter to the reader still present?
 10. Is any fear, urgency or vulnerability in the text real and stated plainly, not staged?
-11. Is every link, handle, call to action, offer, deadline, discount and testimonial from the author's material or request, or else marked or left out?
-12. Are availability, status and dates stated as the author gave them (a beta not described as shipped), or marked `[VERIFY: availability]`?
-13. If a "relatable story" was requested and none was supplied, does the draft avoid writing one, build relatability from real material, and leave one marker where the author's real moment would go?
+11. Is every link, handle, call to action, offer, deadline, discount and testimonial from the author's material or request, or else left out with the question in the reply?
+12. Are availability, status and dates stated as the author gave them (a beta not described as shipped), or stated at the weaker strength with `[VERIFY: availability]` in the reply?
+13. If a "relatable story" was requested and none was supplied, does the draft avoid writing one, build relatability from real material, and ask in the reply for the author's real moment, without a marker in the post?
 
 ## Opening and title
 
@@ -45,16 +45,21 @@ Answer each check pass or fail. Fix every failure before returning.
 
 ## Channel fit
 
-27. Does the opening fit the display limit of the target channel (verified, or marked `[VERIFY: limit]`)?
+27. Does the opening fit the display limit of the target channel (verified, or listed as `[VERIFY: limit]` in the reply)?
 28. Does the format follow the channel's conventions (length, links, tags, paragraphs) without any claim about boosting reach?
 29. For long web posts, is the plain answer to the likely query near the top, with descriptive headings and no keyword repetition?
 30. For repurposed versions, does each keep the core claim, numbers, qualifiers and the author's voice, restructured and not merely truncated, and does each stand alone with the canonical link included only if the author supplied one?
 31. For a repackaged source, is the share kept and what was dropped stated, and does the result read as an edited article rather than a shrunken summary?
-32. For an email series or newsletter, does each email have one job, one action, a true subject line, no invented proof or urgency, and is the compliance note `[VERIFY: applicable email rules]` present where relevant?
+32. For an email series or newsletter, does each email have one job, one action, a true subject line, no invented proof or urgency, and is `[VERIFY: applicable email rules]` in the reply where relevant, not in the email text?
 33. For a non-English post, is it written in the target language's own rhythm rather than translated sentence by sentence, with numbers, units, terms and code unchanged?
 
 ## Final read
 
 34. Read aloud, does it sound like the author talking to the reader, with no sentence you would not say?
 35. Was `anti-slop-editing` run as the last pass if available, or its checks applied, and was the author's voice sample respected over any generic rule?
-36. Does the reply say the post is a draft, without claiming it was published, scheduled or sent?
+36. Does the reply say the post is a draft for the author to publish, without claiming it was published, scheduled or sent?
+
+## Reader-ready
+
+37. Is the post text free of `[ASK AUTHOR]`, `[VERIFY]` and `[UNTESTED]` markers, bracket placeholders ("[add a number here]", "[link]"), `[source: ...]` tags and process notes ("as requested", "I ran a scan", "per your notes"), unless the author asked for a draft to edit? Are gaps stated plainly or the sentence omitted, and are the questions, assumptions, candidate openings and left-out items in the reply (plus `open-questions.md` beside a saved file when there are open questions)?
+38. If the author asked for the post to be saved to a file, does the file hold the post alone (no brief, change note or core-claim line), and does the post still make its point without the missing proof?

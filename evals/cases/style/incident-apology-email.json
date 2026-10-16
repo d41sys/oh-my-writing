@@ -1,0 +1,125 @@
+{
+  "id": "style/incident-apology-email",
+  "skill": "structured-drafting",
+  "description": "Customer email after an outage from an incident note: it says what failed, for how long, why, what the customer must do and what the credit is, takes responsibility in one plain sentence, makes no promise the note does not support, and avoids apology boilerplate, hedging fog and a corporate closer.",
+  "prompt": "Write the incident email to our customers from incident.md. Plain and accountable. Save it to out/email.md.",
+  "files": {
+    "incident.md": "We are Brightline, an address-validation API. Sender: Amira Haddad, head of customer success. This goes to the 1,240 accounts that had at least one failed request.\n\nFacts\n- 8 October, 14:05 to 16:40 UTC (2 hours 35 minutes): requests to api.brightline.example failed with connection errors.\n- Cause: the TLS certificate on our API gateway expired. We had no alert set for its expiry. It was renewed at 16:40 and we confirmed normal traffic at 16:55.\n- No data was lost or exposed. Requests that failed during the window were not processed and were not queued, so customers need to send them again.\n- Credit: 5% of the October fee, applied automatically to the November invoice. Customers do not need to ask.\n- What changed: expiry alerts at 30 days and 7 days before any certificate expires (set up on 9 October); renewals now have a named owner and a backup.\n- Contact: support@brightline.example, or Amira directly at amira.haddad@brightline.example.\n\nDo not promise it will never happen again.\n"
+  },
+  "output": "out/email.md",
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "urls",
+        "citations"
+      ],
+      "allow": [
+        "30",
+        "7"
+      ],
+      "note": "'30 and 7 days' is the same fact as '30 days and 7 days'"
+    },
+    {
+      "type": "preserves",
+      "source": "incident.md",
+      "categories": [
+        "numbers"
+      ],
+      "allow_lost": [
+        "16:55",
+        "9",
+        "1240",
+        "30 day",
+        "7 day"
+      ],
+      "note": "the account count and the confirmation time may go; '30 and 7 days' may drop one unit"
+    },
+    {
+      "type": "regex",
+      "pattern": "14:05",
+      "note": "start time"
+    },
+    {
+      "type": "regex",
+      "pattern": "16:40",
+      "note": "end time"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)certificate",
+      "note": "cause named"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)(?:no|not|n't|never)[^.\\n]{0,40}(?:alert|monitor)|(?:alert|monitor)[^.\\n]{0,40}(?:not|n't|no|missing)",
+      "note": "the missing alert is admitted"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)(?:no|not|n't|nothing)[^.\\n]{0,40}(?:lost|exposed|compromised)|(?:lost|exposed|compromised)[^.\\n]{0,20}(?:no|not)",
+      "note": "no data lost or exposed"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)(?:send|resend|resent|retry|re-?submit|re-?run|try)[^.\\n]{0,60}(?:again|requests?)|(?:requests?)[^.\\n]{0,80}(?:again|resen[dt]|retry|re-?submit)",
+      "note": "the customer action"
+    },
+    {
+      "type": "regex",
+      "pattern": "5\\s?%",
+      "note": "credit"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)automatic",
+      "note": "no need to ask"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\bnever (?:happen|occur|again)\\b|\\bwill not (?:happen|occur) again\\b|\\bwon't (?:happen|occur) again\\b|\\bguarantee[sd]?\\b|\\bensure that (?:this|it) (?:will )?(?:never|not)\\b",
+      "note": "no promise the note rules out"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(?:any inconvenience|valued customers?|sincerely apologi[sz]e|deeply regret|cannot overstate|we take (?:this|security|reliability)[^.\\n]{0,30}seriously)\\b",
+      "note": "no apology boilerplate"
+    },
+    {
+      "type": "word_count",
+      "min": 120,
+      "max": 280
+    },
+    {
+      "type": "slop_density",
+      "max": 7
+    },
+    {
+      "type": "rhythm",
+      "min_cv": 0.35
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)hope (?:this|you)[^.\\n]{0,40}(?:finds you|well)|don'?t hesitate|do not hesitate|reach out|any inconvenience|valued customer|sincerely apologi[sz]e|look forward to hearing|(?:thank you|thanks) (?:so much )?for your (?:patience|understanding|time and consideration|continued)|first and foremost|i wanted to (?:reach out|provide)|as a (?:result|reminder),? ",
+      "note": "no stock email opener or closer"
+    },
+    {
+      "type": "markers",
+      "min": 0,
+      "max": 0,
+      "target": "output",
+      "note": "The deliverable goes straight to its reader and the notes hold every fact the text needs, so no gap marker belongs in the saved file; a question for the author goes in the reply."
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\[(?:insert|your|name|date|company|tbd|add|link|recipient|sender)\\b[^\\]\\n]*\\]|\\bTBD\\b|\\blorem ipsum\\b",
+      "note": "no fill-in placeholder in text for a reader"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?im)^\\s*(?:note to (?:self|author|you)|here(?:'s| is) (?:the|your|a) (?:draft|email|memo|post|letter|article|update|revised)|draft (?:email|memo|post|letter|article|update)\\b|subject line options)",
+      "note": "the file is the deliverable, not a reply with a lead-in or notes about it"
+    }
+  ]
+}

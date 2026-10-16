@@ -38,11 +38,11 @@ For each section, run this loop:
    - `Remove 3 (duplicates 1)`, with a reason, so criteria become shared
    - `Combine 5 and 6`
 4. **Gap check.** One question: given the kept items, is any key requirement, caveat, or reader question missing? Add it before drafting.
-5. **Draft.** Write the section from the kept items only, replacing the placeholder in place. Use [paragraph-and-sentence.md](paragraph-and-sentence.md) for craft. Mark unsupported specifics `[ASK AUTHOR: ...]` or `[VERIFY: ...]`.
+5. **Draft.** Write the section from the kept items only, replacing the placeholder in place. Use [paragraph-and-sentence.md](paragraph-and-sentence.md) for craft. Where the kept items leave a specific unsupported, state the gap plainly or omit the sentence ([gaps in the draft](gaps-in-the-draft.md)); the section text carries no `[ASK AUTHOR]` or `[VERIFY]` marker and no source tag. List the marker lines for those gaps under the section, in the reply.
 6. **Refine by local edits.** The author reacts ("tighten the second paragraph", "the example is wrong"). Change only what was named, leave the rest untouched, and show what changed. Do not regenerate the section after each comment. If the author's comments are broad ("not quite right"), ask what specifically; do not guess a rewrite.
 7. **Move on.** After about three rounds with no substantial change, ask what could be removed without losing anything important, confirm the section is done, and go to the next.
 
-Keep the brainstorm lists and curation notes in the conversation or a scratch file, not in the document. The document holds only drafted text.
+Keep the brainstorm lists, curation notes and gap markers in the conversation or a scratch file, not in the document. The document holds only drafted text, so it can be handed to a reader at any point. Exception: the author asks for a draft with open markers.
 
 **Near the end.** When most sections are done, say you will read the whole document again. Check flow between sections, repeated or contradictory points, terminology that drifted, vague filler, and sentences that carry nothing. Give that feedback on the whole before making further edits.
 
@@ -94,7 +94,7 @@ An optional slower loop for essays and argued posts where the author wants to co
 Keep each reply short and ready to answer:
 
 - State where you are in one line ("Section 2 of 5: options; curating").
-- Present the numbered list or the drafted text.
+- Present the numbered list or the drafted text. After a drafted section, list its open `[ASK AUTHOR: ...]` and `[VERIFY: ...]` lines.
 - End with the single next question or the exact operation you expect ("Keep / remove / combine?").
 
 If the host has no separate reader or sub-session available, say so at the fresh-reader step and fall back to the weaker self-read.

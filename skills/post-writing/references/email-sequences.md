@@ -2,11 +2,11 @@ Load when: writing a welcome, onboarding, nurture, re-engagement or launch email
 
 # Email sequences and team newsletters
 
-One email is a post with a subject line. A sequence is a set of posts with an order, a trigger and an exit. Everything in the main skill still applies: nothing in the emails may be invented, and the call to action, link, offer and deadline come from the author.
+One email is a post with a subject line. A sequence is a set of posts with an order, a trigger and an exit. Everything in the main skill still applies: nothing in the emails may be invented, the call to action, link, offer and deadline come from the author, and the email text carries no marker, bracket placeholder or note to the author (see "The post reads as finished" in the main skill).
 
 ## Intake before drafting
 
-Fix these six items from the author's material; ask only for the ones the draft cannot do without, and mark the rest `[ASK AUTHOR: ...]`:
+Fix these six items from the author's material; ask only for the ones the draft cannot do without, and put the rest in the reply as `[ASK AUTHOR: ...]` lines, with the draft written around them:
 
 1. What event puts a reader into the sequence (signup, first use, inactivity, purchase)?
 2. What single change in the reader's behavior marks success (first run, first payment, a reply, a cancellation avoided)?
@@ -15,7 +15,7 @@ Fix these six items from the author's material; ask only for the ones the draft 
 5. What are the real assets: a lead resource, case studies, a trial, a price, a deadline? Only these may appear.
 6. What does the reader call the problem, in words the author has seen in replies, reviews or support threads?
 
-Write a sequence card first: name, trigger, goal, number of emails, spacing, exit conditions (purchase, opt-out, reply). Then write the emails.
+Write a sequence card first: name, trigger, goal, number of emails, spacing, exit conditions (purchase, opt-out, reply). The card is an author-facing planning note, kept apart from the email text. Then write the emails.
 
 ## Four architectures
 
@@ -40,7 +40,7 @@ Each email must be worth reading even if the reader never buys. If an email has 
 
 ## Truth rules for sequences
 
-- **No invented proof.** Testimonials, case studies, customer counts, usage numbers and "teams like yours" lines come from supplied material. Otherwise place `[ASK AUTHOR: real case study: who, what changed, which number, permission to name]`.
+- **No invented proof.** Testimonials, case studies, customer counts, usage numbers and "teams like yours" lines come from supplied material. Without one, the email makes its point from the product's real facts, or leaves the slot out; the reply asks `[ASK AUTHOR: real case study: who, what changed, which number, permission to name]`.
 - **Urgency only if real.** A deadline, a limited seat count or a price change is stated only if the author gave it, with its exact date. Never add a countdown to make an email feel lively.
 - **Offers and guarantees as given.** Do not invent a trial length, a discount, a refund promise or a "no credit card" claim.
 - **Conversion email.** The last email of a welcome or nurture series may make a plain offer: recap what the reader already got, state the offer and one action, and name a real risk or limit. No pressure paragraph.
@@ -53,33 +53,33 @@ Counts and spacing (for example three to seven emails for a welcome series, one 
 
 ## Consent and compliance
 
-Marketing email and texts have legal requirements on consent, sender identity, unsubscribe and quiet hours that differ by country and change. Mark `[VERIFY: applicable email rules]` and leave specifics to the sending platform and the author's counsel. Always keep a visible, working unsubscribe route, and honor a stop request at once. Never open cold contact on SMS or WhatsApp.
+Marketing email and texts have legal requirements on consent, sender identity, unsubscribe and quiet hours that differ by country and change. Leave specifics to the sending platform and the author's counsel, and list `[VERIFY: applicable email rules]` in the reply. Always keep a visible, working unsubscribe route, and honor a stop request at once. Never open cold contact on SMS or WhatsApp.
 
 ## Launch sequence: one angle, every asset
 
 When emails belong to a launch, lock the angle first and keep it fixed across assets.
 
-1. Write the single core benefit in one sentence with no feature list, and one line: "[Product] helps [audience] [achieve outcome] by [mechanism]." If any part is missing, `[ASK AUTHOR: ...]`.
+1. Write the single core benefit in one sentence with no feature list, and one line in the shape "the product helps this audience reach this outcome by this mechanism", each part taken from the material. If a part is missing, drop that clause from the line and ask in the reply: `[ASK AUTHOR: ...]`.
 2. Draft in dependency order: the page or announcement first, then the emails, then the social posts. Each asset has one role.
 3. Consistency review: the subject matches the body; the email's promise equals the page's promise; every number is the same everywhere; each piece has one action; each channel reads like the same author; no sentence would work unchanged for a competitor.
-4. Publish only what is live. If the feature, price or page is not available yet, say so as the author states it, or `[VERIFY: availability]`.
-5. Give final drafts, not menus of options, unless the author asked for options. List what is still needed (assets, links, approvals) at the end.
+4. Publish only what is live. If the feature, price or page is not available yet, say so as the author states it; when status is unclear, state the weaker one and list `[VERIFY: availability]` in the reply.
+5. Give final drafts, not menus of options, unless the author asked for options. List what is still needed (assets, links, approvals) in the reply.
 
 ## Internal team newsletter
 
 - Write as an insider, in "we", with short items of one or two sentences each and a link for every item that has a source.
 - Draw items only from the documents, threads and announcements the author supplied. Rank by what the author says mattered, not by your guess. Never invent a decision, a date or a quote.
-- Lead with the few things that change what readers do this week; put the rest in a labelled "also" section. Missing links are `[ASK AUTHOR: link]`.
+- Lead with the few things that change what readers do this week; put the rest in a labelled "also" section. An item whose link was not supplied goes in without a link; ask in the reply: `[ASK AUTHOR: link]`.
 
 ## A single text message
 
 - Use email instead if it can wait a day.
 - Start with the sender's name, since the recipient sees no sender line. One reason to read in the first words, one action, one link, and the opt-out wording the sending platform requires.
-- A standard single segment is about 160 characters, and an emoji or a curly quote can drop it to about 70 per segment; count the final text and recount after edits. `[VERIFY: carrier rules]`.
+- A standard single segment is about 160 characters, and an emoji or a curly quote can drop it to about 70 per segment; count the final text and recount after edits. List `[VERIFY: carrier rules]` in the reply.
 - Write like a person: no subject line, no ALL CAPS except codes, no faked closeness.
 
 ## Deliverable
 
-1. The sequence card (trigger, goal, length, spacing, exits).
-2. One block per email: number and job, send timing, subject, preview text, body, action label and destination.
-3. Open items: every `[ASK AUTHOR: ...]`, every `[VERIFY: ...]`, and anything that still needs the author's approval.
+1. The sequence card (trigger, goal, length, spacing, exits): author-facing, not email text.
+2. One block per email: number and job, send timing, subject, preview text, body, action label and destination. Subject, preview text and body are reader text, free of markers and notes; the labels around them are the author's production notes.
+3. Open questions, in the reply (and `open-questions.md` when the sequence is saved to files): every `[ASK AUTHOR: ...]`, every `[VERIFY: ...]`, and anything that still needs the author's approval, each with what the email says meanwhile.

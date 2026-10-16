@@ -31,7 +31,7 @@ The user may authorize a change to any of these (a correction, a new figure, an 
 Compare the final text against the source in both directions.
 
 1. Lost: list every meaningful clause, number, name, qualifier and structural element in the source that is missing from the final. Each must be either (a) a justified finding you removed on purpose (empty framing, residue, an echo summary) or (b) a transformation the user asked for. Anything else is a loss: restore it.
-2. Added: list every statement in the final that is not in the source. A new fact, mechanism, reaction, experience, stake or confidence is an invention: remove it, or replace it with `[ASK AUTHOR: ...]` or `[VERIFY: ...]`. Re-orderings and merges are fine only if no relation (order, cause, time, ranking, simultaneity) changed.
+2. Added: list every statement in the final that is not in the source. A new fact, mechanism, reaction, experience, stake or confidence is an invention: remove it and restore the source span or cut it. A question about the missing fact goes to the author in the reply as `[ASK AUTHOR: ...]` or `[VERIFY: ...]`, never into the edited text. Also list anything in the final that is narration about the edit (a note to the author, a `[source: ...]` tag, "as requested"): it is not part of the text and comes out. Re-orderings and merges are fine only if no relation (order, cause, time, ranking, simultaneity) changed.
 3. Shifted: look for statements that kept the same words but changed relation, such as two things that happened at the same time now reading as cause and effect, or a ranking lost after a list was restructured.
 
 Hardest-hit edits to re-read first: merged or split sentences, triads and lists rewritten as prose or the reverse, bold-label bullets folded into text, removed hedges, and anything that replaced a vague phrase with a specific one.
@@ -48,7 +48,7 @@ python <skill-dir>/scripts/fact_diff.py --ignore names before.md after.md   # ca
 
 Exit 0 means nothing mechanical was lost or added; exit 1 means review the listed items; exit 2 means an input problem.
 
-What it tracks: numbers with units and percent (comma separators and spelled numbers two to twelve normalize), negations, certainty and scope words, capitalized names and acronyms, URLs, inline code and code blocks, quoted strings, and citation markers.
+What it tracks: numbers with units and percent (comma separators and spelled numbers two to twelve normalize), negations, certainty and scope words, capitalized names and acronyms, URLs, inline code and code blocks, quoted strings, and citation markers. It also counts gap markers (`[ASK AUTHOR ...]`, `[VERIFY ...]` and similar) left in the edited text; the edited text should have none unless the author asked for a draft to edit.
 
 What it cannot do:
 - It does not know meaning. A clean run is "no mechanical preservation errors found", never "meaning verified".
@@ -63,7 +63,7 @@ If the script is not available, do the two-way check by hand and label the repor
 - An editing pass is a stage that changes the returned text. Audits, re-reads, scans and preservation checks are not passes. A no-op uses 0 passes.
 - The default ceiling is two passes in total: the first edit, and at most one corrective pass that fixes a preservation failure or a surviving high-priority pattern. A user may set a lower or higher limit; honor it.
 - Stop earlier when no justified in-scope edit remains. Stop at the ceiling even if candidates remain, and report them.
-- On a preservation failure: restore the exact source wording for the failed span first (smallest repair). If the restored span still carries a pattern, leave it and report it. If a second check still fails, stop, return the safest version, and list the unresolved items for the author as `[ASK AUTHOR: ...]` lines.
+- On a preservation failure: restore the exact source wording for the failed span first (smallest repair). If the restored span still carries a pattern, leave it and report it. If a second check still fails, stop, return the safest version, and list the unresolved items for the author as `[ASK AUTHOR: ...]` lines in the reply (not in the returned text).
 - Do not use a second pass to polish. Passes exist to repair, not to improve.
 
 ## Residuals and what to report

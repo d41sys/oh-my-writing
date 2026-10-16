@@ -12,7 +12,9 @@
     { "type": "not_contains", "values": ["always", "proves", "proven", "studies show"] },
     { "type": "preserves", "source": "draft.md", "categories": ["numbers"] },
     { "type": "no_added_facts", "categories": ["citations", "urls", "names"] },
-    { "type": "markers", "min": 1 },
+    { "type": "markers", "min": 1, "target": "both", "note": "the paragraph has no outside source for the 'studies show' claim; the author needs to be told in the reply, so a gap marker or open question is expected somewhere in the reply or output" },
+    { "type": "not_regex", "pattern": "\\[(?:ASK AUTHOR|VERIFY|UNTESTED)\\b", "target": "output", "note": "the paragraph goes to the school board next week, so the saved text must not carry a placeholder; the gap is stated plainly or the claim is dropped" },
+    { "type": "not_regex", "pattern": "(?i)\\b(?:studies|research|reviews)\\s+(?:has\\s+|have\\s+)?(?:shows?|suggests?|indicates?|finds?|found|confirms?|demonstrates?)\\b", "target": "output", "note": "notes.md says no outside studies or reports are on file, so the board paragraph must not fill the gap with an invented outside finding" },
     { "type": "contains_any", "values": ["associated with", "higher among", "than students who did not", "than those who did not", "scored higher", "correlat"] },
     { "type": "contains_any", "values": ["voluntar", "chose", "self-select", "prior grade", "prior-grade", "before the spring"] },
     { "type": "similarity", "source": "draft.md", "min": 0.35 }

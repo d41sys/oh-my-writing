@@ -2,7 +2,7 @@ Load when: fitting a post to a specific channel, checking display limits and con
 
 # Platform formats
 
-**Verify current limits.** Everything in this file is a snapshot of common practice from 2026-10. Character limits, truncation points, image sizes and feature availability change without notice and differ by account type and region. Before depending on a number, check the platform's own help page or the editor itself, or mark it `[VERIFY: limit]` in the draft.
+**Verify current limits.** Everything in this file is a snapshot of common practice from 2026-10. Character limits, truncation points, image sizes and feature availability change without notice and differ by account type and region. Before depending on a number, check the platform's own help page or the editor itself, or list it in the reply as `[VERIFY: limit]`; never leave that marker in the post.
 
 **No distribution claims.** Third-party claims about what a platform's ranking favours (link placement, hashtag counts, posting intervals, reply timing, format weight) are unverified and change often. This file does not use them. Write for a human reader, fit the display limit, and follow the platform's stated rules. If the author asks "what does the algorithm reward", say the guidance is not verifiable and answer with reader-facing craft.
 
@@ -72,7 +72,7 @@ Pick by the job of the content. Counts are typical, not rules; a good piece uses
 - The count on the cover must match the slides. Do not pad.
 - Numbers, screenshots and results must be the author's own and real.
 - Keep text legible at thumbnail size and limit text per slide to what one idea needs.
-- Where the author must supply an image, write `[ASK AUTHOR: image: what it shows]`; do not invent screenshots or data.
+- Where the author must supply an image, do not invent screenshots or data. Write the post so it works without the image, or refer to it only if the author said it exists, and ask in the reply: `[ASK AUTHOR: image: what it shows]`.
 
 ## Forums and communities (Reddit, Hacker News, Stack-style communities, Discord)
 
@@ -88,7 +88,7 @@ Pick by the job of the content. Counts are typical, not rules; a good piece uses
 - **Craft:** see the newsletter section in [post types](post-types.md) and, for series and team newsletters, [email sequences](email-sequences.md). The subject line must work if it is the only thing the reader sees and must be true. The first screen carries substance. Single column, short paragraphs, descriptive anchor text, one primary action, a human sign-off.
 - **Product update email:** what is new in plain words, why it matters as an outcome, how to use it with a direct link.
 - **Roundup:** curated links with the author's commentary on why each matters; a list of headlines alone adds nothing.
-- **Legal and deliverability:** unsubscribe route, sender identity and consent rules vary by region. Mark `[VERIFY: applicable email rules]` and leave specifics to the sending platform.
+- **Legal and deliverability:** unsubscribe route, sender identity and consent rules vary by region. Leave specifics to the sending platform and list `[VERIFY: applicable email rules]` in the reply.
 
 ## Blog and long-form article
 
@@ -111,7 +111,7 @@ Pick by the job of the content. Counts are typical, not rules; a good piece uses
 
 - **Format facts (verify):** visual-first notes; a short title (commonly under about 20 characters shows well), images with text, tags.
 - **Craft:** practical value, authentic experience and strong images. Three common types: a recommendation with a real result, a how-to, and an experience reflection. A first-person opening with a specific detail; short paragraphs; emoji as occasional visual anchors, not decoration on every line; bold labels for scannable points; a genuine limitation named; an actionable takeaway; tags.
-- **Image guidance:** where the author must supply the cover or content images (a labelled result screenshot, a before and after), write `[ASK AUTHOR: 配图: what it shows]`.
+- **Image guidance:** where the author must supply the cover or content images (a labelled result screenshot, a before and after), the post text works without them and the reply asks: `[ASK AUTHOR: 配图: what it shows]`.
 - **Avoid:** academic openers, ad-copy tone, praise with no reason, titles the note does not deliver, forced slang, invented usage durations. Commands and settings must stay exact.
 
 ## Choosing channels (planning note)

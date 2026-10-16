@@ -7,7 +7,7 @@ To draft or check the point-by-point response letter or rebuttal itself, use `in
 Before editing a section, list every reviewer comment that touches it: comment → requested item → where the manuscript answers it (sentence, table, figure) → status.
 - **done**: the text or table exists; check that it says what the letter claims.
 - **not run**: the analysis was not performed. Write one plain sentence in Limitations naming it as future work. Do not say it was "requested" (process leakage), and do not imply it was done.
-- **needs author**: the answer needs a number or decision only the author has. Mark `[ASK AUTHOR]`; never fill it.
+- **needs author**: the answer needs a number or decision only the author has. Leave it out of the manuscript text, list it in the hand-off as `[ASK AUTHOR: ...]`, and never fill it.
 Every requested item ends in one of these three states before hand-off.
 
 ## 2. Provenance order for facts

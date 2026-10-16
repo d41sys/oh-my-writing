@@ -155,7 +155,7 @@ For health, legal, financial, safety or security statements:
 
 - Report what the supplied source says and cite it; do not add dosage, legal conclusions, tax or investment guidance, or safety assurances from memory.
 - Do not turn group-level findings into advice for an individual ("the cohort showed..." is not "you should...").
-- Mark the statement `[VERIFY: qualified source for <statement>]` when the author wants to publish something that could change someone's health, rights or money.
+- Log `[VERIFY: qualified source for <statement>]` in the ledger and reply when the author wants to publish something that could change someone's health, rights or money; in the reader's text the statement stays attributed to the supplied source and carries no marker.
 - Keep jurisdiction and date: laws, guidelines and prices differ by place and expire.
 - Required disclaimers stay as the author wrote them.
 
@@ -165,4 +165,4 @@ For health, legal, financial, safety or security statements:
 2. Put scope words in: how many, which condition, which period.
 3. Replace the verb with the one that fits the type (section 2).
 4. Add the one limit the reader needs, beside the claim.
-5. If the result still reads too weak to publish, the answer is more evidence, not stronger words: list the missing evidence as `[ASK AUTHOR: ...]`.
+5. If the result still reads too weak to publish, the answer is more evidence, not stronger words: say in the text what the evidence does not show, and list the missing evidence as `[ASK AUTHOR: ...]` in the reply.

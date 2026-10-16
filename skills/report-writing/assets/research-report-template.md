@@ -1,7 +1,6 @@
 # <Title: the finding or the question answered>
 
-<!-- Draft banner: delete when no marker below is unresolved. -->
-**Draft: unresolved items are marked `[ASK AUTHOR: ...]` or `[VERIFY: ...]`.**
+<!-- Template note, delete before sending: a gap in the sources is stated plainly in the report ("The notes give no figure for the downside case.") or the sentence is omitted. Questions for the author go in the reply and open-questions.md, not here. Add a draft banner with markers only if the author asked for a draft to edit. -->
 
 <Author or team> | <YYYY-MM-DD> | Reader: <who> | Data as of: <date>
 

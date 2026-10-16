@@ -8,7 +8,7 @@ A citation is a promise: "the support for this sentence is here, and I looked." 
 
 1. **Cite what you read.** Only cite a source that was opened and read at the relevant passage. A title, an abstract, a search snippet or a model's memory is a lead to follow, not evidence.
 2. **The citation supports this sentence.** Check the exact claim against the exact passage (page, section, table). A real paper cited for a claim it never makes is a misattribution, as bad as a fake paper. Check the setup too: does the cited experiment actually address what the sentence says, or only mention the topic?
-3. **Never write a reference from memory.** Do not produce authors, titles, venues, years, volumes, DOIs, arXiv numbers or URLs that were not in the supplied material or checked in a real lookup. When a source is needed and not available, write `[VERIFY: find a source showing <what it must show>]` or, if the author probably knows it, `[ASK AUTHOR: source for <claim>]`. Do not substitute a similar-looking real source for one you cannot confirm.
+3. **Never write a reference from memory.** Do not produce authors, titles, venues, years, volumes, DOIs, arXiv numbers or URLs that were not in the supplied material or checked in a real lookup. When a source is needed and not available, the text states the gap plainly ("The material gives no source for this.") or drops the sentence, and the author-facing notes carry `[VERIFY: find a source showing <what it must show>]` or, if the author probably knows it, `[ASK AUTHOR: source for <claim>]`. Do not substitute a similar-looking real source for one you cannot confirm.
 4. **Common fabrication patterns to look for.** Real author names attached to an invented title; plausible title with wrong venue or year; correct paper with wrong identifier; identifier that is well-formed but resolves to a different paper; real topic with a nonexistent identifier; preprint and published version silently merged into one entry with a mixed title; missing or placeholder author lists; a quote or number that appears nowhere in the source. The harmful errors look plausible: a real paper cited for something it does not establish is harder to spot than an obviously fake one.
 5. **Secondary citation is marked.** When you only saw a claim reported inside another document, cite that document and say so ("reported in X"; "as cited in X"). Do not present it as your own reading of the original. Prefer to find and read the original.
 6. **Prefer the original and the final version.** Cite the study that produced the result, not a review of it, unless the review is itself the support. Label preprints; if a published version exists, check that the claim still holds and cite that. Check for corrections or retractions on key sources.
@@ -42,7 +42,7 @@ Resolve each in this order:
 
 1. **Name it.** Who, in what, when: "A 2021 randomized trial in 312 adults (Rao et al.) found...". Use only details that are in the source.
 2. **Narrow it.** If you can only support part, claim the part: "One of the interview participants said...".
-3. **Mark it.** If the author knows the source exists but has not supplied it: `[ASK AUTHOR: which study?]`.
+3. **Ask it.** If the author knows the source exists but has not supplied it: leave the sentence out of the reader's text (or say plainly that no source is given) and put `[ASK AUTHOR: which study?]` in the reply and `open-questions.md`.
 4. **Cut it.** If neither the author nor the material can name a source, remove the claim or convert it into the author's own opinion with first-person ownership ("In my experience..." only if the author said so).
 5. **Keep it** when the plural refers to a list that follows immediately ("Three audits found... [1][2][3]") or when the sentence is a plainly marked summary of a cited set.
 
@@ -54,7 +54,7 @@ Anonymous validation ("customers love it", "teams report big savings") needs the
 - One claim, one or two best sources. Use more only when each adds something (different population, method, or a replication). Group by theme if you must cite many.
 - In posts and READMEs, a direct link to the primary source works as a citation; the same truthfulness rules apply. Link text should say what is at the link.
 - Use one style consistently (numbered, author-year, or links). Do not mix.
-- Keep citation keys or placeholders in the draft while claims are being checked; render final formatting last.
+- Keep citation keys in the draft while claims are being checked; render final formatting last. A key whose source was never supplied is not left in as a placeholder: the sentence is cut or reworded as unconfirmed.
 - Missing identifiers on older works are often legitimate; check before concluding a reference is wrong.
 
 ## 5. Bibliography checks (when a reference list exists)
@@ -113,13 +113,13 @@ Novelty claims ("first", "no prior work", "novel") are existence-of-absence clai
 
 ## 9. Writing the marker text
 
-Only three marker kinds are used. `[ASK AUTHOR: ...]` means the author knows or decides it (their measurement, a source they probably have, intent). `[VERIFY: ...]` means a source exists or must be found and checked. `[UNTESTED]` means a command or step nobody ran. When you edit text that carries any other placeholder spelling (a to-do tag, a citation-needed tag, a confirm tag), convert it to one of the three.
+Only three marker kinds are used, and they live in author-facing places: the ledger, the findings, the reply, `open-questions.md`, or a draft the author asked to edit. Reader text never carries them; there the gap is stated as a fact about the material or the sentence is left out. `[ASK AUTHOR: ...]` means the author knows or decides it (their measurement, a source they probably have, intent). `[VERIFY: ...]` means a source exists or must be found and checked. `[UNTESTED]` means a command or step nobody ran. When you edit text that carries any other placeholder spelling (a to-do tag, a citation-needed tag, a confirm tag), convert it to one of the three in the author-facing notes and fix the reader text.
 
-| Situation | Marker |
-| --- | --- |
-| Source needed, the author probably has it | `[ASK AUTHOR: source for <claim>]` |
-| Source needed, none supplied, a lookup is the next step | `[VERIFY: find a source showing <what it must show>]` |
-| Source exists, not opened | `[VERIFY: open <source> and confirm <exact point>]` |
-| Only seen secondhand | `(as reported in <source>)` |
-| High-stakes statement | `[VERIFY: qualified source for <statement>]` |
-| Command or code in the text was not run | `[UNTESTED]` |
+| Situation | In the reader's text | Marker in the reply and `open-questions.md` |
+| --- | --- | --- |
+| Source needed, the author probably has it | cut, or "The material gives no source for this." | `[ASK AUTHOR: source for <claim>]` |
+| Source needed, none supplied, a lookup is the next step | cut, or "No source is given for this." | `[VERIFY: find a source showing <what it must show>]` |
+| Source exists, not opened | what the author supplied about it, labelled as not read | `[VERIFY: open <source> and confirm <exact point>]` |
+| Only seen secondhand | `(as reported in <source>)`, a real citation form | none |
+| High-stakes statement | what the supplied source says, attributed to it | `[VERIFY: qualified source for <statement>]` |
+| Command or code in the text was not run | say it has not been run, or omit it | `[UNTESTED]` |

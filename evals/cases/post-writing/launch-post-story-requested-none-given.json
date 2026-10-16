@@ -26,7 +26,19 @@
       "type": "markers",
       "min": 1,
       "target": "both",
-      "note": "a gap marker where the author's real moment would go; the prompt sends notes to the reply, so a marker there counts too"
+      "note": "the author's real moment is missing and the prompt sends notes to the reply, so the question for it belongs there; 'both' counts a marker line in the reply or the post"
+    },
+    {
+      "type": "not_regex",
+      "target": "output",
+      "pattern": "\\[(?:ASK AUTHOR|VERIFY|UNTESTED)\\b|\\[[^\\]\\n]{1,80}\\](?!\\()",
+      "note": "the saved file is the LinkedIn post to publish and the prompt puts notes in the reply, so the post holds no marker or bracket placeholder"
+    },
+    {
+      "type": "not_regex",
+      "target": "output",
+      "pattern": "(?i)\\b(?:already (?:running|in production|used by|serving)|(?:teams|customers|users) (?:are|have been) (?:already )?(?:running|using|seeing|reporting|saying)|early (?:users|adopters) (?:report|say|are))\\b",
+      "note": "the notes say nobody runs 2.4 in production yet; the missing story must not be filled with a claim about users"
     },
     {
       "type": "not_regex",

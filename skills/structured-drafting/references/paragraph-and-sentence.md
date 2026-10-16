@@ -33,7 +33,7 @@ Contents: [The paragraph's job](#the-paragraphs-job) | [Old before new](#old-bef
 - Watch nouns made from verbs and adjectives (-tion, -ment, -ity, -ance): they hide the actor and slow the sentence. Convert when it clarifies.
 - Active voice by default. Passive is fine where the actor is unknown, irrelevant, or the object is the topic; never use it to hide who made a choice.
 - Prefer plain "is/has" to "serves as/stands as/boasts" when the sentence just states a fact.
-- Replace vague words with what they stand for: "performance" -> the measure; "large" -> the number; "improves" -> from what to what. Use only numbers present in the material; if absent, `[ASK AUTHOR: figure for ...]`.
+- Replace vague words with what they stand for: "performance" -> the measure; "large" -> the number; "improves" -> from what to what. Use only numbers present in the material. If the material gives none, write the sentence without a figure (or say that the material gives none) and ask the author in the reply.
 - Exception: a passive that keeps the topic stable across sentences can read better than switching subjects.
 
 ## One term per concept

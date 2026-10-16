@@ -1,0 +1,145 @@
+{
+  "id": "style/article-800-from-outline",
+  "skill": "post-writing",
+  "description": "An 800-word blog article from an outline that carries its own data: the article keeps every figure and the worse-forecasting downside, states the one-team limit, and holds a human register over 800 words (slop density and sentence-length variation) with no invented anecdote or figure.",
+  "prompt": "Write the blog article from outline.md, about 800 words, in my voice (I'm Mara). Save it to out/article.md.",
+  "files": {
+    "outline.md": "Working title: We stopped estimating in story points. Here is what changed.\nAuthor: Mara Quinn, engineering lead of a 7-person team building a scheduling app. For the company blog, about 800 words.\n\nOutline\n1. Opening: a planning meeting in March that took 90 minutes to size 12 tickets. Halfway through, Sam asked what a \"5\" actually meant and nobody could answer. We had used points for 3 years.\n2. What we tried: from April every ticket is either small (one person can finish it in 2 days or less) or gets split. No points. Example: \"CSV export\" had been one ticket that ran across 2 sprints; it became 4 tickets, each merged on its own. Planning dropped to about 25 minutes.\n3. The data: 14 sprints before, 14 after. Team size (7) and sprint length (2 weeks) did not change. Before, we finished on average 71% of what we planned; after, 86%. Median cycle time (start to merged) went from 3.4 days to 2.1 days. Why, my guess only: small tickets have fewer ways to go wrong. I did not measure review time.\n4. What got worse: roadmap forecasts. Without points our product manager, Dev Patel, could no longer say a feature was 40 points for the quarter. We now forecast by counting tickets, which is rougher for big features because we do not know how many tickets a big feature will turn into until we start splitting it. In Q3, 2 of our 5 forecasts were off by more than a month: the calendar sync feature (6 weeks late) and the notifications rewrite (5 weeks late). Dev says he now spends more time explaining forecasts than he used to spend defending a number.\n5. What we would tell another team: it works if work can be split small, and it will not if you ship big indivisible things such as hardware or data migrations. Our data is one team over 28 sprints. It is not a study.\n6. Close: we still talk about size, but only as \"can this be done in 2 days?\" When the answer is not obvious, that tells us the ticket is not understood yet.\n"
+  },
+  "output": "out/article.md",
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "urls",
+        "citations"
+      ],
+      "allow": [
+        "800"
+      ]
+    },
+    {
+      "type": "preserves",
+      "source": "outline.md",
+      "categories": [
+        "numbers"
+      ],
+      "allow_lost": [
+        "800"
+      ]
+    },
+    {
+      "type": "facts_recalled",
+      "min": 0.85,
+      "facts": [
+        {
+          "id": "march-meeting",
+          "any": [
+            "90[- ]minute",
+            "90 minutes"
+          ]
+        },
+        {
+          "id": "two-day-rule",
+          "any": [
+            "2 days|two days"
+          ]
+        },
+        {
+          "id": "planning-time",
+          "any": [
+            "25 minutes|25-minute"
+          ]
+        },
+        {
+          "id": "completion-before",
+          "any": [
+            "71\\s?%"
+          ]
+        },
+        {
+          "id": "completion-after",
+          "any": [
+            "86\\s?%"
+          ]
+        },
+        {
+          "id": "cycle-before",
+          "any": [
+            "3\\.4"
+          ]
+        },
+        {
+          "id": "cycle-after",
+          "any": [
+            "2\\.1"
+          ]
+        },
+        {
+          "id": "forecast-downside",
+          "any": [
+            "(?:2|two) of (?:our |the )?(?:5|five)",
+            "off by more than a month"
+          ]
+        },
+        {
+          "id": "pm-name",
+          "any": [
+            "dev patel|\\bdev\\b"
+          ]
+        },
+        {
+          "id": "limit",
+          "any": [
+            "not a study",
+            "one team",
+            "single team"
+          ]
+        },
+        {
+          "id": "who-it-fails-for",
+          "any": [
+            "hardware",
+            "migration"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "word_count",
+      "min": 680,
+      "max": 920
+    },
+    {
+      "type": "slop_density",
+      "max": 4
+    },
+    {
+      "type": "rhythm",
+      "min_cv": 0.4
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)in today'?s|journey|in conclusion|key takeaways?|game-?changer|comments below|what has your experience|let me know in the comments",
+      "note": "no article-template filler"
+    },
+    {
+      "type": "markers",
+      "min": 0,
+      "max": 0,
+      "target": "output",
+      "note": "The deliverable goes straight to its reader and the notes hold every fact the text needs, so no gap marker belongs in the saved file; a question for the author goes in the reply."
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\[(?:insert|your|name|date|company|tbd|add|link|recipient|sender)\\b[^\\]\\n]*\\]|\\bTBD\\b|\\blorem ipsum\\b",
+      "note": "no fill-in placeholder in text for a reader"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?im)^\\s*(?:note to (?:self|author|you)|here(?:'s| is) (?:the|your|a) (?:draft|email|memo|post|letter|article|update|revised)|draft (?:email|memo|post|letter|article|update)\\b|subject line options)",
+      "note": "the file is the deliverable, not a reply with a lead-in or notes about it"
+    }
+  ]
+}

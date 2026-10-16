@@ -1,7 +1,6 @@
 # <Decision title: the choice, stated as a verb phrase>
 
-<!-- Draft banner: delete when no marker below is unresolved. -->
-**Draft: unresolved items are marked `[ASK AUTHOR: ...]` or `[VERIFY: ...]`.**
+<!-- Template note, delete before sending: a gap in the notes is stated plainly in the memo ("The notes give no cost for option B.") or the sentence is omitted. Questions for the author go in the reply and open-questions.md, not here. Add a draft banner with markers only if the author asked for a draft to edit. -->
 
 To: <decision-maker> | From: <author> | Date: <YYYY-MM-DD> | Decision needed by: <date>
 
@@ -59,4 +58,4 @@ To: <decision-maker> | From: <author> | Date: <YYYY-MM-DD> | Decision needed by:
 - **Criteria and weights (if scored):** <stated as choices, with the ranking under an alternative weighting>
 - **Rejected options and why:** <short>
 - **Source list:** <ID, title, link, publication date, retrieval date, used for>
-- **Open questions:** <what is not known>
+- **What is not known:** <facts the notes do not give, stated plainly>

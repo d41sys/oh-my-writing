@@ -4,13 +4,13 @@ description: Writes and checks claims against evidence. Builds a claims ledger (
 license: MIT
 compatibility: Optional helper script needs Python 3.10+ standard library; the skill works without it.
 metadata:
-  version: "1.2"
+  version: "1.3"
   skill-author: d41sys
 ---
 
 # Evidence-Grounded Writing
 
-Every factual sentence should rest on something the author can point to. This skill turns a draft (or a pile of source material) into a list of claims, matches each claim to evidence, sets each claim to the strongest wording the evidence allows, and fixes or removes what cannot be supported. It never supplies facts from memory; missing evidence becomes a marker or a question.
+Every factual sentence should rest on something the author can point to. This skill turns a draft (or a pile of source material) into a list of claims, matches each claim to evidence, sets each claim to the strongest wording the evidence allows, and fixes or removes what cannot be supported. It never supplies facts from memory; missing evidence becomes a plain statement of the gap, an omission, or a question to the author. The ledger and findings are for the author; the prose that reaches a reader carries no gap markers and no process notes.
 
 ## When to use
 
@@ -39,8 +39,8 @@ Pick the mode from the request. Modes share steps 1 to 3.
 4. **Resolve each row.**
    - Supported and worded at the right strength: keep.
    - Partial: rewrite to the strongest level the evidence supports (see [claim strength](references/claim-strength.md)); record what is missing.
-   - Unsupported: cut it, or ask the author for the source with `[ASK AUTHOR: ...]`, or, when only an outside lookup can settle it, `[VERIFY: ...]`; never repair it with a plausible number. A cut is listed (change list or the template's cut-claims table), never hidden by rewording until the problem disappears. In formal text, unsupported claims do not stay in the prose. The author's own reported results are not "unsupported" just because the raw values are not in the files; see the rule on the author's own results.
-   - Needs-check: put `[VERIFY: what to confirm and against what]` in the text or ledger and tell the author which source would settle it.
+   - Unsupported: cut it; or state it in plain words as unconfirmed ("The sources do not report X."); or, when the author is the one who holds the source, ask in the reply. When only an outside lookup can settle it, log `[VERIFY: ...]` in the ledger and reply. Never repair it with a plausible number. A cut is listed (change list or the template's cut-claims table), never hidden by rewording until the problem disappears. In formal text, an unsupported claim does not stay in the prose as a claim. The author's own reported results are not "unsupported" just because the raw values are not in the files; see the rule on the author's own results.
+   - Needs-check: record `[VERIFY: what to confirm and against what]` in the ledger and reply, and name the source that would settle it. In the prose the claim is either worded as what the named source says or left out; it is not flagged inline.
 5. **Check the five cross-cutting areas** that single-row review misses:
    - Comparisons: same baseline, metric, conditions and time ([claim strength](references/claim-strength.md)).
    - Numbers: units, denominators, absolute versus relative change, rounding, agreement across the document; when result files are supplied, trace every figure to its raw value ([numbers and statistics](references/numbers-and-statistics.md)).
@@ -53,7 +53,7 @@ Pick the mode from the request. Modes share steps 1 to 3.
 ### Modes
 
 - **Audit** (default when text and evidence are given): ledger plus findings; edit only if asked.
-- **Write from sources**: draft from the evidence map, writing each claim at its supported level; mark gaps instead of filling them; deliver text plus a short ledger of what each paragraph rests on.
+- **Write from sources**: draft from the evidence map, writing each claim at its supported level; state a gap plainly or leave the sentence out instead of filling it; deliver the text, then (outside the text) a short ledger of what each paragraph rests on and the open questions.
 - **Edit guard** (another skill or the user is revising): compare before and after claim by claim and reject any edit that raises strength, drops a qualifier, changes a number, or turns a negation around.
 - **Synthesis**: group sources by theme, state where they agree and conflict, say what is missing ([citations and attribution](references/citations-and-attribution.md)).
 
@@ -71,20 +71,30 @@ Pick the mode from the request. Modes share steps 1 to 3.
 - **Keep the statement class.** A measured fact, an estimate, a calculation, a forecast, an opinion and a recommendation stay what they are; an estimate is never rewritten as a fact or a scenario as a prediction.
 - **Say what was checked, and by whom.** The report names the sources opened, the ones not opened, and what the check cannot show (a machine screen is not verification; an audit of the text is not a judgment of the study). If you wrote or edited the text yourself, say the audit is not independent and suggest a fresh reader (`independent-review`). Never write "all citations verified" into the document.
 - **Editing never upgrades.** Do not turn "in two trials" into "in trials", "may help" into "helps", or "no difference detected" into "no difference". Strengthening is allowed only after new evidence is on the table and recorded.
-- **The author's own results are evidence.** A figure the author reports from their own data, run or analysis (a dataset named in the notes, a result file, "our analysis of 1,240 students", "mean 78 versus 64") stays in the text, worded at the strength the design supports. When the raw values are not in the files, keep the figure and add `[VERIFY: check against <the named data>]` beside it instead of cutting it. Repair the interpretation, not the measurement: "raises exam scores" becomes "students who used the app scored 14 points higher (mean 78 versus 64)", with the design limits (voluntary use, no prior grades) kept beside it. Cut or mark only what has no supporting evidence at all (an unnamed "studies show", a universal "every school should"). Reason: deleting a finding to remove an overclaim changes what the author reports and loses the result the reader needs; a rewrite that leaves only "we analysed X and Y" has removed the evidence, not fixed the claim.
-- **High-stakes domains (health, law, finance, safety).** Do not give confident advice or specific figures from memory. State what the supplied source says, mark the statement `[VERIFY: qualified source for ...]`, and keep it separate from the author's own opinion.
+- **The author's own results are evidence.** A figure the author reports from their own data, run or analysis (a dataset named in the notes, a result file, "our analysis of 1,240 students", "mean 78 versus 64") stays in the text, worded at the strength the design supports and attributed to its source in the author's own terms ("in our analysis of the spring-exam data"). When the raw values are not in the files, keep the figure and log `[VERIFY: check against <the named data>]` in the ledger and reply instead of cutting it or flagging it inline. Repair the interpretation, not the measurement: "raises exam scores" becomes "students who used the app scored 14 points higher (mean 78 versus 64)", with the design limits (voluntary use, no prior grades) kept beside it. Cut or restate only what has no supporting evidence at all (an unnamed "studies show", a universal "every school should"). Reason: deleting a finding to remove an overclaim changes what the author reports and loses the result the reader needs; a rewrite that leaves only "we analysed X and Y" has removed the evidence, not fixed the claim.
+- **High-stakes domains (health, law, finance, safety).** Do not give confident advice or specific figures from memory. In the prose, state what the supplied source says and attribute it to that source, kept separate from the author's own opinion. The matching `[VERIFY: qualified source for ...]` goes in the ledger and reply, not in the text.
+- **Reader text is clean.** Revised or newly written prose that a reader will see (post, memo, report paragraph, abstract, README) holds no `[ASK AUTHOR]`, `[VERIFY]` or `[UNTESTED]` marker and no process notes ("as requested", "I checked", "[source: ...]" tags, per-paragraph evidence remarks). A gap is stated as a fact about the material ("The notes give no figure for other workloads.") or the sentence is left out. Questions, markers, the change list and the ledger go in the reply and, when the work is saved to files, in an `open-questions.md` beside the output. Real citations in the genre's own form stay. Reason: placeholders and process remarks in text sent on look unfinished, and the author may not answer before it goes. Exception: the author asked for a draft to edit; then markers sit beside the gap. Author-facing artifacts (ledger, audit findings, citation check, open items, change list) keep markers.
 - **Lexical lists are English-only.** For other languages (for example Vietnamese) apply the structural checks: ledger, claim level, numbers, citation fit, comparison validity. Do not transfer English word lists; ask a fluent reader for wording checks the script cannot make.
 - **The script is a screen, not a verdict.** It flags wording that usually needs support, with false positives (for example "first" as an ordinal) and false negatives (spelled-out numbers). A flagged sentence may be fine; an unflagged one may not be.
 
 ## Gap markers
 
-Three kinds, used the same way everywhere:
+Three kinds, used the same way everywhere, and only in author-facing places (ledger, findings, open items, reply, `open-questions.md`, or a draft the author asked to edit):
 
 - `[ASK AUTHOR: ...]` when the author knows or decides it: their measurement, a number they hold, intent, an experience, a source they probably have.
 - `[VERIFY: ...]` when a source exists or must be found and checked: an outside fact, source or citation; say what to confirm and against what. High-stakes statements use `[VERIFY: qualified source for ...]`.
-- `[UNTESTED]` for a command or code sample in the text that nobody ran.
+- `[UNTESTED]` for a command or code sample that nobody ran.
 
-Convert any other placeholder spelling (a to-do tag, a citation-needed tag, a confirm tag) to one of these when you touch it. A marker sits beside the claim it concerns and does not excuse leaving a flawed sentence worded as fact.
+Convert any other placeholder spelling (a to-do tag, a citation-needed tag, a confirm tag) to one of these when you touch it in an author-facing place; in reader text, replace it with a plain statement or remove the sentence. A gap never excuses leaving a flawed sentence worded as fact.
+
+| Gap | In the reader's text | In the reply and `open-questions.md` |
+| --- | --- | --- |
+| claim has no source | cut, or "The sources do not report X." | `[ASK AUTHOR: source for the claim about other apps]` |
+| outside fact to confirm | what the named source says, attributed to it | `[VERIFY: price quoted in the vendor note against the current list]` |
+| number lacks unit or denominator | leave the figure out, or give it only as far as the notes do ("62 of the nurses surveyed") | `[ASK AUTHOR: denominator for the 40%]` |
+| code or step nobody ran | say it is untried ("not yet run on Windows") or omit it | `[UNTESTED]` plus the command |
+
+`open-questions.md` is a numbered list of marker lines, each with the sentence it affects and what the text says there now. List the same items in the reply in full.
 
 Describe a gap without repeating the overclaiming word you removed (write `[ASK AUTHOR: source for the claim about other apps]`, not a marker that quotes "always" or "studies show"), so the flawed wording does not come back inside the marker.
 
@@ -97,7 +107,7 @@ For an audit:
 3. **Cross-cutting findings**: comparison, number, citation, uncertainty and high-stakes issues, each with the location. For citations give one line per use, with the citation as written (for example `[2]`), the source passage opened, the verdict (supports, partly, does not support, cannot open) and the action.
 4. **Open items**: each `[ASK AUTHOR: ...]` and `[VERIFY: ...]` with what would resolve it, plus anything you could not open or check.
 
-For an edit: the revised text plus a change list in the form `claim id: what changed -> why` (one line each, only true changes, including every cut). For write-from-sources: the draft plus a compact ledger. Keep reports short; do not narrate the process.
+For an edit: the revised text, kept free of markers and notes, plus (in the reply, never inside the text) a change list in the form `claim id: what changed -> why` (one line each, only true changes, including every cut) and the open questions as marker lines. When the revision is saved to a file, also write `open-questions.md` beside it. For write-from-sources: the draft, then a compact ledger and the open questions outside the draft. When the draft itself is shown in the reply, separate it from the notes with a rule so the text can be copied clean. Keep reports short; do not narrate the process.
 
 ## Reference files
 
@@ -115,12 +125,12 @@ Strength follows evidence:
 
 - Before: "Our cache dramatically speeds up every workload."
 - Evidence: one benchmark on the author's laptop, 3 runs, read-heavy workload.
-- After: "On a read-heavy benchmark (3 runs, one laptop), the cache cut median latency from 210 ms to 168 ms. [ASK AUTHOR: other workloads tested?]"
+- After: "On a read-heavy benchmark (3 runs, one laptop), the cache cut median latency from 210 ms to 168 ms. No other workload is reported." Reply: `[ASK AUTHOR: other workloads tested?]`
 
 Vague attribution:
 
 - Before: "Studies show remote teams ship slower."
-- After (source supplied): "A 2022 survey of 480 engineering managers (Lee, 2022) reported slower releases on remote teams." If no source exists: cut, or `[ASK AUTHOR: which study?]`.
+- After (source supplied): "A 2022 survey of 480 engineering managers (Lee, 2022) reported slower releases on remote teams." If no source exists: cut the sentence, or write "The material gives no source for this." Reply: `[ASK AUTHOR: which study?]`
 
 Correlation:
 

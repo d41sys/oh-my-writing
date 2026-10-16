@@ -22,9 +22,9 @@ Load when: writing API, CLI, configuration, script or library reference; generat
 3. Copy response shapes from types or schemas, or from a real response.
 4. Generate what can be generated. Wrap generated sections in markers (for example `<!-- AUTO-GENERATED -->` and `<!-- /AUTO-GENERATED -->`), update only inside them, and preserve hand-written prose around them.
 5. When updating an existing page: read it, compare it with the current code, show the user what differs, apply updates while keeping hand-written notes. Never silently overwrite custom content.
-6. Validate: files and paths exist, links resolve, examples run, snippets compile. Add or change an example only when it can be validated; otherwise mark `[UNTESTED]`.
-7. Document what exists. Do not list planned endpoints or undocumented tables as if finished; flag gaps with `[VERIFY: ...]` instead.
-8. After a pass, report per page: Updated (what changed), Flagged (why, how stale), or Skipped (why).
+6. Validate: files and paths exist, links resolve, examples run, snippets compile. Add or change an example only when it can be validated; otherwise leave it out of the page and list it as `[UNTESTED]` in the reply.
+7. Document what exists. Do not list planned endpoints or undocumented tables as if finished. A doubtful entry is left out of the page, or the page says what the source does not show; the `[VERIFY: ...]` line goes in the reply.
+8. After a pass, report per page in the reply (an author-facing report, so markers may appear there): Updated (what changed), Flagged (why, how stale), or Skipped (why).
 
 ## HTTP API entry
 
@@ -60,12 +60,12 @@ CLI or script entry:
 1. Name and one-line description.
 2. **Usage**: syntax line(s) in a `text` fence.
 3. **Arguments and options**: table with name, type, default, description. Put options shared by every command in one table at the top instead of repeating them. List only what the parser defines: read the argument-parser code or run `--help`, and never add a flag that sounds natural. Mark which options are required, and give the short form beside the long form.
-4. **Examples**: basic, with options, verbose; each with a short comment and a sample output block. Run them, or mark `[UNTESTED]`.
+4. **Examples**: basic, with options, verbose; each with a short comment and a sample output block. Run them; an example that was not run is left out of the page and listed as `[UNTESTED]` in the reply.
 5. **Streams and side effects**: what is read from files or standard input, what goes to standard output and what to standard error, which files are created, appended to or overwritten, and what is the default when an output option is omitted.
 6. **Exit codes**: 0 on success, non-zero on failure; say which non-zero values mean what, as the code returns them.
 7. **Errors**: the message format, with an example, if it is machine-readable.
 
-Configuration reference: group keys as the config file groups them; for each key give type, default, allowed values or range, effect, and the version it appeared in if relevant. Mark deprecated keys. Mark which keys are required. For tuning parameters and heuristics, say what the value controls, why it has that default, the bounds in which it is safe, and where the number came from; when the reason is not in the source, write `[ASK AUTHOR: why this default?]` rather than inventing one.
+Configuration reference: group keys as the config file groups them; for each key give type, default, allowed values or range, effect, and the version it appeared in if relevant. Mark deprecated keys. Mark which keys are required. For tuning parameters and heuristics, say what the value controls, the bounds in which it is safe, and where the number came from when the source shows it. When the reason for a default is not in the source, leave the reason out of the page rather than inventing one, and ask `[ASK AUTHOR: why this default?]` in the reply.
 
 Library reference: mirror the public module layout; for each public symbol give signature, parameters, return value, errors raised, one short example.
 
@@ -119,7 +119,7 @@ Guidelines:
 ## Pre-delivery checks for reference work
 
 1. Every path, flag, field and status code appears in the source.
-2. Every example was run, or carries `[UNTESTED]`.
+2. Every example was run, or is left out of the page and listed as `[UNTESTED]` in the reply. The page body holds no markers.
 3. Versions are stated and come from files.
 4. Layout is identical across entries of the same kind.
 5. No instruction, selling or design argument inside a reference entry; links instead.
@@ -134,4 +134,4 @@ When asked to review comments or docstrings (not to write docs), check each agai
 - **Incomplete**: complex logic, side effects, edge cases or public API contracts are not explained.
 - **Low-value**: it restates the code, will rot quickly, or is a TODO or FIXME with no owner. Suggest deleting it, not rewording it.
 
-Fix only what the user asked to fix, and quote the line for each finding.
+Fix only what the user asked to fix, and quote the line for each finding. A comment review is an author-facing findings list: markers and notes to the author may stay in it. A comment or docstring you write or rewrite is reader-facing: no markers, no TODO.

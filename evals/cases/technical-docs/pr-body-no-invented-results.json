@@ -72,6 +72,21 @@
       "type": "word_count",
       "min": 80,
       "max": 500
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\[(ASK AUTHOR|VERIFY|UNTESTED)\\b|\\b(TODO|TBD)\\b",
+      "note": "the PR description is posted to reviewers as written; the notes leave the full-suite result, CI and any watch signal open, and these must read as plain statements such as Not run, not as markers or TODO text"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(canary|staged (rollout|deploy(ment)?)|dashboards?|feature[- ]flag(ged)? (rollout|enabled))\\b",
+      "note": "the notes give no rollout mechanism or monitoring signal (only the nightly sync job is named); naming a canary, staged deploy, dashboard or flag invents rollout facts"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(as requested|as you asked|per your (notes|request|instructions?)|based on (your|the) notes|\\[source:)",
+      "note": "the user asked for the description itself; narration about the notes or the request is process commentary that belongs in the reply"
     }
   ]
 }

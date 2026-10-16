@@ -1,7 +1,7 @@
 {
   "id": "report-writing/postmortem-blameless-from-blame-notes",
   "skill": "report-writing",
-  "description": "Raw incident notes assign fault to named people ('his error', 'she should have checked'). The post-mortem must be blameless (roles and conditions, no name beside a verdict), keep every timestamp and duration, add no new numbers, and mark the owners and dates the notes do not give.",
+  "description": "Raw incident notes assign fault to named people ('his error', 'she should have checked'). The post-mortem must be blameless (roles and conditions, no name beside a verdict), keep every timestamp and duration, add no new numbers, and, because the notes give no owners or dates for follow-up, say in plain words that they are not set (the question goes in the reply) instead of assigning any.",
   "prompt": "Write up the 7 Oct checkout outage as a post-mortem for the engineering all-hands. The raw notes from the incident channel are in incident-notes.md. Save it to out/postmortem.md.",
   "files": {
     "incident-notes.md": "# Checkout outage, 7 Oct: raw notes from the incident channel\n\nImpact: checkout failed for customers from 14:02 to 14:51, 49 minutes in total. About 3,100 checkouts failed. The checkout error rate peaked at 38%.\n\nTimeline (UTC):\n- 14:02 Tomás Reyes (on call) deployed a config change to the payments service. He pushed the wrong config, his error.\n- 14:09 error-rate alert fired. The page went to Tomás only.\n- 14:21 Tomás acknowledged the page. Hana Lindqvist (secondary on call) had been in the mandatory security training since 14:00 and never saw the escalation; she should have checked her phone.\n- 14:34 rollback started.\n- 14:51 error rate back under 1%.\n\nWhat the config was: payment-timeout was set to null instead of 30 seconds. The config schema allows null for that field. Staging validation passes a null because staging falls back to a default value; production has no default, so requests hung until the gateway cut them off at 60 seconds.\n\nEscalation policy: a page goes to one person. The secondary is paged only if the first page stays unacknowledged for 30 minutes.\n\nRollback took 17 minutes because the rollback runbook predates the move to the new deploy tool, so the steps had to be found in the old wiki.\n\nLuck: it happened outside the evening peak, with volume at roughly half of peak.\n\nNot known: why the alert took 7 minutes to fire after the change.\n"
@@ -54,11 +54,28 @@
     },
     {
       "type": "markers",
+      "target": "both",
       "min": 1,
       "kinds": [
         "ASK AUTHOR",
         "VERIFY"
-      ]
+      ],
+      "note": "the notes give no action-item owners or dates and no cause for the 7-minute alert delay, so the author has open questions; the check counts the saved post-mortem plus the chat reply, so the questions can sit in the reply and nothing requires them inside the document"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)(to be assigned|not (yet )?(assigned|set|named|decided|specified|given|determined|scheduled)|unassigned|no owner|owner[^.\\n]{0,20}\\b(tbd|pending)\\b)",
+      "note": "the notes name no owner or date for any follow-up, so the post-mortem must say plainly that these are not set instead of staying silent"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(owner|owned by|assignee|assigned to|responsible)\\b[^.\\n|]{0,20}(Tom[aá]s|Reyes|Hana|Lindqvist)",
+      "note": "the notes assign no follow-up to anyone; putting the two engineers down as owners would invent an assignment and tie the fixes to the people"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(by|due|before|deadline)\\b[^.\\n]{0,25}\\b(\\d{1,2} (Oct|Nov|Dec)\\w*|(Oct|Nov|Dec)\\w* \\d{1,2}|end of (the )?(week|month|quarter|sprint)|next (week|sprint|month|quarter)|Q[1-4])\\b",
+      "note": "the notes give no date for any action, so an invented deadline would be a fabricated commitment"
     }
   ]
 }

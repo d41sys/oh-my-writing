@@ -1,7 +1,7 @@
 {
   "id": "structured-drafting/transcript-contradicting-figures",
   "skill": "structured-drafting",
-  "description": "Transcript gives two different baseline completion rates for the same old flow plus a confounded change: the article must not merge them into one invented figure, must flag the conflict, and must keep the confound.",
+  "description": "Transcript gives two different baseline completion rates for the same old flow plus a confounded change: the article must not merge them into one invented figure, must state plainly that the two figures differ (no gap marker in the article; the question goes to the reply), and must keep the confound.",
   "prompt": "Here is my interview with Dana in transcript.md. Write a short blog article (around 400 words) from it for our product blog and save it to out/article.md. I'm away today, so don't wait for me.",
   "files": {
     "transcript.md": "Interview transcript. Dana Whitfield, head of growth at Kettle (a recipe-planning app). Interviewer: Sam.\n\nSam: What was wrong with onboarding last spring?\nDana: People dropped at the pantry step. We asked everyone to list what was in their pantry before they saw a single recipe. About 31% of new users finished setup back then.\nSam: What did you change?\nDana: We moved the pantry step after the first recipe. We show three recipes first and ask \"which of these could you cook tonight?\", and the pantry list gets built from the answers. Our designer Joel needed about two weeks.\nSam: Did it work?\nDana: Setup completion went up, yes. I don't want to oversell it. We also changed the welcome email the same month, so I can't say which change did the work.\nSam: Where is completion now?\nDana: I'd say around 52%.\nSam: Going back to the old flow, so I have the baseline right. What share finished before the change?\nDana: Only about a quarter, 25%. Maybe less on Android.\nSam: Anything you'd tell other teams?\nDana: Don't ask for work before you've given something back. And measure one change at a time, which we didn't.\n"
@@ -29,7 +29,23 @@
       "type": "markers",
       "min": 1,
       "max": 6,
-      "target": "output"
+      "target": "both",
+      "note": "the author is away and said not to wait, so the question about the two baselines (31% vs 25%) must be raised where the author will see it: the reply; the article itself is for the product blog and need not carry it"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "\\[(?:ASK AUTHOR|VERIFY|UNTESTED)\\b|(?i:\\[source:)",
+      "note": "the article goes to the product blog's readers; a gap marker or source tag in it would be published as written"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)(?:^|\\n\\s*\\n)(?=(?:(?!\\n\\s*\\n).)*\\b31\\b)(?=(?:(?!\\n\\s*\\n).)*\\b25\\b)(?:(?!\\n\\s*\\n).)*?(?:differ|conflict|inconsisten|contradict|unclear|not clear|(?:does|did) not (?:say|settle|reconcile|resolve)|doesn.t (?:say|settle)|can.t (?:say|tell)|cannot (?:say|tell)|not sure|which (?:is|figure|number|one)|two (?:figures|numbers|baselines|answers|different)|either|disagree|not (?:been )?(?:settled|reconciled)|another (?:answer|figure|number)|later (?:answer|figure|number)|different (?:figure|number|answer|estimate)|(?:two|conflicting|differing) estimates|less certain|uncertain|not (?:be )?(?:treated as )?(?:a )?precise)",
+      "note": "both baselines must sit together in one paragraph that says plainly they differ or are unsettled; the transcript gives 31% and then 25% for the same old flow, and the author cannot be asked, so the gap is stated in the article rather than resolved or hidden"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\bdoubl|\\bnearly twice|\\balmost twice|\\b(?:21|27)[ -]?(?:percentage[ -]?)?points?\\b|\\b(?:21|27) ?(?:%|percent)[^.\\n]{0,30}(?:increase|lift|improvement|gain|rise|jump)|(?:increase|lift|improvement|gain|rise|jump)[^.\\n]{0,30}\\b(?:21|27) ?(?:%|percent|points?)",
+      "note": "52 minus 31 is 21 and 52 minus 25 is 27; any lift or 'doubled' picks one of the two unreconciled baselines and presents a figure nobody gave"
     },
     {
       "type": "not_contains",

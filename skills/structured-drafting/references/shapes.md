@@ -11,12 +11,12 @@ Goal: know exactly what you have, where each piece came from, and what is missin
 1. Read the whole pile first, end to end. Do not outline from the first third.
 2. Split into units: one claim, example, datum, story, opinion, definition, or quote per unit. A unit stays small enough to be placed in exactly one block.
 3. Label each unit with its kind and its source (file and place, speaker and time, or "author's head" when it was said in conversation and has no document). The source label is what later lets a reviewer check a claim.
-4. Mark duplicates (keep the clearest), contradictions (do not resolve silently; keep both values with their sources and ask, or flag in the draft when the author cannot be asked), and units that only make sense to the author. For notes and transcripts also mark status: decided, proposed, unconfirmed, open. A hedge ("about", "I think", "if legal agrees") stays attached to its unit.
+4. Mark duplicates (keep the clearest), contradictions (do not resolve silently; keep both values with their sources and ask, or state in the draft that the material does not settle which is right when the author cannot be asked), and units that only make sense to the author. For notes and transcripts also mark status: decided, proposed, unconfirmed, open. A hedge ("about", "I think", "if legal agrees") stays attached to its unit.
 5. Group by the reader's questions, not by where the material came from. A draft that mirrors the order of the sources is a summary of the sources, not an answer to the reader.
-6. List the gaps: the example the argument needs but the pile lacks, the number a claim implies, the counter-case, the definition. Write each as a question. A gap is filled by the author, a real source, or a cut; never by a plausible-sounding addition.
+6. List the gaps: the example the argument needs but the pile lacks, the number a claim implies, the counter-case, the definition. Write each as a question. A gap is filled by the author, a real source, or a cut; never by a plausible-sounding addition. In the draft a gap that stays open is stated plainly or left out ([gaps in the draft](gaps-in-the-draft.md)).
 7. Note what was normalised: facts already supported by the material, items that still need checking, and open questions. Do not restart analysis from zero when the author already supplied findings.
 
-Inventory line format (one per unit):
+Inventory line format (one per unit; the inventory is author-facing, so source labels and `ask author` stay here and never enter the draft):
 
 ```
 U7 | example | "Nightly job failed 3 times in April" | source: ops-notes.md, entry 12 | status: supported

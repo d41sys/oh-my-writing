@@ -1,0 +1,152 @@
+{
+  "id": "style/decision-memo-from-notes",
+  "skill": "report-writing",
+  "description": "Notes for a helpdesk renewal decision: the memo opens with the decision needed and the recommendation, carries the supplied cost figures with the year-one caveat and the phone gap, invents no number or vendor claim, and reads as a memo a manager wrote (no headings-for-everything template voice, no hedging fog).",
+  "prompt": "Elena needs a decision memo on the helpdesk renewal. Everything I have is in notes.md. Write it so she can decide from it alone, about a page. Save it to out/memo.md.",
+  "files": {
+    "notes.md": "For Elena Voss, managing director. From Tomas Reyes, support lead. She has to decide by 31 October because Relay needs notice by then.\n\nQuestion: renew Relay (our helpdesk) for another year from 1 December, or move to Quillbox?\n\nFacts\n- We have 14 agents. Relay costs 38 EUR per agent per month, 6,384 EUR a year. Quillbox costs 29 EUR per agent per month, 4,872 EUR a year, billed annually.\n- Quillbox has no built-in phone. 11% of our contacts arrive by phone. A cloud phone add-on from another provider costs 6 EUR per agent per month, 1,008 EUR a year, billed monthly so we can drop it. Quillbox plus phone is 5,880 EUR a year, 504 EUR less than Relay.\n- Moving means one month of overlap with Relay if we start Quillbox on 1 November: 532 EUR. So year one comes out 28 EUR worse than staying, and every year after is 504 EUR better.\n- Test import of 6 months of tickets (9,200 tickets) took 2 days. 40 tickets landed in the wrong thread and I fixed them by hand.\n- Quillbox says a full migration takes about 3 weeks. We have not tested that.\n- Relay has not offered a discount. I asked on 9 October.\n- I asked 6 of the 14 agents. The 3 on the phone desk are worried about the phone add-on; the other 3 do not mind the move.\n\nMy recommendation: move to Quillbox from 1 November and sign the phone add-on at the same time. The saving is small, but Relay's price is the higher one and the phone add-on can be dropped monthly if it fails. The main risk is the phone desk.\n"
+  },
+  "output": "out/memo.md",
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "urls",
+        "citations"
+      ]
+    },
+    {
+      "type": "preserves",
+      "source": "notes.md",
+      "categories": [
+        "numbers"
+      ]
+    },
+    {
+      "type": "facts_recalled",
+      "min": 0.85,
+      "facts": [
+        {
+          "id": "decision-date",
+          "any": [
+            "31 oct",
+            "oct(?:ober)? 31"
+          ]
+        },
+        {
+          "id": "recommendation",
+          "any": [
+            "recommend[^.\\n]{0,80}(?:quillbox|mov|switch)",
+            "(?:quillbox|move|switch)[^.\\n]{0,80}recommend"
+          ]
+        },
+        {
+          "id": "relay-cost",
+          "any": [
+            "6,?384"
+          ]
+        },
+        {
+          "id": "quillbox-cost",
+          "any": [
+            "4,?872"
+          ]
+        },
+        {
+          "id": "phone-gap",
+          "any": [
+            "no (?:built-?in )?phone",
+            "phone[^.\\n]{0,60}(?:missing|lacks?|gap|not (?:include|support))",
+            "(?:lacks?|without)[^.\\n]{0,30}phone"
+          ]
+        },
+        {
+          "id": "phone-share",
+          "any": [
+            "11\\s?%"
+          ]
+        },
+        {
+          "id": "year-one",
+          "any": [
+            "\\b28\\b"
+          ]
+        },
+        {
+          "id": "overlap",
+          "any": [
+            "532"
+          ]
+        },
+        {
+          "id": "import-errors",
+          "any": [
+            "\\b40\\b"
+          ]
+        },
+        {
+          "id": "untested-migration",
+          "any": [
+            "(?:not|n't|never|yet to)[^.\\n]{0,40}test",
+            "untested"
+          ]
+        },
+        {
+          "id": "no-discount",
+          "any": [
+            "(?:no|not|n't)[^.\\n]{0,40}discount",
+            "discount[^.\\n]{0,40}(?:not|n't|no)"
+          ]
+        },
+        {
+          "id": "phone-desk-worry",
+          "any": [
+            "phone desk",
+            "\\b3\\b[^.\\n]{0,40}(?:phone|worr|concern)"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "word_count",
+      "min": 260,
+      "max": 560
+    },
+    {
+      "type": "slop_density",
+      "max": 5
+    },
+    {
+      "type": "rhythm",
+      "min_cv": 0.35
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)in today'?s|executive summary|it is (?:important|worth|crucial) to (?:note|acknowledge|carefully)|in conclusion|strategic opportunity|value proposition|rapidly evolving",
+      "note": "no memo-template filler"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)hope (?:this|you)[^.\\n]{0,40}(?:finds you|well)|don'?t hesitate|do not hesitate|reach out|any inconvenience|valued customer|sincerely apologi[sz]e|look forward to hearing|(?:thank you|thanks) (?:so much )?for your (?:patience|understanding|time and consideration|continued)|first and foremost|i wanted to (?:reach out|provide)|as a (?:result|reminder),? ",
+      "note": "no stock email opener or closer"
+    },
+    {
+      "type": "markers",
+      "min": 0,
+      "max": 0,
+      "target": "output",
+      "note": "The deliverable goes straight to its reader and the notes hold every fact the text needs, so no gap marker belongs in the saved file; a question for the author goes in the reply."
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\[(?:insert|your|name|date|company|tbd|add|link|recipient|sender)\\b[^\\]\\n]*\\]|\\bTBD\\b|\\blorem ipsum\\b",
+      "note": "no fill-in placeholder in text for a reader"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?im)^\\s*(?:note to (?:self|author|you)|here(?:'s| is) (?:the|your|a) (?:draft|email|memo|post|letter|article|update|revised)|draft (?:email|memo|post|letter|article|update)\\b|subject line options)",
+      "note": "the file is the deliverable, not a reply with a lead-in or notes about it"
+    }
+  ]
+}

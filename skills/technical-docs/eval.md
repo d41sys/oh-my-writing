@@ -27,11 +27,11 @@ Answer each check pass or fail. Fix every failure before returning.
 
 ## Truth and verification
 
-18. Has every command and code sample been run, or marked `[UNTESTED]` with the reason?
+18. Has every command and code sample been run? If not, is it left out of the page or described in plain words as not run (never marked with a tag in the page), with the reason in the reply?
 19. Are versions and platforms stated, and taken from files rather than memory?
 20. Does every path, flag, field, endpoint and status code mentioned exist in the source (including each flag and default in a README or CLI page)?
 21. Are there any invented facts: endpoints, defaults, benchmarks, adoption numbers, quotes, install steps, or "supports X" claims the source does not show?
-22. Are missing facts marked with exactly one of `[VERIFY: ...]`, `[ASK AUTHOR: ...]` or `[UNTESTED]`, with no other marker kinds and no TODO stubs?
+22. Is the page free of `[ASK AUTHOR]`, `[VERIFY]` and `[UNTESTED]` markers, TODO or TBD text, empty template slots and meta-notes (process narration such as "as requested" or "I ran", per-paragraph source notes, `[source: ...]` tags)? Is every missing fact stated plainly as a gap in the material ("No license is stated in this repository.") or omitted, never filled in? Do the author's questions appear only as `[VERIFY: ...]`, `[ASK AUTHOR: ...]` or `[UNTESTED]` lines in the reply (and in `open-questions.md` when files are written)? Exception: the author asked for a draft, or the output is an author-facing artifact (a comment review, a staleness report).
 23. Are test results reported as actual run results with the scope the author gave, or "Not run", never implied (no "all tests pass" or "CI is green" without a result)?
 24. Does every "never", "always" or "at most" match the code's order of operations and edge cases, and is a changed default called out as a behaviour change?
 25. Do numbers come from the source or the change, with any conversion shown, and is no new figure (a sum, ratio or total) used where naming the source's own parts would do?
@@ -49,4 +49,4 @@ Answer each check pass or fail. Fix every failure before returning.
 
 32. Could a new teammate follow the page without asking a question?
 33. Read only the title and first paragraph: does the reader know what the page is, who it is for, and what to do first?
-34. Does the closing note list what was verified, what is untested, and what is still open?
+34. Does the closing reply list what was verified, what is untested, and what is still open, and does `open-questions.md` hold the same open lines when files were written?

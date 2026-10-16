@@ -116,4 +116,4 @@ decision would resolve it). Judge the document and the memo; do not argue for
 either side. Finish with one line: VERDICT: ready | revise
 ```
 
-Unresolved attacks go through triage like any finding. The memo is a stress test, not a rewrite order: an attack that needs evidence the material lacks becomes `[ASK AUTHOR: ...]` or a stated limit, not an invented answer.
+Unresolved attacks go through triage like any finding. The memo is a stress test, not a rewrite order: an attack that needs evidence the material lacks becomes a needs-author question in the findings (`[ASK AUTHOR: ...]`; findings are author-facing) or a stated limit, not an invented answer and never a marker inside the text.

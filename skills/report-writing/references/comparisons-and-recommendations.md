@@ -16,7 +16,7 @@ Before scoring anything, write down in a few lines:
 
 Without this, criteria drift toward whatever data was easy to find, and recommendations may quietly erode what the client is.
 
-If any piece is missing and cannot be derived from the material, ask once, or mark `[ASK AUTHOR: ...]`. Never invent the client's positioning.
+If any piece is missing and cannot be derived from the material, ask once, or log it as a question for the author (`[ASK AUTHOR: ...]` in the reply). The memo states the gap plainly or leaves it out. Never invent the client's positioning.
 
 ## 2. Scope the set and say why
 
@@ -163,7 +163,7 @@ Include the status quo or doing nothing as an option, with its real cost. Put op
 
 **Form.** Action, expected impact, effort or cost, and where known the owner and date, in active voice. "Reduce checkout steps from five to three; expected to lift completion (no baseline figure available; measure first); about two engineer-weeks." Impact stated qualitatively when no number exists. Illustrative numbers must carry a visible label saying they are illustrative.
 
-**Whose recommendation.** A recommendation is the author's judgment. If the notes name one, write it. If they do not, do not manufacture one: say what the evidence points toward as analysis, and mark the slot `[ASK AUTHOR: recommendation ...]` naming the options the evidence supports so the author can choose in one line. A request for "our recommendation" does not turn a gap in the notes into permission to decide for the author.
+**Whose recommendation.** A recommendation is the author's judgment. If the notes name one, write it. If they do not, do not manufacture one: the document says plainly that the notes make no recommendation, sets out the options the evidence supports and what each rests on, and says what the evidence points toward as analysis. The question to the author goes in the reply as `[ASK AUTHOR: recommendation ...]` naming those options so the author can choose in one line; no marker goes in the document. A request for "our recommendation" does not turn a gap in the notes into permission to decide for the author.
 
 **What would change it.** State the evidence, threshold, or event that would reverse or modify the recommendation ("If the pilot shows uptime below 99.5%, choose A"). This turns hedging into something the reader can monitor.
 

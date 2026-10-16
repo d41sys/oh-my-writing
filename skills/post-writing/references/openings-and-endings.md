@@ -6,7 +6,7 @@ Load when: writing or repairing a title, headline, hook, opening paragraph or en
 
 In one to three lines the reader decides whether the piece is for them. An opening works when it shows the subject, not when it announces one. The concrete thing can be an artifact (a command, a log line, a chart), a number with its condition, a scene, a sharp claim the piece will defend, or a question the reader already has.
 
-Choose the opening from the author's real material. If the best artifact is missing, ask for it: `[ASK AUTHOR: a real number, incident or example to open on]`. Do not write a vivid but invented scene.
+Choose the opening from the author's real material. If the best artifact is missing, open on the strongest true claim the material supports and ask for the artifact in the reply: `[ASK AUTHOR: a real number, incident or example to open on]`. Do not write a vivid but invented scene, and do not leave a blank in the opening.
 
 ## Do cold readers need context first?
 
@@ -20,7 +20,7 @@ Examples of warm-up that fails the test: era statements ("in today's fast-changi
 
 ## Opening moves
 
-Rotate moves. A feed or a newsletter archive that uses one move every time becomes predictable. The examples use placeholders to fill with the author's facts; they are not content to reuse.
+Rotate moves. A feed or a newsletter archive that uses one move every time becomes predictable. Bracketed blanks in the examples below are for you: fill them from the author's facts, or pick another move. A bracket never reaches the published post, and the examples are not content to reuse.
 
 | Move | Use when | Needs from the author | Failure mode |
 |---|---|---|---|
@@ -37,7 +37,7 @@ Rotate moves. A feed or a newsletter archive that uses one move every time becom
 - **A curiosity gap must close.** Withholding the key noun is fair if the piece supplies it soon. A gap that never closes is clickbait and costs the reader's trust.
 - **A bold claim must be specific enough to be wrong.** "Most cost spikes come from idle compute, not traffic" can be tested; "efficiency matters" cannot.
 - **Contrarian only if true.** Do not manufacture a counter-intuitive angle to stop the scroll. If the real finding is ordinary, open on the real artifact.
-- **Lived-in detail comes from the author.** A confession, scene or point-of-view opening works only with the specific detail the author has (the time, the number, what was said). A generic version is invisible and an invented one breaks trust; if the detail is missing, `[ASK AUTHOR: ...]` or choose a different move.
+- **Lived-in detail comes from the author.** A confession, scene or point-of-view opening works only with the specific detail the author has (the time, the number, what was said). A generic version is invisible and an invented one breaks trust; if the detail is missing, choose a different move and ask in the reply (`[ASK AUTHOR: ...]`).
 
 ## Titles and headlines
 

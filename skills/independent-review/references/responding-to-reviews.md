@@ -2,7 +2,7 @@ Load when: drafting or checking a point-by-point reply to reviewer, editor or cl
 
 # Responding to reviews
 
-Triage ([triage](triage.md)) decides which comments are worth acting on. This file turns that decision into the reply itself. The reply is an artifact like any other: the reader is the reviewer or editor, and every claim in it must trace to something the author has confirmed. Editing the manuscript text once comments are accepted belongs to the genre skill, or to `academic-writing` for ML papers if it is installed (otherwise `structured-drafting` for structure plus `evidence-grounded-writing` for claims); checking numbers and citations against sources belongs to `evidence-grounded-writing`.
+Triage ([triage](triage.md)) decides which comments are worth acting on. This file turns that decision into the reply itself. The reply is an artifact like any other: the reader is the reviewer or editor, and every claim in it must trace to something the author has confirmed. The reply is reader-facing: it holds no `[ASK AUTHOR]`, `[VERIFY]` or `[UNTESTED]` markers and no notes to the author (unless the author asked for a draft to edit). The working file, issue list and hand-off in section 10 are author-facing, and markers stay there. Editing the manuscript text once comments are accepted belongs to the genre skill, or to `academic-writing` for ML papers if it is installed (otherwise `structured-drafting` for structure plus `evidence-grounded-writing` for claims); checking numbers and citations against sources belongs to `evidence-grounded-writing`.
 
 ## 1. Read the contract before drafting
 
@@ -12,7 +12,7 @@ Collect, and ask the author for anything missing:
 - Whether new experiments, data or a revised manuscript are allowed at this stage, and the deadline.
 - Which reviewers are friendly, undecided or hostile, only if the author knows.
 
-Venue rules differ by year and track and change without notice. Write `[VERIFY: current rules for <venue, year, track>]` instead of quoting a limit or policy from memory.
+Venue rules differ by year and track and change without notice. Do not quote a limit or policy from memory: record `[VERIFY: current rules for <venue, year, track>]` in the hand-off and, until the author confirms, write the reply to the limit the author gave, or say nothing about the rule in the letter.
 
 ## 2. Split the comments into single issues
 
@@ -20,7 +20,7 @@ Venue rules differ by year and track and change without notice. Write `[VERIFY: 
 2. Split into atomic issues with stable IDs (`R1.1`, `R1.2`, `R2.1`). One question or complaint per issue.
 3. For each issue record: the quote that anchors it; the kind (misunderstanding, unclear exposition, method problem, request for more scope); severity by what it does to the reviewer's decision; whether text alone can fix it (yes, partly, no); status (open, answered, deferred, needs author).
 4. Give more drafting care to reviewers who are undecided and whose concerns are answerable. A concern that is purely a difference of philosophy gets one polite, evidence-based answer and no more.
-5. Keep a list of blocked claims: points a reviewer raised that the material cannot back. They become concessions or `[ASK AUTHOR: ...]`, never new claims.
+5. Keep a list of blocked claims: points a reviewer raised that the material cannot back. In the reply they become concessions or plain statements of what the material does not show; the question for the author goes in the hand-off as `[ASK AUTHOR: ...]`. They never become new claims.
 
 ## 3. Choose the response mode per issue
 
@@ -62,11 +62,11 @@ Rules for the block:
 
 Any failure blocks the reply.
 
-1. **Provenance.** Every factual statement maps to the manuscript, the review, or a result or derivation the author confirmed in this conversation. A statement with no source becomes `[ASK AUTHOR: ...]` or is deleted.
+1. **Provenance.** Every factual statement maps to the manuscript, the review, or a result or derivation the author confirmed in this conversation. A statement with no source is deleted from the reply or restated as a limit ("The current results do not cover X."); the question goes to the hand-off as `[ASK AUTHOR: ...]`, not into the letter.
 2. **Commitment.** Every promise ("we will add...") is already done, approved by the author for this reply, or labelled future work. Keep a checklist of every manuscript edit the reply implies, each tied to an issue ID. Every promised edit must be on the list and every list item must appear in the reply.
 3. **Coverage.** Every issue ends as answered, deferred on purpose with a reason, or needs author. None may disappear. Count each status in the hand-off.
 
-Also check: no invented experiment, number, citation, participant quote or deployment; any citation added in the reply carries `[VERIFY: citation exists and supports the point]` until checked; leftover markers from earlier cycles are listed for the author to keep or strip.
+Also check: no invented experiment, number, citation, participant quote or deployment; a citation you add to the reply stays out of the letter until the author has checked that it exists and supports the point, and until then it is listed in the hand-off as `[VERIFY: citation exists and supports the point]`; leftover markers from earlier cycles are stripped from the letter and listed in the hand-off for the author to keep or drop. Before sending, scan the letter for `[ASK`, `[VERIFY`, `[UNTESTED`, "TODO" and notes that address the author instead of the reviewer.
 
 ## 6. Keep the letter and the manuscript in sync
 
@@ -78,7 +78,7 @@ Also check: no invented experiment, number, citation, participant quote or deplo
 
 ## 7. Over the limit
 
-Cut in this order: repetition, friendly elaboration, opening padding, then wording. Never drop the answer to a critical concern to save space. If a strict paste version and a fuller version are both wanted, mark optional passages in the fuller one so the author can see what was cut.
+Cut in this order: repetition, friendly elaboration, opening padding, then wording. Never drop the answer to a critical concern to save space. If a strict paste version and a fuller version are both wanted, deliver the paste version clean; show the author what was cut as a separate list or as highlighting in an author-facing copy, never as marks inside the paste version.
 
 ## 8. Check the reply with a fresh reader
 
@@ -101,11 +101,13 @@ Log the new comments verbatim, attach them to existing issue IDs or open new one
 
 ## 10. Hand-off
 
+Author-facing: markers belong in this hand-off and nowhere in the letter.
+
 ```
 Issues: <n> (answered <n>, deferred <n>, needs author <n>)
 Commitments: already done <n>, approved <n>, future work <n>
-Needs author: <list of [ASK AUTHOR: ...] items>
-Unverified: <list of [VERIFY: ...] items>
+Needs author: <list of [ASK AUTHOR: ...] items, each with the issue ID and what the letter says in the meantime>
+Unverified: <list of [VERIFY: ...] items, each with where the letter is silent or hedged until checked>
 Concessions made: <one line each>
 Not covered: <what the reply cannot establish, for example results not yet run>
 ```

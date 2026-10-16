@@ -1,9 +1,9 @@
 # Outline template
 
-Load when: writing the grounding ledger and the one-line-per-block outline (stages 5-8). Keep the whole outline to one screen for short pieces; for long pieces use one line per block, grouped by section.
+Load when: writing the grounding ledger and the one-line-per-block outline (stages 5-8). Keep the whole outline to one screen for short pieces; for long pieces use one line per block, grouped by section. The outline is an author-facing artifact shown in the reply: its `from:` source labels and `[ASK AUTHOR]` / `[VERIFY]` gap lines stay here. None of them are copied into the draft.
 
 ```
-Working title:
+Working title (author-facing outline, not the draft):
 Core message (1-2 sentences):
 Shape: primary [argument | explanation | narrative | decision | instruction]; secondary (if any):
 Length target and rough weight per section (more room for what is new or central):
@@ -22,7 +22,7 @@ Each line is a full message a reader could accept or dispute. Read the lines alo
    - from: (inventory units; author's head if unsourced)
    - form: prose / list / table / quote / code
    - cost if removed: (what the reader loses)
-   - gap: (what the material lacks, as a question or `[ASK AUTHOR: ...]` / `[VERIFY: ...]`)
+   - gap: (what the material lacks, as a question or `[ASK AUTHOR: ...]` / `[VERIFY: ...]` for the author; the draft will state it plainly or leave it out)
 2. 
 3. 
 
@@ -46,5 +46,5 @@ OPEN QUESTIONS FOR THE AUTHOR
 3. Every block has a stated cost if removed; blocks with "nothing" are cut or merged.
 4. Swapping two body blocks would break something; if not, add the through-line or reorder.
 5. Weight is uneven on purpose: the longest section is the one the reader needs most, not the one with the most material.
-6. Every gap is written down as a question or marker, not covered with a plausible detail.
+6. Every gap is written down as a question or marker here, not covered with a plausible detail, and the plain-language wording the draft will use (or "omit") is decided.
 7. The ending names what the reader does next, not "summary".

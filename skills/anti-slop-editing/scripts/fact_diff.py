@@ -359,7 +359,7 @@ def render_human(report: dict) -> str:
             out.append(f"[OK] {cat}: {d['before_count']} unchanged")
     if report["markers_after"]:
         out.append(f"-> {report['markers_after']} [ASK AUTHOR]/[VERIFY]-style marker(s) in AFTER were not compared; "
-                   "resolve them before publishing.")
+                   "move the questions to the reply and clear the markers from the edited text unless the author asked for a draft to edit.")
     if report["ok"]:
         out.append("[OK] no mechanical preservation errors found")
     else:

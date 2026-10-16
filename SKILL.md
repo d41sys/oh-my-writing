@@ -31,18 +31,20 @@ Write `paper/STORY.md` with one line per field, each filled from the inputs (rul
 - Strongest skeptic objection and the result that answers it
 - Opening → Challenge → Action → Resolution, one line each
 
-If the inputs do not give a field (often the *why* of the challenge), write `[ASK AUTHOR: ...]`. Never supply a reason, mechanism, or threat yourself. Stop and show the card to the author; prose starts only after approval.
+If the inputs do not give a field (often the *why* of the challenge), write `[ASK AUTHOR: ...]`. Never supply a reason, mechanism, or threat yourself. Stop and show the card to the author; prose starts only after approval. The card is an author-facing working document, so markers belong here and nowhere in the paper text.
 
 ### Step 2. Section outline
-For the section being written, follow its recipe in `references/sections.md`. Write one LaTeX comment per planned paragraph: `% TL;DR: <the paragraph's one message> [source: <file/table>]`. Read the TL;DR lines in order: they alone must tell the section's part of the story. Fix the outline before drafting.
+For the section being written, follow its recipe in `references/sections.md`. Write the outline to `paper/drafts/<section>.outline.md`, one line per planned paragraph: `TL;DR: <the paragraph's one message> [source: <file/table>]`. Read the TL;DR lines in order: they alone must tell the section's part of the story. Fix the outline before drafting. The outline is for the author and the checks; it is never pasted into the `.tex` file.
 
 ### Step 3. Draft
-Under each TL;DR comment, write the paragraph: first sentence states the message; evidence with numbers; last sentence hands off. Apply the sentence rules (§4, `references/style.md`) while writing, not afterwards.
+Write the paragraphs in `paper/drafts/<section>.tex`, one per outline line: first sentence states the message; evidence with numbers; last sentence hands off. Apply the sentence rules (§4, `references/style.md`) while writing, not afterwards.
+
+**The text reads as finished.** Unless the author asked for a draft to edit, the `.tex` holds no `[ASK AUTHOR]`, `[VERIFY]` or `[UNTESTED]` markers, no `[source: ...]` tags, no TODO placeholders and no notes to the author or to the reviewer. A gap in the evidence is handled in paper language: omit the sentence, or state the limit plainly ("We do not evaluate X."), at the strength the inputs support. Never fill a gap with an invented value. Each question goes to the hand-off as a marker line.
 
 ### Step 4. Check (every section, before moving on)
 **4a. Self-check by the writer** (mechanical; fix every failure before 4b):
-1. **Fact trace**: every number, claim, scope, and qualifier maps to an input file with the same strength. Anything added (a sharper consequence, a mechanism, a broader scope, an aggregated number) is deleted or marked `[VERIFY]`. Anything a reviewer required (improvement log) is present, including pre-specified contrasts.
-2. **Story trace**: the TL;DR lines still read as the story; each paragraph does one job; no zig-zag; no paragraph without a duty.
+1. **Fact trace**: every number, claim, scope, and qualifier maps to an input file with the same strength. Anything added (a sharper consequence, a mechanism, a broader scope, an aggregated number) is deleted, or listed in the hand-off as `[VERIFY: ...]` when it needs an outside check. Anything a reviewer required (improvement log) is present, including pre-specified contrasts.
+2. **Story trace**: the outline's TL;DR lines still read as the story and each draft paragraph still does the job its line names; no zig-zag; no paragraph without a duty. The `.tex` contains no marker, source tag or note.
 3. **Voice scan**: run the Tier-1 and Tier-2 scans in `references/ai-tells.md` on the new section; rewrite every hit that carries no information.
 4. **Consistency**: terms, numbers, and claim strength match the untouched sections; no "don't borrow" move from the example paper appears. Report conflicts; do not edit other sections.
 5. **Section rules**: the mechanical rules of the section's recipe in `references/sections.md` (word limit, acronyms spelled out, sentence length, closing-sentence constraint), so the external reviewer's round is not spent on them.
@@ -56,7 +58,7 @@ Under each TL;DR comment, write the paragraph: first sentence states the message
 - Apply CRITICAL and MAJOR findings that the evidence supports; a finding that would add an unsupported claim is rejected with a one-line reason. Re-run 4a, then one more fresh 4b round. At most two 4b rounds per section; report what remains.
 
 ### Step 5. Hand-off
-Return the drafted part and a short list: `[ASK AUTHOR]` / `[VERIFY]` items, anything cut, rounded, or moved, which example-paper roles were used, conflicts with untouched sections, the external reviewer's verdict and any finding not applied (with reason), and any check that still fails. In single-part mode, stop here.
+Return the drafted part and a short list: `[ASK AUTHOR]` / `[VERIFY]` marker lines (also saved to `paper/drafts/open-questions.md`), anything cut, rounded, or moved, which example-paper roles were used, conflicts with untouched sections, the external reviewer's verdict and any finding not applied (with reason), and any check that still fails. The reply and `open-questions.md` carry all questions and process notes; the `.tex` carries none. In single-part mode, stop here.
 
 **Order of sections (whole paper)**: story card → abstract draft (forces focus) → introduction → method/protocol → experiments → related work → conclusion → abstract rewritten last. Figures and tables are planned with the outline of the section that uses them (`references/figures-latex.md`).
 

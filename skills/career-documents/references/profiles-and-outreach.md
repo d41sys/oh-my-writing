@@ -57,7 +57,7 @@ A résumé bullet says what happened; a case study shows how and why, with hones
 
 **Emphasis by role:** product (prioritization, trade-offs, metric definition); design (research methods, artifacts, usability evidence, before and after); engineering (problem framing, architecture, failure modes, performance or reliability proof); marketing (audience, channel, creative, honest attribution, return only when measured).
 
-**Integrity:** say who did what ("I designed ...", "I co-led discovery with ..."). Do not absorb team results as solo work. Blur or omit confidential figures, customer names and unreleased plans, and mark redactions. Prefer ranges or relative change when absolute numbers are restricted. Never invent test lifts, revenue or headcount.
+**Integrity:** say who did what ("I designed ...", "I co-led discovery with ..."). Do not absorb team results as solo work. Blur or omit confidential figures, customer names and unreleased plans, and say so in the case study in one plain phrase ("client name withheld"). Prefer ranges or relative change when absolute numbers are restricted. Never invent test lifts, revenue or headcount.
 
 **Visuals:** before and after, key screens or diagrams, simple results tables. Caption each, size them consistently, check legibility on a phone, strip anything private.
 
@@ -83,11 +83,11 @@ A written set of true episodes reused in interviews, form answers and profile bu
 
 ## 4. Short application answers
 
-Form fields want a direct answer, not a cover letter in a box. Read the posting, the candidate's material and the exact prompt. If either is missing, ask.
+Form fields want a direct answer, not a cover letter in a box. Read the posting, the candidate's material and the exact prompt. If either is missing, ask. The answer text is pasted into a form that a recruiter reads: it holds no marker and no bracket slot. When the material is thin, give a shorter true answer and put the question in the reply (`[ASK AUTHOR: ...]` line).
 
 | Field type | Aim | Shape |
 | --- | --- | --- |
-| Years with a skill | honest duration plus one anchor | "[Skill], [N] years. Used for [project or context]. Also [adjacent tool]." |
+| Years with a skill | honest duration plus one anchor | "Python, 6 years. Used for the dispatch service at my last job. Also Go." (invented values; the user's own go in) |
 | Why this company | specific to this employer, short | a concrete public fact, then the candidate's real related work, then an optional motive; do not restate the posting |
 | Links or portfolio | scannable list | name, link, one line on what and one proof; most relevant first |
 | Self-rating | honest band | follow the true level; note stale skills |
@@ -117,7 +117,7 @@ Rules:
 ### 5.2 Facts first, angle second
 1. Collect real, dated, public facts about the recipient or organization: a post, talk, paper, product change, job posting, public statement. Keep the source and date for each. Use an exact quote only with a link.
 2. Only then write the angle, using only those facts.
-3. If no real hook exists, say so and write a plainer message without fake personalization.
+3. If no real hook exists, write a plainer message without fake personalization and say in the reply that no hook was available.
 4. Leave out sensitive personal topics (health, money, politics, religion, family) even when public.
 5. Removal test: if the personalized opening can be deleted and the message still makes sense, the personalization is decoration. The observation should lead into why the sender is writing.
 
@@ -167,21 +167,21 @@ A connection note or short-form message is two or three plain sentences: one cre
 - Never write "as we discussed" or "following up on our conversation" unless the user confirms a real exchange.
 
 ### 5.10 Academic outreach (prospective supervisor, lab, program contact)
-Conventions differ by country, field and department; some programs forbid or ignore direct contact before applying. Ask the user to check the program's admissions page and note it as `[VERIFY: does this program accept pre-application contact?]` when unknown.
+Conventions differ by country, field and department; some programs forbid or ignore direct contact before applying. Ask the user to check the program's admissions page; when it is unknown, add `[VERIFY: does this program accept pre-application contact?]` to the reply, not to the email.
 1. Facts from the user: degree and institution, the research or project they did (with their own role), the one recent paper, project or talk of the recipient they have actually read, and what they want (a place in the lab, a question about fit, whether the group is taking students).
-2. Name one specific, recent work of the recipient and one honest link to the sender's own work. If the user has not read anything specific, do not guess a paper: write `[ASK AUTHOR: one paper or project of theirs you have read, and what you took from it]` or send a plainer message with no claim of familiarity.
-3. Shape: subject naming the purpose and field; two or three sentences on the sender; the link to the recipient's work; one ask ("Are you taking students for [term]?"); an offer to send a CV and transcript, attached only if the program asks. Do not attach a full statement of purpose to a first message.
+2. Name one specific, recent work of the recipient and one honest link to the sender's own work. If the user has not read anything specific, do not guess a paper: send a plainer message with no claim of familiarity, and ask in the reply `[ASK AUTHOR: one paper or project of theirs you have read, and what you took from it]`.
+3. Shape: subject naming the purpose and field; two or three sentences on the sender; the link to the recipient's work; one ask ("Are you taking students for next September?", with the term the user gave); an offer to send a CV and transcript, attached only if the program asks. Do not attach a full statement of purpose to a first message.
 4. Say plainly if the sender is applying through the normal route and only asks whether the fit is reasonable. Do not imply an agreement, a promised place or a prior exchange; never name another faculty member as a contact unless the user did.
 5. Keep it shorter than a cover letter: a first message to a busy academic is usually under about 150 words. Include the sender's full name, program applied to, and a link to a CV or page if one exists.
 6. A list of professors with only the name swapped fails the removal test. Prefer a few well-researched messages.
 
 ### 5.11 Draft hand-off for outreach
-Return each message with the recipient, the channel, the subject, the body, and a short note: which facts about the recipient were used and where the user can check them, any warm path, and a confidence of high, medium or low that the hook is real. If no verified hook exists, say so in the note.
+The file holds the message: subject line and body, ready to send. The reply carries the hand-off, because it is for the user: the recipient and channel, which facts about the recipient were used and where the user can check them, any warm path, a confidence of high, medium or low that the hook is real, and the open questions as marker lines. If no verified hook exists, say so in the reply. No source tags, hedges or "note to self" lines go into the message.
 
-### 5.12 Examples (invented placeholders)
+### 5.12 Examples (invented facts)
 - Informational ask: "Hi Dana, I read your team's post on moving support reporting to a shared warehouse. I run a similar migration for a 12-person finance team. Would you be open to answering two questions by email about how you handled backfills?"
-- Referral ask: "Hi Sam, I am applying for the Data Analyst role at [company]. We worked together on the pricing review at [former employer]. Would you be comfortable referring me, or is there someone better to ask? I can send the posting and a two-line summary of the work."
-- Academic ask: "Dear Dr. Okoye, I am applying to the MSc in Ecology at [university] this autumn. I read your 2025 paper on hedgerow connectivity and ran a smaller version of that survey for my undergraduate thesis. Are you taking students for next year? I can send my CV and thesis summary if useful."
+- Referral ask: "Hi Sam, I am applying for the Data Analyst role at Brightway Foods. We worked together on the pricing review at Corvane Retail. Would you be comfortable referring me, or is there someone better to ask? I can send the posting and a two-line summary of the work."
+- Academic ask: "Dear Dr. Okoye, I am applying to the MSc in Ecology at Westfield University this autumn. I read your 2025 paper on hedgerow connectivity and ran a smaller version of that survey for my undergraduate thesis. Are you taking students for next year? I can send my CV and thesis summary if useful."
 - Thank-you after a short call: "Hi Sam, thank you for the call on Tuesday. As promised, here are the two questions I mentioned, and the link to the pricing review. I will not take more of your time unless you suggest a next step."
 
 ## 6. Reference lists and reference requests
@@ -219,7 +219,7 @@ Choose one locale per document: the reader's market, not the writer's by default
 | --- | --- | --- | --- | --- |
 | Spelling | color, organize, center | colour, organise (or -ize, kept consistent), centre | colour, organise, centre | colour, organise, centre |
 | Date | January 15, 2026 | 15 January 2026 | 15 January 2026 | 15 January 2026 |
-| Neutral greeting | Hi [Name] | Dear [Name] or Hi [Name] | Hi [Name] | Kia ora [Name] or Hi [Name] |
+| Neutral greeting | Hi Dana | Dear Dana or Hi Dana | Hi Dana | Kia ora Dana or Hi Dana |
 | Common sign-off | Best, Thanks, Best regards | Kind regards, Many thanks | Kind regards (new or formal), Cheers (once rapport exists) | Kind regards, Cheers, Ngā mihi (only if the organization uses Te Reo) |
 
 Notes:

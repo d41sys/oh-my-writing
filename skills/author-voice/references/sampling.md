@@ -32,7 +32,7 @@ Generic examples from a platform, a style guide's sample paragraphs and writing 
 |---|---|
 | 5 to 20 samples, around a thousand words or more in total | Normal build. Confidence can reach medium or high if the traits agree |
 | 2 to 4 samples | Build a provisional profile. Cap strength at moderate. Ask the author to confirm each major trait |
-| 1 sample | Do not build a full profile. Offer a short list of tendencies as hypotheses, every one rated weak, say plainly that one sample is not a voice, and ask for more. If a file was requested, write it as a provisional, low-confidence hypotheses file with an `[ASK AUTHOR: ...]` request for more samples |
+| 1 sample | Do not build a full profile. Offer a short list of tendencies as hypotheses, every one rated weak, say plainly that one sample is not a voice, and ask for more. If a file was requested, write it as a provisional, low-confidence hypotheses file; the profile is author-facing, so it may carry an `[ASK AUTHOR: ...]` request for more samples, and the same request goes in the reply |
 | 0 samples | Do not invent a voice. Use the genre's conventions for the stated reader and ask for two or three real pieces |
 
 These counts are practical heuristics, not thresholds with any special meaning. More samples help only if they are representative; twenty near-identical posts add less than five varied ones.

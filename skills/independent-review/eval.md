@@ -27,8 +27,8 @@ Answer each check pass or fail. Fix every failure before returning.
 15. Does every finding carry a severity, a location (quote or section), and a reader consequence?
 16. Is severity assigned by reader impact rather than reviewer tone, and are taste-only items marked nit?
 17. Does every finding have exactly one decision: accept, reject with a one-line evidence-based reason, or needs author?
-18. Was any finding that would add an unsupported claim, number, quote, name or example rejected as written, and turned into `[ASK AUTHOR: ...]` if the gap is real?
-19. Are accepted fixes the smallest edits, with the author's voice, claims, qualifiers, numbers and structure intact, reported as a list or marked edits, with no review notes left in the artifact?
+18. Was any finding that would add an unsupported claim, number, quote, name or example rejected as written, and turned into a needs-author question in the findings (not text in the artifact) if the gap is real?
+19. Are accepted fixes the smallest edits, with the author's voice, claims, qualifiers, numbers and structure intact, reported as a list or marked edits? Is every revised draft or rewritten passage free of `[ASK AUTHOR]`, `[VERIFY]` and `[UNTESTED]` markers, review notes, finding IDs and process narration, with gaps left as they were, dropped, or stated plainly, and each question put in the findings?
 20. Were fixes applied in dependency order and diffed against the version the reviewer saw for drift?
 21. Was a suggestion that changes the document's purpose or audience named as drift and sent to the author, not folded in as a fix?
 22. Where a finding was contested, was a separate verification job used and labelled, with the evidence given as locations the reviewer re-reads, and is no fabricated evidence used in the rebuttal?
@@ -43,10 +43,10 @@ Answer each check pass or fail. Fix every failure before returning.
 
 ## Responding to reviewer comments (only when a reply is the deliverable)
 
-28. Was the venue or client contract (format, limit, anonymity, new-data policy, deadline) collected, with unknowns marked `[VERIFY: ...]` rather than quoted from memory?
+28. Was the venue or client contract (format, limit, anonymity, new-data policy, deadline) collected, with unknowns recorded as `[VERIFY: ...]` in the hand-off rather than quoted from memory in the letter?
 29. Are the comments split into single issues with stable IDs, each anchored in a verbatim quote that was not edited?
 30. Does every material issue have a block with a direct first-sentence answer, evidence, a change location (if revisions are allowed), and a remaining limit?
-31. Is every fact in the reply traceable to the manuscript, the review, or something the author confirmed, and is every promise either done, approved by the author, or labelled future work?
+31. Is every fact in the reply traceable to the manuscript, the review, or something the author confirmed, and is every promise either done, approved by the author, or labelled future work? Is the letter itself free of markers and notes to the author, with those questions in the hand-off?
 32. Does every issue end answered, deferred with a reason, or needs author, with none dropped?
 33. Does the reply invent no experiment, number, citation or participant quote, and switch to a concession or future-work line when evidence is missing?
 34. Do quotes from the manuscript match the revised text word for word, and do table, figure and section numbers match?
@@ -62,4 +62,4 @@ Answer each check pass or fail. Fix every failure before returning.
 
 ## Final read
 
-Read the report once as the author. Does it say what to do next, what was rejected and why, and what only the author can answer? If a sentence would not change what the author does, cut it.
+Read the report once as the author. Does it say what to do next, what was rejected and why, and what only the author can answer? If a sentence would not change what the author does, cut it. Then read any revised text or letter once as its real reader: is there a marker, a note to the author or a mention of the review process left in it? Remove it.

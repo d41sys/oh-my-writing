@@ -3,7 +3,7 @@ name: technical-docs
 description: Writes and revises technical documentation by first deciding what the reader needs (learn by doing, achieve a goal, look up a fact, or understand why), then producing the matching page type. Covers tutorials and getting-started guides, how-to guides, reference and API/CLI/config pages, architecture explanations, READMEs, code walkthroughs, pull request descriptions, commit messages, changelogs, release notes, migration guides and decision records (ADRs). Use when asked to "write a README", "document this API", "write a tutorial", "write a getting-started guide", "write a how-to guide for this tool", "explain this architecture", "walk through this code", "write the PR description", "write a commit message", "write an ADR", "write release notes", "write a changelog", "write a migration guide", or "fix our docs structure". A blog-style how-to post or a launch announcement post goes to post-writing.
 license: CC-BY-SA-4.0
 metadata:
-  version: "1.2"
+  version: "1.3"
   skill-author: d41sys
 ---
 
@@ -30,18 +30,18 @@ Ask at most three questions, fewer for short tasks, and only when the answer cha
 2. Which job is this page for: learning, finishing a task, looking up, or understanding?
 3. Which version or environment does it target?
 
-Otherwise (and always in non-interactive runs) proceed, and state assumptions at the top of your reply, not inside the page.
+Otherwise (and always in non-interactive runs) proceed, and state assumptions at the top of your reply, not inside the page. Questions for the author go in the reply too (see rule 16), never into the page.
 
 ## Workflow
 
 1. **Classify.** Apply the compass: is the reader doing or thinking, and are they studying or working? Pick one type from the table below. If the request spans types, plan one page per type and link them. See [doc types](references/doc-types.md).
 2. **Inventory.** Check what docs already exist. Reuse and link them; do not create a page that duplicates a fact owned elsewhere. Create a new file only when something real must go in it, and follow the repo's folder and naming habits.
-3. **Gather facts from source.** Read the code, run `--help`, read the diff and commit log. Never document planned or guessed behaviour. A missing fact becomes one of three markers, never an invention: `[VERIFY: ...]` (a source exists or must be found and checked: an external or checkable fact), `[ASK AUTHOR: ...]` (the author knows or decides it: intent, reasons, numbers they hold) or `[UNTESTED]` (a command or sample not run). Do not use other markers such as TBD or TODO stubs.
+3. **Gather facts from source.** Read the code, run `--help`, read the diff and commit log. Never document planned or guessed behaviour. When a fact is missing, never invent it: state the gap in the reader's words ("The notes do not say which alternatives were weighed."), or leave the sentence out. Record the question for the author as a marker line in your reply, with one kind per line: `[VERIFY: ...]` (a source exists or must be found and checked: an external or checkable fact), `[ASK AUTHOR: ...]` (the author knows or decides it: intent, reasons, numbers they hold) or `[UNTESTED]` (a command or sample not run). No other marker kinds, no TBD or TODO stubs.
 4. **Pick the skeleton.** Use the type's skeleton from [doc types](references/doc-types.md), the README or PR shape from [README and PR](references/readme-and-pr.md), or the entry layout from [reference and API](references/reference-and-api.md). Start from [assets/readme-template.md](assets/readme-template.md) or [assets/pr-description-template.md](assets/pr-description-template.md) where they fit.
 5. **Draft to the type's contract.** Write the page for its single reader state. Move anything that belongs to another type into a link.
-6. **Verify every command and sample.** Run it, or mark it `[UNTESTED]` and say what environment it needs. State versions. Check that each path, flag, link and output you cite exists.
+6. **Verify every command and sample.** Run it, or leave it out of the page, or say in plain words what was and was not run ("These steps were not run in this environment." only when that helps the reader), and list the item as `[UNTESTED]` in the reply with the environment it needs. State versions. Check that each path, flag, link and output you cite exists.
 7. **Check navigation.** Add links to the neighbouring types, not copies of their content. Update the index or map page if the set of pages changed.
-8. **Self-check and return.** Run [eval.md](eval.md), fix failures, then reply with the page plus a short list of what was verified, what is marked untested, and what is still open.
+8. **Self-check and return.** Run [eval.md](eval.md), fix failures, then reply with the page plus a short list of what was verified, what is untested, and what is still open. When files are written, also write `open-questions.md` beside them with the same marker lines.
 
 ### The four page types
 
@@ -62,15 +62,16 @@ Other artifacts map onto these: a README is a front door that links into all fou
 4. **Reference is austere.** State what is, completely and in a fixed layout. No teaching, selling or arguing; link out. Reason: the reader is mid-task and scanning. Exception: a short example per entry is part of reference.
 5. **Explanation earns its length by answering "why".** Give history, constraints, rejected alternatives and trade-offs, tied to concrete examples. Admit opinion where it is the author's real judgement. Do not slip in procedures or parameter tables.
 6. **Describe the thing as it is now.** Do not narrate the edit that produced it ("this replaces the old approach"). Change history lives in the changelog, release notes, migration guide, commit message or decision record.
-7. **Run it or mark it.** A sample that was never run is a claim, not a sample. Mark it `[UNTESTED]` rather than let it pass as working. Reason: docs that do not match reality are worse than none. Exception: placeholder values in a sample are fine when they are visibly marked as placeholders.
+7. **Run it or say so.** A sample that was never run is a claim, not a sample. Either run it, drop it, or state in reader language that it was not run; the `[UNTESTED]` line goes in the reply. Reason: docs that do not match reality are worse than none. Exception: placeholder values in a sample are fine when the surrounding text says they are placeholders (for example `<your-token>` with "replace with your token").
 8. **State versions and environment.** Every install, command and API page names the version and platform it was checked against. Take them from files, not recall.
 9. **Never invent.** No endpoints, flags, config keys, defaults, install steps, package names, supported formats, benchmarks, user counts, customer quotes or "supports X" claims that the source does not show. A script's install step is what the source shows (the file, the interpreter version, "standard library only"), not a package-manager command. Numbers in a changelog or PR come from the change itself; name the parts ("the cap plus jitter") instead of a sum or ratio you computed that appears in no source.
 10. **Lead with what the reader does.** First screen: what this is and the first action. Plain verbs, short sentences, active voice. Cut filler openers ("Please note that", "In order to"). Clarity beats completeness beats elegance.
 11. **Write for the new teammate.** If they would have to ask a question to follow it, the page is not done.
 12. **Markdown discipline.** One H1, no skipped levels, descriptive sentence-case headings, fenced code blocks with a language tag (`text` for plain output), tables for reference data (about five columns at most, header row), relative links with meaningful text, numbered lists only for ordered steps. Details: [reference and API](references/reference-and-api.md#markdown-conventions).
 13. **Audience and language.** Match the reader's level and the project's existing language. For Vietnamese or other non-English docs, apply the structure, verification and navigation rules here; English wording rules (filler lists, tone words) do not transfer.
-14. **Reasons belong to the author.** For an ADR, PR rationale or design note, record only the context, alternatives and reasons the author or the repo actually shows. A plausible rationale you made up is an invention; ask with `[ASK AUTHOR: which alternatives were weighed?]`.
+14. **Reasons belong to the author.** For an ADR, PR rationale or design note, record only the context, alternatives and reasons the author or the repo actually shows. A plausible rationale you made up is an invention. When the reasons are not shown, the page says what the record does not show ("The notes do not say which alternatives were weighed.") or leaves the section out, and the reply asks `[ASK AUTHOR: which alternatives were weighed?]`.
 15. **A guarantee is as strong as the code.** Check order of operations, defaults and edge cases before writing "never", "always", "at most" or "backwards compatible". State a limit exactly (for example, whether an offset is added before or after a clamp). A changed default is a behaviour change even when the signature is unchanged; say so.
+16. **The page reads as finished.** A README, guide, how-to, runbook, reference page, PR body, commit message, ADR, changelog or migration guide goes to a reader, so it holds no `[ASK AUTHOR]`, `[VERIFY]` or `[UNTESTED]` markers, no TODO or TBD placeholders, no empty template slots and no process narration ("as requested", "I checked the diff", "the notes say", per-paragraph source notes, `[source: ...]` tags). A gap is stated as a fact about the material ("No license is stated in the repository.") or the sentence is left out; a checkable claim you could not check is left out or stated as unconfirmed. Questions go to the reply, and `open-questions.md` when files are written. Reason: a reader sees placeholders and meta-notes as an unfinished page, and in non-interactive runs the author will not answer first. Exception: the author asked for a draft to edit, or the output is an author-facing artifact (a review of existing docs or code comments, a staleness report, a findings list); then markers stay there. HTML comments that tell the author to delete a section belong to templates, not to the finished page. Gap wording: [README and PR](references/readme-and-pr.md#gaps-in-a-reader-facing-page).
 
 ## Output
 
@@ -80,10 +81,12 @@ Return the finished page(s) as Markdown in the repo's conventions, with a short 
 Page type: <tutorial | how-to | reference | explanation | README | PR | changelog | migration>
 Written for: <reader and what they already know>
 Verified: <commands and links actually run or opened>
-Untested: <items marked [UNTESTED], with why>
-Open: <[ASK AUTHOR: ...] and [VERIFY: ...] markers that need an answer>
+Untested: <items left out or described as not run in the page, with why; marker lines>
+Open: <[ASK AUTHOR: ...] and [VERIFY: ...] lines that need an answer>
 Linked pages: <neighbouring docs this page points to or needs created>
 ```
+
+Page files carry none of these lines. When files are written, put the same `Untested` and `Open` lines in `open-questions.md` beside them.
 
 When editing an existing page, change the smallest amount that fixes the defect, keep the author's wording and structure elsewhere, and report what changed and why in a few lines. Do not silently overwrite hand-written content or generated sections.
 
@@ -114,6 +117,16 @@ After:  fix(export): skip blank rows when writing CSV
         Blank rows in the source table produced lines of bare commas,
         which the importer rejected. Skip rows whose fields are all
         empty. Closes #87.
+```
+
+README gap, before and after (the repository states no license):
+
+```text
+Before: ## License
+        [ASK AUTHOR: license]
+After:  ## License
+        No license is stated in this repository. Ask the owner before reusing the code.
+Reply:  [ASK AUTHOR: which license applies?]
 ```
 
 ## Reference files

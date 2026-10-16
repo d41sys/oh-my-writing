@@ -1,6 +1,6 @@
 # Brief template
 
-Load when: starting a draft that is longer than a short message, or when the author asks what the brief is. Fill from the request and material first; ask only about fields that would change the structure. Delete fields that do not apply.
+Load when: starting a draft that is longer than a short message, or when the author asks what the brief is. The brief is shown to the author in the reply and never goes into the draft. Fill from the request and material first; ask only about fields that would change the structure. Delete fields that do not apply.
 
 ```
 Working title:

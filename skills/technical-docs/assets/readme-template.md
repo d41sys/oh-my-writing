@@ -4,11 +4,11 @@
 
 ## Why use it
 
-<Two to four sentences on the problem it solves, in the reader's terms. Add "Not for: ..." if it saves time. [ASK AUTHOR: the real problem and audience] if unknown.>
+<Two to four sentences on the problem it solves, in the reader's terms, from what the code and repo show. Add "Not for: ..." if it saves time. If the real problem or audience is not shown, write only what the code does and drop this section's claims; ask the author in the reply.>
 
 ## Quick start
 
-Checked on <tool> <version>, <OS>. [UNTESTED] if not run.
+Checked on <tool> <version>, <OS>. <If the commands were not run, say "These commands were not run in this environment." or drop the line, and list them as untested in the reply.>
 
 ```bash
 <command 1>
@@ -60,4 +60,6 @@ Key settings (full list in <reference link>):
 
 ## License
 
-<License name and link, or [ASK AUTHOR: license]>
+<License name and link. If the repository states none, write "No license is stated in this repository." or omit the section; ask the author in the reply.>
+
+<!-- Template notes, delete before use: fill or remove every <slot>. The finished README holds no angle-bracket slots, no marker lines for the author and no notes about how it was written. -->
