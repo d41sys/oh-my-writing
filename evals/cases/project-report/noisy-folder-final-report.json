@@ -158,8 +158,8 @@
     },
     {
       "type": "regex",
-      "pattern": "(?is)decommission[^\\n]{0,300}(no owner|unassigned|not assigned|nobody|no one|no (set |agreed |confirmed )?date|not (yet )?(scheduled|dated|set|planned|assigned|named)|(owner|date)[^.\\n]{0,40}(missing|open|needed|tbd|unknown|not (yet )?(named|assigned|set|agreed|confirmed))|ASK AUTHOR)",
-      "note": "the legacy decommission has no owner or date in any document: the report says so (any wording), rather than leaving it out or guessing"
+      "pattern": "(?is)decommission[^\\n]{0,300}(no owner|unassigned|not assigned|to be assigned|assign\\w*[^.\\n]{0,40}\\b(owners?|dates?)\\b|owners? and dates?|nobody|no one|no (set |agreed |confirmed )?date|not (yet )?(scheduled|dated|set|planned|assigned|named)|(owner|date)[^.\\n]{0,40}(missing|open|needed|tbd|unknown|not (yet )?(named|assigned|set|agreed|confirmed))|ASK AUTHOR)",
+      "note": "the legacy decommission has no owner or date in any document: the report says so (any wording), rather than leaving it out or guessing. Also accepted: 'to be assigned' and 'assign an owner and a date', the skill's own wording for a gap and its proposed action (a report that says an owner and date must be assigned states the gap as plainly as 'no owner')"
     },
     {
       "type": "not_regex",

@@ -17,7 +17,21 @@
         "negations",
         "certainty",
         "scope"
-      ]
+      ],
+      "allow_lost": [
+        "not"
+      ],
+      "note": "numbers, hedge and scope are compared as before. The count of the word 'not' is not: the source has two ('did not change', 'does not include') and a faithful edit may write the second as 'no clinical details'; both negations are checked by the two patterns below, which accept either form"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)\\b(?:did not|didn.t|not|no|never|unchanged|same)\\b[^.\\n]{0,40}\\bhours\\b|\\bhours\\b[^.\\n]{0,40}\\b(?:did not|didn.t|not|no|never|unchanged|same|stay\\w*|remain\\w*)\\b",
+      "note": "the opening hours were not changed; the negation may be reworded ('did not change', 'unchanged')"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)\\b(?:does not|do not|doesn.t|don.t|no|without|never|exclude\\w*|omit\\w*|leave\\w* out)\\b[^.\\n]{0,40}\\bclinical\\b|\\bclinical\\b[^.\\n]{0,40}\\b(?:not|no|excluded|omitted|left out|never)\\b",
+      "note": "the reminder text carries no clinical details; 'contain no clinical details' keeps it"
     },
     {
       "type": "no_added_facts",

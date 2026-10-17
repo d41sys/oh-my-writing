@@ -2,64 +2,26 @@
   "id": "project-report/heldout-folder-spend-conflict-owner-gap",
   "skill": "project-report",
   "heldout": true,
-  "description": "Held-out. A small project folder (charter, task list, budget sheet, status email) where the email and the budget sheet give different spend figures, one task has no owner, and a task is still planned. The report keeps both spend figures and says they differ, marks the missing owner without inventing one, keeps planned work planned and the out-of-scope item out, adds no figures beyond arithmetic on the supplied ones, and plans a diagram or figure reference.",
+  "description": "Held-out. A small project folder (charter, task list, budget sheet, status email) where the email and the budget sheet give different spend figures, one task has no owner, and a task is still planned. The report keeps both spend figures and says they differ, marks the missing owner without inventing one, keeps planned work planned and the out-of-scope item out, and adds no figures beyond arithmetic on the supplied ones. The prompt asks for 'a diagram where it helps', so a diagram is optional and is not checked.",
   "prompt": "Everything about the Reminderline pilot is in the docs/ folder. Write a status report for the practice board from those documents: plain professional tone, with a diagram where it helps. Save the report to out/report.md. I'm away today, so don't wait for me.",
   "files": {
     "docs/charter.md": "# Reminderline pilot charter (signed 1 September 2026)\n\nSponsor: Ngozi Adeyemi (practice manager). Delivery lead: Casimir Brandt (IT).\n\nGoal: send appointment reminders by text message to patients of the 3 Orchard Row clinics, to cut missed appointments.\n\nApproved budget: 24,000 GBP. Any change over 2,000 GBP needs Ngozi's approval.\n\nGo-live: 30 November 2026.\n\nScope: reminders only. Two-way rebooking by text is out of scope for this pilot.\n",
     "docs/tasks.csv": "Task,Start,End,Owner,Status\nGateway contract,2026-09-07,2026-09-25,Casimir Brandt,done\nPatient list export,2026-09-28,2026-10-23,Casimir Brandt,in progress (60% complete)\nConsent wording for patients,2026-10-12,2026-11-06,,not started\nStaff briefing,2026-11-16,2026-11-20,Lindiwe Fofanah,planned\nGo-live,2026-11-30,2026-11-30,Ngozi Adeyemi,planned\n",
     "docs/budget.csv": "Line,Approved GBP,Spent to 10 October GBP\nGateway licence,14000,12600\nIntegration work,7000,5800\nPatient communications,3000,0\nTotal,24000,18400\n",
-    "docs/status-email.txt": "From: Casimir Brandt\nTo: Ngozi Adeyemi\nDate: 13 October 2026\nSubject: Reminderline status\n\nHi Ngozi,\n\nThe patient list export is about 60% done. We are at 21,900 GBP spent so far out of the 24,000 GBP budget. The consent wording has not been started because I am not sure whose job it is, and patients cannot be texted until it exists. Go-live is still 30 November.\n\nCasimir\n"
+    "docs/status-email.txt": "From: Casimir Brandt\nTo: Ngozi Adeyemi\nDate: 13 October 2026\nSubject: Reminderline status\n\nHi Ngozi,\n\nThe patient list export is about 60% done. As of 10 October we had spent 21,900 GBP out of the 24,000 GBP budget. The consent wording has not been started because I am not sure whose job it is, and patients cannot be texted until it exists. Go-live is still 30 November.\n\nCasimir\n"
   },
   "output": "out/report.md",
   "checks": [
     {
       "type": "no_added_facts",
       "allow": [
-        "14000",
-        "12600",
-        "7000",
-        "5800",
-        "3000",
-        "0",
-        "24000",
-        "18400",
-        "21900",
-        "2000",
-        "3500",
-        "3500 gbp",
-        "5600",
-        "5600 gbp",
-        "2100",
-        "2100 gbp",
-        "77%",
-        "76.7%",
-        "91%",
-        "91.3%",
-        "91.25%",
-        "23%",
-        "23.3%",
-        "2026",
-        "10 october",
-        "13 october",
-        "october",
-        "60",
-        "60%",
-        "1",
-        "2",
-        "3",
-        "6",
-        "7",
-        "9",
-        "10",
-        "13",
-        "16",
-        "20",
-        "23",
-        "25",
-        "28",
-        "30"
+        "14000", "14000 gbp", "12600", "12600 gbp", "7000", "7000 gbp", "5800", "5800 gbp", "3000", "3000 gbp",
+        "0", "0 gbp", "24000", "24000 gbp", "18400", "18400 gbp", "21900", "21900 gbp", "2000", "2000 gbp",
+        "3500", "3500 gbp", "5600", "5600 gbp", "2100", "2100 gbp",
+        "77%", "76.7%", "91%", "91.3%", "91.25%", "23%", "23.3%", "8.75%", "9%",
+        "date:--10-00", "1", "2", "3"
       ],
-      "note": "source figures with or without a currency sign (the checker treats 14,000 and 14000 as different items), plus remaining budget and percent of budget for the two spend figures; nothing else new"
+      "note": "source figures with or without a currency sign (the checker treats 14,000 and 14,000 GBP as different items), the difference between the two spend figures, remaining budget and percent of budget for each; 'date:--10-00' is how the checker reads '10 October' after an amount ('0 GBP to 10 October'), a date that is in the budget sheet's heading; '1', '2', '3' are figure numbers ('Figure 1'), not data. Nothing else new"
     },
     {
       "type": "regex",
@@ -73,24 +35,13 @@
     },
     {
       "type": "regex",
-      "pattern": "(?im)^#{1,4}\\s+.*\\b(executive summary|summary|overview)\\b"
+      "pattern": "(?ms)^#{1,4}[ \\t]+\\S.*^#{1,4}[ \\t]+\\S.*^#{1,4}[ \\t]+\\S",
+      "note": "a board report is sectioned (at least three headings). The earlier checks for headings named summary, progress, risks and next steps tested one naming convention; the prompt asks only for a plain professional status report, so any sensible section names meet it. The earlier diagram check is dropped too: the prompt asks for 'a diagram where it helps', which does not require one for a five-task plan"
     },
     {
       "type": "regex",
-      "pattern": "(?im)^#{1,4}\\s+.*\\b(progress|status)\\b"
-    },
-    {
-      "type": "regex",
-      "pattern": "(?im)^#{1,4}\\s+.*\\b(risks?|issues?|open (points|questions|items))\\b"
-    },
-    {
-      "type": "regex",
-      "pattern": "(?im)^#{1,4}\\s+.*\\bnext steps\\b|^#{1,4}\\s+.*\\b(actions?|decisions?)\\b"
-    },
-    {
-      "type": "regex",
-      "pattern": "(?is)(```mermaid|!\\[[^\\]]*\\]\\([^)]+\\)|\\bFigure \\d)",
-      "note": "a diagram block, an image reference or a numbered figure reference"
+      "pattern": "(?i)30 nov",
+      "note": "the go-live date is reported"
     },
     {
       "type": "markers",

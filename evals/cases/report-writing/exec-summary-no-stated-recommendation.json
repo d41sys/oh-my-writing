@@ -25,8 +25,8 @@
     },
     {
       "type": "regex",
-      "pattern": "(?i)(no (stated |settled |final |single )?recommendation|(not|n't)( yet)? (settled|decided|chosen|recommend\\w*|made a (recommendation|choice|decision)|(make|give|state) a recommendation)|undecided|open decision|decision (is|remains) (open|yours|for)|recommendation (is|was|has been) (not|left|pending|open)|pending (a )?(choice|decision|recommendation)|without (recommending|choosing|deciding))",
-      "note": "the request asks for 'our recommendation' but the notes say it is not settled; the summary Marc reads must say so in plain words instead of leaving the point silent or filling it"
+      "pattern": "(?i)((not|n't)( yet)? settle\\b|leaves? (the )?(choice|decision|question) (open|unsettled)|no (stated |settled |final |single )?recommendation|(not|n't)( yet)? (settled|decided|chosen|recommend\\w*|made a (recommendation|choice|decision)|(make|give|state) a recommendation)|undecided|open decision|decision (is|remains) (open|yours|for)|recommendation (is|was|has been) (not|left|pending|open)|pending (a )?(choice|decision|recommendation)|without (recommending|choosing|deciding))",
+      "note": "the request asks for 'our recommendation' but the notes say it is not settled; the summary Marc reads must say so in plain words instead of leaving the point silent or filling it Active forms ('the analysis does not settle whether…') say the same as 'not settled'."
     },
     {
       "type": "not_regex",

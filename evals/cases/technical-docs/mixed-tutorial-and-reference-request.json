@@ -20,8 +20,8 @@
     },
     {
       "type": "regex",
-      "pattern": "(?is)\\bpython3?\\s+(?:\\./)?tailr\\.py\\b.{0,500}?\\b(you(?:'ll| will| should)? see|prints?|printed|output|shows?|appears?|waits?|stays open|exits?)\\b",
-      "note": "a learner needs a command to run and a statement of what happens after it so success is visible (a fenced block is not required, and the opening sentence's wording is not prescribed)"
+      "pattern": "(?is)\\bpython3?\\s+(?:[\\w.~-]*/)*tailr\\.py\\b.{0,500}?\\b(you(?:'ll| will| should)? see|prints?|printed|output|shows?|appears?|waits?|stays open|exits?)\\b",
+      "note": "a learner needs a command to run and a statement of what happens after it so success is visible (a fenced block is not required, and the opening sentence's wording is not prescribed); the run command may name the script by a relative path such as ../tailr.py when the learner works in a demo directory"
     },
     {
       "type": "not_regex",

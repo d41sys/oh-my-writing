@@ -20,7 +20,7 @@ Default two to five diagrams. Drop any that a table or a sentence does better, a
   |----------------------|-------|-----------|--------|
   | [text] | [number or date with unit] | [F07] | [file, location] |
 
-- **Must not show:** [conflicting figures unresolved (F05/F09), unconfirmed items shown as confirmed, invented dependencies, numeric axis ticks, gridline numbers, day-grid labels or step numbers the ledger lacks]
+- **Must not show:** [conflicting figures unresolved (F05/F09), unconfirmed items shown as confirmed, invented dependencies, numeric axis ticks, gridline numbers, day-grid labels or step numbers the ledger lacks, a start or end date for the axis that no document gives]
 - **Status shown visually:** [planned vs done vs at risk, if the type has a way to show it]
 - **File:** `diagrams/[slug].html`
 - **Self-check run and result:** [pass / what was fixed]

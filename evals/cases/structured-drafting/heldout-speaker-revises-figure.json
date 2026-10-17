@@ -20,9 +20,10 @@
       "allow": [
         "5",
         "2",
-        "1"
+        "1",
+        "Meet Rutendo Maphosa"
       ],
-      "note": "'second' site / 'two' pressure washers may appear as small counts"
+      "note": "'second' site / 'two' pressure washers may appear as small counts; 'Meet Rutendo Maphosa' is a headline whose opening word the checker reads as part of the speaker's name"
     },
     {
       "type": "regex",
@@ -31,8 +32,8 @@
     },
     {
       "type": "not_regex",
-      "pattern": "(?i)\\b(?:with|has|have|had|is|are|at|of|reached|counts?)\\s+(?:about |around |roughly |nearly )?120\\b|\\b120\\s+(?:members|people|households|borrowers)\\b",
-      "note": "120 is the speaker's discarded spring figure and must not be reported as the current membership"
+      "pattern": "(?im)(?:^|[.!?]\\s+)(?![^.!?\\n]*\\b(?:spring|earlier|before|previous\\w*|old|initial\\w*|first|correct\\w*|replac\\w*|up from|formerly|then|used to|had been|not)\\b)[^.!?\\n]*\\b120\\b[^.!?\\n]*",
+      "note": "120 is the speaker's discarded spring figure and must not be reported as the current membership. A sentence that gives 120 as the earlier or corrected figure ('up from about 120 in spring', 'first put it at about 120, then corrected herself', 'replaces the 120 she counted') is the correct use and passes; a sentence that gives 120 with no such marker fails. The earlier pattern matched on 'of/at about 120' and '120 members' whatever the sentence said"
     },
     {
       "type": "regex",
@@ -51,13 +52,13 @@
     },
     {
       "type": "regex",
-      "pattern": "(?is)(lease|fire station|second site)[^.\\n]{0,220}(not (yet )?signed|has not signed|hasn.t signed|unsigned|pending|awaiting|waiting|not (yet )?confirmed|yet to sign|until|if )|(not (yet )?signed|unsigned|pending|awaiting|waiting)[^.\\n]{0,220}(lease|fire station|second site)",
-      "note": "the second site stays unconfirmed"
+      "pattern": "(?is)(?:lease|fire station|second site)[^.\\n]{0,220}(?:not (?:yet )?signed|has not signed|hasn.t signed|unsigned|pending|awaiting|waiting|not (?:yet )?confirmed|yet to sign|until|if )|(?:lease|fire station|second site)[^\\n]{0,300}?(?:not (?:yet )?(?:a )?confirmed|has not signed|hasn.t signed|yet to sign|has yet to|unsigned|not (?:yet )?(?:been )?signed)|(?:not (?:yet )?signed|unsigned|pending|awaiting|waiting)[^.\\n]{0,220}(?:lease|fire station|second site)",
+      "note": "the second site stays unconfirmed. The statement may sit in the next sentence of the paragraph ('...the old fire station. It is not a confirmed expansion. The council has yet to sign the lease.'); the earlier pattern stopped at the first full stop"
     },
     {
       "type": "not_regex",
-      "pattern": "(?i)\\b(?:second site|fire station)\\b[^.\\n]{0,40}\\b(?:is opening|will open|is happening|opens in|is confirmed|has been secured)\\b",
-      "note": "the lease is unsigned; the site must not be reported as happening"
+      "pattern": "(?im)(?:^|[.!?]\\s+)(?:(?!\\bnot\\b|n't|\\buntil\\b|\\bunless\\b|\\bbefore\\b|\\bif\\b|\\bhop\\w*|\\bwant\\w*)[^.!?\\n])*?\\b(?:second site|fire station)\\b[^.!?\\n]{0,40}\\b(?:is opening|will open|is happening|opens in|is confirmed|has been secured)\\b",
+      "note": "the lease is unsigned; the site must not be reported as happening. A sentence that says the speaker does not want to call it happening until the lease is signed reports the caution, not the claim; the earlier pattern matched that sentence"
     },
     {
       "type": "contains",

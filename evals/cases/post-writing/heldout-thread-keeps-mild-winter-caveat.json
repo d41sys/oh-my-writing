@@ -25,7 +25,8 @@
         "two weeks",
         "may",
         "think",
-        "2 week"
+        "2 week",
+        "not"
       ],
       "note": "figures and the 'did not reduce site visits' negation must survive; hedge words may change, the mild-winter hedge is checked below"
     },
@@ -66,8 +67,8 @@
     },
     {
       "type": "regex",
-      "pattern": "(?is)mild[^.\\n]{0,200}\\b(may|might|could|possibly|some or all|cannot rule|can't rule|not sure|unclear|partly)\\b|\\b(may|might|could|possibly|some or all|cannot rule|can't rule|not sure|unclear|partly)\\b[^.\\n]{0,200}mild",
-      "note": "the mild-winter explanation stays hedged, in whichever hedge word"
+      "pattern": "(?is)mild\\w*[^\\n]{0,160}\\b(?:may|might|could|possibly|some or all|cannot rule|can't rule|not sure|unclear|partly|can't say|cannot say|can't tell|cannot tell|can't be sure|cannot be sure|not proof)\\b|\\b(?:may|might|could|possibly|some or all|cannot rule|can't rule|not sure|unclear|partly|can't say|cannot say|can't tell|cannot tell|can't be sure|cannot be sure|not proof)\\b[^\\n]{0,160}mild",
+      "note": "the mild-winter explanation stays hedged, in whichever hedge word. The hedge may sit in the next sentence of the same post ('This winter was milder. Weather may explain...') or say the cause cannot be told; the earlier pattern needed it in the same sentence and without 'can't say'"
     },
     {
       "type": "regex",
@@ -81,8 +82,8 @@
     },
     {
       "type": "regex",
-      "pattern": "(?i)site visits?|visit",
-      "note": "the finding that timers did not cut visits is carried over"
+      "pattern": "(?is)\\b(?:did not|didn.t|do not|don.t|does not|doesn.t|never|without|no)\\b[^.\\n]{0,30}\\b(?:reduc|cut|lower|fewer|less|sav|drop|decreas)\\w*[^.\\n]{0,40}visit|visits?[^.\\n]{0,60}\\b(?:did not|didn.t|not|never|unchanged)\\b|\\b(?:as many|same number of|just as many) visits",
+      "note": "the finding that timers did not reduce site visits is carried over with its negation. This replaces the 'not' count in the generic preserves check (see allow_lost there), which also counted 'cannot be sure' and so failed threads that restate that caution as 'may explain' or 'can't say'"
     },
     {
       "type": "not_regex",

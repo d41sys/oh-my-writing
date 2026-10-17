@@ -199,8 +199,8 @@
     },
     {
       "type": "not_regex",
-      "pattern": "(?i)(pen(etration)?[- ]?test|security test)[^.\\n]{0,60}(owned by|owner is|owner:|assigned to|led by|run by|will be (run|led|owned) by)\\s*(Priya|Jonas|Elena|Marta|Dana|Tomas|Raman|Eklund|Voss|Lindqvist|Whitfield|Brandt)",
-      "note": "no owner may be invented for the penetration test"
+      "pattern": "(?i)(pen(etration)?[- ]?test|security test)[^.;\\n]{0,60}(owned by|owner is|owner:|assigned to|led by|run by|will be (run|led|owned) by)\\s*(Priya|Jonas|Elena|Marta|Dana|Tomas|Raman|Eklund|Voss|Lindqvist|Whitfield|Brandt)",
+      "note": "no owner may be invented for the penetration test (the gap stops at a semicolon: in 'the security test was planned for 31 August-18 September; UAT, owned by Jonas Eklund' the owner belongs to UAT, a separate item)"
     },
     {
       "type": "facts_recalled",

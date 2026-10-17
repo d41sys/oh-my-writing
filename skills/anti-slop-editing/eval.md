@@ -5,7 +5,7 @@ Answer each check pass or fail. Fix every failure before returning.
 ## Mode and scope
 
 1. Did you work in the mode the user asked for (or `edit` by default), and say so when you assumed it?
-2. In `detect` mode, is the source text left unrewritten and byte-identical (any saved report written to a separate file), and free of an authorship verdict?
+2. In `detect` mode, is the source text left unrewritten and byte-identical (any saved report written to a separate file), and free of an authorship verdict? Does each finding quote its whole pattern (both halves of a staged contrast) rather than a fragment?
 3. Did every change stay inside the scope the user authorized, with untouched paragraphs left exactly as they were?
 4. If the text needed no justified edit, did you say so and return it unchanged instead of making cosmetic changes?
 

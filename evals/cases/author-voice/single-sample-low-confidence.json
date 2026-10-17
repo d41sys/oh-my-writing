@@ -18,7 +18,8 @@
     },
     {
       "type": "regex",
-      "pattern": "(?i)(more|additional|another|further|two or three|few)\\b[^\\n]{0,50}\\b(samples?|pieces|examples?|emails?|writing)\\b",
+      "pattern": "(?i)(more|additional|another|further|two or three|few|three to five|several)\\b[^\\n]{0,50}\\b(samples?|pieces|examples?|emails?|writing)\\b",
+      "note": "the prompt asks for a complete profile from one email, so the profile or reply must ask for more samples; 'share three to five recent client emails' is that ask",
       "target": "both"
     },
     {

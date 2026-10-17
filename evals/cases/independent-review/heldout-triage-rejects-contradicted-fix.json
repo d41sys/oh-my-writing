@@ -33,13 +33,13 @@
     },
     {
       "type": "not_regex",
-      "pattern": "(?i)(?:change|update|correct|replace|set|move)[^.\\n]{0,60}\\b(?:to|with)\\s+24 February|(?:accept|apply|act on)\\b[^.\\n]{0,25}\\bF2\\b",
-      "note": "the reviewer's wrong date must not be adopted"
+      "pattern": "(?im)^\\s*\\|[^|\\n]*(?:\\bF2\\b|24 February)[^|\\n]*\\|\\s*\\**\\s*(?:act|accept|apply|fix|update)\\b|\\b(?:accept|apply|act on)\\b[^.\\n]{0,25}\\bF2\\b|(?:^|[.|]\\s*|[-*]\\s+)\\**(?:change|update|correct|replace|set|move)\\b[^.\\n|]{0,60}\\bto 24 February|^#+[^\\n]*\\b(?:act on|accept|apply|fix)\\b[^\\n]*\\n(?:(?!^#)[^\\n]*\\n)*?[^\\n]*\\bF2\\b",
+      "note": "the reviewer's wrong date must not be adopted. Adoption is read from the verdict: F2 in an Act row or under an Act heading, or an imperative that starts a sentence. Mentions of the date inside a rejection ('Do not change the closure to 24 February', a row label 'change closure to 24 February') are not adoption; the earlier pattern matched them"
     },
     {
       "type": "regex",
-      "pattern": "(?is)(?:\\bF3\\b|low attendance|explaining).{0,500}?(?:reject|decline|\\[ASK AUTHOR|ask the author|needs author|you need to answer|answer (?:it )?yourself|author (?:must|needs to) (?:answer|supply|provide|confirm)|not (?:in|stated|given|supported)|letter (?:does not|doesn't|gives no))",
-      "note": "the letter gives no reason for the change; F3 is rejected or goes to the author"
+      "pattern": "(?is)(?:\\bF3\\b|low attendance|explaining).{0,500}?(?:reject|decline|\\[ASK AUTHOR|ask the author|needs author|needs? your (?:answer|input|confirmation|decision)|you need to answer|answer (?:it )?yourself|author (?:must|needs to) (?:answer|supply|provide|confirm)|(?:can|has|have) the council (?:confirm|confirmed)|not (?:in|stated|given|supported)|(?:letter|draft|source)[^.\\n]{0,60}(?:does not|doesn't|gives? no|says nothing|states? no))|(?:answer yourself|needs? your answer|ask the author)[^\\n]{0,30}\\n(?:\\s*\\n)?[^\\n]{0,12}\\bF3\\b",
+      "note": "the letter gives no reason for the change; F3 is rejected or goes to the author. The verdict may be 'Needs your answer' (the prompt's own words for that group), may restate that the sources give no reason, or may head the group above F3"
     },
     {
       "type": "regex",
@@ -47,7 +47,9 @@
       "note": "the nit is skipped"
     },
     {
-      "type": "no_added_facts"
+      "type": "no_added_facts",
+      "allow": ["1", "2", "3", "4", "5"],
+      "note": "small counts are line references into the supplied files ('letter.md, line 3') and tallies of the verdicts ('1 act, 2 skip'), not facts about the pool; every figure, time and date still has to come from the sources"
     }
   ]
 }

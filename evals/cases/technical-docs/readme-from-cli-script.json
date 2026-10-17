@@ -44,8 +44,8 @@
     },
     {
       "type": "regex",
-      "pattern": "(?is)(\\b(same|identical)\\b[^\\n]{0,160}\\b(truncat\\w*|overwrit\\w*|empt(?:y|ies|ied)|eras\\w*|destroy\\w*|wip\\w*|clobber\\w*|lose|lost)\\b|\\b(truncat\\w*|overwrit\\w*|destroy\\w*|eras\\w*|clobber\\w*)\\b[^\\n]{0,160}\\b(same|identical)\\b)",
-      "note": "the script opens the output file for writing before it reads the input, so --output pointing at the input file destroys the data; a teammate who runs it needs that warning"
+      "pattern": "(?is)(\\b(same|identical|input[ -](?:path|file)|source[ -](?:path|file))\\b[^\\n]{0,160}\\b(truncat\\w*|overwrit\\w*|empt(?:y|ies|ied)|eras\\w*|destroy\\w*|wip\\w*|clobber\\w*|lose|lost)\\b|\\b(truncat\\w*|overwrit\\w*|destroy\\w*|eras\\w*|clobber\\w*)\\b[^\\n]{0,160}\\b(same|identical|input[ -](?:path|file)|source[ -](?:path|file))\\b)",
+      "note": "the script opens the output file for writing before it reads the input, so --output pointing at the input file destroys the data; a teammate who runs it needs that warning; 'do not use the input path as the output path' names the same file as 'the same path' does"
     },
     {
       "type": "not_regex",

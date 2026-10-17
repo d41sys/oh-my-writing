@@ -41,7 +41,7 @@ Answer each check pass or fail. Fix every failure before returning.
 ## Draft blocks
 
 22. Does each block open with its message (or deliberately hold it for a stated turn) and give evidence, with a plain bridge only where the next block does not follow on its own?
-23. Are claims, qualifiers, numbers (including framing figures such as a position in a schedule, and a stated total or duration beside its endpoints), names, negations and status the same strength as in the material?
+23. Are claims, qualifiers, numbers (including framing figures such as a position in a schedule, and a stated total or duration beside its endpoints; a short lead or subject line does not excuse dropping them), names, negations and status the same strength as in the material?
 24. Is each block's form (prose, list, table, quote, code) a deliberate choice, and are real lists kept as lists?
 25. Does the ending serve the reader's next need, with no stock closer, recap padding or invented conclusion? If the shape expects a recommendation or next step that the material lacks, does the draft say so plainly (or leave it out) and the reply carry the question, not a guess?
 26. Were bridges added only where the relation exists in the material?

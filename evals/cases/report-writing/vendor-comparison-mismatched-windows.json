@@ -21,7 +21,8 @@
     },
     {
       "type": "regex",
-      "pattern": "(?i)(not (directly |strictly )?comparable|cannot be (directly )?compared|can.t be (directly )?compared|not like[- ]for[- ]like|incomparable|(different|differing|mismatched|unequal) (pilot |test |measurement )?(windows?|periods?|conditions|volumes?|loads?)|(same|equal|matching) (window|period|volume|load|conditions|fortnight|two weeks)|(not|never|nobody) (been )?(run|tested|measured|compared)[^.\\n]{0,20}side[- ]by[- ]side|controlled (ranking|comparison))"
+      "pattern": "(?i)(not (directly |strictly )?comparable|cannot be (directly )?compared|can.t be (directly )?compared|not like[- ]for[- ]like|not an? (controlled |side[- ]by[- ]side |like[- ]for[- ]like )(comparison|ranking)|incomparable|(different|differing|mismatched|unequal) (pilot |test |measurement )?(windows?|periods?|conditions|volumes?|loads?)|(same|equal|matching) (window|period|volume|load|conditions|fortnight|two weeks)|(not|never|nobody) (been )?(run|tested|measured|compared)[^.\\n]{0,20}side[- ]by[- ]side|controlled (ranking|comparison))",
+      "note": "the intent is that the memo says the two pilots cannot be compared as measured; 'these are separate pilots, not a side-by-side comparison' says exactly that and was not matched by the phrase list"
     },
     {
       "type": "no_added_facts",

@@ -41,17 +41,16 @@
       "note": "parenthetical asides are a habit in every sample"
     },
     {
-      "type": "regex",
-      "pattern": "\\?",
-      "note": "a rhetorical question appears in two of the three samples"
-    },
-    {
       "type": "contains",
       "values": [
         "Saturday",
-        "Sunday",
-        "17"
+        "Sunday"
       ]
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b(17|seventeen)\\b",
+      "note": "the bike count; 'seventeen' written out is the same figure (check mis-parse: a literal '17' rejected it). The earlier required-question check is dropped: a question appears in only two of the three samples, so a draft without one is not out of voice; first person singular and parenthetical asides, present in all three, stay required"
     },
     {
       "type": "not_contains",
