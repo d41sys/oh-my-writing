@@ -6,7 +6,7 @@
     "leaked_marker_run_rate_max": 0.0
   },
   "metrics": {
-    "invented_facts": {"tolerance": 0.0},
+    "invented_facts": {"tolerance": 0.05, "why": "A/A on v-iso-omp (single rep r1 vs r3) gave a CI lower bound of +0.024 per run for ALL; 0.05 clears that floor and still catches the v-clean project-report regression (+0.056)"},
     "invented_facts_per_1000w": {"tolerance": 0.5},
     "lost_required_facts": {"tolerance": 0.1},
     "slop_per_1000w": {"tolerance": 0.5},
