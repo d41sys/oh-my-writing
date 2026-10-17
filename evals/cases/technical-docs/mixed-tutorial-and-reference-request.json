@@ -1,7 +1,7 @@
 {
   "id": "technical-docs/mixed-tutorial-and-reference-request",
   "skill": "technical-docs",
-  "description": "A request for a getting-started guide that also lists every config option: the guide teaches one short path and links to a separate reference page instead of pasting the full option table, invents no config keys, and the reply says what was split.",
+  "description": "A request for a getting-started guide that also lists every config option: a new user can follow one short path to visible output, every option is reachable (in the guide or a linked page), no config keys are invented, and no markers or process notes appear in the guide.",
   "prompt": "tailr is our small log-tailing tool (tailr.py, with tailr.toml.example for the settings). Write a getting-started guide for new users that also lists every config option. Save the guide to out/getting-started.md; put any other page you decide to create in out/ as well.",
   "files": {
     "tailr.py": "\"\"\"tailr: print lines from a log file, optionally following it as it grows.\n\nNeeds Python 3.11 or newer (tomllib).\n\"\"\"\nimport argparse\nimport re\nimport sys\nimport time\nimport tomllib\nfrom datetime import datetime\n\nDEFAULTS = {\n    \"pattern\": \"\",\n    \"follow\": True,\n    \"poll_interval_ms\": 250,\n    \"max_line_bytes\": 8192,\n    \"color\": \"auto\",\n    \"timestamp_format\": \"\",\n    \"output_file\": \"\",\n}\n\n\ndef main(argv=None):\n    parser = argparse.ArgumentParser(prog=\"tailr\", description=\"Print and follow log lines.\")\n    parser.add_argument(\"--config\", default=\"tailr.toml\", help=\"TOML config file (default: tailr.toml)\")\n    args = parser.parse_args(argv)\n\n    with open(args.config, \"rb\") as fh:\n        cfg = {**DEFAULTS, **tomllib.load(fh)}\n    if \"path\" not in cfg:\n        print(\"tailr: the config has no 'path'\", file=sys.stderr)\n        return 2\n\n    rx = re.compile(cfg[\"pattern\"]) if cfg[\"pattern\"] else None\n    colour = cfg[\"color\"] == \"always\" or (cfg[\"color\"] == \"auto\" and sys.stdout.isatty())\n    extra = open(cfg[\"output_file\"], \"a\", encoding=\"utf-8\") if cfg[\"output_file\"] else None\n    print(f\"tailr: watching {cfg['path']}\", file=sys.stderr)\n\n    with open(cfg[\"path\"], \"rb\") as log:\n        while True:\n            raw = log.readline()\n            if not raw:\n                if not cfg[\"follow\"]:\n                    break\n                time.sleep(cfg[\"poll_interval_ms\"] / 1000)\n                continue\n            line = raw.decode(\"utf-8\", errors=\"replace\").rstrip(\"\\n\")\n            if len(raw) > cfg[\"max_line_bytes\"]:\n                line = raw[: cfg[\"max_line_bytes\"]].decode(\"utf-8\", errors=\"ignore\") + \"...\"\n            if rx and not rx.search(line):\n                continue\n            if colour and rx:\n                line = rx.sub(lambda m: f\"\\x1b[1m{m.group(0)}\\x1b[0m\", line)\n            if cfg[\"timestamp_format\"]:\n                line = datetime.now().strftime(cfg[\"timestamp_format\"]) + line\n            print(line)\n            if extra:\n                extra.write(line + \"\\n\")\n    return 0\n\n\nif __name__ == \"__main__\":\n    sys.exit(main())\n",
@@ -11,13 +11,8 @@
   "checks": [
     {
       "type": "regex",
-      "pattern": "(?i)\\]\\([^)\\s]*(reference|config|options|settings)[^)\\s]*\\)",
-      "note": "the reader of the guide must be able to reach the full option list: a link to the page that holds it"
-    },
-    {
-      "type": "not_regex",
-      "pattern": "(?im)^(?:[|*-][^\\n]*`(?:path|pattern|follow|poll_interval_ms|max_line_bytes|color|timestamp_format|output_file)`[^\\n]*\\n){5}",
-      "note": "a tutorial does not carry the reference table: five consecutive table rows or bullets that each define a config key mean the full option list was pasted into the guide; naming a key in a step is fine"
+      "pattern": "(?is)\\]\\([^)\\s]*(reference|config|options|settings)[^)\\s]*\\)|\\A(?=.*\\bpoll_interval_ms\\b)(?=.*\\bmax_line_bytes\\b)(?=.*\\btimestamp_format\\b)(?=.*\\boutput_file\\b)(?=.*\\bcolor\\b)(?=.*\\bfollow\\b)",
+      "note": "the user asked the guide to also list every option: a reader can find all of them either in the guide or through a link to the page that holds them; whether to split is the writer's choice"
     },
     {
       "type": "not_regex",
@@ -31,12 +26,6 @@
     {
       "type": "not_regex",
       "pattern": "(?i)\\b(alternatively|if you prefer|or, if you)\\b"
-    },
-    {
-      "type": "regex",
-      "target": "reply",
-      "pattern": "(?i)(?<![\\w-])(?!(?:getting-started|open-questions)\\.md)[\\w-]+\\.md\\b",
-      "note": "the reader of the reply needs to know which other page was written and where, so the file is named; no fixed phrase for how the split is described"
     },
     {
       "type": "not_regex",
