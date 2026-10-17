@@ -472,10 +472,14 @@ def _shingles(words: list[str]) -> set:
     return {tuple(words[i:i + 3]) for i in range(len(words) - 2)}
 
 
+IMAGE_MD = re.compile(r"!\[[^\]]*\]\([^)]*\)")
+
+
 def _text_sentences(text: str) -> list[list[str]]:
-    """Lower-cased words of every sentence of the text (any line, markdown marks removed, code excluded)."""
+    """Lower-cased words of every sentence of the text (any line, markdown marks removed, code and image syntax
+    excluded: a reader sees the picture, not its alt text, so alt text followed by a caption is not a repeat)."""
     scan = grade._slop_scan()
-    masked = scan.mask_protected(strip_code(text))
+    masked = scan.mask_protected(strip_code(IMAGE_MD.sub("", text)))
     out = []
     for line in masked.split("\n"):
         line = re.sub(r"^\s*(?:#{1,6}\s+|[-*+]\s+|\d+[.)]\s+|\|)", "", line)
@@ -484,11 +488,15 @@ def _text_sentences(text: str) -> list[list[str]]:
     return out
 
 
+TABLE_ROW = re.compile(r"(?m)^\s*\|.*$")
+
+
 def repeated_sentences(text: str, min_words: int = 6, threshold: float = 0.6) -> int:
-    """Sentences (any line, markdown marks removed, code excluded) that repeat an earlier one."""
+    """Sentences (any line, markdown marks removed, code and table rows excluded) that repeat an earlier one. A table
+    cell repeated in two rows ('Owner: not set') is structure the reader scans, not prose said twice."""
     seen: list[tuple[list[str], set]] = []
     repeats = 0
-    for words in _text_sentences(text):
+    for words in _text_sentences(TABLE_ROW.sub("", text)):
         if len(words) < min_words:
             continue
         sh = _shingles(words)

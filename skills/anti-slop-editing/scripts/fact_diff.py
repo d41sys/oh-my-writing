@@ -402,7 +402,8 @@ def _is_year(value: float, unit: str) -> bool:
 
 def _derivation(value: float, unit: str, pool: dict[str, set[float]]) -> str | None:
     """How value follows exactly from two source figures, or None. Sums and differences need both operands in the
-    value's own unit; a product needs one operand in that unit and the other a bare count."""
+    value's own unit; a product is a rate times a count: one operand in the value's unit (a fractional rate when the
+    value has no unit) and the other a bare count."""
     same = sorted(v for v in pool.get(unit, set()) if v >= OPERAND_MIN and not _is_year(v, unit))
     if unit and abs(value) >= DERIVED_MIN:
         for i, x in enumerate(same):
@@ -411,21 +412,35 @@ def _derivation(value: float, unit: str, pool: dict[str, set[float]]) -> str | N
                     return f"{x:g} + {y:g}"
                 if _exact(y - x, value):
                     return f"{y:g} - {x:g}"
-    if unit and abs(value) >= PRODUCT_MIN:
-        priced = sorted(pool.get(unit, set()))
-        counts = sorted(v for v in pool.get("", set()) if v >= OPERAND_MIN and not _is_year(v, ""))
-        for x in priced:
+    if abs(value) >= PRODUCT_MIN:
+        rates = sorted(pool.get(unit, set())) if unit else sorted(v for v in pool.get("", set()) if not v.is_integer())
+        counts = sorted(v for v in pool.get("", set()) if v >= OPERAND_MIN and v.is_integer() and not _is_year(v, ""))
+        for x in rates:
             for n in counts:
                 if _exact(x * n, value):
                     return f"{x:g} × {n:g}"
     return None
 
 
+def _chained(value: float, unit: str, derived: dict[str, set[float]]) -> str | None:
+    """A difference or sum of two figures the text itself derived (two period costs and the gap between them)."""
+    same = sorted(derived.get(unit, set()))
+    if abs(value) < DERIVED_MIN:
+        return None
+    for i, x in enumerate(same):
+        for y in same[i:]:
+            if _exact(x + y, value):
+                return f"{x:g} + {y:g} (both derived)"
+            if _exact(y - x, value):
+                return f"{y:g} - {x:g} (both derived)"
+    return None
+
+
 def _split_derived(added: list, before_items: dict) -> tuple[list, list]:
-    """New figures that follow exactly from two source figures by one sum, difference or rate-times-count are
-    calculations, not inventions: report them apart so the writer checks the arithmetic instead of hunting for a
-    source. Rounded results, percentages, multipliers, years and small figures stay flagged, because they match
-    some pair of source figures by chance."""
+    """New figures that follow exactly from two source figures by one sum, difference or rate-times-count, or that
+    combine two such figures, are calculations, not inventions: report them apart so the writer checks the
+    arithmetic instead of hunting for a source. Rounded results, percentages, multipliers, years and small figures
+    stay flagged, because they match some pair of source figures by chance."""
     pool: dict[str, set[float]] = {}
     for item in before_items:
         num, unit = _num_value(item)
@@ -433,17 +448,28 @@ def _split_derived(added: list, before_items: dict) -> tuple[list, list]:
         if value is not None and unit not in STRICT_UNITS:
             pool.setdefault(unit, set()).add(value)
     kept, derived = [], []
+    found: dict[str, set[float]] = {}
     for a in added:
         num, unit = _num_value(a["item"])
         value = _as_float(num)
         hit = None
-        if value is not None and unit not in STRICT_UNITS and not _is_year(value, unit):
+        if value is not None and unit not in STRICT_UNITS:  # sums need a unit, so a bare year only matches a product
             hit = _derivation(value, unit, pool)
         if hit:
             derived.append({**a, "from": hit})
+            found.setdefault(unit, set()).add(value)
         else:
             kept.append(a)
-    return kept, derived
+    still = []
+    for a in kept:
+        num, unit = _num_value(a["item"])
+        value = _as_float(num)
+        hit = _chained(value, unit, found) if value is not None and unit not in STRICT_UNITS else None
+        if hit:
+            derived.append({**a, "from": hit})
+        else:
+            still.append(a)
+    return still, derived
 
 
 def read_text(path: str) -> str:

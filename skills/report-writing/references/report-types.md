@@ -245,7 +245,7 @@ A gap is something the notes do not say. The reader's document states it as a fa
 
 | Gap | In the document (reader language) | Marker line, in the reply and `open-questions.md` |
 |---|---|---|
-| no recommendation in the notes | "The source analysis makes no recommendation. Two options are supported: A (...) and B (...)." Lead with the findings | `[ASK AUTHOR: notes support A or B; which do you recommend?]` |
+| no recommendation in the notes | "The source analysis makes no recommendation. The evidence points toward A (analysis, not the author's decision); B would need (...)." Lead with that direction, then the options and a decision rule from the notes' own thresholds and deadlines | `[ASK AUTHOR: notes support A or B; which do you recommend?]` |
 | no owner or date | "Owner: to be assigned." "Date: not set." | `[ASK AUTHOR: who owns the runbook update, and by when?]` |
 | missing figure (cost, lift, baseline) | "The notes give no cost for this option." or omit the sentence | `[ASK AUTHOR: is there a cost estimate for option B?]` |
 | cause not established | "The cause of the 7-minute alert delay is not known." | `[ASK AUTHOR: has the alert delay been investigated?]` |

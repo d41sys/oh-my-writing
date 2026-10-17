@@ -549,3 +549,17 @@ def test_readme_documents_every_metric():
     readme = (EVALS / "README.md").read_text()
     for name in stats.METRICS:
         assert f"`{name}`" in readme, name
+
+
+def test_table_cells_repeated_across_rows_are_not_repeated_sentences():
+    table = ("| Item | Owner |\n|---|---|\n| Unchecked on the 5 August handover checklist. | x |\n"
+             "| Unchecked on the 5 August handover checklist. | y |\n")
+    assert stats.repeated_sentences(table) == 0
+    prose = "The cutover moved to the fifth of August.\n\nThe cutover moved to the fifth of August.\n"
+    assert stats.repeated_sentences(prose) == 1
+
+
+def test_image_alt_text_followed_by_its_caption_is_not_a_repeat():
+    md = ("![The new platform separates scan ingest, tracking and export](diagrams/platform.svg)\n\n"
+          "Figure 1. The new platform separates scan ingest, tracking and export.\n")
+    assert stats.repeated_sentences(md) == 0

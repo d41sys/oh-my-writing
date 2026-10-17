@@ -309,20 +309,22 @@ def check(run_dir: Path, reference_path: Path, config_path: Path, show_all: bool
     return (1 if result["failed"] else 0), _drift_note(ref) + render(result, ref, info, show_all, weak)
 
 
-def check_in_run(run_dir: Path, reference_condition: str, config_path: Path, show_all: bool = False) -> tuple[int, str]:
-    """Gate the `skill` runs of one run against the runs of another condition of the same run (an A/B variant), with
-    the rules of config.json. Both sides are paired on (host, case, rep) by evaluate()."""
+def check_in_run(run_dir: Path, reference_condition: str, config_path: Path, show_all: bool = False,
+                 condition: str = "skill") -> tuple[int, str]:
+    """Gate the runs of `condition` (default skill) against another condition of the same run (an A/B variant),
+    with the rules of config.json. Both sides are paired on (host, case, rep) by evaluate(). Two variants of the
+    same ref give a true A/A test: independent reruns of identical skills."""
     if not reference_condition.startswith(VARIANT_PREFIX):
         return 2, f"--reference-condition must be a variant-NAME condition, got {reference_condition!r}"
     config = json.loads(config_path.read_text(encoding="utf-8"))
     info, records = stats.read_run(run_dir)
-    reference, new = _gated_records(records, reference_condition), _gated_records(records, "skill")
-    for condition, runs in ((reference_condition, reference), ("skill", new)):
+    reference, new = _gated_records(records, reference_condition), _gated_records(records, condition)
+    for name, runs in ((reference_condition, reference), (condition, new)):
         if not runs:
-            return 2, f"no '{condition}' runs in {run_dir}"
+            return 2, f"no '{name}' runs in {run_dir}"
     hosts = sorted({r["host"] for r in reference} & {r["host"] for r in new})
     if not hosts:
-        return 2, f"'{reference_condition}' and 'skill' runs in {run_dir} share no host"
+        return 2, f"'{reference_condition}' and '{condition}' runs in {run_dir} share no host"
     reference, new = ([r for r in runs if r["host"] in hosts] for runs in (reference, new))
     run_id = info.get("id", run_dir.name)
     variant = (info.get("variants") or {}).get(reference_condition[len(VARIANT_PREFIX):])
@@ -332,7 +334,7 @@ def check_in_run(run_dir: Path, reference_condition: str, config_path: Path, sho
                         "repeat": info.get("repeat"), "model": "; ".join(f"{k} {v}" for k, v in (info.get("models") or {}).items())
                         or "host default"}}
     result = evaluate(reference, new, config)
-    return (1 if result["failed"] else 0), render(result, ref_meta, {"id": f"{run_id} / skill"}, show_all)
+    return (1 if result["failed"] else 0), render(result, ref_meta, {"id": f"{run_id} / {condition}"}, show_all)
 
 
 # ---------------------------------------------------------------- A/A noise test
@@ -422,6 +424,8 @@ def main(argv=None) -> int:
     c.add_argument("--config", default=str(CONFIG))
     c.add_argument("--weak-spots", help="weak spots file (default: weak_spots.json next to the reference)")
     c.add_argument("--all", action="store_true", help="show every per-skill row")
+    c.add_argument("--condition", default="skill",
+                   help="with --reference-condition: the side to gate (a second variant of the same ref = A/A)")
     a = sub.add_parser("aa", help="gate relabelled repetitions of a run against the run itself (must pass)")
     a.add_argument("run_dir")
     a.add_argument("--config", default=str(CONFIG))
@@ -459,7 +463,8 @@ def main(argv=None) -> int:
         print(f"{len(report['spots'])} weak spots of {report['reference_run']} vs {report['other_run']} -> {args.out}")
         return 0
     if args.reference_condition:
-        code, text = check_in_run(Path(args.run_dir), args.reference_condition, Path(args.config), args.all)
+        code, text = check_in_run(Path(args.run_dir), args.reference_condition, Path(args.config), args.all,
+                                  args.condition)
     else:
         code, text = check(Path(args.run_dir), Path(args.against), Path(args.config), args.all,
                            Path(args.weak_spots) if args.weak_spots else None)

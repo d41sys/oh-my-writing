@@ -632,3 +632,15 @@ def test_exact_calculation_from_source_figures_is_derived_not_added(tmp_path):
     assert set(derived) == {"6412 eur", "1820 eur"}
     # a round guess, a bare count and a year are not calculations
     assert {"6500 eur", "92", "2027"} <= added_items(report, "numbers")
+
+
+def test_rate_times_volume_and_the_gap_between_two_costs_are_derived(tmp_path):
+    before = write(tmp_path, "before.md", "Load is 40,000 requests per day. Quote A: 0.042 per request. "
+                                          "Quote B: 0.051 per request.\n")
+    after = write(tmp_path, "after.md", "That is 1,680 a day for A and 2,040 for B, a gap of 360. "
+                                        "Over 365 days that is 131,400.\n")
+    _, report = diff_json(before, after)
+    derived = {i["item"] for i in report["categories"]["numbers"].get("derived", [])}
+    assert derived == {"1680", "2040", "360"}
+    # annualising assumes a 365-day year the source never states: still flagged
+    assert {"131400", "365 day"} <= added_items(report, "numbers")
