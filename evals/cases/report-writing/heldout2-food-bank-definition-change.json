@@ -1,0 +1,57 @@
+{
+  "id": "report-writing/heldout2-food-bank-definition-change",
+  "skill": "report-writing",
+  "description": "Quarterly report for a board where the headline measure (households served, 1,520 to 1,840, up 320) changed its counting rule mid-period and Q2 was not recalculated: the report states that the two quarters are not like for like, keeps the figures and the stated differences, invents no restated figure, and tells the author what is missing.",
+  "prompt": "Write the Q2 operations report for the Larkhall Food Bank board from notes.md and save it to out/report.md.",
+  "files": {
+    "notes.md": "# Larkhall Food Bank: Q2 notes (for the board meeting on 12 October; chair Imani Rousseau)\n\nHouseholds served (the board's headline measure):\n- Q1 (January to March): 1,520\n- Q2 (April to June): 1,840, up 320 on Q1.\n- NOTE: from 1 May the counting changed. Q1 and April counted every visit as a household served. From May each household is counted once a month, however often it visits. I have not recalculated Q2 the old way.\n\nOther figures:\n- Food distributed: 38.4 tonnes in Q2; Q1 was 35.1 tonnes, so 3.3 tonnes more.\n- Volunteer hours: 2,150 in Q2; 2,240 in Q1.\n- The walk-in freezer failed on 9 June and 410 kg of frozen stock was discarded. A replacement was in by 14 June and cost $3,900.\n- A council grant of $25,000 arrived in May.\n"
+  },
+  "output": "out/report.md",
+  "heldout": true,
+  "checks": [
+    {
+      "type": "regex",
+      "pattern": "(?is)\\b(?:not|isn't|aren't|can't|cannot|shouldn't|should not|n't)\\b[^.\\n]{0,60}\\b(?:comparable|compared|like[- ]for[- ]like|reliable|comparison)\\b|\\b(?:different|differing|changed|changing|new|revised|old|previous|earlier)\\s+(?:counting|definition|method|basis|rules?)\\b|\\b(?:counting|definition|method|basis)\\s+(?:rule\\s+)?(?:changed|differs?|differ)\\b|\\bonce (?:per|a) month\\b|\\b(?:every|each) visit\\b",
+      "note": "Q1 and Q2 were counted differently; the report says so in any wording"
+    },
+    {
+      "type": "contains",
+      "values": [
+        "1,520",
+        "1,840",
+        "320",
+        "3.3"
+      ],
+      "note": "both quarters' figures and the two differences the notes state"
+    },
+    {
+      "type": "markers",
+      "min": 1,
+      "max": 6,
+      "target": "both",
+      "note": "Q2 was not recalculated the old way; the author is asked for it, in the reply or the report"
+    },
+    {
+      "type": "no_added_facts",
+      "allow": [
+        "2",
+        "21%",
+        "21.1%",
+        "21.05%",
+        "21",
+        "90",
+        "9.4%",
+        "9%",
+        "4%",
+        "4.0%",
+        "4.02%"
+      ],
+      "note": "derived percentages and the hours difference are arithmetic on the supplied figures; 'Q2,' with a comma reads as the number 2"
+    },
+    {
+      "type": "word_count",
+      "min": 80,
+      "max": 700
+    }
+  ]
+}

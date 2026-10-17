@@ -1,0 +1,86 @@
+{
+  "id": "independent-review/heldout2-theatre-fee-reviewer-prompt",
+  "skill": "independent-review",
+  "description": "Asked to prepare the prompt for an independent reviewer of a fee-rise memo: the prompt keeps the reader brief (the trustees), the decision date and the decision itself, and leaks none of the author's intent, fix history, private worry, or the earlier reviewers' reactions.",
+  "prompt": "I'm about to send draft.md to our trustees and I want an independent check first. Please prepare the prompt I will give to a reviewer in a separate session. My background notes are in author-notes.md. Save the prompt to out/reviewer-prompt.md.",
+  "files": {
+    "draft.md": "# Proposal: raise Saturday class fees from $140 to $165 a term\n\nSaltmarsh Youth Theatre runs four Saturday classes. Hall hire has gone up and the fee has not changed in three years.\n\n## 1 What changes\n\nThe fee rises by $25 a term from the January term. Classes, teachers and class sizes stay the same.\n\n## 2 Why now\n\nHall hire is now our largest cost. The rise covers the gap without cutting a class.\n\n## 3 Families who can't pay\n\nThe scholarship fund covers some places. Families can ask the office.\n\n## 4 Decision needed\n\nWe ask the trustees to approve the rise at the meeting on 19 November.\n",
+    "author-notes.md": "Reader: the five trustees of Saltmarsh Youth Theatre. They know the classes and the hall but have not seen the fee figures. They decide on 19 November whether to approve the $25 rise (from $140 to $165 a term) for the January term.\n\nWhat I want from the check: would a trustee know what is being asked and what it costs families, and is anything unclear or unsupported? One page of findings, quote the text each finding is about, do not rewrite the memo.\n\nPrivate context, not for the reviewer:\n- I want the trustees to feel there is no alternative.\n- I already fixed the intro after Colm said it buried the ask.\n- Colm said it reads like a sales pitch; Bea thought it was airtight.\n- I know section 3 on the scholarship fund is weak but don't tell the reviewer, I want to see if they notice.\n"
+  },
+  "output": "out/reviewer-prompt.md",
+  "heldout": true,
+  "checks": [
+    {
+      "type": "not_contains",
+      "values": [
+        "airtight",
+        "fixed the intro",
+        "already fixed",
+        "sales pitch",
+        "no alternative",
+        "Colm",
+        "Bea",
+        "see if they notice",
+        "weak but",
+        "buried the ask"
+      ],
+      "note": "everything under 'Private context' is the author's intent, fix history or earlier reviewer reaction"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\bI (?:want|wanted|hope|hoped|know|worry|fear|think)\\b[^.\\n]{0,60}\\b(?:trustees|them|reviewer|section 3|scholarship)\\b|(?:section 3|scholarship)[^.\\n]{0,60}\\b(?:weak|thin|weakest|worried|worry)\\b",
+      "note": "no hint steering the reviewer toward the author's private worry"
+    },
+    {
+      "type": "contains",
+      "values": [
+        "trustees",
+        "19 November"
+      ],
+      "note": "the reader brief and the decision date go to the reviewer"
+    },
+    {
+      "type": "regex",
+      "pattern": "\\b25\\b|\\b165\\b",
+      "note": "the decision the trustees face, with the figure the brief states"
+    },
+    {
+      "type": "contains_any",
+      "values": [
+        "draft.md",
+        "fee"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b(?:quote|quoting|cite|citing|point to|exact (?:words|text|sentence))\\b",
+      "note": "the brief asks for findings that quote the text they concern"
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "citations",
+        "urls",
+        "names"
+      ],
+      "allow": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10"
+      ],
+      "note": "list numbering a prompt makes necessary is not a new figure"
+    },
+    {
+      "type": "word_count",
+      "min": 60
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "id": "technical-docs/heldout2-changelog-breaking-default",
+  "skill": "technical-docs",
+  "description": "Changelog entry for a CLI release from a commit list and the maintainer's notes: the lowered default timeout (30 s to 10 s) is called out with the way to restore the old value, the exit-code change (0 to 2) is kept, Windows is reported as not tested, the dry-run limit is stated, and no release date or other figure is invented.",
+  "prompt": "Write the CHANGELOG entry for sluicer 3.2.0 from commits.txt and my notes in notes.md and save it to out/CHANGELOG-entry.md. It goes into the repo as it is.",
+  "files": {
+    "commits.txt": "feat: add --dry-run flag to `sluicer push`\nfix: `sluicer pull` no longer hangs when the remote closes the connection early\nfeat!: lower the default network timeout from 30 s to 10 s\nfix: exit with code 2 (was 0) when the config file is missing\nchore: bump dependencies\ndocs: clarify proxy settings\n",
+    "notes.md": "Release 3.2.0 notes (Ayesha):\n- Tested on Linux and macOS. I did not test on Windows at all.\n- The timeout change will break people on slow VPNs: anyone relying on the 30 s default now has to pass --timeout 30 or set SLUICER_TIMEOUT=30.\n- The exit-code change (0 to 2 when the config is missing) may break scripts that check for 0.\n- Dry run covers `sluicer push` only. It does not cover `sluicer pull` yet.\n- Release date is not fixed.\n- Closes #771.\n"
+  },
+  "output": "out/CHANGELOG-entry.md",
+  "heldout": true,
+  "checks": [
+    {
+      "type": "regex",
+      "pattern": "--timeout[ =]30|SLUICER_TIMEOUT=30",
+      "note": "the default changed under existing users, so the entry says how to get the old 30 s back"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b(?:breaking|incompatible|behaviou?r (?:change|difference)|action required|will (?:fail|time out|break)|may (?:break|fail|time out)|slow (?:VPN|network|connections?)|lower(?:ed)? (?:from|to)|changed from|reduced from|(?:was|previously|formerly) 30)\\b",
+      "note": "the timeout change is flagged as a change in behaviour, in any wording"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)\\bexit(?:s|ed)?\\b[^\\n]{0,120}\\b2\\b|\\b2\\b[^\\n]{0,60}\\bexit",
+      "note": "the exit-code change is kept"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)windows[^\\n]{0,120}(?:not (?:yet )?(?:been )?tested|untested|not run|unverified|wasn't tested|was not tested|hasn't been tested|no testing|not verified)|(?:not (?:yet )?(?:been )?tested|untested|unverified)[^\\n]{0,80}windows",
+      "note": "the notes say Windows was not tested; the entry says so as a plain statement"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)dry[- ]run[^\\n]{0,250}\\b(?:not|n't|only|just|yet)\\b[^\\n]{0,60}\\bpull\\b|\\bpull\\b[^\\n]{0,80}\\b(?:not|n't|yet|without)\\b[^\\n]{0,60}dry[- ]run|dry[- ]run[^\\n]{0,60}\\bpush\\b[^\\n]{0,40}\\bonly\\b|\\bonly\\b[^\\n]{0,40}\\bpush\\b[^\\n]{0,60}dry[- ]run|dry[- ]run[^\\n]{0,200}\\bpull\\b[^\\n]{0,60}\\b(?:not|n't|yet|unsupported)\\b",
+      "note": "dry run is limited to push"
+    },
+    {
+      "type": "regex",
+      "pattern": "#771"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?m)^#{1,3}\\s*\\[?3\\.2\\.0",
+      "note": "the entry opens with a heading for the version"
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "urls",
+        "citations"
+      ]
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\breleased?:?\\s+(?:on\\s+)?(?:\\d|(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\\.?\\s+\\d)|\\b(?:19|20)\\d\\d-\\d\\d-\\d\\d\\b",
+      "note": "the release date is not fixed; none may be invented"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\[(?:ASK AUTHOR|VERIFY|UNTESTED)\\b|\\b(?:TODO|TBD)\\b",
+      "note": "the entry is committed as written"
+    },
+    {
+      "type": "word_count",
+      "min": 60,
+      "max": 400
+    }
+  ]
+}

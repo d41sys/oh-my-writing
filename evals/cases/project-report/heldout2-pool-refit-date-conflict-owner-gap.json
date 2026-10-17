@@ -1,0 +1,87 @@
+{
+  "id": "project-report/heldout2-pool-refit-date-conflict-owner-gap",
+  "skill": "project-report",
+  "description": "Four short documents on a changing-room refit: the status email and the schedule disagree on when tiling ends (14 vs 28 November) and when the pool reopens (1 vs 14 December), the fire-safety sign-off has no owner, and the plumbing overspend ($700) is stated. The report keeps both dates, marks the owner gap, claims no sign-off, and pads nothing.",
+  "prompt": "The Elmhurst Pool changing-room refit documents are in docs/. Write a status report on the refit for Hugh Barlow and save it to out/report.md. I'm away today, so don't wait for me.",
+  "files": {
+    "docs/status-email.txt": "From: Tamsin Valdivia\nTo: Hugh Barlow\nDate: 21 October 2026\nSubject: Changing-room refit status\n\nHugh, quick update on the Elmhurst Pool changing rooms. Demolition is finished and the new plumbing is in. Tiling is under way and the contractor says it will be done by 14 November, so we are still on for reopening on 1 December. The fire-safety sign-off is the one thing I haven't chased.\n\nTamsin\n",
+    "docs/budget.csv": "line,budget_usd,spent_usd\ndemolition,6400,6150\nplumbing,14700,15400\ntiling,11200,4300\nfixtures,9100,0\ncontingency,5650,0\n",
+    "docs/schedule.md": "# Elmhurst Pool refit: delivery schedule (last updated 30 September 2026)\n\n| Task | Start | End | Owner | Status |\n|---|---|---|---|---|\n| Demolition | 2026-09-14 | 2026-10-02 | Emeka Haldane | done |\n| Plumbing | 2026-10-05 | 2026-10-16 | Emeka Haldane | done |\n| Tiling | 2026-10-19 | 2026-11-28 | Emeka Haldane | in progress |\n| Fixtures install | 2026-11-30 | 2026-12-04 | Emeka Haldane | planned |\n| Fire-safety sign-off | TBC | TBC |  | planned |\n| Reopening | 2026-12-14 | 2026-12-14 | Tamsin Valdivia | planned |\n",
+    "docs/site-visit-notes.md": "# Site visit, 20 October 2026 (Hugh Barlow, Emeka Haldane)\n\n- Plumbing invoice came in $700 over budget ($15,400 against $14,700). Not yet decided how it is covered.\n- Shower-area tiles arrive on 26 October.\n- The pool-side door sticks; Emeka will look at it.\n"
+  },
+  "output": "out/report.md",
+  "heldout": true,
+  "checks": [
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b14(?:th)? (?:nov|november)\\b|\\b(?:nov|november)\\.? 14\\b|2026-11-14",
+      "note": "the email's tiling end date stays"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b28(?:th)? (?:nov|november)\\b|\\b(?:nov|november)\\.? 28\\b|2026-11-28",
+      "note": "the schedule's tiling end date stays; neither date is silently chosen"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b1(?:st)? (?:dec|december)\\b|\\b(?:dec|december)\\.? 1\\b|2026-12-01",
+      "note": "the email's reopening date stays"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b14(?:th)? (?:dec|december)\\b|\\b(?:dec|december)\\.? 14\\b|2026-12-14",
+      "note": "the schedule's reopening date stays"
+    },
+    {
+      "type": "regex",
+      "pattern": "\\b700\\b",
+      "note": "the notes state the plumbing overspend"
+    },
+    {
+      "type": "no_added_facts",
+      "allow": [
+        "47050",
+        "47050 usd",
+        "25850",
+        "25850 usd",
+        "21200",
+        "21200 usd",
+        "55%",
+        "54.9%",
+        "54.94%"
+      ],
+      "note": "source amounts with or without a currency sign, plus the budget and spend totals and their share"
+    },
+    {
+      "type": "markers",
+      "min": 1,
+      "max": 8,
+      "target": "both",
+      "note": "gaps reach the author as markers in the reply or the report; each distinct gap may count twice"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)fire[- ]safety"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)fire[- ]safety[^\\n]{0,100}(?:owned by|assigned to|handled by|led by|owner is|owner:)\\s*(?:Emeka|Tamsin|Hugh)",
+      "note": "the schedule leaves the owner blank; none may be invented"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)fire[- ]safety[^.\\n]{0,30}\\b(?:is|was|has been|have been)\\s+(?:approved|complete|completed|signed off|obtained|done|passed)\\b",
+      "note": "the sign-off has not been chased; it must not be reported as done"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?im)^#{1,4}\\s+.*\\b(objectives?|lessons learned|results and metrics)\\b",
+      "note": "sections the four documents cannot support are dropped, not padded"
+    },
+    {
+      "type": "word_count",
+      "min": 80,
+      "max": 900
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "id": "structured-drafting/heldout2-interview-off-record-profile",
+  "skill": "structured-drafting",
+  "description": "Newsletter profile from an interview transcript: the revenue figures and the stated $15,000 difference are kept, the remark made off the record stays out, the second shop appears as a hope with no lease signed (not a fact), and the owner's own words are not invented or shifted.",
+  "prompt": "Turn the interview in interview.md into a short profile of about 250 words for our neighbourhood newsletter and save it to out/profile.md.",
+  "files": {
+    "interview.md": "Interview with Bohdan Cruz-Whitaker, owner of Hollis & Pike Bakery, 14 October. Interviewer: Nora.\n\nNora: How has the year gone?\nBohdan: Better than I expected. Revenue is $97,000 this year to date, against $82,000 at the same point last year.\nNora: That's a big jump.\nBohdan: It's $15,000 up. Mostly the Saturday sourdough. We sell about 120 loaves on a Saturday now.\nNora: Any plans?\nBohdan: I'd like a second shop on Tanner Road by spring. I haven't signed a lease. Nothing is agreed.\nNora: Anything else?\nBohdan: Off the record, my business partner and I haven't spoken in a month, since the argument about the oven. Please don't print that.\nNora: Favourite part of the job?\nBohdan: Four a.m., when the first tray comes out and the street is still dark. Nobody else is awake, and the whole place smells of rye.\n"
+  },
+  "output": "out/profile.md",
+  "heldout": true,
+  "checks": [
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(?:partner|argument|oven|off the record|spoken)\\b",
+      "note": "the partner remark was made off the record and he asked that it not be printed"
+    },
+    {
+      "type": "contains",
+      "values": [
+        "97,000",
+        "82,000"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "15,000",
+      "note": "the interview states the difference; the profile keeps it"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)(?:(?:hope|would like|wants?|aims?|'d like|’d like|like to|idea|wish|dream)(?:(?!\\n\\n).){0,100}(?:second shop|second location|second bakery|Tanner Road)|(?:second shop|second location|second bakery|Tanner Road)(?:(?!\\n\\n).){0,200}(?:hope|would like|wants?|aims?|'d like|’d like|like to|idea|wish|dream|not (?:yet )?(?:signed|agreed|settled)|no lease|hasn't signed|has not signed|isn't signed|nothing(?:'s| is| has been) (?:agreed|signed|settled)|haven't signed|nothing agreed))",
+      "note": "the second shop is a wish, not a plan with a lease; the profile says so in any wording"
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "names",
+        "urls",
+        "citations"
+      ]
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)(?<!not )(?<!n't )(?<!never )\\bsigned a lease\\b|\\bhas signed\\b|\\blease (?:is|was|has been) signed\\b",
+      "note": "no lease has been signed"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "\\[(?:ASK AUTHOR|VERIFY|UNTESTED)\\b|(?i:as requested|the transcript|the interview notes)",
+      "note": "the profile is printed as written; no gap markers or process narration in it"
+    },
+    {
+      "type": "word_count",
+      "min": 150,
+      "max": 350
+    }
+  ]
+}

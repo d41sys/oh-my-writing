@@ -1,0 +1,71 @@
+{
+  "id": "evidence-grounded-writing/heldout2-single-site-savings-scope",
+  "skill": "evidence-grounded-writing",
+  "description": "A grant paragraph generalises one library's two-winter saving to all older buildings, calls it weather-adjusted and says it proves heat pumps always cut costs: the revision keeps the figures (31%, $5,700), drops 'proves' and 'always', says the result is one building and the weather was not adjusted for, invents no outside study, and changes little else.",
+  "prompt": "This paragraph goes into a grant application to the county (the evidence notes are in notes.md). Correct whatever we can't back up, keep the figures, change as little else as you can, and save the revised paragraph to out/revised.md.",
+  "files": {
+    "draft.md": "Heating bills at the Calder Street Library fell 31%, from $19,200 in the winter of 2024-25 to $13,300 in 2025-26, a saving of $5,900. These weather-adjusted results prove that heat pumps always cut costs in older public buildings, so the county should fund them in all 14 branches.\n",
+    "notes.md": "Evidence on file for this paragraph:\n- One building: the Calder Street Library (heat pump installed June 2025). No other branch has one.\n- Utility bills for two winters only: 2024-25 ($19,200) and 2025-26 ($13,300).\n- Winter 2025-26 was milder than 2024-25 in the region. No degree-day or other weather adjustment has been done.\n- Opening hours did not change between the two winters.\n- No outside studies or reports are on file.\n"
+  },
+  "output": "out/revised.md",
+  "heldout": true,
+  "checks": [
+    {
+      "type": "preserves",
+      "source": "draft.md",
+      "categories": [
+        "numbers"
+      ],
+      "allow_lost": [
+        "14"
+      ],
+      "note": "31%, both bills and the $5,900 saving stay; only the branch count may go with the recommendation"
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "citations",
+        "urls",
+        "names"
+      ]
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\bproves\\b|\\balways\\b"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(?:these|those|the|our|its|are|is|were|was|as)\\s+weather[- ](?:adjusted|normali[sz]ed|corrected)\\b",
+      "note": "notes.md says no weather adjustment was done, so the paragraph must not call the results weather-adjusted"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)\\b(?:one|single|only|a single|1)\\s+(?:\\w+\\s+)?(?:building|library|branch|site|winter|location)\\b|\\btwo winters\\b|\\bonly (?:at|in) (?:the )?Calder",
+      "note": "the result comes from one building over two winters; the paragraph says so in any wording"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)\\b(?:not|no|never|without|unadjusted|un-adjusted|haven't|hasn't|wasn't|weren't|isn't|aren't)\\b[^.\\n]{0,80}\\b(?:weather|degree[- ]day|temperature)|\\b(?:weather|degree[- ]day|temperature)\\b[^.\\n]{0,80}\\b(?:not|unadjusted|un-adjusted|wasn't|weren't|isn't|aren't)\\b|\\bmilder\\b|\\bwarmer\\b",
+      "note": "the milder winter and the missing weather adjustment are stated, in any wording"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(?:studies|research|reviews|reports)\\s+(?:has\\s+|have\\s+)?(?:shows?|suggests?|indicates?|finds?|found|confirms?|demonstrates?)\\b",
+      "target": "output",
+      "note": "no outside study is on file; none may be cited"
+    },
+    {
+      "type": "markers",
+      "min": 0,
+      "max": 0,
+      "target": "output",
+      "note": "the paragraph goes into an application as written"
+    },
+    {
+      "type": "similarity",
+      "source": "draft.md",
+      "min": 0.3
+    }
+  ]
+}

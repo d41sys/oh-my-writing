@@ -1,0 +1,90 @@
+{
+  "id": "author-voice/heldout2-beekeeper-letter-no-invented-cause",
+  "skill": "author-voice",
+  "description": "A subscriber letter in a beekeeper's voice (first person singular, contractions, no exclamation marks, no 'we') from three samples and notes: the harvest figures and last-pickup date are kept, the two lost hives are reported as unexplained (no cause invented), and the notes' internal remark about a neighbour stays out.",
+  "prompt": "samples.md has three letters I sent to my honey subscribers, and notes.md has what happened this season. Write the October letter so it sounds like me, and save it to out/letter.md.",
+  "files": {
+    "samples.md": "# Letters by Odile Brannock, Marrow Brook Apiary (written by her, sent to the subscriber list)\n\n## Letter, April\nThe bees are out. All of them, as far as I can tell, which isn't the same as all of them being fine. I've lifted every lid once and I'm not doing it again until May; they didn't enjoy it, and neither did I.\n\nHive 3 is the loud one. I won't say more than that.\n\nOdile\n\n## Letter, June\nI bottled the first honey on Sunday. It's pale and it tastes of clover, which is what I'd hoped for and not what I'd promised. Jars are on the porch shelf; the honesty box is the tin with the dent.\n\nI've stopped apologising for the price. It's what it costs.\n\nOdile\n\n## Letter, August\nTwo hives swarmed. I watched one go and couldn't have stopped it if I'd tried. They're in a hedge two fields over and they're not my problem now, which is a lovely feeling.\n\nThe rest are heavy. I've been told that's good.\n\nOdile\n",
+    "notes.md": "Notes for the October letter (Odile):\n- Autumn harvest is done: 212 jars this year. Last year it was 168, so 44 more.\n- I started the year with 14 hives and have 12 going into winter. Two were lost over the summer. Why, I don't know yet; nobody has looked at them.\n- Jars are still $9 each.\n- Last pickup day is Saturday 22 November, porch shelf, as usual.\n- INTERNAL, do not write about this: the neighbour on the east side complained about the bees again and I'm thinking of moving hives 5 and 6. Nothing decided.\n"
+  },
+  "output": "out/letter.md",
+  "heldout": true,
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "citations",
+        "urls",
+        "names"
+      ]
+    },
+    {
+      "type": "contains",
+      "values": [
+        "212"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "\\b44\\b|\\b168\\b",
+      "note": "the notes state the difference with last year (44 more, from 168); the letter keeps it as the difference or as last year's figure"
+    },
+    {
+      "type": "regex",
+      "pattern": "22 November|November 22",
+      "note": "the last pickup day"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)neighbou?r|complain|hives? 5\\b|moving (?:the |my )?hives|move (?:the |my )?hives",
+      "note": "the notes mark the neighbour remark as internal; it must not reach the subscribers"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(varroa|mites?|starv\\w*|queenless|disease\\w*|pesticides?|foulbrood|drought|wasps?|robbing|damp|mou?ld|hornets?|fungus|infestation)\\b",
+      "note": "the notes say why the two hives were lost is not known; the letter must not supply a cause"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b(?:don't|do not|doesn't|didn't|haven't|hasn't|can't|cannot|couldn't|not|no|unknown|unclear|unexplained|mystery|nobody|yet)\\b[^.\\n]{0,60}\\b(?:why|cause|reason|explanation|know|known|sure|looked|checked|say|idea|happened)\\b|\\b(?:why|cause|reason|explanation)\\b[^.\\n]{0,60}\\b(?:unknown|unclear|not known|isn't known|mystery|yet|unexplained)\\b",
+      "note": "the loss is reported as unexplained, in any wording"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b(?:two|2)\\b[^.\\n]{0,60}\\b(?:hives?|colonies)\\b|\\b(?:hives?|colonies)\\b[^.\\n]{0,60}\\b(?:two|2)\\b|\\b12\\b"
+    },
+    {
+      "type": "not_contains",
+      "values": [
+        "!"
+      ],
+      "note": "the samples never use an exclamation mark"
+    },
+    {
+      "type": "regex",
+      "pattern": "\\bI\\b",
+      "note": "the samples are first person singular"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "\\b[Ww]e\\b|\\b[Oo]ur\\b",
+      "note": "she runs the apiary alone in every sample"
+    },
+    {
+      "type": "regex",
+      "pattern": "\\w+['’](?:s|t|re|ll|ve|d|m)\\b",
+      "note": "the samples use contractions throughout"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "\\[(?:ASK AUTHOR|VERIFY|UNTESTED)\\b|(?i:as requested|your notes|the notes|the samples|voice profile)",
+      "note": "the letter goes to subscribers: no gap markers and no narration about the notes inside it"
+    },
+    {
+      "type": "word_count",
+      "min": 60,
+      "max": 220
+    }
+  ]
+}

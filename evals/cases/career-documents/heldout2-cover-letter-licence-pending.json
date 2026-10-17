@@ -1,0 +1,68 @@
+{
+  "id": "career-documents/heldout2-cover-letter-licence-pending",
+  "skill": "career-documents",
+  "description": "Cover letter for an Ontario nursing post from a résumé whose registration is Alberta-only with an Ontario application pending: the letter must not claim an Ontario registration, must say the application is pending, keeps the résumé's stated improvement (48 to 31 minutes, 17 minutes), and carries no placeholder.",
+  "prompt": "Write a cover letter for the job in job.md from my resume in resume.md. Save the letter to out/cover-letter.md. I will sign it myself, so leave no placeholders in the file; put any comments for me in your reply.",
+  "files": {
+    "resume.md": "# Ilse Varga\nCalgary, Alberta | ilse.varga@example.com\n\n## Registration\n- Registered Nurse, College of Registered Nurses of Alberta, active.\n- College of Nurses of Ontario: application submitted 3 September 2026, decision pending.\n- ACLS and PALS certified.\n\n## Experience\n\n**Registered Nurse, Emergency Department**, Foothills Valley Hospital, 2019 to 2026\n- Evening-shift triage nurse in a 38-bed department.\n- Led a change to the intake form that cut the average wait to first assessment from 48 minutes to 31 minutes, a drop of 17 minutes.\n- Precepted 9 new graduate nurses.\n\n**Licensed Practical Nurse**, Red Cedar Care Home, 2016 to 2019\n- Ran medication rounds for 22 residents.\n\n## Education\n\nDiploma in Nursing, Northern Prairie College, 2016.\n",
+    "job.md": "# Emergency Triage Nurse, Lakeshore General Hospital (Mississauga, Ontario)\n\nLakeshore General is hiring an evening-shift triage nurse for its emergency department.\n\n## Requirements\n- Registration with the College of Nurses of Ontario (required before the start date)\n- ACLS certification\n- 3 or more years in an emergency department\n\n## Nice to have\n- Experience precepting new nurses\n\nApplications go to Rowan Achterberg, Nursing Recruitment.\n"
+  },
+  "output": "out/cover-letter.md",
+  "heldout": true,
+  "checks": [
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(?:am|is|currently)\\s+(?:a\\s+)?(?:fully\\s+)?(?:licen[sc]ed|registered)\\b(?:(?!Alberta|applied|applying|application|pending)[^.\\n]){0,40}Ontario|\\b(?:hold|holds|have|has)\\s+(?:an?\\s+)?(?:active\\s+|current\\s+|valid\\s+)?(?:Ontario|CNO)\\b[^.\\n]{0,30}(?:licen[sc]e|registration)|\\bregistered\\b[^.\\n]{0,20}\\bwith\\b[^.\\n]{0,10}(?:the\\s+)?(?:CNO|College of Nurses of Ontario)",
+      "note": "the Ontario registration is not held; the letter must not say it is"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)(?:CNO|College of Nurses of Ontario|Ontario)[^.\\n]{0,200}\\b(?:pending|in progress|submitted|applied|application|awaiting|under review|expected|process)\\b|\\b(?:pending|in progress|submitted|applied|application|awaiting|under review|process)\\b[^.\\n]{0,120}(?:CNO|College of Nurses of Ontario|Ontario)",
+      "note": "the job requires the Ontario registration, so the letter says in any wording that the application is pending"
+    },
+    {
+      "type": "regex",
+      "pattern": "\\b17 minutes\\b|\\b48\\b[^.\\n]{0,60}\\b31\\b|\\b31\\b[^.\\n]{0,60}\\b48\\b",
+      "note": "the résumé states the improvement; the letter keeps it as the 17-minute drop or as both endpoints"
+    },
+    {
+      "type": "contains",
+      "values": [
+        "ACLS",
+        "Foothills Valley Hospital"
+      ]
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "names",
+        "citations",
+        "urls"
+      ],
+      "allow": [
+        "7 year",
+        "7 years",
+        "CNO",
+        "RN"
+      ],
+      "note": "2019 to 2026 is seven years, and CNO and RN abbreviate names the sources give in full"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "\\[[A-Za-z][^\\]\\n]{1,40}\\]",
+      "note": "no bracketed placeholder such as [Your Name] or [Date]"
+    },
+    {
+      "type": "markers",
+      "min": 0,
+      "max": 0,
+      "target": "output"
+    },
+    {
+      "type": "word_count",
+      "min": 100,
+      "max": 450
+    }
+  ]
+}
