@@ -67,6 +67,7 @@ When a limit is hard, protect carriers of information first:
 4. If a table or code sample cannot fit, state the winning figure and the key trade-off in a sentence and link to the full material.
 5. If the limit forces a version that would mislead (qualifiers cannot be kept), decline that version, or reduce it to a pointer to the full piece, and say why.
 6. Keep at least one number, example or named mechanism in every part of the derivative, so cutting removes padding and not proof. If a cleanup pass leaves the text thin, the source was thin there: ask for substance instead of polishing the emptiness.
+7. When a point has to go, cut the whole secondary point rather than shaving a qualifier or a cause off every point. Keep the clause that says why a number moved or what the old setup used to do (the bottleneck, a chore the change moved onto the team); those clauses are what a reader acts on. Set a before-and-after pair of figures on their own short lines when the channel allows breaks, so the comparison reads at a glance.
 
 ## Parity audit
 

@@ -174,6 +174,12 @@ Claims of importance or consensus with nothing behind them.
 - Fine when: a name, citation or link in the same sentence says who.
 - Fix: cite the source if the author supplied one; otherwise soften to what the author can stand behind, or cut, and ask the author for the source in the reply (`[VERIFY: source for ...]`, not inside the text).
 
+### Stock attribution beside a citation (found by reading)
+- Looks like: "Studies show that caching cuts tail latency (Lee, 2021)."
+- Cost: the lead-in repeats what the citation already says and sounds like the vague form.
+- Fine when: the lead-in says what kind of evidence it is ("In a randomized trial").
+- Fix: drop the lead-in and let the claim carry the citation, kept byte-identical; keep a certainty word ("suggests") if the sentence had one.
+
 ### Trailing commentary riders (`trailing-rider`)
 - Looks like: "..., highlighting the importance of collaboration", "..., underscoring its value".
 - Cost: a participial phrase that comments instead of informing.
@@ -305,6 +311,12 @@ Found by reading shape, not words. Scanner hits here are always weak.
 - Cost: the reader reads everything twice.
 - Fine when: a summary sentence helps a skimming reader of a long, dense section.
 - Fix: end on the strongest concrete sentence, or hand off to the next point.
+
+### Lead-in that states the next sentence's conclusion (found by reading)
+- Looks like: "Searches are faster." followed by "The index now answers in 40 ms, down from 90."; "The platform is built for every team." before the facts about who uses it.
+- Cost: the reader meets the claim twice, once as a bare adjective and once with the evidence.
+- Fine when: the genre needs a headline or summary line, or the first sentence adds a fact the second does not.
+- Fix: delete the lead-in and keep the facts it summed up, including any scope fact (who, for what, what it does not do) stated as a plain sentence.
 
 ### Paper-style endings (`future-work-formula`)
 - Looks like: "Future work could explore more settings."

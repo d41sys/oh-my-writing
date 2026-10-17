@@ -1,7 +1,7 @@
 {
   "id": "technical-docs/readme-from-cli-script",
   "skill": "technical-docs",
-  "description": "README for an argparse script documents only flags the parser defines, states where output goes (stdout vs stderr), exit codes, and invents no install step, format support or version.",
+  "description": "README for an argparse script documents only flags the parser defines, states where output goes (stdout vs stderr), the exit code for an unreadable input, that --output must not be the input file, and invents no install step, format support, license or version requirement.",
   "prompt": "I want to share csvtrim.py with the rest of the team. Write a README for it and save it to out/README.md.",
   "files": {
     "csvtrim.py": "#!/usr/bin/env python3\n\"\"\"csvtrim: strip spaces around every field of a CSV file and drop blank rows.\n\nStandard library only. Tested with Python 3.11.\n\"\"\"\nimport argparse\nimport csv\nimport sys\n\n\ndef main(argv=None):\n    parser = argparse.ArgumentParser(\n        prog=\"csvtrim\",\n        description=\"Strip spaces around every field and drop rows that are empty.\",\n    )\n    parser.add_argument(\"-i\", \"--input\", required=True, help=\"CSV file to read (UTF-8, comma-separated)\")\n    parser.add_argument(\"-o\", \"--output\", help=\"file to write; default is standard output\")\n    parser.add_argument(\"-v\", \"--verbose\", action=\"store_true\", help=\"print row counts to standard error\")\n    args = parser.parse_args(argv)\n\n    try:\n        src = open(args.input, newline=\"\", encoding=\"utf-8\")\n    except OSError as exc:\n        print(f\"csvtrim: cannot read {args.input}: {exc.strerror}\", file=sys.stderr)\n        return 1\n\n    dst = open(args.output, \"w\", newline=\"\", encoding=\"utf-8\") if args.output else sys.stdout\n    kept = dropped = 0\n    with src:\n        writer = csv.writer(dst)\n        for row in csv.reader(src):\n            cells = [cell.strip() for cell in row]\n            if not any(cells):\n                dropped += 1\n                continue\n            writer.writerow(cells)\n            kept += 1\n    if args.output:\n        dst.close()\n\n    if args.verbose:\n        print(f\"kept {kept} rows, dropped {dropped} blank rows\", file=sys.stderr)\n    return 0\n\n\nif __name__ == \"__main__\":\n    sys.exit(main())\n",
@@ -38,14 +38,19 @@
       ]
     },
     {
-      "type": "contains_any",
-      "values": [
-        "exit code",
-        "exit status",
-        "exits with",
-        "non-zero",
-        "nonzero"
-      ]
+      "type": "regex",
+      "pattern": "(?is)\\b(exit(?:s|ed)?|return(?:s|ed)?|status|code)\\b[^\\n]{0,80}\\b(1|one|non-?zero)\\b[^\\n]{0,120}\\b(input|read|open|opened|unreadable|cannot|can't|missing|not found)\\b|\\b(input|read|open|opened|unreadable|cannot|can't|missing|not found)\\b[^\\n]{0,120}\\b(exit(?:s|ed)?|return(?:s|ed)?|status|code)\\b[^\\n]{0,60}\\b(1|one|non-?zero)\\b",
+      "note": "a teammate scripting the tool needs the failing exit code together with what causes it (the input file cannot be opened), not only the words 'exit code'"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)(\\b(same|identical)\\b[^\\n]{0,160}\\b(truncat\\w*|overwrit\\w*|empt(?:y|ies|ied)|eras\\w*|destroy\\w*|wip\\w*|clobber\\w*|lose|lost)\\b|\\b(truncat\\w*|overwrit\\w*|destroy\\w*|eras\\w*|clobber\\w*)\\b[^\\n]{0,160}\\b(same|identical)\\b)",
+      "note": "the script opens the output file for writing before it reads the input, so --output pointing at the input file destroys the data; a teammate who runs it needs that warning"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?im)\\b(requires?|requirements?|needs?|must (?:have|use|run)|minimum|at least)\\b[^\\n]{0,40}python[ ]?3\\.11|python[ ]?3\\.11[ ]?(?:\\+|or (?:newer|later|above|higher))|^#+[ \\t]*(?:requirements|prerequisites)\\b[^\\n]*\\n+[^\\n]*python[ ]?3\\.11",
+      "note": "the script says only 'Tested with Python 3.11'; calling 3.11 a requirement or a minimum states a limit the source does not show, while saying it was tested with 3.11 is fine"
     },
     {
       "type": "not_contains",

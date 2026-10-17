@@ -3,6 +3,7 @@
 
 Usage:
   python3 evals/stats.py RUN_DIR [--json OUT]                         metrics for every run, aggregates, skill-minus-baseline
+                                                                      (and skill-minus-competitor, all and loaded-only, when the run has competitors)
   python3 evals/stats.py --compare RUN_A RUN_B --condition skill      same condition in two runs, paired on (case, host, rep)
 
 Every output a run produced gets the same fixed set of metrics (METRICS below; rules versioned by METRICS_VERSION).
@@ -499,7 +500,8 @@ def run_record(case: dict, meta: dict, output: str | None, reply: str, workspace
         metrics["check_pass_rate"] = graded["score"]
         metrics["case_passed"] = 1.0 if graded["passed"] else 0.0
     return {"case": case["id"], "skill": case["skill"], "kind": case_kind(case), "host": meta["host"],
-            "condition": meta["condition"], "rep": meta.get("rep") or 1, "host_error": host_error, "metrics": metrics}
+            "condition": meta["condition"], "rep": meta.get("rep") or 1, "host_error": host_error,
+            "skill_loaded": meta.get("skill_loaded"), "metrics": metrics}
 
 
 def read_run(run_dir: Path, hosts: set[str] | None = None) -> tuple[dict, list[dict]]:
@@ -671,6 +673,40 @@ def compare_runs(a: list[dict], b: list[dict], condition: str) -> dict:
                 p = paired(values_by_run(a, m, **where), values_by_run(b, m, **where), f"cmp {key}:{m}")
                 p["verdict"] = verdict(p["diff"], p["ci"], spec["direction"], p["n_cases"])
                 out[key][m] = p
+    return out
+
+
+# ---------------------------------------------------------------- skill minus competitor
+
+COMPETITOR_PREFIX = "competitor-"
+
+
+def competitor_conditions(records: list[dict]) -> list[str]:
+    return sorted({r["condition"] for r in records if r["condition"].startswith(COMPETITOR_PREFIX)})
+
+
+def skill_minus_competitor(records: list[dict], loaded_only: bool = False) -> dict:
+    """Our skill minus each third-party competitor, paired on (host, case, rep), per host/competitor/scope. A competitor
+    only runs the cases it competes on, so the pairs are those cases. diff = skill - competitor; the verdict says whether
+    the skill is 'better' or 'worse' (CI excludes 0) in the metric's own direction. With loaded_only the pairs keep only
+    runs whose meta.json says the skill was actually loaded, on both sides: a run that never read its skill measures the
+    bare model, not the skill."""
+    keep = [r for r in records if not loaded_only or r.get("skill_loaded") is True]
+    out: dict[str, dict] = {}
+    for host in sorted({r["host"] for r in records}):
+        for cond in competitor_conditions(records):
+            name = cond[len(COMPETITOR_PREFIX):]
+            scopes = sorted({r["skill"] for r in records if r["condition"] == cond and r["host"] == host}) + ["ALL"]
+            for scope in scopes:
+                where = {"host": host, **_scope_filter(scope)}
+                key = f"{host}/{name}/{scope}"
+                out[key] = {}
+                for m, spec in METRICS.items():
+                    label = f"vs competitor {key}{' loaded' if loaded_only else ''}:{m}"
+                    p = paired(values_by_run(keep, m, condition=cond, **where),
+                               values_by_run(keep, m, condition="skill", **where), label)
+                    p["verdict"] = verdict(p["diff"], p["ci"], spec["direction"], p["n_cases"])
+                    out[key][m] = p
     return out
 
 
@@ -861,6 +897,67 @@ def render_compare(label_a: str, label_b: str, condition: str, cmp: dict, where_
     return "\n".join(lines)
 
 
+def render_competitors(everything: dict, loaded: dict) -> str:
+    """Skill minus competitor for all pairs and for loaded-only pairs, with n. everything/loaded: skill_minus_competitor."""
+    directional = [m for m, s in METRICS.items() if s["direction"]]
+    lines = ["== our skill minus each competitor, paired on (host, case, rep); diff = skill - competitor; "
+             "'better' / 'worse' = the skill, CI excludes 0 (bootstrap over cases, repetitions averaged)",
+             "'all' = every paired run; 'loaded' = only pairs where meta.json skill_loaded is true for the competitor "
+             "run and ours. n = paired runs / cases.", ""]
+
+    def counts(block):
+        c = {"better": 0, "worse": 0, "same": 0}
+        for m in directional:
+            v = block[m]["verdict"]
+            if v in c:
+                c[v] += 1
+        return c
+
+    summary = []
+    keys_all = [k for k in everything if k.endswith("/ALL")]
+    for key in keys_all:
+        host, name, _ = key.split("/")
+        a, b = everything[key], loaded[key]
+        ca, cb = counts(a), counts(b)
+        first = next((m for m in directional if a[m]["n_pairs"]), directional[0])
+        summary.append([f"{host}/{name}", f"{a[first]['n_pairs']}/{a[first]['n_cases']}",
+                        f"{ca['better']} / {ca['worse']} / {ca['same']}", f"{b[first]['n_pairs']}/{b[first]['n_cases']}",
+                        f"{cb['better']} / {cb['worse']} / {cb['same']}"])
+    lines += ["Summary: metrics where the skill is better / worse / not clearly different (directional metrics only; "
+              "pairs counted on the first metric with data)", ""]
+    lines += _table(["host/competitor", "all n", "all +/-/=", "loaded n", "loaded +/-/="], summary) + [""]
+    for key in keys_all:
+        host, name, _ = key.split("/")
+        a, b = everything[key], loaded[key]
+        rows = []
+        for m in directional:
+            if not a[m]["n_pairs"]:
+                continue
+            dg = _digits(m)
+            rows.append([m, METRICS[m]["direction"], _num(a[m]["b_mean"], dg), _num(a[m]["a_mean"], dg),
+                         _num(a[m]["diff"], dg), _ci(a[m]["ci"], dg), a[m]["verdict"], f"{a[m]['n_pairs']}/{a[m]['n_cases']}",
+                         _num(b[m]["diff"], dg), _ci(b[m]["ci"], dg), b[m]["verdict"], f"{b[m]['n_pairs']}/{b[m]['n_cases']}"])
+        lines += [f"-- {host}/{name}: skill vs competitor-{name}", ""]
+        lines += _table(["metric", "better", "skill", name[:14], "all diff", "all 95% CI", "all", "all n",
+                         "loaded diff", "loaded 95% CI", "loaded", "loaded n"], rows) + [""]
+    flagged = []
+    for key in everything:
+        host, name, scope = key.split("/")
+        if scope == "ALL":
+            continue
+        for m in directional:
+            a, b = everything[key][m], loaded[key][m]
+            if "worse" in (a["verdict"], b["verdict"]) or "better" in (a["verdict"], b["verdict"]):
+                dg = _digits(m)
+                flagged.append([f"{host}/{name}", scope, m, _num(a["diff"], dg), _ci(a["ci"], dg), a["verdict"],
+                                f"{a['n_pairs']}/{a['n_cases']}", _num(b["diff"], dg), _ci(b["ci"], dg), b["verdict"],
+                                f"{b['n_pairs']}/{b['n_cases']}"])
+    lines += ["Per skill, metrics flagged better or worse in either variant:", ""]
+    lines += (_table(["host/competitor", "skill", "metric", "all diff", "all 95% CI", "all", "all n", "loaded diff",
+                      "loaded 95% CI", "loaded", "loaded n"], flagged) if flagged else ["(none)"]) + [""]
+    return "\n".join(lines)
+
+
 def _json_safe(obj):
     if isinstance(obj, dict):
         return {str(k): _json_safe(v) for k, v in obj.items()}
@@ -903,6 +1000,10 @@ def main(argv=None) -> int:
         return 1
     agg = aggregate(records)
     print(render_run(info, records, agg))
+    if competitor_conditions(records):
+        agg["skill_minus_competitor"] = {"all": skill_minus_competitor(records),
+                                         "loaded_only": skill_minus_competitor(records, loaded_only=True)}
+        print(render_competitors(agg["skill_minus_competitor"]["all"], agg["skill_minus_competitor"]["loaded_only"]))
     if args.detail:
         print(render_describe(agg, records, args.detail))
     if args.json:

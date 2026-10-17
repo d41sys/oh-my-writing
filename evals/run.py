@@ -241,9 +241,10 @@ def host_command(host: str, prompt: str, ws: Path, reply_file: Path, args, read_
             cmd += ["-i", str(image)]
         return cmd if images else cmd + [prompt]
     if host == "omp":
-        # Rules and sessions off so the user's own rules and history cannot reach either condition.
+        # Rules and sessions off so the user's own rules and history cannot reach either condition; the overlay turns
+        # off the advisor, memory and user-level skills (only diagram-design is re-added, for every condition).
         cmd = ["omp", "-p", "--mode", "json", "--no-session", "--no-rules", "--no-lsp", "--auto-approve",
-               "--model", args.omp_model]
+               "--config", str(omp_isolation_config()), "--model", args.omp_model]
         if args.omp_thinking:
             cmd += ["--thinking", args.omp_thinking]
         if read_only:
@@ -303,6 +304,53 @@ def condition_loaded(host: str, condition: str, case: dict, log: str) -> bool:
     if name:
         return any(skill_was_loaded(host, s, log) for s in competitor_skill_names(load_competitors()[name]))
     return False
+
+
+_OMP_ISOLATION: Path | None = None
+
+
+def omp_isolation_config() -> Path:
+    """Config overlay, outside every workspace, that removes what the user's omp setup would add to a run: the
+    advisor (a second model reviewing each turn), memory recall and retention, and user-level skills. diagram-design
+    is the one user-level skill kept, through its own directory, so every condition sees the same set."""
+    global _OMP_ISOLATION
+    if _OMP_ISOLATION is None:
+        root = Path(tempfile.mkdtemp(prefix="omw-omp-isolation-"))
+        skills = root / "skills"
+        skills.mkdir()
+        if (grade.DIAGRAM_SKILL / "SKILL.md").is_file():
+            shutil.copytree(grade.DIAGRAM_SKILL, skills / grade.DIAGRAM_SKILL.name,
+                            ignore=shutil.ignore_patterns("__pycache__", "*.pyc", ".DS_Store", ".git"))
+        overlay = {"advisor": {"enabled": False}, "memory": {"backend": "off"}, "autolearn": {"enabled": False},
+                   "skills": {"enableAgentsUser": False, "enablePiUser": False, "enableClaudeUser": False,
+                              "enableCodexUser": False, "customDirectories": [str(skills)]}}
+        path = root / "config.yml"
+        path.write_text(json.dumps(overlay, indent=2), encoding="utf-8")  # JSON is valid YAML
+        _OMP_ISOLATION = path
+    return _OMP_ISOLATION
+
+
+def allowed_skills(condition: str, case: dict | None) -> set[str]:
+    """Skills a run of this condition may open: its own set plus diagram-design, which every condition has."""
+    allowed = {grade.DIAGRAM_SKILL.name}
+    if condition == "skill":
+        allowed |= {s.name for s in SKILLS}
+    elif competitor_name(condition):
+        allowed |= set(competitor_skill_names(load_competitors()[competitor_name(condition)]))
+    return allowed
+
+
+def isolation_problems(host: str, condition: str, case: dict | None, log: str) -> list[str]:
+    """Evidence that something outside the condition reached the run: advisor events or a skill outside its set."""
+    if host != "omp":
+        return []
+    problems = []
+    if re.search(r'"type":\s*"advisor', log):
+        problems.append("advisor events in log")
+    opened = set(re.findall(r"skill://([A-Za-z0-9_.-]+)", log)) - allowed_skills(condition, case)
+    if opened:
+        problems.append("skills outside the condition: " + ", ".join(sorted(opened)))
+    return problems
 
 
 def execute(host: str, prompt: str, ws: Path, out_dir: Path, args, read_only=False, timeout: int | None = None,
@@ -368,8 +416,10 @@ def run_one(case: dict, host: str, condition: str, rep: int, run_dir: Path, args
                         ignore=shutil.ignore_patterns(".git", ".agents", ".claude"))
     finally:
         shutil.rmtree(ws, ignore_errors=True)
+    problems = isolation_problems(host, condition, case, result["log"])
+    error = result["error"] or ("isolation: " + "; ".join(problems) if problems else None)
     meta = {**base, "skill_loaded": condition_loaded(host, condition, case, result["log"]),
-            "exit_code": result["exit_code"], "error": result["error"], "duration_s": result["duration_s"],
+            "exit_code": result["exit_code"], "error": error, "duration_s": result["duration_s"],
             "timeout": timeout}
     (out_dir / "meta.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
     status = "ERROR" if meta["error"] else "done"
@@ -651,10 +701,25 @@ def parse_scores(reply: str) -> dict[str, dict[str, float]]:
     return scores
 
 
+SIDE_PAGE_EXT = {".md", ".txt"}
+
+
 def side_text(case: dict, ws: Path) -> str | None:
+    """The deliverable the judge reads. Other text pages the agent wrote next to it (a tutorial split from its
+    reference page) are appended, so a split deliverable is judged whole; author-facing open-questions.md and input
+    files are not part of what the reader gets."""
     path = ws / case["output"]
     if path.is_file():
-        return path.read_text(encoding="utf-8", errors="replace")
+        text = path.read_text(encoding="utf-8", errors="replace")
+        inputs = set(case.get("files", {}))
+        siblings = sorted(path.parent.iterdir()) if path.parent != ws else []  # the root holds the inputs
+        for page in siblings:
+            rel = page.relative_to(ws).as_posix()
+            if (page == path or not page.is_file() or page.suffix not in SIDE_PAGE_EXT
+                    or page.name == "open-questions.md" or rel in inputs):
+                continue
+            text += f"\n\n<page name=\"{rel}\">\n{page.read_text(encoding='utf-8', errors='replace')}\n</page>"
+        return text
     render = case.get("judge", {}).get("render")
     if render and (ws / render).is_file():  # a visual case whose agent wrote only the HTML
         return grade._inventory().html_to_text((ws / render).read_text(encoding="utf-8", errors="replace"))[0]

@@ -6,7 +6,7 @@ Answer each check pass or fail. Fix every failure before returning.
 
 1. Is the page type (tutorial, how-to, reference, explanation, or a named artifact such as README, PR body, commit message or ADR) decided and consistent with the reader's stated need?
 2. Does the page serve one reader state, with material for other states moved into links instead of pasted in?
-3. If the request mixed types (for example a tutorial that also asks for every option), did you write one page per type and link them, or, only on the user's explicit wish for one file, keep clearly labeled sections and say it is a compromise?
+3. If the request mixed types (for example a tutorial that also asks for every option), did you write one page per type, complete, and link them with a pointer that says what the other page holds, or, only on the user's explicit wish for one file, keep clearly labeled sections and say it is a compromise?
 4. Is any inline rationale limited to a sentence that protects the reader from an error?
 5. Does the page avoid describing its own edit history, except in a changelog, release note, migration guide, commit message or decision record?
 6. Do links to the neighbouring page types exist where the reader would need them, and does every linked page exist or get created with real content (no stubs)?
@@ -14,12 +14,12 @@ Answer each check pass or fail. Fix every failure before returning.
 ## Type contracts
 
 7. If tutorial: is there one path with no optional tools or menus, a fixed environment, and an expected result after each step (or a statement that silence means success)?
-8. If tutorial: does it open with one sentence in the first person plural that says what we will build or do ("In this guide we will ..."), and close by saying what the learner has accomplished and where to go next?
+8. If tutorial: does it say near the top what the learner will have by the end and what to do first, with no fixed opening formula, and close by saying what the learner has accomplished and where to go next?
 9. If how-to: is the title "How to ..." with a single goal, prerequisites listed, real variations and likely failures covered, and no re-teaching of basics?
-10. If reference: is every entry in the same layout, free of teaching, selling and design arguments, and shaped like the thing it describes? For a CLI or script: are streams, files written or overwritten, and exit codes stated as the code behaves?
+10. If reference: is every entry in the same layout, free of teaching, selling and design arguments, and shaped like the thing it describes? For a CLI or script: are streams, files written or overwritten (including an output path equal to the input), and each exit code with its cause stated as the code behaves?
 11. If explanation: does it answer a "why" question with context, alternatives and trade-offs, tied to specific examples, without procedures or parameter tables?
 12. If README: does it say what it is, why, and a quick start before anything else, and link into deeper pages instead of duplicating them?
-13. If PR body: does it state what changed, why, evidence of before and after, a `Door:` line (two-way or one-way) and a `Blast radius:` line naming who or what breaks, reviewer focus only where the notes name a place to read slowly, no mention of rollout mechanisms the change lacks, no preamble, the title as the first line of the file, and a title that describes the change in about 70 characters or fewer?
+13. If PR body: does it state what changed, why, evidence of before and after, in plain prose the riskiest change and what breaks if it is wrong (consumers, data or jobs named in the diff or notes, and how to get the old behaviour back), reversibility only when the change is hard to undo, the notes' status statements (tests, CI, docs, design doc) with their exact scope, reviewer focus only where the notes name a place to read slowly, no mention of rollout mechanisms the change lacks, no preamble, the title as the first line of the file, and a title that describes the change in about 70 characters or fewer?
 14. If commit message: is the subject imperative, specific and about 50 characters (72 at most), with a body that gives the cause rather than restating the diff?
 15. If ADR: do all three conditions hold (hard to reverse, surprising without context, real trade-off), and are context, options, decision and consequences present, with negatives listed and every reason taken from the author or the repo?
 16. If changelog or release note: is every entry user-facing, grouped under consistent headings, with each breaking change stating what changed and what to do?
@@ -28,7 +28,7 @@ Answer each check pass or fail. Fix every failure before returning.
 ## Truth and verification
 
 18. Has every command and code sample been run? If not, is it left out of the page or described in plain words as not run (never marked with a tag in the page), with the reason in the reply?
-19. Are versions and platforms stated, and taken from the source files rather than memory or your own test environment (that version goes in the reply, not the page)?
+19. Are versions and platforms stated, and taken from the source files rather than memory or your own test environment (that version goes in the reply, not the page), and is "tested with" never written as "requires"?
 20. Does every path, flag, field, endpoint and status code mentioned exist in the source (including each flag and default in a README or CLI page)?
 21. Are there any invented facts: endpoints, defaults, benchmarks, adoption numbers, quotes, install steps, or "supports X" claims the source does not show?
 22. Is the page free of `[ASK AUTHOR]`, `[VERIFY]` and `[UNTESTED]` markers, TODO or TBD text, empty template slots and meta-notes (process narration such as "as requested" or "I ran", per-paragraph source notes, `[source: ...]` tags)? Is every missing fact stated plainly as a gap in the material ("No license is stated in this repository.") or omitted, never filled in? Do the author's questions appear only as `[VERIFY: ...]`, `[ASK AUTHOR: ...]` or `[UNTESTED]` lines in the reply (and in `open-questions.md` when files are written)? Exception: the author asked for a draft, or the output is an author-facing artifact (a comment review, a staleness report).

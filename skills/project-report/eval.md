@@ -10,7 +10,7 @@ Answer each check pass or fail. Fix every failure before returning.
 
 ## Ledger
 
-4. Does every number, date, name and status in the report trace to a ledger row with a source file and location?
+4. Does every number, date, name and status in the report trace to a ledger row with a source file and location, and does every ledger row that bears on cost, schedule, scope, quality or risk (including rows from secondary documents) appear in the report, or is its omission listed in the reply with the reason? Does each file named in the sources appendix show its use in the report text?
 5. Where two documents disagree, does the report show both values with their sources and dates and say they are not reconciled (or state the resolution), and does nothing downstream (totals, percentages, charts) use either one silently?
 6. Are derived values (sums, differences, percentages) marked as derived and reproducible from ledger rows?
 7. Do planned, proposed, at-risk and unconfirmed items keep that status in the text and in any diagram?

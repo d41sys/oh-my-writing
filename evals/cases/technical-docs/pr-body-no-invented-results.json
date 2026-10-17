@@ -1,7 +1,7 @@
 {
   "id": "technical-docs/pr-body-no-invented-results",
   "skill": "technical-docs",
-  "description": "PR description from a diff and the author's notes reports only the test run the author did, labels everything else Not run, states door type and blast radius, flags the default change and the jitter-after-cap detail, and invents no numbers.",
+  "description": "PR description from a diff and the author's notes reports only the test run the author did, labels everything else Not run, says which existing caller changes behavior and how to get the old behavior back, flags the default change and the jitter-after-cap detail, and invents no numbers.",
   "prompt": "Write the pull request description for the change in changes.diff, using my notes in notes.md. Save it to out/PR.md.",
   "files": {
     "changes.diff": "diff --git a/taskrunner/retry.py b/taskrunner/retry.py\nindex 3f2a1c9..b81d0e4 100644\n--- a/taskrunner/retry.py\n+++ b/taskrunner/retry.py\n@@ -8,9 +8,15 @@ import random\n import time\n \n \n-def backoff_delays(attempts, base=0.5, jitter=0.1):\n-    \"\"\"Yield the sleep time before each retry: base * 2**n, plus jitter.\"\"\"\n+def backoff_delays(attempts, base=0.5, jitter=0.1, max_delay=30.0):\n+    \"\"\"Yield the sleep time before each retry: base * 2**n, plus jitter.\n+\n+    Each delay is capped at max_delay seconds before jitter is added.\n+    Pass max_delay=None to keep the old uncapped behaviour.\n+    \"\"\"\n     for n in range(attempts):\n         delay = base * (2 ** n)\n+        if max_delay is not None:\n+            delay = min(delay, max_delay)\n         yield delay + random.uniform(0, jitter)\n \n \ndiff --git a/tests/test_retry.py b/tests/test_retry.py\nindex 91c7e22..4d0a6f3 100644\n--- a/tests/test_retry.py\n+++ b/tests/test_retry.py\n@@ -20,3 +20,13 @@ def test_delays_grow():\n     delays = list(backoff_delays(4, base=1.0, jitter=0.0))\n     assert delays == [1.0, 2.0, 4.0, 8.0]\n+\n+\n+def test_delay_is_capped():\n+    delays = list(backoff_delays(10, base=1.0, jitter=0.0, max_delay=30.0))\n+    assert max(delays) == 30.0\n+\n+\n+def test_max_delay_none_is_uncapped():\n+    delays = list(backoff_delays(10, base=1.0, jitter=0.0, max_delay=None))\n+    assert delays[-1] == 512.0\n",
@@ -34,13 +34,18 @@
     },
     {
       "type": "regex",
-      "pattern": "(?i)\\b(two|one)-way\\b"
+      "pattern": "(?is)(nightly sync|attempts=12)[^\\n]{0,300}\\b(30|cap|capped|at most|instead of|no longer|now)\\b|\\b(30|cap|capped|at most|instead of|no longer)\\b[^\\n]{0,300}(nightly sync|attempts=12)",
+      "note": "the reviewer must learn which existing caller changes behavior and how (the nightly sync now waits at most the cap instead of growing); this is what breaks or shifts if the change is wrong, said in the description's own words, with no required label"
     },
     {
-      "type": "contains",
-      "values": [
-        "blast radius"
-      ]
+      "type": "regex",
+      "pattern": "(?is)max_delay\\W{0,6}(?:=|to|as|with)?\\W{0,6}`?None\\b|\\bNone\\b[^\\n]{0,80}(uncapped|old|previous|restor|preserv|keep|opt)",
+      "note": "the cap is a changed default: a reviewer needs to know how to get the old uncapped behavior back, which is also the undo path for a caller who is hurt by it"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)(\\b(before|after)\\b[^.\\n]{0,25}\\bjitter\\b|\\bjitter\\b[^.\\n]{0,80}\\b(after|on top|exceed|above|beyond|over|added)\\b|\\b(exceed|above|beyond|more than|longer than)\\b[^.\\n]{0,40}\\b30\\b)",
+      "note": "the diff applies the cap before jitter, so a wait can be longer than the cap; a reader who sees only 'at most 30 seconds' is misled about the limit"
     },
     {
       "type": "regex",
@@ -62,11 +67,8 @@
     },
     {
       "type": "regex",
-      "pattern": "(?im)^[#*>\\s-]*(?:title:?[*\\s]*)?(?:fix|feat|perf|refactor)(?:\\([\\w./-]+\\))?!?: \\S"
-    },
-    {
-      "type": "not_regex",
-      "pattern": "(?im)^[#*>\\s-]*(?:title:?[*\\s]*)?(?:fix|feat|perf|refactor)(?:\\([\\w./-]+\\))?!?: .{60,}$"
+      "pattern": "(?i)\\A\\s*(?:#+[ \\t]+|title:[ \\t]*)(?!summary\\b)\\S[^\\n]{4,70}$",
+      "note": "the description is pasted into a PR, so its first line is a short title naming the change (about 70 characters or fewer); the task states no project title convention, so a type prefix is not required"
     },
     {
       "type": "word_count",

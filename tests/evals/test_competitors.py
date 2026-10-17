@@ -150,6 +150,14 @@ def test_resolve_pairs(cache):
     assert run.resolve_pairs(["skill:humanizer,baseline:competitor:cover"], conds, spec)[0] == [
         ("skill", "competitor-humanizer"), ("baseline", "competitor-cover")]
     assert run.resolve_pairs(["competitor:humanizer:skill"], conds, spec)[0] == [("competitor-humanizer", "skill")]
+    # one rerun judges the baseline pair and every competitor pair; repeats and comma lists mix and never duplicate
+    assert run.resolve_pairs(["skill:baseline,skill:competitor"], conds, spec) == (
+        [("skill", "baseline"), ("skill", "competitor-humanizer"), ("skill", "competitor-cover")], None)
+    assert run.resolve_pairs(["skill:baseline, skill:competitor", "skill:baseline"], conds, spec)[0] == [
+        ("skill", "baseline"), ("skill", "competitor-humanizer"), ("skill", "competitor-cover")]
+    assert run.resolve_pairs(["skill:baseline,skill:humanizer"], ["skill", "baseline"], spec)[0] == [
+        ("skill", "baseline"), ("skill", "competitor-humanizer")]
+    assert "A:B" in run.resolve_pairs(["skill:baseline,skill"], conds, spec)[1]
     # judging an existing run: the named competitor need not run now
     assert run.resolve_pairs(["skill:humanizer"], ["skill"], spec)[0] == [("skill", "competitor-humanizer")]
     assert "no competitor condition" in run.resolve_pairs(["skill:competitor"], ["skill", "baseline"], spec)[1]

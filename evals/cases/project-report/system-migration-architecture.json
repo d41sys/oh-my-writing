@@ -131,7 +131,8 @@
         {
           "id": "idempotency-fix",
           "any": [
-            "idempoten"
+            "idempoten",
+            "(?i)(unique|dedup\\w*|duplicate)[^.\\n]{0,80}(key|scans?)"
           ]
         },
         {

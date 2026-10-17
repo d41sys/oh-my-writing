@@ -4,18 +4,30 @@
 Usage:
   python3 evals/gate.py freeze RUN_DIR [--model NAME] [--out evals/gate/reference.json]
   python3 evals/gate.py check  RUN_DIR [--against evals/gate/reference.json] [--config evals/gate/config.json] [--all]
+  python3 evals/gate.py aa     RUN_DIR [--config evals/gate/config.json]
+  python3 evals/gate.py weak   OTHER_RUN_DIR [--against evals/gate/reference.json] [--out evals/gate/weak_spots.json]
 
 `freeze` records the with-skills outputs of a run (every metric, per case and repetition) together with the run id,
 model, skill versions and metric version as the reference. `check` scores a new run the same way, pairs it with the
 reference on (host, case, rep) and exits 1 when a skill revision is worse. Per skill and over all skills:
 
-  hard rules (no statistics, tolerances in config.json "hard"):
-    invented facts  the new total is above the reference total (plus the configured slack per run)
-    leaked markers  any gap marker or placeholder in an output meant for a reader (stats.CASE_KIND = "reader")
-    check pass rate the case-check pass rate is below the reference by more than the tolerance
-  statistical rule, for every metric listed in config.json "metrics" with "gated": true:
-    FAIL when the paired change (new - reference) is worse than the metric's tolerance AND the 95% bootstrap CI of
-    the change excludes zero on the worse side. Worse than tolerance with a CI that includes zero is a warning only.
+  statistical rule, for every metric listed in config.json "metrics" with "gated": true (invented facts and the
+  case-check pass rate are among them):
+    the run pairs are (new - reference) per (host, case, rep); repetitions of a case are averaged first because
+    they are not independent cases; the 95% bootstrap CI is taken over cases.
+    FAIL when the lower CI bound of the worsening is above the metric's tolerance, i.e. the whole interval is worse
+    than tolerated. Worse than tolerance on average with a CI that reaches back inside the tolerance is a warning.
+    Rerun noise widens the interval, so noise alone does not fail the gate.
+  absolute rule (config.json "absolute"), the only one without statistics, because any occurrence is a defect:
+    leaked markers: the share of reader-facing runs (stats.CASE_KIND = "reader") whose output carries an unresolved
+    gap marker or placeholder is above "leaked_marker_run_rate_max" (0 = any run). Measured on the new run alone.
+
+`aa` is the noise test: it relabels the repetitions of one run (shifted by one and by two, and every single
+repetition against every other) and gates those pseudo-runs against the run itself. The outputs are the same
+outputs, so the gate must pass on all of them; it exits 1 when one fails.
+
+`weak` records where the reference is worse than another run (CI of the difference excludes zero) in
+config.json's metrics; `check` prints that list so the gate never silently blesses the reference's weak spots.
 
 Exit codes: 0 pass, 1 regression, 2 not comparable (metric version, hosts) or bad input.
 """
@@ -35,6 +47,7 @@ import stats  # noqa: E402
 GATE_DIR = EVALS / "gate"
 REFERENCE = GATE_DIR / "reference.json"
 CONFIG = GATE_DIR / "config.json"
+WEAK_SPOTS = GATE_DIR / "weak_spots.json"
 SCHEMA = 1
 
 
@@ -45,11 +58,16 @@ def _round(v):
 # ---------------------------------------------------------------- freeze
 
 
-def freeze(run_dir: Path, condition: str = "skill", model: str | None = None, hosts: set[str] | None = None) -> dict:
-    info, records = stats.read_run(run_dir, hosts)
-    runs = [{"case": r["case"], "skill": r["skill"], "kind": r["kind"], "host": r["host"], "rep": r["rep"],
+def _gated_records(records: list[dict], condition: str) -> list[dict]:
+    """Run records of one condition without host errors, metrics rounded as in the stored reference."""
+    return [{"case": r["case"], "skill": r["skill"], "kind": r["kind"], "host": r["host"], "rep": r["rep"],
              "metrics": {m: _round(v) for m, v in r["metrics"].items()}}
             for r in records if r["condition"] == condition and not r["host_error"]]
+
+
+def freeze(run_dir: Path, condition: str = "skill", model: str | None = None, hosts: set[str] | None = None) -> dict:
+    info, records = stats.read_run(run_dir, hosts)
+    runs = _gated_records(records, condition)
     if not runs:
         raise SystemExit(f"no '{condition}' runs in {run_dir}")
     return {
@@ -66,11 +84,9 @@ def freeze(run_dir: Path, condition: str = "skill", model: str | None = None, ho
 # ---------------------------------------------------------------- evaluate
 
 
-def _index(runs: list[dict], metric: str, only: dict | None = None) -> dict[tuple, float]:
+def _index(runs: list[dict], metric: str) -> dict[tuple, float]:
     out = {}
     for r in runs:
-        if only and any(r.get(k) != v for k, v in only.items()):
-            continue
         v = r["metrics"].get(metric)
         if v is not None:
             out[(r["host"], r["case"], r["rep"])] = v
@@ -82,78 +98,113 @@ def _row(scope, rule, metric, ref, new, delta, ci, verdict, detail="", n=None):
             "verdict": verdict, "detail": detail, "n_cases": n}
 
 
+def _worsening(delta, ci, direction):
+    """(mean worsening, lower CI bound of the worsening, upper CI bound of the worsening); negative = better."""
+    sign = 1 if direction == "lower" else -1
+    if delta is None or ci is None:
+        return None, None, None
+    lo, hi = sorted((sign * ci[0], sign * ci[1]))
+    return sign * delta, lo, hi
+
+
+def _paired_rule(scope, metric, rule, a, b, min_cases):
+    spec = stats.METRICS[metric]
+    p = stats.paired(a, b, f"gate {scope}:{metric}")
+    worse_by, worse_lo, worse_hi = _worsening(p["diff"], p["ci"], spec["direction"])
+    tol = rule.get("tolerance", 0.0)
+    if p["n_cases"] < min_cases or worse_by is None:
+        verdict = "few"
+    elif worse_lo > tol:
+        verdict = "FAIL"
+    elif worse_by > tol:
+        verdict = "warn"
+    elif worse_hi < 0:
+        verdict = "better"
+    else:
+        verdict = "ok"
+    detail = f"tolerance {tol:g}, {spec['direction']} is better"
+    if worse_lo is not None:
+        detail += f"; CI lower bound of the worsening {worse_lo:+.3g}"
+    return _row(scope, "stat", metric, p["a_mean"], p["b_mean"], p["diff"], p["ci"], verdict, detail, p["n_cases"])
+
+
 def evaluate(reference: list[dict], new: list[dict], config: dict) -> dict:
     """reference and new: run records ({case, skill, kind, host, rep, metrics}). Returns {"rows": [...], "failed": bool,
     "pairs": {scope: n}}. Pure function of its inputs, so the result is the same on every call."""
-    hard, soft = config["hard"], config["metrics"]
+    absolute, soft = config.get("absolute", {}), config["metrics"]
     min_cases = config.get("min_cases_for_ci", stats.MIN_CASES)
     rows: list[dict] = []
     pairs: dict[str, int] = {}
     skills = sorted({r["skill"] for r in new} | {r["skill"] for r in reference})
     for scope in skills + ["ALL"]:
-        only = {} if scope == "ALL" else {"skill": scope}
-        ref_runs = [r for r in reference if not only or r["skill"] == scope]
-        new_runs = [r for r in new if not only or r["skill"] == scope]
+        ref_runs = [r for r in reference if scope == "ALL" or r["skill"] == scope]
+        new_runs = [r for r in new if scope == "ALL" or r["skill"] == scope]
         common = ({(r["host"], r["case"], r["rep"]) for r in ref_runs} & {(r["host"], r["case"], r["rep"]) for r in new_runs})
         pairs[scope] = len(common)
+
+        # absolute: gap markers left in reader-facing output, as a share of those runs (new run alone)
+        readers = [r for r in new_runs if r["kind"] == "reader"]
+        leaking = [r for r in readers if (r["metrics"].get("gap_markers_leaked") or 0) > 0]
+        ref_readers = [r for r in ref_runs if r["kind"] == "reader"]
+        ref_rate = (sum((r["metrics"].get("gap_markers_leaked") or 0) > 0 for r in ref_readers) / len(ref_readers)
+                    if ref_readers else None)
+        limit = absolute.get("leaked_marker_run_rate_max", 0.0)
+        if readers:
+            rate = len(leaking) / len(readers)
+            names = sorted({f"{r['case']}#{r['rep']}" for r in leaking})
+            rows.append(_row(scope, "absolute", "leaked marker run rate (reader-facing)", ref_rate, rate,
+                             None if ref_rate is None else rate - ref_rate, None, "FAIL" if rate > limit else "ok",
+                             f"{len(leaking)} of {len(readers)} reader-facing runs; limit {limit:g}"
+                             + (": " + ", ".join(names[:4]) + (" ..." if len(names) > 4 else "") if names else ""),
+                             len(readers)))
         if not common:
             rows.append(_row(scope, "pairing", "-", None, None, None, None, "n/a", "no (host, case, rep) in both runs"))
             continue
 
-        def both(metric):
+        for metric, rule in soft.items():
+            if not rule.get("gated", True) or stats.METRICS[metric]["direction"] is None:
+                continue
             a, b = _index(ref_runs, metric), _index(new_runs, metric)
             keys = common & set(a) & set(b)
-            return {k: a[k] for k in keys}, {k: b[k] for k in keys}
-
-        # hard: invented facts
-        a, b = both("invented_facts")
-        ref_sum, new_sum = sum(a.values()), sum(b.values())
-        limit = ref_sum + hard.get("invented_facts_slack_per_run", 0.0) * len(a)
-        rows.append(_row(scope, "hard", "invented_facts (total)", ref_sum, new_sum, new_sum - ref_sum, None,
-                         "FAIL" if new_sum > limit else "ok", f"over {len(a)} paired runs; limit {limit:g}", len(a)))
-        # hard: leaked markers in reader-facing output (absolute, not relative to the reference)
-        leaks = [r for r in new_runs if r["kind"] == "reader" and (r["metrics"].get("gap_markers_leaked") or 0) > 0]
-        ref_leaks = [r for r in ref_runs if r["kind"] == "reader" and (r["metrics"].get("gap_markers_leaked") or 0) > 0]
-        n_new = sum(r["metrics"]["gap_markers_leaked"] for r in leaks)
-        n_ref = sum(r["metrics"]["gap_markers_leaked"] for r in ref_leaks)
-        names = sorted({f"{r['case']}#{r['rep']}" for r in leaks})
-        rows.append(_row(scope, "hard", "leaked markers (reader-facing)", n_ref, n_new, n_new - n_ref, None,
-                         "FAIL" if n_new > hard.get("leaked_markers_max", 0) else "ok",
-                         ("in " + ", ".join(names[:4]) + (" ..." if len(names) > 4 else "")) if names else "none", None))
-        # hard: case-check pass rate
-        a, b = both("check_pass_rate")
-        ref_rate, new_rate = sum(a.values()) / len(a), sum(b.values()) / len(b)
-        tol = hard.get("check_pass_rate_tolerance", 0.0)
-        rows.append(_row(scope, "hard", "check_pass_rate", ref_rate, new_rate, new_rate - ref_rate, None,
-                         "FAIL" if new_rate < ref_rate - tol else "ok", f"tolerance {tol:g}; {len(a)} paired runs", len(a)))
-        # statistical: paired regression beyond tolerance with a CI that excludes zero
-        for metric, rule in soft.items():
-            spec = stats.METRICS[metric]
-            if not rule.get("gated", True) or spec["direction"] is None:
+            if not keys:
                 continue
-            a, b = both(metric)
-            if not a:
-                continue
-            p = stats.paired(a, b, f"gate {scope}:{metric}")
-            sign = 1 if spec["direction"] == "lower" else -1  # worse = delta * sign > 0
-            worse_by = p["diff"] * sign
-            ci = p["ci"]
-            ci_worse = ci is not None and (ci[0] > 0 if sign == 1 else ci[1] < 0)
-            ci_better = ci is not None and (ci[1] < 0 if sign == 1 else ci[0] > 0)
-            tol = rule.get("tolerance", 0.0)
-            if p["n_cases"] < min_cases:
-                verdict = "few"
-            elif worse_by > tol and ci_worse:
-                verdict = "FAIL"
-            elif worse_by > tol:
-                verdict = "warn"
-            elif ci_better:
-                verdict = "better"
-            else:
-                verdict = "ok"
-            rows.append(_row(scope, "stat", metric, p["a_mean"], p["b_mean"], p["diff"], ci, verdict,
-                             f"tolerance {tol:g}, {spec['direction']} is better", p["n_cases"]))
+            rows.append(_paired_rule(scope, metric, rule, {k: a[k] for k in keys}, {k: b[k] for k in keys}, min_cases))
     return {"rows": rows, "failed": any(r["verdict"] == "FAIL" for r in rows), "pairs": pairs}
+
+
+# ---------------------------------------------------------------- weak spots of the reference
+
+
+def weak_spots(reference: list[dict], other: list[dict], config: dict) -> list[dict]:
+    """Where the reference is worse than `other` with the 95% CI of the difference excluding zero, per skill and ALL,
+    for every metric in config.json "metrics" (gated or not). Worst relative to the tolerance first."""
+    out = []
+    for scope in sorted({r["skill"] for r in reference} | {r["skill"] for r in other}) + ["ALL"]:
+        ref_runs = [r for r in reference if scope == "ALL" or r["skill"] == scope]
+        oth_runs = [r for r in other if scope == "ALL" or r["skill"] == scope]
+        for metric, rule in config["metrics"].items():
+            direction = stats.METRICS[metric]["direction"]
+            if direction is None:
+                continue
+            a, b = _index(oth_runs, metric), _index(ref_runs, metric)
+            keys = set(a) & set(b)
+            if not keys:
+                continue
+            p = stats.paired({k: a[k] for k in keys}, {k: b[k] for k in keys}, f"weak {scope}:{metric}")
+            worse_by, worse_lo, _ = _worsening(p["diff"], p["ci"], direction)
+            if p["n_cases"] < config.get("min_cases_for_ci", stats.MIN_CASES) or worse_lo is None or worse_lo <= 0:
+                continue
+            out.append({"scope": scope, "metric": metric, "gated": rule.get("gated", True),
+                        "reference": _round(p["b_mean"]), "other": _round(p["a_mean"]), "worse_by": _round(worse_by),
+                        "ci": [_round(p["ci"][0]), _round(p["ci"][1])], "n_cases": p["n_cases"],
+                        "tolerance": rule.get("tolerance", 0.0)})
+    out.sort(key=lambda s: (s["scope"] == "ALL", -s["worse_by"] / (s["tolerance"] or 1.0)))
+    return out
+
+
+def weak_spots_report(ref: dict, other_runs: list[dict], other_id: str, config: dict) -> dict:
+    return {"schema": SCHEMA, "metrics_version": stats.METRICS_VERSION, "reference_run": ref["run"]["id"],
+            "other_run": other_id, "spots": weak_spots(ref["runs"], other_runs, config)}
 
 
 # ---------------------------------------------------------------- output
@@ -168,7 +219,28 @@ def _fmt(v, digits=3):
     return "0" if s in {"", "-0"} else s
 
 
-def render(result: dict, ref_meta: dict, new_info: dict, show_all: bool = False) -> str:
+def render_weak_spots(weak: dict | None, ref_meta: dict, result: dict) -> list[str]:
+    """Lines for the check output; the reference's weak spots are listed, never blessed."""
+    if not weak:
+        return ["Known weak spots of the reference: none recorded (run: gate.py weak OTHER_RUN)."]
+    if weak.get("reference_run") != ref_meta["run"]["id"] or weak.get("metrics_version") != ref_meta["metrics_version"]:
+        return [f"Known weak spots: the recorded list is for reference {weak.get('reference_run')} "
+                f"(metrics v{weak.get('metrics_version')}), not {ref_meta['run']['id']}; regenerate with gate.py weak."]
+    if not weak["spots"]:
+        return [f"Known weak spots of the reference: none against {weak['other_run']}."]
+    verdict_of = {(r["scope"], r["metric"]): r["verdict"] for r in result["rows"]}
+    lines = [f"Known weak spots: the reference is worse than run {weak['other_run']} here (95% CI of the difference "
+             "excludes zero). Passing the gate does not mean these are fine.", ""]
+    table = []
+    for s in weak["spots"]:
+        table.append([s["scope"][:18], s["metric"], _fmt(s["reference"]), _fmt(s["other"]), f"{s['worse_by']:+.3g}",
+                      f"[{_fmt(s['ci'][0])}, {_fmt(s['ci'][1])}]", "gated" if s["gated"] else "not gated",
+                      verdict_of.get((s["scope"], s["metric"]), "-")])
+    return lines + stats._table(["scope", "metric", "reference", weak["other_run"][:14], "reference worse by", "95% CI",
+                                 "rule", "this run"], table)
+
+
+def render(result: dict, ref_meta: dict, new_info: dict, show_all: bool = False, weak: dict | None = None) -> str:
     rows = result["rows"]
     run = ref_meta["run"]
     lines = [f"Reference: run {run['id']} ({', '.join(run['hosts'])}; model {run['model']}; {run['cases']} cases x "
@@ -191,30 +263,113 @@ def render(result: dict, ref_meta: dict, new_info: dict, show_all: bool = False)
         lines += ["", "FAILED:"] + [f"  {r['scope']}: {r['metric']} ({r['rule']}): reference {_fmt(r['reference'])}, new "
                                       f"{_fmt(r['new'])}; {r['detail']}" for r in fails]
     if warns:
-        lines += ["", "Warnings (worse than tolerance, CI includes zero):"] + [
+        lines += ["", "Warnings (worse than tolerance, CI reaches back inside it):"] + [
             f"  {r['scope']}: {r['metric']}: delta {r['delta']:+.3g}" for r in warns]
+    lines += ["", *render_weak_spots(weak, ref_meta, result)]
     lines += ["", "GATE FAILED" if fails else "GATE PASSED"]
     return "\n".join(lines)
 
 
-def check(run_dir: Path, reference_path: Path, config_path: Path, show_all: bool = False) -> tuple[int, str]:
+def _load_reference(reference_path: Path) -> dict | str:
     ref = json.loads(reference_path.read_text(encoding="utf-8"))
-    config = json.loads(config_path.read_text(encoding="utf-8"))
     if ref.get("schema") != SCHEMA or ref.get("metrics_version") != stats.METRICS_VERSION:
-        return 2, (f"reference was frozen with metrics v{ref.get('metrics_version')} (schema {ref.get('schema')}); this is "
-                   f"v{stats.METRICS_VERSION}. Not comparable: freeze a new reference.")
+        return (f"reference was frozen with metrics v{ref.get('metrics_version')} (schema {ref.get('schema')}); this is "
+                f"v{stats.METRICS_VERSION}. Not comparable: freeze a new reference.")
+    return ref
+
+
+def _drift_note(ref: dict) -> str:
+    drift = {k: (ref["tools"].get(k), v) for k, v in stats.tool_fingerprint().items() if ref["tools"].get(k) != v}
+    if not drift:
+        return ""
+    return ("WARNING: scoring files changed since the reference was frozen (" + ", ".join(sorted(drift)) +
+            "); values may not be comparable. Re-freeze if the change is intended.\n\n")
+
+
+def check(run_dir: Path, reference_path: Path, config_path: Path, show_all: bool = False,
+          weak_path: Path | None = None) -> tuple[int, str]:
+    ref = _load_reference(reference_path)
+    if isinstance(ref, str):
+        return 2, ref
+    config = json.loads(config_path.read_text(encoding="utf-8"))
     info, records = stats.read_run(run_dir, set(ref["run"]["hosts"]))
-    new = [{**r, "metrics": {m: _round(v) for m, v in r["metrics"].items()}}  # same rounding as the stored reference
-           for r in records if r["condition"] == ref["condition"] and not r["host_error"]]
+    new = _gated_records(records, ref["condition"])
     if not new:
         return 2, f"no '{ref['condition']}' runs on hosts {ref['run']['hosts']} in {run_dir}"
     result = evaluate(ref["runs"], new, config)
-    text = render(result, ref, info, show_all)
-    drift = {k: (ref["tools"].get(k), v) for k, v in stats.tool_fingerprint().items() if ref["tools"].get(k) != v}
-    if drift:
-        text = ("WARNING: scoring files changed since the reference was frozen (" + ", ".join(sorted(drift)) +
-                "); values may not be comparable. Re-freeze if the change is intended.\n\n") + text
-    return (1 if result["failed"] else 0), text
+    weak_path = weak_path or reference_path.with_name(WEAK_SPOTS.name)
+    weak = json.loads(weak_path.read_text(encoding="utf-8")) if weak_path.is_file() else None
+    return (1 if result["failed"] else 0), _drift_note(ref) + render(result, ref, info, show_all, weak)
+
+
+# ---------------------------------------------------------------- A/A noise test
+
+
+def aa_pseudo_runs(runs: list[dict]) -> list[tuple[str, list[dict], list[dict]]]:
+    """(name, reference side, pseudo-run) built from the repetitions of one run. Every pseudo-run holds outputs the
+    reference holds too, only attached to another repetition number, so any difference is rerun noise."""
+    reps = sorted({r["rep"] for r in runs})
+    out = []
+    if len(reps) < 2:
+        return out
+
+    def relabel(rs, mapping):
+        return [{**r, "rep": mapping[r["rep"]]} for r in rs if r["rep"] in mapping]
+
+    for k in range(1, len(reps)):  # shifted: r1->r2, r2->r3, r3->r1 for k = 1
+        mapping = {reps[i]: reps[(i + k) % len(reps)] for i in range(len(reps))}
+        arrow = ", ".join(f"r{a}->r{b}" for a, b in mapping.items())
+        out.append((f"reps shifted by {k} ({arrow})", runs, relabel(runs, mapping)))
+    for a in reps:  # one repetition of the reference against one other repetition, as a single-repetition rerun
+        for b in reps:
+            if a != b:
+                out.append((f"single rep r{b} vs r{a}", [r for r in runs if r["rep"] == a],
+                            relabel([r for r in runs if r["rep"] == b], {b: a})))
+    return out
+
+
+def aa_report(runs: list[dict], config: dict, run_id: str, condition: str = "skill") -> tuple[int, str]:
+    """A/A test of run records (see aa_pseudo_runs): exit code and text. Pure function of its inputs."""
+    cases = aa_pseudo_runs(runs)
+    if not cases:
+        return 2, f"run {run_id} has a single repetition; an A/A test needs at least two"
+    lines = [f"A/A test on run {run_id}, condition {condition}: {len(runs)} runs, repetitions "
+             f"{sorted({r['rep'] for r in runs})}. The pseudo-runs hold the run's own outputs, so the gate must pass on all.", ""]
+    table, details, any_fail = [], [], False
+    own_defects: dict[str, str] = {}
+    for name, ref, pseudo in cases:
+        result = evaluate(ref, pseudo, config)
+        # the absolute rule has no noise to test: a leak in the run's own outputs is a defect of that run, listed below
+        for r in result["rows"]:
+            if r["rule"] == "absolute" and r["verdict"] == "FAIL" and r["scope"] == "ALL":
+                own_defects.setdefault(r["metric"], r["detail"])
+        fails = [r for r in result["rows"] if r["verdict"] == "FAIL" and r["rule"] != "absolute"]
+        warns = [r for r in result["rows"] if r["verdict"] == "warn"]
+        any_fail |= bool(fails)
+        table.append([name, str(result["pairs"]["ALL"]), str(len(fails)), str(len(warns)), "FAIL" if fails else "PASS"])
+        for r in fails:
+            details.append(f"  {name}: {r['verdict']} {r['scope']}: {r['metric']} delta {_fmt(r['delta'])} "
+                           f"CI {r['ci'] and [_fmt(r['ci'][0]), _fmt(r['ci'][1])]}; {r['detail']}")
+    lines += stats._table(["pseudo-run", "paired runs", "FAIL rows", "warn rows", "gate"], table)
+    if details:
+        lines += ["", "FAIL rows (warn rows are not listed: a point estimate beyond tolerance whose CI reaches back inside it):"] + details
+    if own_defects:
+        lines += ["", "Absolute rules (not noise-testable, not counted above): the run itself carries a defect:"] + [
+            f"  {m}: {d}" for m, d in own_defects.items()]
+    lines += ["", "A/A FAILED: the gate fires on rerun noise" if any_fail else "A/A PASSED"]
+    return (1 if any_fail else 0), "\n".join(lines)
+
+
+def aa(run_dir: Path, config_path: Path, condition: str = "skill") -> tuple[int, str]:
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+    info, records = stats.read_run(run_dir)
+    runs = _gated_records(records, condition)
+    if not runs:
+        return 2, f"no '{condition}' runs in {run_dir}"
+    return aa_report(runs, config, info.get("id", run_dir.name), condition)
+
+
+# ---------------------------------------------------------------- command line
 
 
 def main(argv=None) -> int:
@@ -230,7 +385,17 @@ def main(argv=None) -> int:
     c.add_argument("run_dir")
     c.add_argument("--against", default=str(REFERENCE))
     c.add_argument("--config", default=str(CONFIG))
+    c.add_argument("--weak-spots", help="weak spots file (default: weak_spots.json next to the reference)")
     c.add_argument("--all", action="store_true", help="show every per-skill row")
+    a = sub.add_parser("aa", help="gate relabelled repetitions of a run against the run itself (must pass)")
+    a.add_argument("run_dir")
+    a.add_argument("--config", default=str(CONFIG))
+    a.add_argument("--condition", default="skill")
+    w = sub.add_parser("weak", help="record where the reference is worse than another run")
+    w.add_argument("other_run_dir")
+    w.add_argument("--against", default=str(REFERENCE))
+    w.add_argument("--config", default=str(CONFIG))
+    w.add_argument("--out", default=str(WEAK_SPOTS))
     args = parser.parse_args(argv)
     if args.cmd == "freeze":
         ref = freeze(Path(args.run_dir), args.condition, args.model, set(args.host or []))
@@ -239,7 +404,27 @@ def main(argv=None) -> int:
         print(f"froze {len(ref['runs'])} '{args.condition}' runs of {ref['run']['id']} -> {args.out} "
               f"(metrics v{ref['metrics_version']})")
         return 0
-    code, text = check(Path(args.run_dir), Path(args.against), Path(args.config), args.all)
+    if args.cmd == "aa":
+        code, text = aa(Path(args.run_dir), Path(args.config), args.condition)
+        print(text, file=sys.stderr if code == 2 else sys.stdout)
+        return code
+    if args.cmd == "weak":
+        ref = _load_reference(Path(args.against))
+        if isinstance(ref, str):
+            print(ref, file=sys.stderr)
+            return 2
+        config = json.loads(Path(args.config).read_text(encoding="utf-8"))
+        info, records = stats.read_run(Path(args.other_run_dir), set(ref["run"]["hosts"]))
+        other = _gated_records(records, ref["condition"])
+        if not other:
+            print(f"no '{ref['condition']}' runs in {args.other_run_dir}", file=sys.stderr)
+            return 2
+        report = weak_spots_report(ref, other, info.get("id", Path(args.other_run_dir).name), config)
+        Path(args.out).write_text(json.dumps(report, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+        print(f"{len(report['spots'])} weak spots of {report['reference_run']} vs {report['other_run']} -> {args.out}")
+        return 0
+    code, text = check(Path(args.run_dir), Path(args.against), Path(args.config), args.all,
+                       Path(args.weak_spots) if args.weak_spots else None)
     print(text, file=sys.stderr if code == 2 else sys.stdout)
     return code
 

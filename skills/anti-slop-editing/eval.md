@@ -49,6 +49,9 @@ Answer each check pass or fail. Fix every failure before returning.
 ## Reads like a person
 
 30. Does the output avoid adding what the audit removes: no new headings, lists, bold, transitions or repeated caveats, no point stated twice, and the author's person and register kept? In `detect`, does the reply answer what was asked in plain sentences, without a severity scheme, an editing plan or a summary the user did not need?
+31. Does the edited text open with what changed or what the reader must do, with no sentence kept that only states the conclusion of the next one or describes the thing without saying anything about it, and with every scope fact the source states (who, for what, limits) still present as a plain statement? Did you add no greeting or sign-off the source lacked?
+32. When a stock lead-in ("Studies show that") stood beside a citation, did you drop the lead-in and leave the citation byte-identical?
+33. In `detect`, when the user asked only what sounds off, does every finding name the problem and its cost without rewrite instructions, and are plain slips (a comma splice, a doubled word, two figures that measure different things set side by side) reported as ordinary findings?
 
 ## Final read
 

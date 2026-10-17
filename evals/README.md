@@ -11,7 +11,7 @@ evals/
 ├── review_pairs.py             # one-file blind A/B page for rating pairs yourself
 ├── stats.py                    # deterministic statistics benchmark: fixed metrics on every output, CIs, paired comparisons
 ├── gate.py                     # regression gate: freeze a reference, fail when a skill revision is worse on the statistics
-├── gate/                       # config.json (tolerances) and reference.json (frozen reference run)
+├── gate/                       # config.json (tolerances), reference.json (frozen reference run), weak_spots.json (where the reference is weaker)
 └── results/<run-id>/           # git-ignored: workspaces, replies, logs, results.json, report.md
 ```
 
@@ -154,11 +154,13 @@ Gap markers (`[ASK AUTHOR: ...]`, `[VERIFY: ...]`, `[UNTESTED ...]`) are strippe
 The checks and the judge answer "did this case pass" and "which text is preferred". `stats.py` adds numbers that do not depend on a case's own wording: the same fixed rules (`METRICS_VERSION`) run over every output, so two skill revisions, or a skill and a competitor, can be compared metric by metric. No model is involved: the same files give the same numbers, and the bootstrap uses a fixed seed (20261017, 2000 resamples).
 
 ```bash
-python3 evals/stats.py evals/results/<run-id> [--json out.json] [--detail ALL|<skill>]   # metrics, aggregates, with-skills minus baseline
+python3 evals/stats.py evals/results/<run-id> [--json out.json] [--detail ALL|<skill>]   # metrics, aggregates, with-skills minus baseline (and minus each competitor, all and loaded-only)
 python3 evals/stats.py --compare <run-A> <run-B> --condition skill                       # did revision B get worse than A, and where
 python3 evals/stats.py --metrics                                                          # every definition, direction and reason
 python3 evals/gate.py freeze evals/results/<run-id> --model <name>                       # write evals/gate/reference.json
 python3 evals/gate.py check  evals/results/<new-run-id> [--all]                          # exit 1 on regression
+python3 evals/gate.py aa     evals/results/<run-id>                                      # noise test: relabelled repetitions must pass
+python3 evals/gate.py weak   evals/results/<other-run-id>                                # record where the reference is worse than another run
 ```
 
 **Metrics** (all computed on the deliverable file; prose metrics on the text with gap markers removed; `better` is the direction a reader would call an improvement; `-` means context only):
@@ -192,14 +194,18 @@ python3 evals/gate.py check  evals/results/<new-run-id> [--all]                 
 
 **Gate.** `gate.py freeze` stores the with-skills runs of a results directory (all metrics per case and repetition) with run id, host versions, model, skill versions from each `SKILL.md`, the metric version and a fingerprint of the scoring files (fact_diff.py, slop_scan.py, the rule data in stats.py, the case files). `gate.py check` scores the new run the same way, pairs it with the reference on (host, case, rep) and exits 1 when, for any skill or for all skills together:
 
-- invented facts: the new total is above the reference total (`hard.invented_facts_slack_per_run` in `gate/config.json`, default 0);
-- leaked markers: any gap marker or placeholder in a `reader` case (`hard.leaked_markers_max`, default 0; absolute, not relative to the reference);
-- check pass rate: below the reference by more than `hard.check_pass_rate_tolerance` (0.02);
-- any metric in `metrics` with `gated` not false: the paired change is worse than its `tolerance` (the metric's own unit) AND its 95% CI excludes zero on the worse side. Worse than tolerance with a CI that includes zero is printed as a warning and does not fail.
+- any metric in `metrics` with `gated` not false, which includes `invented_facts` and `check_pass_rate`: the lower bound of the 95% bootstrap CI of the paired worsening (new vs reference, repetitions averaged per case, CI over cases) is above the metric's `tolerance` in its own unit. Worse than tolerance on average with a CI that reaches back inside the tolerance is printed as a warning and does not fail. Rerun noise widens the CI, so noise alone does not fail the gate;
+- leaked markers (`absolute.leaked_marker_run_rate_max`, default 0): the share of `reader` runs whose output carries a gap marker or placeholder is above the limit. This is the one rule without statistics, because a placeholder in a finished email is a defect whenever it occurs. It is measured on the new run alone (not against the reference), counts runs rather than markers, and ignores `draft` and `analysis` cases.
 
-Exit codes: 0 pass, 1 regression, 2 not comparable (different `METRICS_VERSION`, no matching runs). If the scoring files changed since the freeze, `check` prints a warning because old and new numbers may not be comparable; re-freeze when the change is intended (and re-freeze from a run scored with the new files). Freeze the reference from the run you accept as the current skill set, never from the candidate being tested; after accepting a revision, freeze again.
+Exit codes: 0 pass, 1 regression, 2 not comparable (different `METRICS_VERSION`, no matching runs). If the scoring files changed since the freeze, `check` prints a warning because old and new numbers may not be comparable; re-freeze when the change is intended (and re-freeze from a run scored with the new files). Freeze the reference from the run you accept as the current skill set, never from the candidate being tested; after accepting a revision, freeze again, then run `gate.py aa` and `gate.py weak` again.
 
-Limits: the hard invented-facts rule has no noise allowance (one extra invented figure among 126 runs fails it); raise `invented_facts_slack_per_run` if rerunning the same skill version fails it. Gate runs are LLM runs, so judge a failure by the table (which metric, which skill, which cases), not by the exit code alone. `stock_phrases_per_1000w` and `process_talk` are near zero for current models, so they guard against a return of the problem and do not separate revisions today.
+**A/A noise test.** `gate.py aa <run-dir>` gates pseudo-runs built from the run's own outputs against the run itself, with no new runs: the repetitions shifted by one and by two (r1 to r2, r2 to r3, r3 to r1, and the reverse), and every ordered pair of single repetitions (r2 against r1, and so on, a harsher test than a rerun of three repetitions because one repetition has more noise than the mean of three). The outputs are identical, so the gate must pass on all of them; the command exits 1 if one fails. The shifted pseudo-runs have exactly zero difference in every case mean, so they only prove the plumbing; the single-repetition pairs carry the noise. The leaked-marker rule has no noise to test: a leak in the run's own outputs is listed under the table as a defect of that run and does not count. The tolerances of `flesch_reading_ease` (5) and `sentence_length_cv` (0.1) were set above the noise floor this test measured on v-voice-omp and v-clean-omp (the largest per-skill lower CI bound of a pure repetition swap: 4.2 points and 0.083); re-run `aa` on the new reference after a re-freeze, and raise a tolerance only to what it shows.
+
+**Known weak spots.** A frozen run can be worse than another run in places, and a gate that only compares against it would bless that. `gate.py weak <other-run-dir>` writes `gate/weak_spots.json`: every metric in `config.json` (gated or not), per skill and ALL, where the reference is worse than the other run with the 95% CI of the difference excluding zero. `check` prints that list after the table, with the row of the new run next to it, and says so when the list was made for another reference. It is a note, never a verdict. Against v-clean-omp the v-voice-omp reference is worse in project-report `lost_required_facts` and `length_deviation` and in report-writing `slop_per_1000w` and `hedge_per_1000w`.
+
+Limits: with 3 to 6 cases per skill the per-skill CIs are wide and approximate, so a per-skill FAIL is a lead to inspect; the all-skills row carries the weight. `invented_facts` has tolerance 0 (any invented figure is a lie), so what protects it from noise is the CI, not a slack: a few stray inventions in a rerun do not fail, a consistent rise does. Gate runs are LLM runs, so judge a failure by the table (which metric, which skill, which cases), not by the exit code alone. `stock_phrases_per_1000w` and `process_talk` are near zero for current models, so they guard against a return of the problem and do not separate revisions today.
+
+**Skill against competitors.** When a run has `competitor-*` conditions, `stats.py <run-dir>` also prints, and `--json` stores under `skill_minus_competitor`, our skill minus each competitor, paired on (host, case, rep) over the cases the competitor ran (`diff` = skill - competitor; `better` / `worse` refer to the skill, CI over cases). Every row comes twice with its n (paired runs / cases): `all` pairs, and `loaded` pairs only, where `meta.json` says `skill_loaded` is true for the competitor's run and for ours, because a run that never read its skill measures the bare model. `loaded` has fewer pairs, so it often reads `few`.
 
 ## What the numbers mean
 

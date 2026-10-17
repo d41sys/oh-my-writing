@@ -234,11 +234,11 @@ def test_verdict():
     assert stats.verdict(None, None, "lower", 10) == "n/a"
 
 
-def rec(case_id, skill, cond, rep, **metrics):
+def rec(case_id, skill, cond, rep, loaded=True, **metrics):
     base = dict.fromkeys(stats.METRICS)
     base.update(metrics)
     return {"case": case_id, "skill": skill, "kind": "reader", "host": "h", "condition": cond, "rep": rep,
-            "host_error": False, "metrics": base}
+            "host_error": False, "skill_loaded": loaded, "metrics": base}
 
 
 def test_aggregate_pairs_conditions_and_skips_host_errors():
@@ -260,6 +260,59 @@ def test_compare_runs_flags_worse_with_ci():
     assert d["diff"] == pytest.approx(1.0) and d["verdict"] == "worse" and d["p"] == pytest.approx(2 / 256)
     assert cmp["h/ALL"]["words"]["verdict"] == "n/a" or cmp["h/ALL"]["words"]["n_pairs"] == 0
     assert stats.compare_runs(a, b, "baseline")["h/ALL"]["hedge_per_1000w"]["n_pairs"] == 0
+
+
+# ---------------------------------------------------------------- skill minus competitor
+
+def competitor_records():
+    """Six cases x two reps for the skill; competitor x ran cases 0-4 (not 5), and never loaded its skill on case 4."""
+    recs = []
+    for i in range(6):
+        for rep in (1, 2):
+            recs.append(rec(f"s/c{i}", "s", "skill", rep, slop_per_1000w=1.0 + 0.1 * i, words=100.0))
+            if i < 5:
+                recs.append(rec(f"s/c{i}", "s", "competitor-x", rep, loaded=i != 4, slop_per_1000w=3.0 + 0.1 * i, words=100.0))
+    recs.append(rec("s/c0", "s", "baseline", 1, slop_per_1000w=9.0))  # other conditions never enter
+    return recs
+
+
+def test_skill_minus_competitor_pairs_on_host_case_rep_and_is_signed_skill_minus_competitor():
+    d = stats.skill_minus_competitor(competitor_records())["h/x/ALL"]["slop_per_1000w"]
+    assert (d["n_pairs"], d["n_cases"]) == (10, 5)  # the case the competitor skipped drops out
+    assert d["diff"] == pytest.approx(-2.0) and d["b_mean"] == pytest.approx(1.2) and d["a_mean"] == pytest.approx(3.2)
+    assert d["verdict"] == "better"  # lower slop is better, and the skill is lower
+    assert "h/x/s" in stats.skill_minus_competitor(competitor_records())  # per skill as well as ALL
+
+
+def test_skill_minus_competitor_loaded_only_drops_unloaded_pairs_on_either_side():
+    recs = competitor_records()
+    loaded = stats.skill_minus_competitor(recs, loaded_only=True)["h/x/ALL"]["slop_per_1000w"]
+    assert (loaded["n_pairs"], loaded["n_cases"]) == (8, 4)  # case 4: the competitor never loaded
+    for r in recs:
+        if r["condition"] == "skill" and r["case"] == "s/c0" and r["rep"] == 2:
+            r["skill_loaded"] = False  # ours did not load either: that pair drops out too
+    loaded = stats.skill_minus_competitor(recs, loaded_only=True)["h/x/ALL"]["slop_per_1000w"]
+    assert (loaded["n_pairs"], loaded["n_cases"]) == (7, 4)
+    assert stats.skill_minus_competitor(recs)["h/x/ALL"]["slop_per_1000w"]["n_pairs"] == 10  # unfiltered keeps all
+    recs[1]["host_error"] = True
+    assert stats.skill_minus_competitor(recs)["h/x/ALL"]["slop_per_1000w"]["n_pairs"] == 9
+
+
+def test_competitors_command_prints_both_tables_and_json(tmp_path, capsys):
+    run_dir = tmp_path / "comp"
+    make_run(run_dir, GOOD)
+    make_run(run_dir, GOOD.replace("Sam", "Pat"), condition="competitor-x")
+    out = tmp_path / "stats.json"
+    assert stats.main([str(run_dir), "--json", str(out)]) == 0
+    text = capsys.readouterr().out
+    assert "our skill minus each competitor" in text and "omp/x" in text and "loaded diff" in text
+    block = json.loads(out.read_text())["skill_minus_competitor"]
+    assert block["all"]["omp/x/ALL"]["invented_facts"]["n_pairs"] == 1
+    assert block["loaded_only"]["omp/x/ALL"]["invented_facts"]["n_pairs"] == 0  # competitor-x meta: skill_loaded false
+    plain = tmp_path / "plain"
+    make_run(plain, GOOD)
+    assert stats.main([str(plain)]) == 0
+    assert "our skill minus each competitor" not in capsys.readouterr().out  # only runs that have competitors
 
 
 # ---------------------------------------------------------------- reading a run directory
@@ -288,6 +341,7 @@ def test_read_run_records(tmp_path):
     assert info["id"] == tmp_path.name and not r["host_error"] and r["kind"] == "reader"
     assert r["metrics"]["gap_markers_leaked"] == 0 and r["metrics"]["invented_facts"] == 0
     assert 0 < r["metrics"]["check_pass_rate"] <= 1
+    assert r["skill_loaded"] is True  # copied from meta.json
 
 
 def test_read_run_host_error_has_no_values_but_empty_output_scores_zero(tmp_path):

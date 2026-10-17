@@ -53,7 +53,7 @@ Taking explanation out of a tutorial often exposes a spot where the learner was 
 
 Build it like this:
 
-1. Name the outcome in one concrete sentence ("In this tutorial we will build a CLI that ..."; for a getting-started guide, "In this guide we will ..."). Say what will be built, not what the learner will "understand" or "learn"; write in the first person plural ("we") and point out in passing what the learner should notice. State the learning goal as a real outcome (what they can now do), not an abstraction.
+1. Name the outcome in one concrete sentence near the top (for example, what the learner will have running by the end). Say what will be built, not what the learner will "understand" or "learn"; point out in passing what the learner should notice. The wording is yours; no fixed opening formula, and the author's person ("we", "you") and register stay. State the learning goal as a real outcome (what they can now do), not an abstraction.
 2. Choose a bounded exercise that finishes in one sitting and yields something real. The exercise is meaningful (a visible achievement), completable, logical in sequence, and complete enough to touch every tool and concept the lesson promises.
 3. Fix the environment: exact tool versions, a starting repo or files, and a way to reset if a step fails.
 4. Write one path. Offer no "or use X instead", no database menus. Required platform branches are the only forks, and they are labeled.

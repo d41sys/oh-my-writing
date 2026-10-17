@@ -20,7 +20,7 @@ Rules that matter:
 
 - Why before how. A reader who does not know why they would use it will not read the install steps.
 - Do not paste reference or architecture into the README; link.
-- For a script or command-line tool, read the argument parser and the code paths before writing: document only the options it defines, where output goes (standard output, standard error, files it writes), and the exit codes it returns, written as "exit code 0 on success, exit code 1 if ..." so a reader scanning for them finds them (see [reference and API](reference-and-api.md)). Install is what the source shows (copy the file, the interpreter version, standard library only); do not add a package-manager command, a package name or a supported format the source does not show. A version in the README is the one the source states ("Tested with Python 3.11"); the version of your own test run goes in the reply.
+- For a script or command-line tool, read the argument parser and the code paths before writing: document only the options it defines, where output goes (standard output, standard error, files it writes), and the exit codes it returns with what causes each (see [reference and API](reference-and-api.md)), including any way a plain run can destroy data (an output path equal to the input path). Run commands "from the directory containing the script", not from a repository root you assume. Install is what the source shows (copy the file, the interpreter version, standard library only); do not add a package-manager command, a package name or a supported format the source does not show. A version in the README is the one the source states ("Tested with Python 3.11" is written as tested, not as a requirement); the version of your own test run goes in the reply.
 - Badges, logos and tables of contents are optional; keep what helps a reader decide or navigate.
 - Stay free of private paths, credentials, internal hostnames, account names, and private logs. Replace them with repo-relative paths, placeholders or role labels (for example "workspace owner"). Describe credentials by provider name only.
 - Include a last-verified version or date only if someone will keep it current.
@@ -66,12 +66,12 @@ Default body:
 7. **Breaking changes**: say explicitly whether there are any. If none, omit the section. If yes: what breaks, who is affected, the migration path with before/after usage, and the deprecation timeline. Update docs and add a migration guide.
 8. **Related**: `Closes #N` / `Relates to #N`, linked plans or tickets.
 
-Scale the body to the change. A change of a few files needs the summary (with what changed), what was run, and the `Door:` and `Blast radius:` lines; leave out Reviewer focus, Related, breaking-changes and details sections when the notes give nothing specific for them, and say each limit or default once instead of in the summary, the bullets and the risk lines.
+Scale the body to the change. A change of a few files needs the summary (with what changed), what was run, and what could break; leave out Reviewer focus, Related, breaking-changes and details sections when the notes give nothing specific for them, and say each limit or default once instead of in the summary, the bullets and the risk lines.
 
 Risk and rollout:
 
-- **Door:** two-way (cheap to reverse) or one-way (destructive migration, public API removal, new on-disk format, messages already sent, anything rollback cannot undo), and why. Write the line with the label "Door:" so a reviewer can find it.
-- **Blast radius:** what breaks if the change is wrong: which consumers, which data, which screens. Write the line with the label "Blast radius:" and name the consumers from the diff and notes (a named job counts), not a generic "callers".
+- **What could break**: name the change that carries the risk, then who or what breaks if it is wrong: which consumers, data, jobs or screens, from the diff and notes (a named job counts), not a generic "callers". Add how to get the old behaviour back (for a changed default, the opt-out). Write it as plain sentences, not labelled fields.
+- **Reversibility**: say a change is hard or impossible to undo when it is (destructive migration, public API removal, new on-disk format, messages already sent, anything rollback cannot undo), and why. When it is cheap to reverse and nothing in the diff suggests otherwise, no line is needed.
 - **Treat the author's own "safe" call with suspicion.** Diffs hide irreversibility. Check hardest where the call is most optimistic. If the repo keeps a list of always-one-way categories (schema migrations, anything that ships outward, deletions), apply it.
 - **Rollout and rollback**: say "plain merge" unless the diff or notes name another mechanism (flag, staged deploy). Never write a sentence about a mechanism that does not exist ("no canary", "no staged rollout is specified"); leave it out. Say how to undo and what to watch afterwards, with thresholds if you have them.
 

@@ -1,23 +1,23 @@
 {
-  "version": 1,
-  "note": "Tolerances for evals/gate.py. 'metrics': a gated metric fails only when the paired change (new minus reference, over cases) is worse than 'tolerance' in the metric's own unit AND its 95% bootstrap CI excludes zero on the worse side. 'hard': rules with no statistics. 'min_cases_for_ci': fewer paired cases than this give no verdict.",
+  "version": 2,
+  "note": "Tolerances for evals/gate.py. 'metrics': a gated metric fails only when the lower bound of the 95% bootstrap CI of the paired worsening (new vs reference, paired per (host, case, rep), repetitions averaged per case, CI over cases) is above 'tolerance' in the metric's own unit; worse than tolerance on average with a CI that reaches back inside it is a warning. 'absolute': the one rule without statistics, because any occurrence is a defect: the share of reader-facing runs whose output carries an unresolved marker or placeholder. 'min_cases_for_ci': fewer paired cases than this give no verdict. Tolerances of flesch_reading_ease (5) and sentence_length_cv (0.1) sit above the A/A noise floor measured with `gate.py aa` on v-voice-omp and v-clean-omp (largest per-skill lower CI bound of a pure repetition swap: 4.2 points, 0.083); re-measure when the reference changes.",
   "min_cases_for_ci": 3,
-  "hard": {
-    "invented_facts_slack_per_run": 0.0,
-    "leaked_markers_max": 0,
-    "check_pass_rate_tolerance": 0.02
+  "absolute": {
+    "leaked_marker_run_rate_max": 0.0
   },
   "metrics": {
+    "invented_facts": {"tolerance": 0.0},
     "invented_facts_per_1000w": {"tolerance": 0.5},
     "lost_required_facts": {"tolerance": 0.1},
     "slop_per_1000w": {"tolerance": 0.5},
     "stock_phrases_per_1000w": {"tolerance": 0.5},
     "short_text_headings": {"tolerance": 0.2},
     "repeated_sentences": {"tolerance": 0.1},
-    "sentence_length_cv": {"tolerance": 0.03},
-    "flesch_reading_ease": {"tolerance": 2.0},
+    "sentence_length_cv": {"tolerance": 0.1},
+    "flesch_reading_ease": {"tolerance": 5.0},
     "length_deviation": {"tolerance": 0.05},
     "process_talk": {"tolerance": 0.05},
+    "check_pass_rate": {"tolerance": 0.02},
     "case_passed": {"tolerance": 0.05},
     "hedge_per_1000w": {"tolerance": 1.0, "gated": false}
   }

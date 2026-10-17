@@ -368,6 +368,9 @@ def test_bare_figure_restated_with_unit_is_the_same_figure(tmp_path):
     pct_after = write(tmp_path, "pct_after.md", "MAE fell by 12%.\n")
     _, report = diff_json(pct_before, pct_after)
     assert added_items(report, "numbers") == {"12%"}
+    zero_tail = write(tmp_path, "zero_tail.md", "MAE fell by 12.0%.\n")
+    _, report = diff_json(zero_tail, pct_after)
+    assert report["categories"]["numbers"]["added"] == [] and report["categories"]["numbers"]["lost"] == []
 
 
 

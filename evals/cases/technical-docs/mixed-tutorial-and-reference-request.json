@@ -11,38 +11,32 @@
   "checks": [
     {
       "type": "regex",
-      "pattern": "(?i)\\]\\([^)\\s]*(reference|config|options|settings)[^)\\s]*\\)"
+      "pattern": "(?i)\\]\\([^)\\s]*(reference|config|options|settings)[^)\\s]*\\)",
+      "note": "the reader of the guide must be able to reach the full option list: a link to the page that holds it"
     },
     {
       "type": "not_regex",
-      "pattern": "(?s)\\A(?=.*\\bpoll_interval_ms\\b)(?=.*\\bmax_line_bytes\\b)(?=.*\\btimestamp_format\\b)(?=.*\\boutput_file\\b)"
+      "pattern": "(?im)^(?:[|*-][^\\n]*`(?:path|pattern|follow|poll_interval_ms|max_line_bytes|color|timestamp_format|output_file)`[^\\n]*\\n){5}",
+      "note": "a tutorial does not carry the reference table: five consecutive table rows or bullets that each define a config key mean the full option list was pasted into the guide; naming a key in a step is fine"
     },
     {
       "type": "not_regex",
       "pattern": "`(?!(?:poll_interval_ms|max_line_bytes|timestamp_format|output_file)`)[a-z]+(?:_[a-z]+)+`"
     },
     {
-      "type": "contains_any",
-      "values": [
-        "we will",
-        "we'll",
-        "in this tutorial",
-        "in this guide"
-      ]
+      "type": "regex",
+      "pattern": "(?is)\\bpython3?\\s+(?:\\./)?tailr\\.py\\b.{0,500}?\\b(you(?:'ll| will| should)? see|prints?|printed|output|shows?|appears?|waits?|stays open|exits?)\\b",
+      "note": "a learner needs a command to run and a statement of what happens after it so success is visible (a fenced block is not required, and the opening sentence's wording is not prescribed)"
     },
     {
       "type": "not_regex",
       "pattern": "(?i)\\b(alternatively|if you prefer|or, if you)\\b"
     },
     {
-      "type": "contains_any",
-      "values": [
-        "reference",
-        "separate page",
-        "split",
-        "two pages"
-      ],
-      "target": "reply"
+      "type": "regex",
+      "target": "reply",
+      "pattern": "(?i)(?<![\\w-])(?!(?:getting-started|open-questions)\\.md)[\\w-]+\\.md\\b",
+      "note": "the reader of the reply needs to know which other page was written and where, so the file is named; no fixed phrase for how the split is described"
     },
     {
       "type": "not_regex",

@@ -63,3 +63,10 @@ Answer each check pass or fail. Fix every failure before returning.
 
 37. Is the post text free of `[ASK AUTHOR]`, `[VERIFY]` and `[UNTESTED]` markers, bracket placeholders ("[add a number here]", "[link]"), `[source: ...]` tags and process notes ("as requested", "I ran a scan", "per your notes"), unless the author asked for a draft to edit? Are gaps stated plainly or the sentence omitted, and are the questions, assumptions, candidate openings and left-out items in the reply (plus `open-questions.md` beside a saved file when there are open questions)?
 38. If the author asked for the post to be saved to a file, does the file hold the post alone (no brief, change note or core-claim line), and does the post still make its point without the missing proof?
+
+## Voice and length
+
+39. In a first-person narrative or reflective piece of up to about 1,200 words, is it continuous prose, with a heading only where a reader would jump to a part?
+40. Is the lesson stated once, with no paragraph that only restates it and no sentence that comments on the post's own argument ("worth keeping in view")?
+41. If the requested length exceeded what the notes carry, is the post as long as the facts allow, with the reply saying how much shorter it is and what would fill the rest, and no restated lesson, scene or invented example used as filler?
+42. In a condensed version or thread, was a whole secondary point cut before any cause, condition or "what the old setup did" clause was dropped from the points that remain, and does each before-and-after figure pair read at a glance?

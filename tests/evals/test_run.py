@@ -175,3 +175,31 @@ def test_render_pages_reports_a_missing_browser(tmp_path, monkeypatch):
     monkeypatch.setattr(run, "find_chrome", lambda: None)
     pages, note = run.render_pages(tmp_path / "x.html", tmp_path / "shots", "a")
     assert pages == [] and "Chrome" in note
+
+
+def test_omp_run_that_reached_outside_its_condition_is_rejected():
+    clean = '{"type":"tool_execution_start","args":{"path":"skill://anti-slop-editing"}}'
+    assert run.isolation_problems("omp", "skill", None, clean) == []
+    assert run.isolation_problems("omp", "baseline", None, '{"path":"skill://diagram-design"}') == []
+    leaked = run.isolation_problems("omp", "baseline", None, clean)
+    assert leaked == ["skills outside the condition: anti-slop-editing"]
+    advised = run.isolation_problems("omp", "skill", None, '{"type":"advisor_yielded"}')
+    assert advised == ["advisor events in log"]
+
+
+def test_omp_command_carries_the_isolation_overlay():
+    args = argparse.Namespace(omp_model="m", omp_thinking=None)
+    cmd = run.host_command("omp", "p", Path("."), Path("r"), args)
+    overlay = json.loads(Path(cmd[cmd.index("--config") + 1]).read_text())
+    assert overlay["advisor"]["enabled"] is False and overlay["memory"]["backend"] == "off"
+    assert overlay["skills"]["enableAgentsUser"] is False
+
+
+def test_judge_reads_a_split_deliverable_whole_but_not_author_questions(tmp_path):
+    out = tmp_path / "out"
+    out.mkdir()
+    (out / "guide.md").write_text("Guide.")
+    (out / "configuration.md").write_text("Every option.")
+    (out / "open-questions.md").write_text("Who owns this?")
+    text = run.side_text({"output": "out/guide.md", "files": {}}, tmp_path)
+    assert text.startswith("Guide.") and "Every option." in text and "Who owns" not in text

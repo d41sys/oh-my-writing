@@ -364,12 +364,13 @@ def _pair_units(lost: list, added: list) -> tuple[list, list]:
             l_num, l_unit = _num_value(l["item"])
             if l_num != a_num or (l_unit and a_unit and l_unit != a_unit):
                 continue
-            if (l_unit or a_unit) in STRICT_UNITS:
+            if l_unit != a_unit and (l_unit or a_unit) in STRICT_UNITS:
                 continue
             lost.remove(l)
             added.remove(a)
             break
     return lost, added
+
 
 def read_text(path: str) -> str:
     if path == "-":

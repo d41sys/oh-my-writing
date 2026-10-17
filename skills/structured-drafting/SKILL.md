@@ -1,9 +1,9 @@
 ---
 name: structured-drafting
-description: Turns raw source material into a first draft that stays faithful to it. Meeting notes, interview transcripts, bullet ideas, source excerpts or a rough draft become a short update, email, article or longer document through size-scaled stages (brief, material inventory, core message, grounding order, shape, outline, block-by-block drafting), keeping conflicting figures, unconfirmed items and missing decisions visible instead of resolving them. Also offers section-by-section co-authoring. Use whenever a draft is built from notes, a notes file or a transcript, whatever the genre, and load it alongside the genre skill. Typical asks - "turn my meeting notes into an update", "write a short email from notes.md" (even three sentences), "write a first draft from this", "outline this for me", "structure this document", "help me write this together", "draft from my transcript", "write an article from this interview", "organize my rough ideas into an article".
+description: Turns raw material (notes or a notes file, meeting notes, source excerpts, interview transcripts, bullet ideas, or an existing rough draft) into a first draft, short update, email or article through explicit, size-scaled stages - brief, material inventory, core message, grounding order, shape, outline, block-by-block drafting - and offers a section-by-section co-authoring mode when the author wants to steer. Use when asked to "turn these notes into a draft", "turn my meeting notes into an update", "write a short email from these notes", "write a short email from notes.md", "write a first draft from this", "outline this for me", "structure this document", "help me write this together", "draft from my transcript", "write an article from this interview", or "organize my rough ideas into an article".
 license: MIT
 metadata:
-  version: "1.4"
+  version: "1.5"
   skill-author: d41sys
 ---
 
