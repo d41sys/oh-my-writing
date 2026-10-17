@@ -131,7 +131,7 @@ Define the tone as properties you can check, not as a mood:
 | No hype | no "exciting", "robust", "seamless", "world-class", no exclamation marks | scan finds none |
 | Numbers | unit, period and source: "$48,200 spent by 30 June (budget.csv)", not "about 48k" | every number has a unit and an as-of date |
 | Owners | each risk, issue, decision and action has a named person or role from a document, else "to be assigned" | no invented owner; no unowned action left unstated |
-| Calibrated | observed, reported, estimated and planned are kept apart | "reported by Dana" vs "measured"; "planned" never reads as done |
+| Calibrated | observed, reported, estimated and planned are kept apart | "reported by Ruth" vs "measured"; "planned" never reads as done |
 | Neutral on problems | state the problem, its impact and the owner; no blame, no softening | "Integration testing started 9 days late" not "faced some minor delays" |
 | Finished | no placeholder, no note to the author, no instruction aimed at an assistant | the report reads as complete to someone who never saw the folder |
 | Said once | each unknown, limit, unconfirmed item and "this report's proposal" label appears once, at the claim or above the list it covers | no caveat from the summary is retold in a section, a table note and the close |

@@ -151,5 +151,5 @@ Detect, vague attribution with no source in the text:
 
 No-op, exception applies:
 
-- Span: "The estimator is robust to outliers (breakdown point 0.5)."
+- Span: "The median is robust to outliers here: it moved 2 ms when the slowest 1% of requests were removed."
 - Result: left alone; "robust" is used in its statistical sense and backed by a number.

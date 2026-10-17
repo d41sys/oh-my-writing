@@ -79,8 +79,8 @@ A gap is something the candidate's material does not say. The document states it
 | Gap | In the document | In the reply and `open-questions.md` |
 | --- | --- | --- |
 | no figure for a bullet | the true wording with no number ("Handled the billing-escalation queue for a support team") | `[ASK AUTHOR: tickets per week, team size, response-time change?]` |
-| no date or end date | the dates the material gives; never a guessed month; "2022 to 2024" stays as supplied | `[ASK AUTHOR: start and end month for the Lantern Cloud role?]` |
-| required skill the candidate lacks | nothing in Skills, summary or bullets; the nearest true work, stated as it is | listed under Gaps in the note; `[ASK AUTHOR: any real use of Helm, even on a side project?]` |
+| no date or end date | the dates the material gives; never a guessed month; "2022 to 2024" stays as supplied | `[ASK AUTHOR: start and end month for the Brookline Data role?]` |
+| required skill the candidate lacks | nothing in Skills, summary or bullets; the nearest true work, stated as it is | listed under Gaps in the note; `[ASK AUTHOR: any real use of Terraform, even on a side project?]` |
 | no hook about the recipient or program | a plainer message or paragraph with no claim of familiarity | `[ASK AUTHOR: one paper or project of theirs you have read, and what you took from it]` |
 | no named recipient | "Dear Hiring Manager", "Dear Admissions Committee" | `[ASK AUTHOR: name of the hiring manager, if known?]` |
 | external fact from memory (deadline, faculty detail, limit) | used only if the user stated it; otherwise omitted | `[VERIFY: deadline and word limit against the current program page]` |
@@ -89,7 +89,7 @@ A gap is something the candidate's material does not say. The document states it
 `open-questions.md` sits beside the deliverable when a file is written and there are questions. Number the items and use the same numbering in the reply:
 
 ```markdown
-# Open questions: cover letter, Harbourline
+# Open questions: cover letter, Northfield Labs
 
 1. [ASK AUTHOR: how many tickets a week did the billing queue take?]
    Blocks: paragraph 2. The letter says: "I handled the billing-escalation queue."

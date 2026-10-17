@@ -179,9 +179,9 @@ Conventions differ by country, field and department; some programs forbid or ign
 The file holds the message: subject line and body, ready to send. The reply carries the hand-off, because it is for the user: the recipient and channel, which facts about the recipient were used and where the user can check them, any warm path, a confidence of high, medium or low that the hook is real, and the open questions as marker lines. If no verified hook exists, say so in the reply. No source tags, hedges or "note to self" lines go into the message.
 
 ### 5.12 Examples (invented facts)
-- Informational ask: "Hi Dana, I read your team's post on moving support reporting to a shared warehouse. I run a similar migration for a 12-person finance team. Would you be open to answering two questions by email about how you handled backfills?"
+- Informational ask: "Hi Ruth, I read your team's post on moving support reporting to a shared warehouse. I run a similar migration for a 12-person finance team. Would you be open to answering two questions by email about how you handled backfills?"
 - Referral ask: "Hi Sam, I am applying for the Data Analyst role at Brightway Foods. We worked together on the pricing review at Corvane Retail. Would you be comfortable referring me, or is there someone better to ask? I can send the posting and a two-line summary of the work."
-- Academic ask: "Dear Dr. Okoye, I am applying to the MSc in Ecology at Westfield University this autumn. I read your 2025 paper on hedgerow connectivity and ran a smaller version of that survey for my undergraduate thesis. Are you taking students for next year? I can send my CV and thesis summary if useful."
+- Academic ask: "Dear Dr. Adeyemi, I am applying to the MSc in Ecology at Westfield University this autumn. I read your 2025 paper on hedgerow connectivity and ran a smaller version of that survey for my undergraduate thesis. Are you taking students for next year? I can send my CV and thesis summary if useful."
 - Thank-you after a short call: "Hi Sam, thank you for the call on Tuesday. As promised, here are the two questions I mentioned, and the link to the pricing review. I will not take more of your time unless you suggest a next step."
 
 ## 6. Reference lists and reference requests
@@ -219,7 +219,7 @@ Choose one locale per document: the reader's market, not the writer's by default
 | --- | --- | --- | --- | --- |
 | Spelling | color, organize, center | colour, organise (or -ize, kept consistent), centre | colour, organise, centre | colour, organise, centre |
 | Date | January 15, 2026 | 15 January 2026 | 15 January 2026 | 15 January 2026 |
-| Neutral greeting | Hi Dana | Dear Dana or Hi Dana | Hi Dana | Kia ora Dana or Hi Dana |
+| Neutral greeting | Hi Ruth | Dear Ruth or Hi Ruth | Hi Ruth | Kia ora Ruth or Hi Ruth |
 | Common sign-off | Best, Thanks, Best regards | Kind regards, Many thanks | Kind regards (new or formal), Cheers (once rapport exists) | Kind regards, Cheers, Ngā mihi (only if the organization uses Te Reo) |
 
 Notes:

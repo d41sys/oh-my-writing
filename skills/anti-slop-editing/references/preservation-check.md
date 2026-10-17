@@ -97,7 +97,7 @@ Keep it short and true. Report from the delivered text, not from the plan.
 
 ```
 What changed
-- L12: "In today's fast-paced world, our team..." -> "Our team..." (era opener; no content lost)
+- L12: "In today's fast-paced world, our product..." -> "Our product..." (era opener; no content lost)
 - L19: removed "I hope this helps!" (chat residue)
 
 Left alone

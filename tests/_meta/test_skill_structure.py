@@ -126,3 +126,57 @@ def test_plugin_manifests_agree():
     assert len(set(versions.values())) == 1, versions
     codex = json.loads((REPO / ".codex-plugin/plugin.json").read_text(encoding="utf-8"))
     assert (REPO / codex["skills"]).resolve() == SKILLS.resolve()
+
+
+# ---- benchmark isolation: a skill must not carry the benchmark's own material ----------------------------------
+
+CASES = REPO / "evals" / "cases"
+FIXTURES = REPO / "evals" / "fixtures"
+CASE_TEXT_SUFFIXES = {".md", ".txt", ".csv", ".eml", ".html", ".json"}
+SELF_DESCRIBING = "real-project-docs"  # documents this repository and quotes the skills; the copying runs the other way
+# Capitalized words that occur in cases and are ordinary vocabulary in the skills, not names from a scenario.
+ORDINARY_CAPITALIZED = {
+    "Analyst", "ArgumentParser", "Classify", "Dual", "Ecology", "European", "Integrity", "LinkedIn", "Nightly",
+    "Observational", "Retrieve", "Retry", "Validate",
+    "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November",
+    "December", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday",
+}
+
+
+def _case_texts() -> list[str]:
+    texts = []
+    for path in CASES.rglob("*.json"):
+        case = json.loads(path.read_text(encoding="utf-8"))
+        texts += [case["prompt"], *case.get("files", {}).values()]
+    texts += [p.read_text(encoding="utf-8", errors="replace") for p in FIXTURES.rglob("*")
+              if p.is_file() and p.suffix in CASE_TEXT_SUFFIXES and SELF_DESCRIBING not in p.parts]
+    return texts
+
+
+def _skill_texts(skill: Path) -> dict[str, str]:
+    return {str(p.relative_to(REPO)): p.read_text(encoding="utf-8", errors="replace") for p in skill.rglob("*")
+            if p.is_file() and p.suffix in {".md", ".yaml", ".py"}}
+
+
+def _words(text: str) -> list[str]:
+    return re.findall(r"[a-z0-9']+", text.lower())
+
+
+@pytest.mark.parametrize("skill", SKILL_DIRS, ids=lambda p: p.name)
+def test_skill_holds_no_benchmark_scenario(skill):
+    """A name or a seven-word run from a benchmark case inside a skill lets the skill pass that case by recall, not by
+    the behavior it teaches: examples in skills use invented scenarios."""
+    case_texts = _case_texts()
+    grams = set()
+    for text in case_texts:
+        w = _words(text)
+        grams |= {tuple(w[i:i + 7]) for i in range(len(w) - 6)}
+    names = set(re.findall(r"\b[A-Z][a-z]+(?:[A-Z][a-z]+)?\b", "\n".join(case_texts))) - ORDINARY_CAPITALIZED
+    vocabulary = {w for s in SKILL_DIRS for text in _skill_texts(s).values() for w in _words(text)}
+    found = []
+    for rel, text in _skill_texts(skill).items():
+        w = _words(text) if not rel.endswith(".py") else []  # script boilerplate is shared by any Python file
+        found += [f"{rel}: '{' '.join(w[i:i + 7])}'" for i in range(len(w) - 6) if tuple(w[i:i + 7]) in grams]
+        found += [f"{rel}: name {n}" for n in names
+                  if len(n) >= 4 and n.lower() not in vocabulary and re.search(rf"\b{n}\b", text)]
+    assert not found, "benchmark material inside the skill:\n" + "\n".join(sorted(set(found))[:20])

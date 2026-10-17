@@ -182,7 +182,7 @@ Also keep process narration out of the page: no "as requested", "I checked the d
 `open-questions.md` format (written beside the page files, same lines as the reply, numbering matching):
 
 ```markdown
-# Open questions: tailr README
+# Open questions: logsift README
 
 1. [ASK AUTHOR: which license applies?]
    Blocks: License section. The README says: "No license is stated in this repository."
