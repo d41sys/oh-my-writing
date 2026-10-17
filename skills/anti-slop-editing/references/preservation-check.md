@@ -48,6 +48,8 @@ python <skill-dir>/scripts/fact_diff.py --ignore names before.md after.md   # ca
 
 Exit 0 means nothing mechanical was lost or added; exit 1 means review the listed items; exit 2 means an input problem.
 
+A `[CHECK] numbers derived` line is a new figure that follows exactly from two source figures (a sum or difference in the same unit, or a rate times a count). It is not counted as added. Check the arithmetic, and make sure the reader can see the inputs it came from.
+
 What it tracks: numbers with units and percent (comma separators and spelled numbers two to twelve normalize), negations, certainty and scope words, capitalized names and acronyms, URLs, inline code and code blocks, quoted strings, and citation markers. It also counts gap markers (`[ASK AUTHOR ...]`, `[VERIFY ...]` and similar) left in the edited text; the edited text should have none unless the author asked for a draft to edit.
 
 What it cannot do:

@@ -46,7 +46,7 @@ Then: `/academic-writing rewrite the abstract` or `/academic-writing write the i
 | `report-writing` | Decision memos, research and market reports, executive summaries, post-mortems |
 | `technical-docs` | Tutorials, how-to guides, reference, explanation, READMEs, PR descriptions, changelogs |
 | `career-documents` | Truthful résumés, CVs, cover letters, statements of purpose, profiles and outreach |
-| `project-report` | Turn a folder of project documents into a sourced, professional project report with designed diagrams, as one print-ready HTML file |
+| `project-report` | Turn a folder of project documents into a sourced, professional project report with designed diagrams, as one print-ready HTML file plus a Markdown copy that reads on its own |
 
 `project-report` draws its diagrams with the separate [diagram-design](https://github.com/cathrynlavery/diagram-design) skill when it is installed, and falls back to Mermaid blocks otherwise. Install it next to these skills:
 

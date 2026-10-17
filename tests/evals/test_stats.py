@@ -369,6 +369,182 @@ def test_cli_writes_json_and_compare(tmp_path, capsys):
     assert json.loads((tmp_path / "c.json").read_text())["compare"]["omp/ALL"]["gap_markers_leaked"]["diff"] == 1.0
 
 
+# ---------------------------------------------------------------- flow metrics
+
+def test_stem_folds_inflections_and_compounds_split():
+    assert stats.stem("changes") == stats.stem("changed") == stats.stem("changing") == "chang"
+    assert stats.stem("retries") == "retry" and stats.stem("class") == "class" and stats.stem("Quillbox's") == "quillbox"
+    assert stats.content_stems(["the", "phone-desk", "is", "up", "42"]) == ["phon", "desk", "42"]
+
+
+CHAIN = ["The server crashed on Tuesday.", "The server restarted after the crash.", "Nobody noticed the outage.",
+         "It caused no data loss."]
+
+
+def test_flow_pair_metrics_exact():
+    m = stats.flow_metrics([CHAIN])
+    # stems: [server crash tuesday] [server restart crash] [nobody notic outag] [caus data loss]
+    assert m["adjacent_cohesion"] == pytest.approx((2 / 3 + 0 + 0) / 3)  # first pair shares server and crash
+    assert m["abrupt_jump_rate"] == pytest.approx(1 / 3)  # pair 2 shares nothing and has no link; pair 3 opens with 'It'
+    assert m["given_new_carry"] == pytest.approx(2 / 3)  # pair 1 (server up front) and pair 3 ('It'); pair 2 starts new
+    assert stats.flow_metrics([CHAIN[:3]])["adjacent_cohesion"] is None  # two pairs: too few
+
+
+def test_flow_pairs_stay_inside_a_paragraph():
+    split = stats.flow_metrics([CHAIN[:2], CHAIN[2:]])
+    assert split["adjacent_cohesion"] is None  # one pair in each paragraph
+    assert split["paragraph_length_cv"] is None  # two paragraphs
+
+
+def test_stock_transition_long_sentence_and_sentence_level_metrics_exact():
+    long_sentence = " ".join(["word"] * 31) + "."
+    sents = ["Moreover, the build failed.", "Furthermore the tests passed.", "In addition, nobody cared.", long_sentence]
+    m = stats.flow_metrics([sents])
+    assert m["stock_transition_rate"] == pytest.approx(3 / 4)
+    assert m["long_sentence_share"] == pytest.approx(1 / 4)  # 31 words; 30 would not count
+    assert stats.flow_metrics([["Overall, it works.", "It works.", "It works fine."]])["stock_transition_rate"] == pytest.approx(1 / 3)
+    assert stats.flow_metrics([["Moreover it works."]])["stock_transition_rate"] is None  # fewer than 3 sentences
+
+
+def test_interruptions_count_parentheticals_and_dash_pairs():
+    assert stats.interruptions("It works (see section three).") == 1
+    assert stats.interruptions("It works (3).") == 0  # one word in the parentheses is a reference, not an aside
+    assert stats.interruptions("One \u2014 two \u2014 three.") == 1
+    assert stats.interruptions("One \u2014 two.") == 0  # a single dash is not an aside
+    assert stats.interruptions("Range 2020\u20132022 holds.") == 0  # an unspaced en dash is a range
+    assert stats.interruptions("One - two - three (a b) four.") == 2
+    m = stats.flow_metrics([["The plan (approved last week) works \u2014 mostly \u2014 fine.", "It ships.", "It stays."]])
+    assert m["interruption_density"] == pytest.approx(2 / 3)
+
+
+def test_nominalization_and_passive_detection():
+    assert [stats.is_nominalization(w) for w in ("implementation", "decisions", "kindness", "documents", "moment", "department",
+                                                 "creating")] == [True, True, True, False, False, False, False]
+    m = stats.flow_metrics([["The implementation of the migration needs approval.", "Dana ships it.", "It works."]])
+    assert m["nominalization_per_1000w"] == pytest.approx(2 / 12 * 1000)  # implementation, migration; 12 words
+    assert stats.has_passive("The report was approved by Dana.") and stats.has_passive("It was quickly fixed.")
+    assert stats.has_passive("The data was given to us.") and stats.has_passive("Nothing gets lost.")
+    assert not stats.has_passive("Dana approved the report.") and not stats.has_passive("The door is open.")
+    assert not stats.has_passive("We need speed.") and not stats.has_passive("Indeed, it is indeed fine.")
+    m = stats.flow_metrics([["The report was approved.", "Dana ships it.", "It was fixed by Lee.", "It works."]])
+    assert m["passive_voice_rate"] == pytest.approx(2 / 4)
+
+
+def test_paragraph_metrics_exact():
+    paragraphs = [["One two three four."], ["Five six.", "Seven eight nine ten eleven."], ["Alpha beta."]]  # 4, 7, 2 words
+    m = stats.flow_metrics(paragraphs)
+    assert m["paragraph_length_cv"] == pytest.approx((38 / 9) ** 0.5 / (13 / 3))
+    assert m["one_sentence_paragraph_share"] == pytest.approx(2 / 3)
+
+
+def test_prose_paragraphs_use_running_prose_only():
+    text = "# Title\n\nFirst point. Second point.\n\n- a bullet. another.\n\n```\ncode. more code.\n```\n\nThird point.\n"
+    assert stats.prose_paragraphs(text) == [["First point.", "Second point."], ["Third point."]]
+
+
+WATER = ["The pump fills the tank.", "The tank feeds the filter.", "The filter cleans the valve.", "The valve opens the cooler.",
+         "The cooler chills the boiler.", "The boiler heats the mixer.", "The mixer stirs the drain.",
+         "The drain empties the sensor."]
+
+
+def test_shuffled_text_scores_worse_on_cohesion_and_jumps():
+    orig = stats.flow_metrics([WATER])
+    assert orig["adjacent_cohesion"] == pytest.approx(1 / 3) and orig["abrupt_jump_rate"] == 0.0
+    assert orig["given_new_carry"] == 1.0  # each sentence opens with the noun the previous one ended on
+    copies = [stats.flow_metrics(stats.shuffled_paragraphs([WATER], f"seed{k}")) for k in range(9)]
+    assert sum(c["adjacent_cohesion"] for c in copies) / 9 < orig["adjacent_cohesion"]
+    assert sum(c["abrupt_jump_rate"] for c in copies) / 9 > orig["abrupt_jump_rate"]
+    assert sum(c["given_new_carry"] for c in copies) / 9 < orig["given_new_carry"]
+
+
+def test_shuffle_keeps_sentences_and_paragraph_sizes_and_is_deterministic():
+    paragraphs = [WATER[:3], WATER[3:4], WATER[4:]]
+    a = stats.shuffled_paragraphs(paragraphs, "s1")
+    assert a == stats.shuffled_paragraphs(paragraphs, "s1") != stats.shuffled_paragraphs(paragraphs, "s2")
+    assert [len(p) for p in a] == [3, 1, 4] and sorted(s for p in a for s in p) == sorted(WATER)
+
+
+def test_flow_metrics_are_deterministic_and_skipped_for_analysis_cases():
+    text = " ".join(WATER) + "\n\n" + " ".join(CHAIN) + "\n\nShort one.\n"
+    c = case()
+    assert stats.text_metrics(c, text) == stats.text_metrics(c, text)
+    analysis = case(id="independent-review/self-review-not-independent")
+    m = stats.text_metrics(analysis, text)
+    assert m["adjacent_cohesion"] is None and m["passive_voice_rate"] is None  # analysis outputs talk about text
+    assert m["near_duplicate_pairs_per_1000w"] is not None  # duplication still applies
+    assert stats.text_metrics(c, text)["adjacent_cohesion"] is not None
+
+
+# ---------------------------------------------------------------- duplication: repeats itself / copies the input
+
+DISTINCT = ["Alpha beta gamma delta epsilon zeta.", "Kappa lambda sigma omega theta iota.",
+            "Copper nickel silver cobalt carbon radium.", "Tiger falcon badger otter marmot lynx.",
+            "Violin cello piano oboe harp tuba."]
+
+
+def test_repeated_trigram_rate_exact():
+    once = stats.duplication_metrics(" ".join(DISTINCT))
+    assert once["repeated_trigram_rate"] == 0.0  # 5 sentences x 4 trigrams, all distinct
+    twice = stats.duplication_metrics(" ".join(DISTINCT + DISTINCT[:1]))
+    assert twice["repeated_trigram_rate"] == pytest.approx(4 / 24)  # the sixth sentence repeats the first one's 4 trigrams
+    assert stats.duplication_metrics(" ".join(DISTINCT[:2]))["repeated_trigram_rate"] is None  # under 20 trigrams
+
+
+def test_near_duplicate_pairs_use_jaccard_of_content_stems():
+    base = DISTINCT[0]
+    assert stats.duplication_metrics(f"{base} {base}")["near_duplicate_pairs_per_1000w"] == pytest.approx(1000 / 12)
+    four_shared = "Alpha beta gamma delta kappa lambda."  # 4 shared of 8 in the union: Jaccard 0.5
+    assert stats.duplication_metrics(f"{base} {four_shared}")["near_duplicate_pairs_per_1000w"] == pytest.approx(1000 / 12)
+    three_shared = "Alpha beta gamma kappa lambda sigma."  # 3 shared of 9: below 0.5
+    assert stats.duplication_metrics(f"{base} {three_shared}")["near_duplicate_pairs_per_1000w"] == 0.0
+    short = "Alpha beta gamma delta."  # only 4 content stems: never counted
+    assert stats.duplication_metrics(f"{short} {short}")["near_duplicate_pairs_per_1000w"] == 0.0
+
+
+def test_repeated_caveats_count_only_near_duplicate_hedge_sentences():
+    a = "The launch might slip because vendor testing is unfinished."
+    b = "The launch might slip since vendor testing remains unfinished."
+    other = "Results may differ across regions and seasons."
+    plain = "The launch date is 3 June and the vendor testing is complete."
+    assert stats.duplication_metrics(f"{a} {other} {b}")["repeated_caveats"] == 1
+    assert stats.duplication_metrics(f"{a} {other}")["repeated_caveats"] == 0
+    assert stats.duplication_metrics(f"{plain} {plain}")["repeated_caveats"] == 0  # repeated but not a caveat
+
+
+def test_source_copy_rate_counts_tokens_inside_verbatim_8_word_runs():
+    sources = "The quick brown fox jumps over the lazy dog near the river bank today."
+    out = "We saw the quick brown fox jumps over the lazy dog near the river."  # 14 words, words 3-14 are copied
+    assert stats.source_copy_rate(out, sources) == pytest.approx(12 / 14)
+    assert stats.source_copy_rate("We saw a quick brown fox jump over a lazy dog by the river.", sources) == 0.0
+    assert stats.source_copy_rate("Too short to count.", sources) is None
+
+
+def test_text_metrics_label_repeats_and_copies_separately():
+    c = case(files={"notes.md": " ".join(DISTINCT)})
+    copy = stats.text_metrics(c, " ".join(DISTINCT))
+    assert copy["source_copy_rate"] == 1.0 and copy["repeated_trigram_rate"] == 0.0  # copies the input, repeats nothing
+    twice = stats.text_metrics(case(files={"notes.md": DISTINCT[0]}), " ".join([DISTINCT[0]] * 5))
+    assert twice["repeated_trigram_rate"] == pytest.approx(16 / 20)  # repeats itself
+
+
+# ---------------------------------------------------------------- variant conditions
+
+def test_variant_conditions_are_compared_like_competitors():
+    recs = competitor_records()
+    for r in recs:
+        if r["condition"] == "competitor-x":
+            r["condition"] = "variant-ref"
+    assert stats.competitor_conditions(recs) == ["variant-ref"]
+    assert stats.compared_name("variant-ref") == "ref" and stats.compared_name("competitor-x") == "x"
+    d = stats.skill_minus_competitor(recs)["h/ref/ALL"]["slop_per_1000w"]
+    assert (d["n_pairs"], d["n_cases"]) == (10, 5) and d["diff"] == pytest.approx(-2.0)
+    both = recs + [{**r, "condition": "competitor-x"} for r in recs if r["condition"] == "variant-ref"]
+    assert set(stats.compared_labels(both)) == {"ref", "x"}
+    text = stats.render_competitors(stats.skill_minus_competitor(both), stats.skill_minus_competitor(both, loaded_only=True),
+                                    stats.compared_labels(both))
+    assert "skill vs variant-ref" in text and "skill vs competitor-x" in text
+
+
 def test_readme_documents_every_metric():
     readme = (EVALS / "README.md").read_text()
     for name in stats.METRICS:

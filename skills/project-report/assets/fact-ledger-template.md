@@ -35,7 +35,7 @@ Computed from ledger rows; each is reproducible and marked derived wherever it a
 |----|-------|---------|--------|
 | D01 | [result with unit] | [for example F03 - F04] | [F03, F04] |
 
-Do not derive anything from a row that is in the Conflicts table until the author picks a value.
+Do not derive anything from a row that is in the Conflicts table until the author picks a value. The one allowed value is the size of the gap between the two (their difference), shown in the report beside both values. In the report a derived value stands next to its inputs with the operation named; it is not restated as a fraction, multiplier or percentage the documents do not give.
 
 ## Not read or out of scope
 

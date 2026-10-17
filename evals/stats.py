@@ -3,7 +3,7 @@
 
 Usage:
   python3 evals/stats.py RUN_DIR [--json OUT]                         metrics for every run, aggregates, skill-minus-baseline
-                                                                      (and skill-minus-competitor, all and loaded-only, when the run has competitors)
+                                                                      (and skill-minus-competitor / -variant, all and loaded-only, when the run has competitor-* or variant-* conditions)
   python3 evals/stats.py --compare RUN_A RUN_B --condition skill      same condition in two runs, paired on (case, host, rep)
 
 Every output a run produced gets the same fixed set of metrics (METRICS below; rules versioned by METRICS_VERSION).
@@ -16,6 +16,7 @@ p-value. Metric definitions: evals/README.md ("Statistics benchmark") and the ME
 from __future__ import annotations
 
 import argparse
+import functools
 import hashlib
 import json
 import math
@@ -31,7 +32,7 @@ sys.path.insert(0, str(EVALS))
 import grade  # noqa: E402  (loads fact_diff and slop_scan with bytecode off; reused here)
 
 REPO = grade.REPO
-METRICS_VERSION = "1"
+METRICS_VERSION = "2"
 BOOTSTRAP_SEED = 20261017
 BOOTSTRAP_RESAMPLES = 2000
 CONFIDENCE = 0.95
@@ -90,6 +91,30 @@ METRICS: dict[str, dict] = {
         "definition": "Sentences of 6+ words that repeat an earlier sentence: identical after lower-casing, or word "
                       "3-shingle Jaccard similarity of 0.6 or more.",
         "why": "Saying the same thing twice costs the reader time and is a mark of padding."},
+    "repeated_trigram_rate": {
+        "direction": "lower", "unit": "ratio",
+        "definition": "REPEATS ITSELF. Share of the output's content-word 3-grams (three consecutive non-stopword stems "
+                      "inside one sentence, lists and tables included, code excluded) that already occurred earlier in "
+                      "the same output. Needs 20 or more 3-grams.",
+        "why": "A reader meets the same phrases again and again: padding and restated points cost attention and read as filler."},
+    "near_duplicate_pairs_per_1000w": {
+        "direction": "lower", "unit": "per 1000 words",
+        "definition": "REPEATS ITSELF. Pairs of sentences inside one output with Jaccard similarity of their content-word "
+                      "stem sets of 0.5 or more (each sentence with 5 or more content words), per 1000 words.",
+        "why": "The same point said twice in different words: a summary that restates the body, a closing line that "
+               "repeats the opening."},
+    "repeated_caveats": {
+        "direction": "lower", "unit": "count",
+        "definition": "REPEATS ITSELF. Hedge or uncertainty sentences (a HEDGES word or a CAVEAT_PHRASES phrase, 3 or more content "
+                      "words) that are near-duplicates (Jaccard 0.5 or more) of an earlier such sentence in the same output.",
+        "why": "One caveat, stated once where it applies, is honest; the same caveat pasted under every section is noise "
+               "and teaches the reader to skip caveats."},
+    "source_copy_rate": {
+        "direction": None, "unit": "ratio",
+        "definition": "COPIES THE INPUT. Share of the output's word tokens that sit inside a run of 8 or more consecutive "
+                      "words found verbatim (case-insensitive) in the case's sources or prompt. Needs 8 or more words.",
+        "why": "Context, no direction: an edit must keep most of its source, a report that pastes its input is not a "
+               "report. Different from the repeats-itself metrics, which look only inside the output."},
     "hedge_per_1000w": {
         "direction": "lower", "unit": "per 1000 words",
         "definition": "Hedge and caveat words and phrases (HEDGES) per 1000 words.",
@@ -109,6 +134,59 @@ METRICS: dict[str, dict] = {
         "definition": "206.835 - 1.015 * words/sentence - 84.6 * syllables/word over running prose "
                       "(vowel-group syllable counter). Needs 3 or more sentences.",
         "why": "A direct reading-effort estimate; higher is easier."},
+    "adjacent_cohesion": {
+        "direction": "higher", "unit": "ratio",
+        "definition": "Mean content-word overlap between consecutive sentences of one paragraph: shared stems divided by "
+                      "the smaller stem set (overlap coefficient), over sentence pairs where both have content words. "
+                      "Running prose only (no headings, list items, quotes); needs 3 or more pairs.",
+        "why": "Each sentence picks up something the previous one set up, so the reader never has to rebuild the "
+               "topic. Shuffling the sentences must lower it."},
+    "abrupt_jump_rate": {
+        "direction": "lower", "unit": "ratio",
+        "definition": "Share of consecutive same-paragraph sentence pairs that share no content stem and where the second "
+                      "sentence opens with no connective (but, so, however, for example, then, ...) and no referential word "
+                      "(it, this, that, they, such, ...). Needs 3 or more pairs.",
+        "why": "A sentence about something new with no bridge is a jolt: the reader stops to work out how it connects."},
+    "given_new_carry": {
+        "direction": "higher", "unit": "ratio",
+        "definition": "Share of consecutive same-paragraph sentence pairs where the opening half of the second sentence's "
+                      "content stems holds a stem of the first sentence, or the second sentence opens with a connective or "
+                      "referential word. Needs 3 or more pairs.",
+        "why": "Old before new: a sentence that starts from what the reader just read is easy to follow; one that starts "
+               "with something unseen makes the reader hold it until the link arrives."},
+    "stock_transition_rate": {
+        "direction": "lower", "unit": "ratio",
+        "definition": "Share of prose sentences that open with a stock transition (Moreover, Furthermore, Additionally, "
+                      "In addition, Overall, Ultimately, Notably, Importantly, In conclusion, ...). Needs 3 or more sentences.",
+        "why": "These openers announce a link instead of making one; a run of them is a template tell, and the text "
+               "reads the same with them deleted."},
+    "long_sentence_share": {
+        "direction": "lower", "unit": "ratio",
+        "definition": "Share of prose sentences longer than 30 words. Needs 3 or more sentences.",
+        "why": "Very long sentences exceed what a reader holds in mind; the subject is gone before the verb arrives."},
+    "interruption_density": {
+        "direction": "lower", "unit": "ratio",
+        "definition": "Asides per prose sentence: parentheticals of 2 or more words plus pairs of dashes (em dash, spaced "
+                      "en dash or double hyphen; a single dash is not counted). Needs 3 or more sentences.",
+        "why": "Each aside breaks the sentence the reader is in the middle of and must be resumed."},
+    "nominalization_per_1000w": {
+        "direction": "lower", "unit": "per 1000 words",
+        "definition": "Words of 7+ letters ending -tion, -sion, -ment, -ness, -ity, -ance or -ence (plural included; a small "
+                      "list of concrete nouns such as document and department excluded) per 1000 prose words.",
+        "why": "Verbs turned into nouns ('the implementation of the migration') hide who does what and make sentences heavy."},
+    "passive_voice_rate": {
+        "direction": "lower", "unit": "ratio",
+        "definition": "Share of prose sentences with a passive: a form of be/get, optional adverb, then a regular -ed or a "
+                      "listed irregular participle ('was approved', 'is given'). Needs 3 or more sentences.",
+        "why": "Agentless passives leave the reader asking who decided or did it."},
+    "paragraph_length_cv": {
+        "direction": "higher", "unit": "ratio",
+        "definition": "Standard deviation / mean of words per prose paragraph (consecutive prose lines). Needs 3 or more paragraphs.",
+        "why": "Paragraphs of identical size read as a template; real text gives each point the room it needs."},
+    "one_sentence_paragraph_share": {
+        "direction": "lower", "unit": "ratio",
+        "definition": "Share of prose paragraphs that hold a single sentence. Needs 3 or more paragraphs.",
+        "why": "A column of one-line paragraphs reads as staccato slogans with the reasoning between them left out."},
     "list_line_ratio": {
         "direction": None, "unit": "ratio",
         "definition": "Bullet and numbered lines divided by non-blank, non-heading, non-code lines.",
@@ -261,6 +339,64 @@ PLACEHOLDERS = [
 ]
 PLACEHOLDER_RES = [re.compile(p, re.I if p.startswith(r"\[(?:your") or "lorem" in p else 0) for p in PLACEHOLDERS]
 
+STOPWORDS = frozenset("""a about above after again against all also am an and any are aren't as at be because been before being
+below between both but by can can't cannot could couldn't did didn't do does doesn't doing don't down during each even every
+few for from further get gets got had hadn't has hasn't have haven't having he he'd he'll he's her here hers herself him himself
+his how however i i'd i'll i'm i've if in into is isn't it it's its itself just let's like made make makes many me more most
+much must mustn't my myself no nor not of off on once only or other ought our ours ourselves out over own per really same shall
+she she'd she'll she's should shouldn't so some still such than that that's the their theirs them themselves then there there's
+these they they'd they'll they're they've this those through to too under until up us very via was wasn't we we'd we'll we're
+we've were weren't what what's when when's where where's which while who who's whom why why's will with won't would wouldn't
+yet you you'd you'll you're you've your yours yourself yourselves""".split())
+
+# Opening of a sentence that ties it to the one before: connectives and referential words.
+LINK_OPENER_RE = re.compile(
+    r"^\W*(?:but|and|so|yet|or|nor|then|also|still|instead|however|therefore|thus|hence|meanwhile|otherwise|besides|"
+    r"similarly|likewise|conversely|nevertheless|nonetheless|moreover|furthermore|additionally|consequently|accordingly|"
+    r"indeed|finally|first|second|third|next|later|earlier|now|because|since|although|though|whereas|if|unless|once|"
+    r"after|before|until|when|while|as a result|in addition|for example|for instance|on the other hand|by contrast|"
+    r"in contrast|that said|even so|so far|at the same time|in turn|in short|in other words|of course|at first|"
+    r"in the end|this time|it|its|this|that|these|those|they|them|their|he|she|his|her|such|both|here|there)\b", re.I)
+# Stock transitions: announce a link without making one.
+STOCK_TRANSITION_RE = re.compile(
+    r"^\W*(?:moreover|furthermore|additionally|in addition|consequently|notably|importantly|indeed|overall|ultimately|"
+    r"in conclusion|in summary|to summari[sz]e|to conclude|in essence|subsequently|accordingly|essentially|crucially|"
+    r"significantly)\b", re.I)
+LONG_SENTENCE_WORDS = 30
+
+PAREN_RE = re.compile(r"\(([^()]*)\)")
+DASH_RE = re.compile(r"\u2014|(?<=\s)[\u2013-]{1,2}(?=\s)|(?<=\w)--(?=\w)")
+
+NOMINAL_RE = re.compile(r"^[a-z]{3,}(?:tion|sion|ment|ness|ity|ance|ence)s?$")
+NOMINAL_NOT = frozenset("""document department environment equipment government apartment experiment instrument supplement comment
+moment element segment section question position version station location evidence sentence science audience experience
+reference difference presence absence""".split())
+
+IRREGULAR_PARTICIPLES = ("made|done|given|taken|shown|seen|known|written|chosen|built|found|held|kept|left|lost|sent|set|put|"
+                         "paid|told|brought|bought|caught|drawn|driven|begun|broken|spoken|stolen|forgotten|hidden|won|sold|"
+                         "thought|understood|led|met|fed|spent|shut")
+PASSIVE_RE = re.compile(
+    r"\b(?:am|is|are|was|were|be|been|being|get|gets|got|getting)\s+"
+    r"(?:(?:not|also|now|already|still|just|never|always|often|usually|currently|previously|\w+ly)\s+)*"
+    r"((?:[a-z]{2,}ed|" + IRREGULAR_PARTICIPLES + r"))\b", re.I)
+PASSIVE_NOT = frozenset("need indeed hundred speed seed feed proceed exceed succeed bleed breed greed weed shed embed".split())
+
+# Uncertainty phrases beyond HEDGES that a repeated caveat can be made of.
+CAVEAT_PHRASES = [
+    r"not (?:yet )?(?:verified|confirmed|known|measured|tested)", r"unverified", r"unconfirmed", r"unclear", r"unknown",
+    r"not yet", r"no evidence", r"cannot be (?:confirmed|verified)", r"can'?t be (?:confirmed|verified)",
+    r"(?:has|have) not been", r"caveat", r"limitation",
+]
+CAVEAT_RE = re.compile(r"\b(?:" + "|".join(HEDGES + CAVEAT_PHRASES) + r")\b", re.I)
+
+MIN_FLOW_SENTENCES = 3
+MIN_FLOW_PAIRS = 3
+MIN_FLOW_PARAGRAPHS = 3
+MIN_TRIGRAMS = 20
+NEAR_DUP_JACCARD = 0.5
+NEAR_DUP_MIN_STEMS = 5
+COPY_NGRAM = 8
+
 # ---------------------------------------------------------------- text primitives
 
 
@@ -336,22 +472,29 @@ def _shingles(words: list[str]) -> set:
     return {tuple(words[i:i + 3]) for i in range(len(words) - 2)}
 
 
-def repeated_sentences(text: str, min_words: int = 6, threshold: float = 0.6) -> int:
-    """Sentences (any line, markdown marks removed, code excluded) that repeat an earlier one."""
+def _text_sentences(text: str) -> list[list[str]]:
+    """Lower-cased words of every sentence of the text (any line, markdown marks removed, code excluded)."""
     scan = grade._slop_scan()
     masked = scan.mask_protected(strip_code(text))
-    seen: list[tuple[list[str], set]] = []
-    repeats = 0
+    out = []
     for line in masked.split("\n"):
         line = re.sub(r"^\s*(?:#{1,6}\s+|[-*+]\s+|\d+[.)]\s+|\|)", "", line)
         for s, e in scan._sentences(line, 0):
-            words = [w.lower() for w in scan.WORD_RE.findall(line[s:e])]
-            if len(words) < min_words:
-                continue
-            sh = _shingles(words)
-            dup = any(words == w or (sh and sh2 and len(sh & sh2) / len(sh | sh2) >= threshold) for w, sh2 in seen)
-            repeats += dup
-            seen.append((words, sh))
+            out.append([w.lower() for w in scan.WORD_RE.findall(line[s:e])])
+    return out
+
+
+def repeated_sentences(text: str, min_words: int = 6, threshold: float = 0.6) -> int:
+    """Sentences (any line, markdown marks removed, code excluded) that repeat an earlier one."""
+    seen: list[tuple[list[str], set]] = []
+    repeats = 0
+    for words in _text_sentences(text):
+        if len(words) < min_words:
+            continue
+        sh = _shingles(words)
+        dup = any(words == w or (sh and sh2 and len(sh & sh2) / len(sh | sh2) >= threshold) for w, sh2 in seen)
+        repeats += dup
+        seen.append((words, sh))
     return repeats
 
 
@@ -385,6 +528,174 @@ def placeholder_count(text: str, sources: str = "") -> int:
 
 def process_talk_count(text: str, sources: str = "") -> int:
     return count_matches(PROCESS_RES, strip_code(text), sources.lower())
+
+
+# ---------------------------------------------------------------- flow and duplication
+
+
+def stem(word: str) -> str:
+    """Crude, deterministic stem: possessive, plural, -ing, -ed and final -e dropped (changes/changed/changing -> chang)."""
+    w = word.lower().replace("\u2019", "'")
+    if w.endswith("'s"):
+        w = w[:-2]
+    if len(w) > 4 and w.endswith("ies"):
+        w = w[:-3] + "y"
+    elif len(w) > 3 and w.endswith("s") and not w.endswith(("ss", "us", "is")):
+        w = w[:-1]
+    if len(w) > 5 and w.endswith("ing"):
+        w = w[:-3]
+    elif len(w) > 4 and w.endswith("ed"):
+        w = w[:-2]
+    if len(w) > 4 and w.endswith("e"):
+        w = w[:-1]
+    return w
+
+
+def _tokens(sentence: str) -> list[str]:
+    return [w.lower().replace("\u2019", "'") for w in grade._slop_scan().WORD_RE.findall(sentence)]
+
+
+def content_stems(tokens: list[str]) -> list[str]:
+    """Stems of the content words in order: stopwords and 1-2 letter words dropped, numbers kept, hyphenated compounds
+    split into their parts (phone-desk -> phon, desk)."""
+    return [stem(part) for w in tokens for part in w.split("-")
+            if part and part not in STOPWORDS and (len(part) >= 3 or part.isdigit())]
+
+
+def prose_paragraphs(text: str) -> list[list[str]]:
+    """Running prose as paragraphs (consecutive prose lines) of sentences, from the same selection as prose_sentences."""
+    scan = grade._slop_scan()
+    masked = scan.mask_protected(text)
+    out = []
+    for start, end in scan.prose_blocks(masked):
+        sents = []
+        for s, e in scan._sentences(masked[start:end], start):
+            sentence = re.sub(r"\s+", " ", masked[s:e]).strip()
+            if scan.WORD_RE.search(sentence):
+                sents.append(sentence)
+        if sents:
+            out.append(sents)
+    return out
+
+
+def shuffled_paragraphs(paragraphs: list[list[str]], seed: str) -> list[list[str]]:
+    """The same sentences in a seeded random order, refolded into paragraphs of the original sizes."""
+    flat = [s for p in paragraphs for s in p]
+    random.Random(seed).shuffle(flat)
+    out, i = [], 0
+    for p in paragraphs:
+        out.append(flat[i:i + len(p)])
+        i += len(p)
+    return out
+
+
+def interruptions(sentence: str) -> int:
+    """Parentheticals of 2 or more words plus pairs of dashes."""
+    scan = grade._slop_scan()
+    parens = sum(1 for m in PAREN_RE.finditer(sentence) if len(scan.WORD_RE.findall(m.group(1))) >= 2)
+    return parens + len(DASH_RE.findall(sentence)) // 2
+
+
+def is_nominalization(word: str) -> bool:
+    w = word.lower()
+    return len(w) >= 7 and bool(NOMINAL_RE.match(w)) and w.rstrip("s") not in NOMINAL_NOT
+
+
+def has_passive(sentence: str) -> bool:
+    return any(m.group(1).lower() not in PASSIVE_NOT for m in PASSIVE_RE.finditer(sentence))
+
+
+def flow_metrics(paragraphs: list[list[str]]) -> dict[str, float | None]:
+    """The flow metrics of running prose given as paragraphs of sentences; None where there is too little text."""
+    keys = ["adjacent_cohesion", "abrupt_jump_rate", "given_new_carry", "stock_transition_rate", "long_sentence_share",
+            "interruption_density", "nominalization_per_1000w", "passive_voice_rate", "paragraph_length_cv",
+            "one_sentence_paragraph_share"]
+    out: dict[str, float | None] = dict.fromkeys(keys)
+    sentences = [s for p in paragraphs for s in p]
+    tokens = [_tokens(s) for s in sentences]
+    n = len(sentences)
+    if n >= MIN_FLOW_SENTENCES:
+        words = sum(len(t) for t in tokens)
+        out["stock_transition_rate"] = sum(bool(STOCK_TRANSITION_RE.match(s)) for s in sentences) / n
+        out["long_sentence_share"] = sum(len(t) > LONG_SENTENCE_WORDS for t in tokens) / n
+        out["interruption_density"] = sum(interruptions(s) for s in sentences) / n
+        out["nominalization_per_1000w"] = _rate(sum(is_nominalization(w) for t in tokens for w in t), words)
+        out["passive_voice_rate"] = sum(has_passive(s) for s in sentences) / n
+    overlaps, jumps, carries, at = [], [], [], 0
+    for p in paragraphs:
+        stems = [content_stems(t) for t in tokens[at:at + len(p)]]
+        for i in range(len(p) - 1):
+            a, b = set(stems[i]), stems[i + 1]
+            if not a or not b:
+                continue
+            shared = len(a & set(b))
+            linked = bool(LINK_OPENER_RE.match(p[i + 1]))
+            overlaps.append(shared / min(len(a), len(set(b))))
+            jumps.append(not shared and not linked)
+            carries.append(linked or bool(a & set(b[:(len(b) + 1) // 2])))
+        at += len(p)
+    if len(overlaps) >= MIN_FLOW_PAIRS:
+        out["adjacent_cohesion"] = sum(overlaps) / len(overlaps)
+        out["abrupt_jump_rate"] = sum(jumps) / len(jumps)
+        out["given_new_carry"] = sum(carries) / len(carries)
+    if len(paragraphs) >= MIN_FLOW_PARAGRAPHS:
+        sizes = [sum(len(t) for t in tokens[i:i + len(p)]) for i, p in zip(_offsets(paragraphs), paragraphs)]
+        mean = sum(sizes) / len(sizes)
+        out["paragraph_length_cv"] = (sum((x - mean) ** 2 for x in sizes) / len(sizes)) ** 0.5 / mean
+        out["one_sentence_paragraph_share"] = sum(len(p) == 1 for p in paragraphs) / len(paragraphs)
+    return out
+
+
+def _offsets(paragraphs: list[list[str]]) -> list[int]:
+    out, at = [], 0
+    for p in paragraphs:
+        out.append(at)
+        at += len(p)
+    return out
+
+
+def _jaccard(a: set, b: set) -> float:
+    return len(a & b) / len(a | b) if a | b else 0.0
+
+
+def duplication_metrics(text: str) -> dict[str, float | None]:
+    """REPEATS ITSELF: repeated_trigram_rate, near_duplicate_pairs_per_1000w and repeated_caveats of one output."""
+    sentences = _text_sentences(text)
+    stems = [content_stems(w) for w in sentences]
+    trigrams = [tuple(s[i:i + 3]) for s in stems for i in range(len(s) - 2)]
+    out: dict[str, float | None] = {"repeated_trigram_rate": None, "near_duplicate_pairs_per_1000w": None,
+                                    "repeated_caveats": None}
+    if len(trigrams) >= MIN_TRIGRAMS:
+        out["repeated_trigram_rate"] = 1 - len(set(trigrams)) / len(trigrams)
+    words = sum(len(w) for w in sentences)
+    sets = [set(s) for s in stems]
+    long_ids = [i for i, s in enumerate(sets) if len(s) >= NEAR_DUP_MIN_STEMS]
+    pairs = sum(_jaccard(sets[i], sets[j]) >= NEAR_DUP_JACCARD for k, i in enumerate(long_ids) for j in long_ids[k + 1:])
+    out["near_duplicate_pairs_per_1000w"] = _rate(pairs, words)
+    caveats = [sets[i] for i, w in enumerate(sentences) if len(sets[i]) >= 3 and CAVEAT_RE.search(" ".join(w))]
+    out["repeated_caveats"] = sum(any(_jaccard(c, caveats[i]) >= NEAR_DUP_JACCARD for i in range(j)) for j, c in enumerate(caveats))
+    return out
+
+
+@functools.lru_cache(maxsize=64)
+def _source_ngrams(blob: str) -> frozenset:
+    words = _tokens(blob)
+    return frozenset(tuple(words[i:i + COPY_NGRAM]) for i in range(len(words) - COPY_NGRAM + 1))
+
+
+def source_copy_rate(text: str, sources: str) -> float | None:
+    """COPIES THE INPUT: share of the output's word tokens inside a verbatim run of 8+ words found in the sources."""
+    words = _tokens(strip_code(text))
+    if len(words) < COPY_NGRAM:
+        return None
+    known = _source_ngrams(sources)
+    covered = [False] * len(words)
+    for i in range(len(words) - COPY_NGRAM + 1):
+        if tuple(words[i:i + COPY_NGRAM]) in known:
+            covered[i:i + COPY_NGRAM] = [True] * COPY_NGRAM
+    return sum(covered) / len(words)
+
+
 
 
 # ---------------------------------------------------------------- facts
@@ -471,6 +782,8 @@ def text_metrics(case: dict, output: str) -> dict:
     m["gap_markers_leaked"] = placeholder_count(output, sources)
     m["headings_per_1000w"] = _rate(headings(prose), words)
     m["repeated_sentences"] = repeated_sentences(prose)
+    m.update(duplication_metrics(prose))
+    m["source_copy_rate"] = source_copy_rate(prose, sources)
     m["hedge_per_1000w"] = _rate(hedge_count(prose), words)
     m["list_line_ratio"] = list_line_ratio(prose)
     target = length_target(case)
@@ -485,6 +798,7 @@ def text_metrics(case: dict, output: str) -> dict:
         stats = sentence_stats(prose)
         m["sentence_length_cv"], m["mean_sentence_length"], m["flesch_reading_ease"] = stats["cv"], stats["mean"], stats["flesch"]
         m["process_talk"] = process_talk_count(prose, sources)
+        m.update(flow_metrics(prose_paragraphs(prose)))
     return m
 
 
@@ -520,6 +834,7 @@ def read_run(run_dir: Path, hosts: set[str] | None = None) -> tuple[dict, list[d
         reply = reply_path.read_text(encoding="utf-8", errors="replace") if reply_path.is_file() else ""
         for notes in sorted(workspace.glob("**/open-questions.md")) if workspace.is_dir() else []:
             reply += "\n\n" + notes.read_text(encoding="utf-8", errors="replace")
+        grade.use_run_dates(run_dir, meta)
         records.append(run_record(case, meta, output, reply, workspace))
     records.sort(key=lambda r: (r["case"], r["host"], r["condition"], r["rep"]))
     info_path = run_dir / "run.json"
@@ -678,15 +993,26 @@ def compare_runs(a: list[dict], b: list[dict], condition: str) -> dict:
 
 # ---------------------------------------------------------------- skill minus competitor
 
-COMPETITOR_PREFIX = "competitor-"
+COMPARED_PREFIXES = ("competitor-", "variant-")  # third-party skills, and our own skills from another git ref
 
 
 def competitor_conditions(records: list[dict]) -> list[str]:
-    return sorted({r["condition"] for r in records if r["condition"].startswith(COMPETITOR_PREFIX)})
+    return sorted({r["condition"] for r in records if r["condition"].startswith(COMPARED_PREFIXES)})
+
+
+def compared_name(condition: str) -> str:
+    """The condition without its competitor-/variant- prefix (the NAME in host/NAME/scope keys)."""
+    return next((condition[len(p):] for p in COMPARED_PREFIXES if condition.startswith(p)), condition)
+
+
+def compared_labels(records: list[dict]) -> dict[str, str]:
+    """{NAME: full condition} of the compared conditions, for headings."""
+    return {compared_name(c): c for c in competitor_conditions(records)}
 
 
 def skill_minus_competitor(records: list[dict], loaded_only: bool = False) -> dict:
-    """Our skill minus each third-party competitor, paired on (host, case, rep), per host/competitor/scope. A competitor
+    """Our skill minus each third-party competitor (condition competitor-NAME) or variant of our own skills (variant-NAME),
+    paired on (host, case, rep), per host/NAME/scope. A competitor
     only runs the cases it competes on, so the pairs are those cases. diff = skill - competitor; the verdict says whether
     the skill is 'better' or 'worse' (CI excludes 0) in the metric's own direction. With loaded_only the pairs keep only
     runs whose meta.json says the skill was actually loaded, on both sides: a run that never read its skill measures the
@@ -695,7 +1021,7 @@ def skill_minus_competitor(records: list[dict], loaded_only: bool = False) -> di
     out: dict[str, dict] = {}
     for host in sorted({r["host"] for r in records}):
         for cond in competitor_conditions(records):
-            name = cond[len(COMPETITOR_PREFIX):]
+            name = compared_name(cond)
             scopes = sorted({r["skill"] for r in records if r["condition"] == cond and r["host"] == host}) + ["ALL"]
             for scope in scopes:
                 where = {"host": host, **_scope_filter(scope)}
@@ -719,7 +1045,11 @@ def file_digest(path: Path) -> str:
 
 def rules_digest() -> str:
     """Digest of the rule data in this file (metric table, lexicons, case kinds, thresholds), not of its code layout."""
-    blob = json.dumps([METRICS, STOCK_PHRASES, HEDGES, PROCESS_TALK, PLACEHOLDERS, CASE_KIND, SHORT_TEXT_WORDS],
+    blob = json.dumps([METRICS, STOCK_PHRASES, HEDGES, PROCESS_TALK, PLACEHOLDERS, CASE_KIND, SHORT_TEXT_WORDS,
+                       sorted(STOPWORDS), LINK_OPENER_RE.pattern, STOCK_TRANSITION_RE.pattern, LONG_SENTENCE_WORDS,
+                       PAREN_RE.pattern, DASH_RE.pattern, NOMINAL_RE.pattern, sorted(NOMINAL_NOT), IRREGULAR_PARTICIPLES,
+                       PASSIVE_RE.pattern, sorted(PASSIVE_NOT), CAVEAT_RE.pattern, MIN_FLOW_SENTENCES, MIN_FLOW_PAIRS,
+                       MIN_FLOW_PARAGRAPHS, MIN_TRIGRAMS, NEAR_DUP_JACCARD, NEAR_DUP_MIN_STEMS, COPY_NGRAM],
                       sort_keys=True)
     return hashlib.sha256(blob.encode()).hexdigest()[:12]
 
@@ -897,7 +1227,7 @@ def render_compare(label_a: str, label_b: str, condition: str, cmp: dict, where_
     return "\n".join(lines)
 
 
-def render_competitors(everything: dict, loaded: dict) -> str:
+def render_competitors(everything: dict, loaded: dict, labels: dict[str, str] | None = None) -> str:
     """Skill minus competitor for all pairs and for loaded-only pairs, with n. everything/loaded: skill_minus_competitor."""
     directional = [m for m, s in METRICS.items() if s["direction"]]
     lines = ["== our skill minus each competitor, paired on (host, case, rep); diff = skill - competitor; "
@@ -937,7 +1267,7 @@ def render_competitors(everything: dict, loaded: dict) -> str:
             rows.append([m, METRICS[m]["direction"], _num(a[m]["b_mean"], dg), _num(a[m]["a_mean"], dg),
                          _num(a[m]["diff"], dg), _ci(a[m]["ci"], dg), a[m]["verdict"], f"{a[m]['n_pairs']}/{a[m]['n_cases']}",
                          _num(b[m]["diff"], dg), _ci(b[m]["ci"], dg), b[m]["verdict"], f"{b[m]['n_pairs']}/{b[m]['n_cases']}"])
-        lines += [f"-- {host}/{name}: skill vs competitor-{name}", ""]
+        lines += [f"-- {host}/{name}: skill vs {(labels or {}).get(name, 'competitor-' + name)}", ""]
         lines += _table(["metric", "better", "skill", name[:14], "all diff", "all 95% CI", "all", "all n",
                          "loaded diff", "loaded 95% CI", "loaded", "loaded n"], rows) + [""]
     flagged = []
@@ -1003,7 +1333,8 @@ def main(argv=None) -> int:
     if competitor_conditions(records):
         agg["skill_minus_competitor"] = {"all": skill_minus_competitor(records),
                                          "loaded_only": skill_minus_competitor(records, loaded_only=True)}
-        print(render_competitors(agg["skill_minus_competitor"]["all"], agg["skill_minus_competitor"]["loaded_only"]))
+        print(render_competitors(agg["skill_minus_competitor"]["all"], agg["skill_minus_competitor"]["loaded_only"],
+                                 compared_labels(records)))
     if args.detail:
         print(render_describe(agg, records, args.detail))
     if args.json:

@@ -65,13 +65,13 @@ For offline or locked-down delivery ask for its system-font option. The report b
 1. Run its `scripts/self_check.py <file>` on each diagram (accessible SVG contract, single-file safety, content inside the viewBox). Fix what it reports in the diagram, not in the report.
 2. Open each file once if a browser is available.
 3. Compare every label and number to the ledger and the report text. `build_report.py --ledger work/ledger.md` lists numbers inside diagram labels that the ledger does not contain; it cannot judge dates written as words or names, so read those.
-4. Keep the diagram's own `<title>` and `<desc>`: the report uses them as the accessible name.
+4. Keep the diagram's own `<title>` and `<desc>`: the report uses them as the accessible name, and the portable `report.md` prints the `<desc>` under the figure as its text description. Check that the `<desc>` says what the figure shows in a sentence or two, with the dates and figures drawn (the ledger's, no others), so a reader of the plain text gets the same answer the picture gives.
 
 ## Fallback when diagram-design is not installed
 
 Check, in order: the list of available skills, `~/.agents/skills/diagram-design`, `~/.claude/skills/diagram-design`. If none:
 
-1. Put one Mermaid block per planned diagram in `report.md`, at the place the figure belongs, with caption, source and slug in the fence line. See [assembly](assembly.md#mermaid-fallback).
+1. Put one Mermaid block per planned diagram in the report source, at the place the figure belongs, with caption, source and slug in the fence line. See [assembly](assembly.md#mermaid-fallback). The portable `report.md` keeps the block fenced, so Markdown viewers that render Mermaid draw it and everyone else reads it as text.
 2. Choose the Mermaid type that matches the plan: `gantt`, `flowchart`, `sequenceDiagram`, `stateDiagram-v2`, `pie`, `quadrantChart`, `timeline`, `xychart-beta` for bars and lines. Use only ledger facts and keep node text short.
 3. Tell the author in one line: "Diagrams are Mermaid source; install the `diagram-design` skill and re-run for designed diagrams."
 4. `build_report.py` shows each Mermaid block as labelled source in a numbered figure. It does not render it.

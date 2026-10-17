@@ -40,7 +40,7 @@ For each finding, choose exactly one.
 
 Invalid reasons: "I disagree", "that was intended" (a reader cannot see intent), "too much work" (that is a cost decision: accept it and list it under remaining), "the reviewer is a model".
 
-**Needs author.** The finding is plausible but only the author can answer: a missing fact, a choice between two reasonable framings, an unstated audience, a claim the author must confirm. Phrase it as a single question in the findings, as a marker line: `[ASK AUTHOR: <question>]` for something only the author knows, `[VERIFY: <what, against which source>]` for an outside fact to check. The findings are author-facing, so markers stay there. Never put a marker in the artifact or in any revised text: leave the spot as it was, drop the sentence, or state the gap plainly in reader language ("The notes do not give a date."). Do not fill the gap yourself.
+**Needs author.** The finding is plausible but only the author can answer: a missing fact, a choice between two reasonable framings, an unstated audience, a claim the author must confirm. Write one plain question that names exactly what is missing and what would settle it ("Do you have an approved resident quote and a savings figure with its basis? If not, leave the benefit out."). Ask only for the evidence, not for a wider decision about the document's purpose. Use an `[ASK AUTHOR: <question>]` or `[VERIFY: <what, against which source>]` line only when the question has to travel inside a file the author will edit. Never put a marker, or the question, in the artifact or in any revised text: leave the spot as it was, drop the sentence, or state the gap plainly in reader language ("The notes do not give a date."). Do not fill the gap yourself.
 
 ## 3. Findings that would add unsupported content
 
@@ -94,13 +94,13 @@ Stop for a person when the finding touches:
 
 ## 8. Report format
 
-Short and true. The report is author-facing, so findings and needs-author questions may carry marker lines. Any revised text delivered with it is clean: no markers, finding IDs or review notes. List what changed and why; what was rejected and why; what needs the author; what remains.
+Short and true. The report is author-facing: findings and questions are plain sentences, one line per decision. For up to about six findings, one table row each (finding, decision, reason or next step) in the reviewer's order is easiest to scan; do not regroup by decision. Any revised text delivered with it is clean: no markers, finding IDs or review notes. List what changed and why; what was rejected and why; what needs the author; what remains. Do not close with a recap of the table.
 
 ```
 Findings: <n> total (critical <n>, major <n>, minor <n>, nit <n>)
 Accepted: <n>   Rejected: <n>   Needs author: <n>
 - F2 major, "<short quote>": added the deadline to the first paragraph. Reader impact: could not tell by when to act.
-- F5 critical -> reject: "add a customer quote"; no quote exists in the material. Converted to needs-author: [ASK AUTHOR: customer quote?]. The draft is unchanged.
+- F5 critical -> reject: "add a customer quote"; no quote exists in the material. Needs author: is there an approved customer quote? The draft is unchanged.
 Remaining: <unresolved items, with reason>
 Cost: <sessions, rounds>
 ```

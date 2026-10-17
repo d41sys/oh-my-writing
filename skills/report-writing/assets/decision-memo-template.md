@@ -9,7 +9,7 @@ To: <decision-maker> | From: <author> | Date: <YYYY-MM-DD> | Decision needed by:
 <One to three sentences. The action recommended, and the main reason.>
 
 **Confidence:** <high / medium / low>, because <what the evidence rests on>.
-**This changes if:** <the evidence, threshold, or event that would reverse or modify the recommendation>.
+**This changes if:** <only a condition the notes or author give: the evidence, threshold, or event that would reverse or modify the recommendation; otherwise delete the line>.
 
 ## Why this needs a decision now
 

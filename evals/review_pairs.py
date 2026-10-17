@@ -83,7 +83,7 @@ def collect_pairs(run_dir: Path, seed: int) -> tuple[list[dict], list[str]]:
     sides: dict[tuple, dict] = {}
     for meta_path in sorted((run_dir / "runs").glob("*/meta.json")):
         meta = json.loads(meta_path.read_text(encoding="utf-8"))
-        if meta["condition"] in ("skill", "baseline"):  # competitor runs are not part of this page
+        if meta["condition"] in ("skill", "baseline"):  # competitor and variant runs are not part of this page
             sides.setdefault((meta["case"], meta["host"], meta.get("rep") or 1), {})[meta["condition"]] = meta_path.parent
     pairs, skipped = [], []
     for (case_id, host, rep), conds in sorted(sides.items()):

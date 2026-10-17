@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import datetime as dt
 import io
 import difflib
 import fnmatch
@@ -457,12 +458,39 @@ def _fact_text(name: str, text: str) -> str:
         return text
 
 
+RUN_DATES: list[str] = []  # ISO dates the run being graded took place on; set per run by use_run_dates()
+
+
+def use_run_dates(run_dir: Path, meta: dict) -> None:
+    """The date a run happened is a fact the agent has from its environment (a report dated today invents
+    nothing). meta.json records it; older runs fall back to the run's start day and the next day."""
+    global RUN_DATES
+    if meta.get("date"):
+        RUN_DATES = [meta["date"]]
+        return
+    try:
+        info = json.loads((run_dir / "run.json").read_text(encoding="utf-8"))
+        start = dt.date.fromisoformat(info["started"][:10])
+        RUN_DATES = [start.isoformat(), (start + dt.timedelta(days=1)).isoformat()]
+    except (OSError, KeyError, ValueError):
+        RUN_DATES = []
+
+
+def _run_date_text() -> str:
+    lines = []
+    for iso in RUN_DATES:
+        d = dt.date.fromisoformat(iso)
+        lines.append(f"Today: {iso}, {d.day} {d:%B %Y}, {d:%B} {d.day}, {d:%Y}, {d.day} {d:%b %Y}")
+    return "\n".join(lines)
+
+
 def sources_blob(case: dict, names: list[str] | None = None) -> str:
     """Source text plus the input file names (reports cite file names, and 'v2' or '06' in one is not an
-    invented number) plus the prompt."""
+    invented number) plus the prompt, plus the date of the run (see use_run_dates)."""
     texts = source_texts(case)
     names = names or list(texts)
-    return "\n\n".join([_fact_text(n, texts[n]) for n in names] + ["\n".join(names), case["prompt"]])
+    return "\n\n".join([_fact_text(n, texts[n]) for n in names] + ["\n".join(names), case["prompt"],
+                                                                  _run_date_text()])
 
 
 TITLED_LINK = re.compile(r"""\]\(\s*([^)\s]+)\s+(?:"[^"]*"|'[^']*')\s*\)""")
@@ -1009,6 +1037,7 @@ def grade_run(run_dir: Path) -> dict:
         # Questions left for the author in an open-questions file are addressed to the author, like the reply.
         for notes in sorted(workspace.glob("**/open-questions.md")) if workspace.is_dir() else []:
             reply += "\n\n" + notes.read_text(encoding="utf-8", errors="replace")
+        use_run_dates(run_dir, meta)
         grade = grade_case(case, output, reply, workspace)
         deliverables = {d: (workspace / d).is_file() for d in case.get("deliverables", [])}
         runs.append({**{k: meta.get(k) for k in ("case", "skill", "host", "condition", "skill_loaded",
@@ -1116,16 +1145,35 @@ def _competitor_stats(rows: list[dict], name: str, has_skill: bool, has_baseline
     return out
 
 
+VARIANT_PREFIX = "variant-"
+
+
+def _variant_stats(rows: list[dict], name: str, has_skill: bool) -> dict | None:
+    """Our skills at the run's commit against our skills at another ref (condition variant-NAME), on the (case, host,
+    rep) triples where both have a gradable run: the same pairing as a competitor against our skills."""
+    if not has_skill or not any(r["condition"] == name for r in rows):
+        return None
+    paired, _ = _paired_rows(rows, ["skill", name])
+    s, v = paired["skill"], paired[name]
+    ss, sv = _scores(s), _scores(v)
+    loaded = lambda rs: _rate([{"passed": bool(r["skill_loaded"])} for r in rs])
+    return {"n": len(s), "skill_pass": _rate(s), "variant_pass": _rate(v), "delta": _delta(_rate(s), _rate(v)),
+            "skill_score": ss["mean"], "variant_score": sv["mean"], "score_delta": _delta(ss["mean"], sv["mean"]),
+            "skill_loaded": loaded(s), "variant_loaded": loaded(v)}
+
+
 def summarize(runs: list[dict], judge: list[dict]) -> dict:
     """Pass rates and scores per host and skill. Skill against baseline is paired exactly as before (a triple counts
     only when both gradable runs exist); every competitor condition is paired with the baseline and with our skills
     separately, so a competitor that ran only some cases never removes pairs from the main comparison. `delta` is
     skill minus baseline, competitor minus baseline in `competitors[name].vs_baseline`, and skill minus competitor
-    in `competitors[name].vs_skill`."""
+    in `competitors[name].vs_skill`. Every `variant-NAME` condition (our skills at another git ref) is paired with
+    `skill` alone in `variants[name]`, delta = skill minus variant."""
     hosts = sorted({r["host"] for r in runs})
     skills = sorted({r["skill"] for r in runs})
     conditions = {r["condition"] for r in runs}
     competitors = sorted(c for c in conditions if c.startswith("competitor-"))
+    variants = sorted(c for c in conditions if c.startswith(VARIANT_PREFIX))
     needed = [c for c in ("skill", "baseline") if c in conditions]  # a one-sided run is not "unpaired"
     by = {}
     for host in hosts:
@@ -1151,6 +1199,10 @@ def summarize(runs: list[dict], judge: list[dict]) -> dict:
             stats = {name: st for name, st in stats.items() if st}
             if stats:
                 by[f"{host}/{skill}"]["competitors"] = stats
+            ab = {c[len(VARIANT_PREFIX):]: _variant_stats(rows, c, "skill" in conditions) for c in variants}
+            ab = {name: st for name, st in ab.items() if st}
+            if ab:
+                by[f"{host}/{skill}"]["variants"] = ab
     failing = {}
     for r in runs:
         if host_failed(r):
@@ -1215,6 +1267,27 @@ def _competitor_lines(summary: dict) -> list[str]:
     return lines
 
 
+def _variant_lines(summary: dict) -> list[str]:
+    names = sorted({name for v in summary["by"].values() for name in v.get("variants", {})})
+    lines = []
+    for name in names:
+        lines += ["", f"## A/B: skill vs variant-{name}", "",
+                  f"Our skills at this run's commit (`skill`) against our skills as of the ref given for variant {name} "
+                  "(`variant-" + name + "`), both on every case. Cells give pass rate and, in brackets, mean score; "
+                  "only the cases and repetitions where both sides produced a gradable run are counted.", "",
+                  f"| host / skill | skill | variant-{name} | skill minus variant | n | skill loaded | variant loaded |",
+                  "|---|---:|---:|---:|---:|---:|---:|"]
+        for key, v in summary["by"].items():
+            a = v.get("variants", {}).get(name)
+            if a is None:
+                continue
+            label = f"**{key}**" if key.endswith("/ALL") else key
+            lines.append(f"| {label} | {_pct_score(a['skill_pass'], a['skill_score'])} | "
+                         f"{_pct_score(a['variant_pass'], a['variant_score'])} | {_pts(a['delta'])} | {a['n']} | "
+                         f"{_pct(a['skill_loaded'])} | {_pct(a['variant_loaded'])} |")
+    return lines
+
+
 def _judge_pair_lines(pair: str, info: dict, entries: list[dict]) -> list[str]:
     """Report section for a judged pair other than skill:baseline."""
     a, b = info["a"], info["b"]
@@ -1252,6 +1325,9 @@ def render_report(results: dict) -> str:
             lines += ["", "Competitors (local cache, unmodified): " + "; ".join(
                 f"{n} = {c['repo']} @ {(c.get('commit') or 'unpinned')[:10]}, {c['license']}"
                 for n, c in info["competitors"].items()) + "."]
+        if info.get("variants"):
+            lines += ["", "Variants (our skills at another git ref): " + "; ".join(
+                f"variant-{n} = {v['ref']} @ {v['sha'][:10]}" for n, v in info["variants"].items()) + "."]
         lines += [""]
     lines += ["## Pass rate and mean score by skill", "",
               "Pass rate: share of runs in which every check passed. Mean score: average over runs of the share of "
@@ -1268,7 +1344,8 @@ def render_report(results: dict) -> str:
                      f"{_score_cell(v, 'skill')} | {_score_cell(v, 'baseline')} | "
                      f"{_pct(v['skill_loaded'])} | {v['skill_n']}+{v['baseline_n']} | {v['excluded']} |")
     lines += _competitor_lines(summary)
-    comps = sorted({r["condition"] for r in runs if r["condition"].startswith("competitor-")})
+    lines += _variant_lines(summary)
+    comps = sorted({r["condition"] for r in runs if r["condition"].startswith(("competitor-", VARIANT_PREFIX))})
     lines += ["", "## Cases", "",
               "| case | host | rep | baseline | with skills | score baseline / skills | "
               "failed checks (with skills / baseline) |" + "".join(f" {c} |" for c in comps),

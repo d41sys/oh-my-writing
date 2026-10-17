@@ -36,6 +36,15 @@ Diagram embedding (see references/assembly.md):
     --fonts auto (default), the font stylesheet link(s) the diagrams themselves
     use; --fonts system drops them and the diagrams fall back to system fonts.
 
+Portable Markdown (--md-out FILE):
+    writes a second copy of the report that reads on its own in any Markdown
+    viewer or as plain text: the front matter becomes a title and a meta line,
+    [[fig:x]] becomes "Figure N", each designed diagram becomes an image link to
+    a standalone diagrams/<slug>.svg written beside FILE, followed by a caption
+    line that carries the diagram's own <desc> text and the source line, and
+    Mermaid blocks stay as fenced blocks with a caption line. The input file is
+    the source of truth; FILE must be a different path.
+
 Checks (reported, and fatal with --strict):
     figure without caption or source line, unresolved [[fig:...]], gap markers
     left in the text, numbers inside diagram labels that appear neither in the
@@ -70,7 +79,7 @@ HEADING_RE = re.compile(r"^(#{1,6})\s+(.*?)\s*#*\s*$")
 HR_RE = re.compile(r"^\s*([-*_])(\s*\1){2,}\s*$")
 CALLOUT_RE = re.compile(r"^\*\*(?:Decision needed|Decisions needed|Key points|Bottom line|Recommendation|Overall assessment|Assessment|Outcome)[^*]*\*\*", re.I)
 SOURCE_LINE_RE = re.compile(r"^(?:\*|_)?Sources?(?:\*|_)?\s*:", re.I)
-SHORT_TABLE_ROWS = 8
+SHORT_TABLE_ROWS = 4
 TOC_MIN_SECTIONS = 6
 TEXT_WIDTH_PX = {"a4": 673, "letter": 695}
 LEGIBLE_PRINT_SCALE = 0.75
@@ -127,6 +136,7 @@ class Context:
         self.font_links: list[str] = []
         self.svg_texts: list[tuple[int, str]] = []
         self.pending: list[str] = []
+        self.md_figs: list[dict] = []
 
     def marker(self, raw: str) -> str:
         kind = "untested" if raw.startswith("[UNTESTED") else ("ask" if raw.startswith("[ASK") else "verify")
@@ -397,6 +407,20 @@ def prepare_diagram(page: str, index: int, caption: str, ctx: Context, name: str
     return svg, scoped
 
 
+def standalone_svg(svg: str, css: str) -> str:
+    """The inlined figure as a file of its own: the page CSS scoped to the figure goes inside the root element."""
+    root = re.match(r"<svg\b(?:\"[^\"]*\"|'[^']*'|[^>\"'])*>", svg, re.I)
+    if not css.strip() or root is None or root.group(0).endswith("/>"):
+        return svg + "\n"
+    return svg[:root.end()] + f"<style><![CDATA[\n{css.strip()}\n]]></style>" + svg[root.end():] + "\n"
+
+
+def svg_description(svg: str) -> str:
+    """The diagram's own <desc> text (its accessible long description), whitespace normalised."""
+    m = re.search(r"<desc\b[^>]*>(.*?)</desc>", svg, re.S | re.I)
+    return " ".join(html.unescape(re.sub(r"<[^>]+>", " ", m.group(1))).split()) if m else ""
+
+
 def svg_labels(svg: str) -> list[str]:
     labels = []
     for m in re.finditer(r"<(text|title|desc)\b[^>]*>(.*?)</\1>", svg, re.S | re.I):
@@ -576,7 +600,9 @@ def embed_figure(caption: str, target: str, source: str, ctx: Context) -> str:
         ctx.pending.append(target)
         ctx.markers["ask"] += 1
         art = f'<p class="diagram-pending"><mark class="marker marker-ask">[ASK AUTHOR: diagram {esc(Path(target).name)} is missing]</mark></p>'
-        return figure_html(ctx, art, caption, source, slug)
+        fig = figure_html(ctx, art, caption, source, slug)
+        ctx.md_figs.append({"kind": "missing", "name": Path(target).name})
+        return fig
     ext = path.suffix.lower()
     if ext in {".html", ".htm", ".svg"}:
         n = len(ctx.figures) + 1
@@ -584,12 +610,17 @@ def embed_figure(caption: str, target: str, source: str, ctx: Context) -> str:
         if css.strip():
             ctx.css_blocks.append(css)
         ctx.svg_texts.append((n, "\n".join(svg_labels(svg))))
-        return figure_html(ctx, svg, caption, source, slug, vbw=viewbox_width(svg))
+        fig = figure_html(ctx, svg, caption, source, slug, vbw=viewbox_width(svg))
+        ctx.md_figs.append({"kind": "svg", "slug": ctx.figures[-1]["slug"], "svg": standalone_svg(svg, css),
+                            "desc": svg_description(svg), "origin": path})
+        return fig
     if ext in {".png", ".jpg", ".jpeg", ".gif", ".webp"}:
         mime = mimetypes.guess_type(path.name)[0] or "image/png"
         data = base64.b64encode(path.read_bytes()).decode("ascii")
         art = f'<img src="data:{mime};base64,{data}" alt="{esc(caption)}">'
-        return figure_html(ctx, art, caption, source, slug)
+        fig = figure_html(ctx, art, caption, source, slug)
+        ctx.md_figs.append({"kind": "image", "slug": ctx.figures[-1]["slug"], "origin": path})
+        return fig
     raise BuildError(f"unsupported diagram type: {target}")
 
 
@@ -648,10 +679,12 @@ def convert_blocks(lines: list[str], ctx: Context) -> str:
             if lang == "mermaid":
                 attrs = parse_info(info)
                 art = '<pre class="diagram-source"><code>' + esc("\n".join(body)) + "</code></pre>"
-                out.append(figure_html(
+                fig = figure_html(
                     ctx, art, attrs.get("caption", ""), attrs.get("source", ""),
                     slugify(attrs.get("id", attrs.get("caption", "diagram"))),
-                    note="Diagram source (Mermaid), not rendered. Open it in a Mermaid viewer for the drawn version."))
+                    note="Diagram source (Mermaid), not rendered. Open it in a Mermaid viewer for the drawn version.")
+                ctx.md_figs.append({"kind": "mermaid", "body": "\n".join(body)})
+                out.append(fig)
             else:
                 out.append(f'<pre><code>{esc(chr(10).join(body))}</code></pre>')
             continue
@@ -758,11 +791,101 @@ def render_title_block(meta: dict[str, str], title: str, ctx: Context) -> str:
     return "\n".join(parts)
 
 
+def _sentence(text: str) -> str:
+    text = text.strip()
+    return text if not text or text[-1] in ".!?:)" else text + "."
+
+
+def portable_markdown(meta: dict[str, str], body: str, title: str, ctx: Context, dest: Path) -> tuple[str, dict[Path, str | bytes]]:
+    """Report text that stands alone without this build: no front matter, no [[fig:]] tokens, figures as image
+    links to standalone files plus a caption line that also carries the diagram's own description.
+    Returns (markdown, files to write beside it)."""
+    files: dict[Path, str | bytes] = {}
+    entries = iter(zip(ctx.md_figs, ctx.figures))
+
+    def xref(text: str) -> str:
+        text = re.sub(r"(?<![\w-])(?:[Ff]igure|[Ff]ig\.?)[ \t]+(?=\[\[fig:)", "", text)
+        return re.sub(r"\[\[fig:([\w-]+)\]\]",
+                      lambda m: f"Figure {ctx.fig_slugs[m.group(1)]}" if m.group(1) in ctx.fig_slugs else f"figure {m.group(1)}", text)
+
+    def caption_line(fig: dict, desc: str = "") -> str:
+        parts = [f"*Figure {fig['n']}.*", _sentence(fig["caption"]), _sentence(desc)]
+        if fig["source"]:
+            parts.append(fig["source"] if re.match(r"(?i)sources?\b", fig["source"]) else "Source: " + fig["source"])
+        return " ".join(p for p in parts if p)
+
+    def figure_block(entry: dict, fig: dict) -> list[str]:
+        kind = entry["kind"]
+        if kind == "mermaid":
+            return ["```mermaid", entry["body"], "```", "", caption_line(fig), ""]
+        if kind == "missing":
+            return [f"[ASK AUTHOR: diagram {entry['name']} is missing]", "", caption_line(fig), ""]
+        folder = dest.parent / "diagrams"
+        if kind == "svg":
+            name, desc = entry["slug"] + ".svg", entry["desc"]
+            if entry["origin"].suffix.lower() != ".svg" or entry["origin"].resolve() != (folder / name).resolve():
+                files[folder / name] = entry["svg"]
+        else:
+            name, desc = entry["origin"].name, ""
+            if entry["origin"].resolve() != (folder / name).resolve():
+                files[folder / name] = entry["origin"].read_bytes()
+        alt = f"Figure {fig['n']}. {fig['caption']}".strip()
+        return [f"![{alt}](diagrams/{name})", "", caption_line(fig, desc), ""]
+
+    head = [f"# {title}", ""]
+    if meta.get("subtitle"):
+        head += [f"*{meta['subtitle']}*", ""]
+    facts = ([meta["type"]] if meta.get("type") else []) + [f"**{label}:** {meta[key]}" for key, label in META_ORDER if meta.get(key)]
+    if facts:
+        head += [" · ".join(facts), ""]
+
+    out: list[str] = []
+    lines = body.splitlines()
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        stripped = line.strip()
+        fence = FENCE_RE.match(stripped)
+        if fence:
+            marker, info = fence.group(1), fence.group(2).strip()
+            block: list[str] = []
+            i += 1
+            while i < len(lines) and not lines[i].strip().startswith(marker[:3]):
+                block.append(lines[i])
+                i += 1
+            i += 1
+            if info.split()[:1] == ["mermaid"]:
+                entry, fig = next(entries)
+                out += figure_block({**entry, "body": "\n".join(block)}, fig)
+            else:
+                out += [line, *block, marker]
+            continue
+        if stripped.startswith("<!--"):
+            while i < len(lines) and "-->" not in lines[i]:
+                i += 1
+            i += 1
+            continue
+        heading = HEADING_RE.match(line)
+        if heading and len(heading.group(1)) == 1 and re.sub(r"[*_`]", "", heading.group(2)).strip() == title:
+            i += 1
+            continue
+        fm = FIG_RE.match(stripped)
+        if fm:
+            entry, fig = next(entries)
+            out += figure_block(entry, fig)
+            i += 1
+            continue
+        out.append(xref(line))
+        i += 1
+    text = "\n".join(head + out)
+    return re.sub(r"\n{3,}", "\n\n", text).strip() + "\n", files
+
+
 def css_string(text: str) -> str:
     return re.sub(r"[\\\"\n]", lambda m: "\\" + ("A " if m.group(0) == "\n" else m.group(0)), text)
 
 
-def build(report_md: Path, args) -> tuple[str, dict]:
+def build(report_md: Path, args) -> tuple[str, dict, tuple[str, dict[Path, str | bytes]] | None]:
     text = report_md.read_text(encoding="utf-8")
     meta, body = parse_front_matter(text)
     diagrams = Path(args.diagrams) if args.diagrams else None
@@ -817,10 +940,12 @@ def build(report_md: Path, args) -> tuple[str, dict]:
     summary = {
         "title": title, "output": str(args.out), "figures": ctx.figures, "headings": len(ctx.headings),
         "markers": dict(ctx.markers), "missing_diagrams": ctx.pending, "numbers_not_in_reference": unmatched,
+        "markdown_output": str(args.md_out) if args.md_out else None,
         "font_links": list(dict.fromkeys(ctx.font_links)) if args.fonts == "auto" else [],
         "warnings": ctx.warnings, "notes": ctx.notes, "generated": dt.date.today().isoformat(),
     }
-    return doc, summary
+    portable = portable_markdown(meta, body, title, ctx, args.md_out) if args.md_out else None
+    return doc, summary, portable
 
 
 def main(argv=None) -> int:
@@ -837,6 +962,9 @@ def main(argv=None) -> int:
     ap.add_argument("--no-number", action="store_true", help="do not number headings")
     ap.add_argument("--allow-missing", action="store_true", help="render a visible placeholder for a missing diagram")
     ap.add_argument("--strict", action="store_true", help="exit 1 when any warning remains")
+    ap.add_argument("--md-out", type=Path, default=None,
+                    help="also write a portable Markdown copy (no front matter or [[fig:]] tokens, figures as "
+                         "diagrams/<slug>.svg links); must differ from the input file")
     ap.add_argument("--json", action="store_true", help="print the summary as JSON")
     args = ap.parse_args(argv)
     if not args.report.is_file():
@@ -845,18 +973,31 @@ def main(argv=None) -> int:
     if args.ledger and not args.ledger.is_file():
         print(f"error: not a file: {args.ledger}", file=sys.stderr)
         return 2
+    if args.md_out and args.md_out.resolve() == args.report.resolve():
+        print(f"error: --md-out must not be the input file: {args.report}", file=sys.stderr)
+        return 2
     args.out = args.out or args.report.with_suffix(".html")
     try:
-        doc, summary = build(args.report, args)
+        doc, summary, portable = build(args.report, args)
     except BuildError as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(doc, encoding="utf-8")
+    if portable:
+        md_text, extra = portable
+        args.md_out.parent.mkdir(parents=True, exist_ok=True)
+        args.md_out.write_text(md_text, encoding="utf-8")
+        for path, content in extra.items():
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(content if isinstance(content, bytes) else content.encode("utf-8"))
+        summary["markdown_files"] = [str(p) for p in extra]
     if args.json:
         print(json.dumps(summary, indent=2, ensure_ascii=False))
     else:
         print(f"wrote {args.out} ({len(doc) // 1024} KB): {len(summary['figures'])} figure(s), {summary['headings']} heading(s)")
+        if portable:
+            print(f"wrote {args.md_out}: portable Markdown, {len(summary['markdown_files'])} figure file(s)")
         for n in summary["notes"]:
             print(f"  note: {n}")
         for w in summary["warnings"]:

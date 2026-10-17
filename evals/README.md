@@ -11,6 +11,7 @@ evals/
 ├── review_pairs.py             # one-file blind A/B page for rating pairs yourself
 ├── stats.py                    # deterministic statistics benchmark: fixed metrics on every output, CIs, paired comparisons
 ├── gate.py                     # regression gate: freeze a reference, fail when a skill revision is worse on the statistics
+├── flow_validation.py          # checks the flow metrics against sentence shuffles and the blind judge; writes flow-validation.md and duplication.md
 ├── gate/                       # config.json (tolerances), reference.json (frozen reference run), weak_spots.json (where the reference is weaker)
 └── results/<run-id>/           # git-ignored: workspaces, replies, logs, results.json, report.md
 ```
@@ -34,6 +35,7 @@ Conditions:
 
 - `skill`: every skill under `skills/` is copied (not linked) into the temporary workspace (`.agents/skills/` for Codex, `.claude/skills/` for Claude Code), so the agent can neither write through to the repository nor see its path. The prompt never names a skill, so the run also tests whether the description triggers.
 - `baseline`: the same workspace, prompt and host with no skills copied.
+- `variant-<name>` (`--variant NAME=GITREF`): our skills as committed at another git ref, on every case; see "A/B testing skill revisions".
 
 Skills installed at user level that are not part of this repository (for example `~/.agents/skills/diagram-design`) are visible to both conditions on purpose: the benchmark then measures what the repository's skills add. `run.json` records the installed diagram-design `metadata.version` and the Codex and Claude Code versions.
 
@@ -69,6 +71,38 @@ Add competitors to a finished run instead of redoing it (finished runs and judge
 python3 evals/run.py --host omp --repeat 3 --competitors --jobs 4 --judge omp --judge-pairs skill:competitor \
   --resume --out evals/results/v-voice-omp
 ```
+
+## A/B testing skill revisions
+
+`--variant NAME=GITREF` (repeatable) adds the condition `variant-NAME`: the same agent, prompt and cases, with our skills exactly as committed at `GITREF` instead of the working tree. The runner resolves the ref to its full sha, exports `skills/` with `git archive` into `.cache/variants/<full-sha>/skills` (git-ignored, reused by every later run of that commit) and copies those folders into the run's workspace like the `skill` condition does. A variant runs on every case, loads and is isolation-checked like `skill` (any of our skill names may be opened, nothing else), and its runs are `<case>__<host>__variant-<name>[__r<k>]` with `variant` and `variant_sha` in `meta.json`. `run.json` records per variant the ref as given, the full sha and every skill's `metadata.version` at that commit. A warning is printed when the ref has no skill for some selected case, because those runs then measure the bare model.
+
+`--variant` alone runs `skill`, `baseline` and the variant. `--condition variant:NAME` selects only the variant (no default `skill` and `baseline`), which is what you want to add one revision to a finished run:
+
+```bash
+python3 evals/run.py --host omp --cases 'structured-drafting/*' --condition variant:pre --variant pre=21cd881 --out /tmp/ab-smoke
+```
+
+Reading the result:
+
+- `grade.py` / the run's `report.md` get one table per variant, "A/B: skill vs variant-NAME": pass rate and mean score of `skill` and of the variant, the difference, n and both load rates, on the (case, host, repetition) triples where both sides produced a gradable run (the competitor pairing, so a variant that covers fewer cases or crashed on some never removes pairs from the main table). `results.json` carries it under `summary.by["<host>/<skill>"].variants`.
+- `--judge-pairs skill:variant-NAME` (or `skill:variant` for every variant of the run) judges the two blind, like a competitor pair: its own `pair` entries in `judge.json`, own judge folders and order seed, own report section, with the style questions (reads human, faithful) tallied separately on style cases.
+- `stats.py <run-dir>` prints our skill minus each variant, paired on (host, case, rep), like it does for competitors.
+- `gate.py check <run-dir> --reference-condition variant-NAME` gates the run's `skill` runs against that variant inside the same run, with the tolerances of `gate/config.json` and no frozen file, so one A/B run is a regression test of HEAD against the ref. The variant is the reference, `skill` the revision under test; the frozen-reference `check` (`--against reference.json`) works as before.
+
+`--adopt-runs SRC=variant-NAME` (repeatable; needs `--out DIR` of an existing run, `--resume`, and `--variant NAME=...` for the ref the runs stand for) relabels the finished runs of condition `SRC` as `variant-NAME` before anything runs: run folders and `meta.json` are renamed (with `variant`, `variant_sha`, `adopted_from`), and every judge verdict and judge folder that has `SRC` as a side is relabelled too (the default verdict becomes `variant-NAME:baseline`). That turns the `skill` runs of an earlier clean run into the variant of the commit they were made with without paying for them again. `run.json` lists what was adopted and the same command run again adopts nothing twice. Adopt only runs made with the skills of the ref you declare.
+
+Example: the isolated run `v-iso-omp` was made with the skills of `f0a07bf`; test HEAD and the older `21cd881` against it, keeping the baseline and competitor runs and the finished verdicts:
+
+```bash
+cp -R evals/results/v-iso-omp evals/results/v-ab-omp
+python3 evals/run.py --host omp --repeat 3 --jobs 4 --judge omp --condition both --competitors \
+  --variant iso=f0a07bf --variant pre=21cd881 --adopt-runs skill=variant-iso \
+  --judge-pairs skill:baseline,skill:variant-iso,skill:variant-pre,skill:competitor \
+  --resume --out evals/results/v-ab-omp
+python3 evals/gate.py check evals/results/v-ab-omp --reference-condition variant-iso
+```
+
+Only `skill` (HEAD) and `variant-pre` execute; baseline, competitor and `variant-iso` runs are reused. Verdicts of the old skills against baseline and competitors stay as `variant-iso:<other>` pairs; the pairs against HEAD are judged anew.
 
 ## Case format
 
@@ -159,8 +193,10 @@ python3 evals/stats.py --compare <run-A> <run-B> --condition skill              
 python3 evals/stats.py --metrics                                                          # every definition, direction and reason
 python3 evals/gate.py freeze evals/results/<run-id> --model <name>                       # write evals/gate/reference.json
 python3 evals/gate.py check  evals/results/<new-run-id> [--all]                          # exit 1 on regression
+python3 evals/gate.py check  evals/results/<ab-run-id> --reference-condition variant-<name>   # same rules, reference = a variant of the same run
 python3 evals/gate.py aa     evals/results/<run-id>                                      # noise test: relabelled repetitions must pass
 python3 evals/gate.py weak   evals/results/<other-run-id>                                # record where the reference is worse than another run
+python3 evals/flow_validation.py evals/results/<run-id>                                  # validate flow metrics; our duplication against baseline and competitors
 ```
 
 **Metrics** (all computed on the deliverable file; prose metrics on the text with gap markers removed; `better` is the direction a reader would call an improvement; `-` means context only):
@@ -176,10 +212,24 @@ python3 evals/gate.py weak   evals/results/<other-run-id>                       
 | `headings_per_1000w` | - | markdown headings per 1000 words | context for the next row |
 | `short_text_headings` | lower | headings in an output under 400 words | scaffolding on a short note |
 | `repeated_sentences` | lower | sentences of 6+ words that repeat an earlier one (identical, or word 3-shingle Jaccard 0.6 or more) | padding |
+| `repeated_trigram_rate` | lower | REPEATS ITSELF: share of content-word 3-grams (three consecutive non-stopword stems in one sentence) that occurred earlier in the same output; 20+ 3-grams | the reader meets the same phrases again and again |
+| `near_duplicate_pairs_per_1000w` | lower | REPEATS ITSELF: sentence pairs with content-stem Jaccard 0.5 or more (each with 5+ content stems), per 1000 words | the same point twice in other words |
+| `repeated_caveats` | lower | REPEATS ITSELF: hedge or uncertainty sentences (`HEDGES`, `CAVEAT_PHRASES`; 3+ content stems) that near-duplicate an earlier one | one caveat where it applies is honest, the same one pasted everywhere is noise |
+| `source_copy_rate` | - | COPIES THE INPUT: share of output words inside a verbatim run of 8+ words found in the case's sources or prompt | context: an edit must keep its source, a report must not paste it |
 | `hedge_per_1000w` | lower | hedge and caveat words per 1000 words (`HEDGES`) | fog; but a correct hedge is not a defect, so the gate does not use it by default |
 | `sentence_length_cv` | higher | standard deviation / mean of words per sentence in running prose (3+ sentences) | uniform sentences read as machine-made |
 | `mean_sentence_length` | - | mean words per sentence in running prose | context |
 | `flesch_reading_ease` | higher | 206.835 - 1.015 w/s - 84.6 syl/w over running prose (vowel-group syllables; 3+ sentences) | reading effort |
+| `adjacent_cohesion` | higher | mean content-stem overlap (shared / smaller set) between consecutive sentences of one paragraph; running prose, 3+ pairs | each sentence picks up what the last one set up |
+| `abrupt_jump_rate` | lower | share of consecutive same-paragraph pairs with no shared content stem and no connective or referential opener (but, so, however, it, this, ...) | a sentence with no bridge is a jolt |
+| `given_new_carry` | higher | share of pairs where the opening half of the second sentence holds a stem of the first, or it opens with a connective or referential word | old before new |
+| `stock_transition_rate` | lower | share of prose sentences opening with Moreover, Furthermore, Additionally, In addition, Overall, Ultimately, Notably, In conclusion, ... | the opener announces a link instead of making one |
+| `long_sentence_share` | lower | share of prose sentences over 30 words | the subject is gone before the verb arrives |
+| `interruption_density` | lower | parentheticals of 2+ words plus pairs of dashes, per prose sentence | each aside must be resumed from |
+| `nominalization_per_1000w` | lower | words of 7+ letters ending -tion, -sion, -ment, -ness, -ity, -ance, -ence (concrete nouns excluded) per 1000 prose words | verbs turned into nouns hide who does what |
+| `passive_voice_rate` | lower | share of prose sentences with be/get plus a regular -ed or listed irregular participle | the reader asks who did it |
+| `paragraph_length_cv` | higher | standard deviation / mean of words per prose paragraph (3+ paragraphs) | identical paragraphs read as a template |
+| `one_sentence_paragraph_share` | lower | share of prose paragraphs holding one sentence (3+ paragraphs) | staccato slogans, reasoning left out |
 | `list_line_ratio` | - | bullet and numbered lines / non-blank, non-heading, non-code lines | context |
 | `length_ratio` | - | words / midpoint of the case's `word_count` min and max | context |
 | `length_deviation` | lower | abs(length_ratio - 1) | the length the reader asked for is part of the request |
@@ -205,7 +255,11 @@ Exit codes: 0 pass, 1 regression, 2 not comparable (different `METRICS_VERSION`,
 
 Limits: with 3 to 6 cases per skill the per-skill CIs are wide and approximate, so a per-skill FAIL is a lead to inspect; the all-skills row carries the weight. `invented_facts` has tolerance 0 (any invented figure is a lie), so what protects it from noise is the CI, not a slack: a few stray inventions in a rerun do not fail, a consistent rise does. Gate runs are LLM runs, so judge a failure by the table (which metric, which skill, which cases), not by the exit code alone. `stock_phrases_per_1000w` and `process_talk` are near zero for current models, so they guard against a return of the problem and do not separate revisions today.
 
-**Skill against competitors.** When a run has `competitor-*` conditions, `stats.py <run-dir>` also prints, and `--json` stores under `skill_minus_competitor`, our skill minus each competitor, paired on (host, case, rep) over the cases the competitor ran (`diff` = skill - competitor; `better` / `worse` refer to the skill, CI over cases). Every row comes twice with its n (paired runs / cases): `all` pairs, and `loaded` pairs only, where `meta.json` says `skill_loaded` is true for the competitor's run and for ours, because a run that never read its skill measures the bare model. `loaded` has fewer pairs, so it often reads `few`.
+**Skill against competitors.** When a run has `competitor-*` or `variant-*` conditions, `stats.py <run-dir>` also prints, and `--json` stores under `skill_minus_competitor` (key `host/NAME/scope`, NAME without the prefix), our skill minus each competitor or variant, paired on (host, case, rep) over the cases it ran (`diff` = skill - competitor; `better` / `worse` refer to the skill, CI over cases). Every row comes twice with its n (paired runs / cases): `all` pairs, and `loaded` pairs only, where `meta.json` says `skill_loaded` is true for the competitor's run and for ours, because a run that never read its skill measures the bare model. `loaded` has fewer pairs, so it often reads `few`.
+
+**Flow metrics and what was validated.** The flow metrics are rules about how text reads, not proof that it reads well, so `flow_validation.py <run-dir>` tests them on a finished run before the gate may use one (it writes `flow-validation.md` and `duplication.md` into the run directory). (a) Order sensitivity: every non-analysis output is rebuilt with its sentences in a seeded random order (paragraph sizes kept, 9 shuffles, mean); a metric that reads sentence order (`adjacent_cohesion`, `abrupt_jump_rate`, `given_new_carry`) must score the shuffled copy worse in most reader outputs, CI lower bound above 0.5. (b) Agreement with the blind judge: for every judged pair with a clear verdict (the 'reads human' answer on style pairs, the pairwise winner on text pairs; ties, inconsistent and error verdicts and visual entries left out) the share of pairs where the metric prefers the judge's winner, with a bootstrap CI that resamples cases. A new metric is `gated` only when it passes (a) where it applies and the lower CI bound of (b) is above 0.5; otherwise `config.json` says `gated: false` with the measured reason. On v-iso-omp (206 judged pairs, 22 to 24 cases) `abrupt_jump_rate` (shuffle worse in 78%) and `given_new_carry` (70%) pass (a), `adjacent_cohesion` does not (61%, CI [0.46, 0.73]), and no new metric agrees with the judge beyond chance (every CI includes 0.5), so none is gated. The existing `sentence_length_cv` agrees with the judge less than chance (0.38, CI [0.29, 0.48]). A candidate `flow_score` (mean of the three order-sensitive metrics) did not validate better than its parts and is not in the table. `repeated_caveats` and `stock_transition_rate` are zero or near zero in current outputs, so they guard against a return of the problem and tell nothing today. The numbers in this paragraph are those of the run named; rerun the command after a metrics change.
+
+**Repeats itself and copies the input.** `repeated_sentences`, `repeated_trigram_rate`, `near_duplicate_pairs_per_1000w` and `repeated_caveats` look only inside the output; `source_copy_rate` compares the output with the case's sources and has no direction because an edit must keep its source. `flow_validation.py` prints and writes our skill minus the baseline and minus each `competitor-*` or `variant-*` condition for these metrics, all pairs and loaded-only pairs.
 
 ## What the numbers mean
 

@@ -1,6 +1,6 @@
 {
  "schema": 1,
- "metrics_version": "1",
+ "metrics_version": "2",
  "reference_run": "v-iso-omp",
  "other_run": "v-voice-omp",
  "spots": [
@@ -33,6 +33,62 @@
    "tolerance": 1.0
   },
   {
+   "scope": "project-report",
+   "metric": "passive_voice_rate",
+   "gated": false,
+   "reference": 0.309793,
+   "other": 0.271397,
+   "worse_by": 0.038396,
+   "ci": [
+    0.008338,
+    0.066773
+   ],
+   "n_cases": 6,
+   "tolerance": 0.02
+  },
+  {
+   "scope": "report-writing",
+   "metric": "repeated_trigram_rate",
+   "gated": false,
+   "reference": 0.02957,
+   "other": 0.02042,
+   "worse_by": 0.00915,
+   "ci": [
+    0.001562,
+    0.016738
+   ],
+   "n_cases": 4,
+   "tolerance": 0.005
+  },
+  {
+   "scope": "report-writing",
+   "metric": "one_sentence_paragraph_share",
+   "gated": false,
+   "reference": 0.159722,
+   "other": 0.097222,
+   "worse_by": 0.0625,
+   "ci": [
+    0.0125,
+    0.104167
+   ],
+   "n_cases": 4,
+   "tolerance": 0.04
+  },
+  {
+   "scope": "post-writing",
+   "metric": "one_sentence_paragraph_share",
+   "gated": false,
+   "reference": 0.115079,
+   "other": 0.08,
+   "worse_by": 0.035079,
+   "ci": [
+    0.005556,
+    0.069524
+   ],
+   "n_cases": 5,
+   "tolerance": 0.04
+  },
+  {
    "scope": "anti-slop-editing",
    "metric": "sentence_length_cv",
    "gated": true,
@@ -45,6 +101,20 @@
    ],
    "n_cases": 4,
    "tolerance": 0.1
+  },
+  {
+   "scope": "post-writing",
+   "metric": "repeated_trigram_rate",
+   "gated": false,
+   "reference": 0.006208,
+   "other": 0.002837,
+   "worse_by": 0.003371,
+   "ci": [
+    0.000208,
+    0.006769
+   ],
+   "n_cases": 5,
+   "tolerance": 0.005
   },
   {
    "scope": "post-writing",

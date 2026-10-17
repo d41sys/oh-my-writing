@@ -46,15 +46,15 @@ Concessions ("the data does not cover X") run at full strength in research and d
 
 1. Recommendation (one to three sentences), confidence and its reason, decision needed and by when.
 2. Why now and what is at stake (short; the reader usually knows the context).
-3. Options considered, each with what it costs and gives up, including doing nothing.
+3. Options considered, each with what it costs and gives up. Include doing nothing or the current arrangement only when the notes describe it.
 4. Evidence behind the recommendation, ordered by what the reader will challenge first.
-5. Risks and what would change the recommendation (thresholds, tripwires).
+5. Risks: for each, the effect on the recommendation. Name a threshold or tripwire only when the notes or author give one; do not add a trial, gate or deadline to a recommendation the author stated, and say the risk the author accepts.
 6. Next steps with owners and dates, if approved.
 7. Appendix: method, data, source ledger, rejected options in more detail.
 
 **Density:** typically one to two pages of body; the appendix may be long.
 
-**Short memo (under about 600 words):** one opening paragraph holds the recommendation, the main reason, how sure you are and why, and what would change it, in plain sentences; the options and risks follow as short paragraphs under at most two or three plain headings. No separate summary, no labelled "Confidence:" or "Decision requested:" lines, and no caveat that appears both in the opening and again below.
+**Short memo (under about 600 words):** one opening paragraph holds the recommendation, the main reason, and the one doubt that matters and why, in plain sentences; the options and risks follow as short paragraphs under at most two or three plain headings. No separate summary, no labelled "Confidence:" or "Decision requested:" lines, no announced "my confidence is moderate", and no caveat that appears both in the opening and again below.
 
 **Decision record variant:** for a standing technical or organizational decision, keep the same content as a compact record: status, context, options considered, decision, reasoning, consequences accepted. Keep it findable and short; link the evidence rather than paste it.
 

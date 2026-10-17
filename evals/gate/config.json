@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "note": "Tolerances for evals/gate.py. 'metrics': a gated metric fails only when the lower bound of the 95% bootstrap CI of the paired worsening (new vs reference, paired per (host, case, rep), repetitions averaged per case, CI over cases) is above 'tolerance' in the metric's own unit; worse than tolerance on average with a CI that reaches back inside it is a warning. 'absolute': the one rule without statistics, because any occurrence is a defect: the share of reader-facing runs whose output carries an unresolved marker or placeholder. 'min_cases_for_ci': fewer paired cases than this give no verdict. Tolerances of flesch_reading_ease (5) and sentence_length_cv (0.1) sit above the A/A noise floor measured with `gate.py aa` on v-voice-omp and v-clean-omp (largest per-skill lower CI bound of a pure repetition swap: 4.2 points, 0.083); re-measure when the reference changes.",
+  "note": "Tolerances for evals/gate.py. 'metrics': a gated metric fails only when the lower bound of the 95% bootstrap CI of the paired worsening (new vs reference, paired per (host, case, rep), repetitions averaged per case, CI over cases) is above 'tolerance' in the metric's own unit; worse than tolerance on average with a CI that reaches back inside it is a warning. 'absolute': the one rule without statistics, because any occurrence is a defect: the share of reader-facing runs whose output carries an unresolved marker or placeholder. 'min_cases_for_ci': fewer paired cases than this give no verdict. Tolerances of flesch_reading_ease (5) and sentence_length_cv (0.1) sit above the A/A noise floor measured with `gate.py aa` on v-voice-omp and v-clean-omp (largest per-skill lower CI bound of a pure repetition swap: 4.2 points, 0.083); re-measure when the reference changes. Flow and duplication metrics (METRICS_VERSION 2): a metric is gated only when it passes evals/flow_validation.py on v-iso-omp (order sensitivity where it reads sentence order: a sentence-shuffled copy scores worse in most reader runs with the CI lower bound above 0.5; and agreement with the blind judge: the share of judged pairs where the metric prefers the judge's winner has a bootstrap CI lower bound above 0.5). None of the new metrics passed, so all are 'gated': false with the measured reason; their tolerances are about twice the A/A floor (largest lower CI bound of a pure repetition swap on v-iso-omp) so that switching one on later starts above rerun noise.",
   "min_cases_for_ci": 3,
   "absolute": {
     "leaked_marker_run_rate_max": 0.0
@@ -13,12 +13,25 @@
     "stock_phrases_per_1000w": {"tolerance": 0.5},
     "short_text_headings": {"tolerance": 0.2},
     "repeated_sentences": {"tolerance": 0.1},
-    "sentence_length_cv": {"tolerance": 0.1},
+    "sentence_length_cv": {"tolerance": 0.1, "gated": false, "why": "info-only: agrees with the blind judge's preference below chance on v-iso-omp (0.38 [0.29, 0.48]), so more variation is not evidence of better writing"},
     "flesch_reading_ease": {"tolerance": 5.0},
     "length_deviation": {"tolerance": 0.05},
     "process_talk": {"tolerance": 0.05},
     "check_pass_rate": {"tolerance": 0.02},
     "case_passed": {"tolerance": 0.05},
-    "hedge_per_1000w": {"tolerance": 1.0, "gated": false}
+    "hedge_per_1000w": {"tolerance": 1.0, "gated": false},
+    "adjacent_cohesion": {"tolerance": 0.06, "gated": false, "why": "info-only, not validated against readers (evals/flow_validation.py on v-iso-omp): fails order sensitivity (shuffled copies worse in 61% of reader runs, CI [0.46, 0.73], lower bound not above 0.5); judge agreement 0.48 [0.34, 0.61] over 145 pairs"},
+    "abrupt_jump_rate": {"tolerance": 0.15, "gated": true, "why": "gated as the flow measure: it detects broken order (a sentence-shuffled copy scores worse in 78% [0.70, 0.85] of reader outputs on v-iso-omp); it does not predict the judge's overall preference (0.51 [0.36, 0.65]), so it guards flow, not quality; tolerance about twice the A/A floor"},
+    "given_new_carry": {"tolerance": 0.12, "gated": true, "why": "gated as the flow measure: shuffled copies score worse in 70% [0.59, 0.80] of reader outputs on v-iso-omp; judge agreement 0.50 [0.37, 0.64], so it guards flow, not quality; tolerance about twice the A/A floor"},
+    "stock_transition_rate": {"tolerance": 0.02, "gated": false, "why": "info-only, not validated against readers (evals/flow_validation.py on v-iso-omp): judge agreement not computable (too few judged pairs with a value)"},
+    "long_sentence_share": {"tolerance": 0.04, "gated": false, "why": "info-only, not validated against readers (evals/flow_validation.py on v-iso-omp): judge agreement 0.51, CI lower bound 0.37 is not above 0.5"},
+    "interruption_density": {"tolerance": 0.02, "gated": false, "why": "info-only, not validated against readers (evals/flow_validation.py on v-iso-omp): judge agreement 0.60, CI lower bound 0.31 is not above 0.5"},
+    "nominalization_per_1000w": {"tolerance": 1.0, "gated": false, "why": "info-only, not validated against readers (evals/flow_validation.py on v-iso-omp): judge agreement 0.54, CI lower bound 0.41 is not above 0.5"},
+    "passive_voice_rate": {"tolerance": 0.02, "gated": false, "why": "info-only, not validated against readers (evals/flow_validation.py on v-iso-omp): judge agreement 0.49, CI lower bound 0.37 is not above 0.5"},
+    "paragraph_length_cv": {"tolerance": 0.06, "gated": false, "why": "info-only, not validated against readers (evals/flow_validation.py on v-iso-omp): judge agreement 0.45, CI lower bound 0.37 is not above 0.5"},
+    "one_sentence_paragraph_share": {"tolerance": 0.04, "gated": false, "why": "info-only, not validated against readers (evals/flow_validation.py on v-iso-omp): judge agreement 0.55, CI lower bound 0.45 is not above 0.5"},
+    "repeated_trigram_rate": {"tolerance": 0.005, "gated": false, "why": "info-only, not validated against readers (evals/flow_validation.py on v-iso-omp): judge agreement 0.53, CI lower bound 0.41 is not above 0.5"},
+    "near_duplicate_pairs_per_1000w": {"tolerance": 0.1, "gated": false, "why": "info-only, not validated against readers (evals/flow_validation.py on v-iso-omp): judge agreement 0.62, CI lower bound 0.44 is not above 0.5"},
+    "repeated_caveats": {"tolerance": 0.05, "gated": false, "why": "info-only, not validated against readers (evals/flow_validation.py on v-iso-omp): judge agreement not computable (too few judged pairs with a value)"}
   }
 }

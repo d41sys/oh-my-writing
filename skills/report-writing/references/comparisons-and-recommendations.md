@@ -153,7 +153,7 @@ For each option the reader can choose:
 3. Evidence behind those claims, with status (proven, asserted, unknown).
 4. Under what conditions it would be the right choice.
 
-Include the status quo or doing nothing as an option, with its real cost. Put options before detailed solutions: let the decision-maker choose a path before you specify one in depth.
+Include the status quo or doing nothing as an option, with its real cost, when the notes describe it; do not assume a current arrangement or fallback exists. Put options before detailed solutions: let the decision-maker choose a path before you specify one in depth.
 
 **Option comparison table**, for three or more options across several criteria: options as columns, criteria as rows, the stated requirement in a first column, and a short interpretation below. Keep it to about five columns; split otherwise.
 
@@ -165,7 +165,7 @@ Include the status quo or doing nothing as an option, with its real cost. Put op
 
 **Whose recommendation.** A recommendation is the author's judgment. If the notes name one, write it. If they do not, do not manufacture one: the document says plainly that the notes make no recommendation, sets out the options the evidence supports and what each rests on, and says what the evidence points toward as analysis. The question to the author goes in the reply as `[ASK AUTHOR: recommendation ...]` naming those options so the author can choose in one line; no marker goes in the document. A request for "our recommendation" does not turn a gap in the notes into permission to decide for the author.
 
-**What would change it.** State the evidence, threshold, or event that would reverse or modify the recommendation ("If the pilot shows uptime below 99.5%, choose A"). This turns hedging into something the reader can monitor.
+**What would change it.** State the evidence, threshold, or event that would reverse or modify the recommendation ("If the pilot shows uptime below 99.5%, choose A") when the notes or the author give one. Do not invent a new gate, test or deadline for a recommendation the author stated unconditionally; name the risk the author accepts. This turns hedging into something the reader can monitor.
 
 **Prioritizing several recommendations.** Rank by expected impact against effort. If you score, say that scores are your judgment (impact, confidence in that impact, effort), keep them ordinal, and apply real constraints (runway, team size, dependencies) before the order is final. List what was ranked low and why, so the cut is visible.
 

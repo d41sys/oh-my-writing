@@ -620,3 +620,15 @@ def test_scripts_are_stdlib_only_and_documented(script):
     source = script.read_text(encoding="utf-8")
     assert source.startswith("#!/usr/bin/env python3") and '"""' in source[:200]
     assert 'if __name__ == "__main__":' in source
+
+
+def test_exact_calculation_from_source_figures_is_derived_not_added(tmp_path):
+    before = write(tmp_path, "before.md", "Licences cost €5,800 and €612. Relay is €0.035 per request; "
+                                          "we send 52,000 requests and 40 tickets.\n")
+    after = write(tmp_path, "after.md", "Licences total €6,412; requests cost €1,820. "
+                                        "That is €6,500 overall, 92 tickets in 2027.\n")
+    _, report = diff_json(before, after)
+    derived = {i["item"]: i["from"] for i in report["categories"]["numbers"].get("derived", [])}
+    assert set(derived) == {"6412 eur", "1820 eur"}
+    # a round guess, a bare count and a year are not calculations
+    assert {"6500 eur", "92", "2027"} <= added_items(report, "numbers")

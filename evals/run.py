@@ -11,13 +11,16 @@ Usage:
   python3 evals/run.py --host omp --judge omp --repeat 3   # omp host, default model gpt-6-sol
   python3 evals/run.py --host omp --cases 'anti-slop-editing/*' --condition competitor:humanizer   # a third-party skill instead of ours
   python3 evals/run.py --host omp --competitors --judge omp --judge-pairs skill:competitor --resume --out DIR   # add every mapped competitor to a finished run
+  python3 evals/run.py --host omp --condition variant:pre --variant pre=21cd881 --out DIR   # our skills as of a git ref, on every case
+  python3 evals/run.py --host omp --condition skill --variant iso=f0a07bf --adopt-runs skill=variant-iso --resume --out DIR   # relabel finished runs of the old skills
 
 Each run gets a fresh git workspace outside this repository holding copies (not links) of the case files, the case
 fixtures and, in the `skill` condition, every skill under the host's project skill folder; the agent can neither
 write through to the repository nor see its path. In the `baseline` condition no skill is copied. In a
 `competitor:<name>` condition only the third-party skill folders listed for that name in evals/competitors.json are
-copied from .cache/omw_sources (never into this repository), and only on cases that competitor is mapped to. The
-prompt never names a skill.
+copied from .cache/omw_sources (never into this repository), and only on cases that competitor is mapped to. In a
+`variant-<name>` condition (`--variant NAME=GITREF`) the skill folders are our own skills as committed at that ref
+(`git archive`, cached in .cache/variants/<sha>), on every case. The prompt never names a skill.
 """
 
 from __future__ import annotations
@@ -113,6 +116,178 @@ def condition_applies(condition: str, case: dict, specs: dict[str, dict]) -> boo
     return True if name is None else competitor_applies(specs[name], case)
 
 
+# ---------------------------------------------------------------- variants: our skills at another git ref
+
+VARIANT_PREFIX = "variant-"
+VARIANT_CACHE = REPO / ".cache" / "variants"
+VARIANT_NAME = re.compile(r"[A-Za-z0-9]+(?:[.-][A-Za-z0-9]+)*")
+VARIANTS: dict[str, dict] = {}  # name -> export_variant() record of the variants of this invocation
+
+
+def variant_condition(name: str) -> str:
+    return VARIANT_PREFIX + name
+
+
+def variant_name(condition: str) -> str | None:
+    return condition[len(VARIANT_PREFIX):] if condition.startswith(VARIANT_PREFIX) else None
+
+
+def parse_variants(values: list[str] | None) -> tuple[dict[str, str], str | None]:
+    """name -> git ref from repeated --variant NAME=GITREF. Returns (variants, error)."""
+    out: dict[str, str] = {}
+    for value in values or []:
+        name, sep, ref = value.partition("=")
+        if not sep or not ref or not VARIANT_NAME.fullmatch(name):
+            return {}, f"--variant wants NAME=GITREF (NAME: letters, digits, '.' or '-'), got {value!r}"
+        if name in out:
+            return {}, f"--variant {name} given twice"
+        out[name] = ref
+    return out, None
+
+
+def skill_version(skill_md: Path) -> str | None:
+    """metadata.version of one SKILL.md."""
+    m = re.search(r"(?m)^\s+version:\s*[\"']?([^\"'\n]+)", skill_md.read_text(encoding="utf-8").split("\n---", 2)[0])
+    return m.group(1).strip() if m else None
+
+
+def export_variant(name: str, ref: str, repo: Path | None = None, cache: Path | None = None) -> dict:
+    """Our skills as committed at `ref`, exported with `git archive` into <cache>/<full sha>/skills (reused when
+    already there). Returns {name, ref, sha, root, skills, versions}; raises ValueError when the ref or its skills/
+    folder does not exist."""
+    repo, cache = repo or REPO, cache or VARIANT_CACHE
+    found = subprocess.run(["git", "rev-parse", "--verify", "--quiet", f"{ref}^{{commit}}"], cwd=repo,
+                           capture_output=True, text=True)
+    if found.returncode:
+        raise ValueError(f"--variant {name}: {ref!r} is not a commit of {repo}")
+    sha = found.stdout.strip()
+    root = cache / sha
+    if not (root / "skills").is_dir():
+        cache.mkdir(parents=True, exist_ok=True)
+        tmp = Path(tempfile.mkdtemp(prefix=f".{sha[:10]}-", dir=cache))  # complete only once renamed
+        try:
+            archive = subprocess.run(["git", "archive", "--format=tar", sha, "skills"], cwd=repo, capture_output=True)
+            if archive.returncode:
+                raise ValueError(f"--variant {name}: {ref} has no skills/ folder ({archive.stderr.decode().strip()})")
+            subprocess.run(["tar", "-x", "-C", str(tmp), "-f", "-"], input=archive.stdout, check=True)
+            try:
+                tmp.rename(root)
+            except OSError:  # another invocation exported the same commit meanwhile
+                if not (root / "skills").is_dir():
+                    raise
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+    skills_root = root / "skills"
+    names = sorted(p.name for p in skills_root.iterdir() if (p / "SKILL.md").is_file())
+    if not names:
+        raise ValueError(f"--variant {name}: {ref} holds no skill (no skills/*/SKILL.md)")
+    return {"name": name, "ref": ref, "sha": sha, "root": skills_root, "skills": names,
+            "versions": {n: skill_version(skills_root / n / "SKILL.md") for n in names}}
+
+
+def variant_record(variant: dict) -> dict:
+    """What run.json stores about a variant: the ref as given, the commit it resolved to and the skill versions."""
+    return {"ref": variant["ref"], "sha": variant["sha"], "skills": variant["versions"]}
+
+
+def variant_of(condition: str) -> dict | None:
+    name = variant_name(condition)
+    if name is None:
+        return None
+    if name not in VARIANTS:
+        raise RuntimeError(f"variant {name!r} is not declared (--variant {name}=GITREF)")
+    return VARIANTS[name]
+
+
+def adopt_runs(run_dir: Path, src: str, dst: str, variant: dict) -> int:
+    """Relabel the finished runs of condition `src` in a results directory as `dst` (a variant condition), so they serve
+    as that variant without rerunning: run folders and meta.json are renamed, the judge verdicts and judge folders that
+    involve `src` are relabelled, and the variant ref is stamped into each meta.json. Returns the number of runs moved;
+    raises ValueError when `dst` runs already exist or a run folder does not have the expected name."""
+    moves = []
+    for meta_path in sorted((run_dir / "runs").glob("*/meta.json")):
+        meta = json.loads(meta_path.read_text(encoding="utf-8"))
+        if meta["condition"] == dst:
+            raise ValueError(f"{run_dir} already holds {dst} runs; nothing was relabelled")
+        if meta["condition"] == src:
+            folder = meta_path.parent
+            m = re.fullmatch(rf"(.+__{re.escape(meta['host'])}__){re.escape(src)}((?:__r\d+)?)", folder.name)
+            if not m:
+                raise ValueError(f"unexpected run folder name {folder.name}")
+            moves.append((folder, folder.with_name(m.group(1) + dst + m.group(2)), meta))
+    for old, new, meta in moves:
+        old.rename(new)
+        meta.update({"condition": dst, "variant": variant["name"], "variant_sha": variant["sha"], "adopted_from": src})
+        (new / "meta.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
+    if moves:
+        relabel_judge(run_dir, src, dst)
+    return len(moves)
+
+
+def _swap(value, src: str, dst: str):
+    if isinstance(value, str):
+        return dst if value == src else value
+    if isinstance(value, list):
+        return [_swap(v, src, dst) for v in value]
+    if isinstance(value, dict):
+        return {_swap(k, src, dst): _swap(v, src, dst) for k, v in value.items()}
+    return value
+
+
+def relabel_judge(run_dir: Path, src: str, dst: str) -> None:
+    """Rewrite judge.json entries and judge/ folders of every judged pair that has `src` as a side. A verdict without a
+    pair field is the default skill:baseline one."""
+    judge_file, judge_dir = run_dir / "judge.json", run_dir / "judge"
+    if not judge_file.is_file():
+        return
+    entries = json.loads(judge_file.read_text(encoding="utf-8"))
+    out = []
+    for e in entries:
+        old_key = e.get("pair") or pair_key(DEFAULT_PAIR)
+        x, y = old_key.split(":", 1)
+        if src not in (x, y):
+            out.append(e)
+            continue
+        new = {**e, "pair": f"{_swap(x, src, dst)}:{_swap(y, src, dst)}"}
+        for field in ("winner", "picks", "scores", "human", "faithful"):
+            if field in new:
+                new[field] = _swap(new[field], src, dst)
+        out.append(new)
+        if not judge_dir.is_dir():
+            continue
+        stem = e["case"].replace("/", "__")
+        for rep in ("", f"__r{e.get('rep', 1)}"):  # the repetition suffix is there when the run had --repeat > 1
+            old_tail = f"{e['host']}{rep}" + ("" if old_key == pair_key(DEFAULT_PAIR) else f"__{x}-vs-{y}")
+            new_tail = f"{e['host']}{rep}__{_swap(x, src, dst)}-vs-{_swap(y, src, dst)}"
+            for suffix in ("order1", "order2", "shots"):
+                old = judge_dir / f"{stem}__{old_tail}__{suffix}"
+                target = judge_dir / f"{stem}__{new_tail}__{suffix}"
+                if old.is_dir() and not target.exists():
+                    old.rename(target)
+                    for shot in target.glob("*.png"):  # screenshots are named after the condition they show
+                        if shot.name.startswith(f"{src}-"):
+                            shot.rename(shot.with_name(dst + shot.name[len(src):]))
+    judge_file.write_text(json.dumps(out, indent=2), encoding="utf-8")
+
+
+def parse_adoptions(values: list[str] | None, variants: dict[str, str], resume: bool, out: str | None
+                    ) -> tuple[list[tuple[str, str]], str | None]:
+    """(src, dst) condition pairs from repeated --adopt-runs SRC=variant-NAME. NAME must be declared with --variant so
+    the run records which ref the adopted runs stand for; it needs --resume and an existing --out."""
+    pairs = []
+    for value in values or []:
+        src, _, dst = value.partition("=")
+        name = variant_name(dst)
+        if not src or name is None:
+            return [], f"--adopt-runs wants SRC_CONDITION=variant-NAME, got {value!r}"
+        if name not in variants:
+            return [], f"--adopt-runs {value}: declare the variant with --variant {name}=GITREF"
+        pairs.append((src, dst))
+    if pairs and not (resume and out):
+        return [], "--adopt-runs works on an existing results directory: give --out DIR and --resume"
+    return pairs, None
+
+
 def competitor_commit(spec: dict) -> str | None:
     shas = spec["root"].parent / "SHAS.txt"
     if not shas.is_file():
@@ -140,11 +315,13 @@ def install_competitor(spec: dict, folder: Path) -> None:
                         ignore=shutil.ignore_patterns(".git", "__pycache__", "*.pyc", ".DS_Store", "node_modules"))
 
 
-def resolve_conditions(values: list[str] | None, all_competitors: bool,
-                       specs: dict[str, dict]) -> tuple[list[str], str | None]:
-    """Conditions to run, in order, from repeated --condition values (default 'both') plus --competitors.
-    Returns (conditions, error)."""
+def resolve_conditions(values: list[str] | None, all_competitors: bool, specs: dict[str, dict],
+                       variants: dict[str, str] | None = None) -> tuple[list[str], str | None]:
+    """Conditions to run, in order, from repeated --condition values (default 'both') plus --competitors plus every
+    declared --variant (`variant:NAME` in --condition selects a declared variant without the default skill and
+    baseline). Returns (conditions, error)."""
     values = values or ["both"]
+    variants = variants or {}
     out: list[str] = []
     for value in values:
         if value == "both":
@@ -156,42 +333,61 @@ def resolve_conditions(values: list[str] | None, all_competitors: bool,
             if name not in specs:
                 return [], f"unknown competitor {name!r}; known: {', '.join(sorted(specs))}"
             wanted = [competitor_condition(name)]
+        elif value.startswith("variant:"):
+            name = value.split(":", 1)[1]
+            if name not in variants:
+                return [], f"unknown variant {name!r}; declare it with --variant {name}=GITREF"
+            wanted = [variant_condition(name)]
         else:
-            return [], f"--condition must be skill, baseline, both or competitor:<name>, got {value!r}"
+            return [], f"--condition must be skill, baseline, both, competitor:<name> or variant:<name>, got {value!r}"
         out += [w for w in wanted if w not in out]
     if all_competitors:
         out += [c for c in map(competitor_condition, specs) if c not in out]
+    out += [c for c in map(variant_condition, variants) if c not in out]
     return out, None
 
 
-def resolve_pairs(values: list[str] | None, conditions: list[str],
-                  specs: dict[str, dict]) -> tuple[list[tuple[str, str]], str | None]:
+def resolve_pairs(values: list[str] | None, conditions: list[str], specs: dict[str, dict],
+                  variants: dict[str, str] | None = None) -> tuple[list[tuple[str, str]], str | None]:
     """Judged condition pairs from --judge-pairs (comma lists and repeats allowed). A side is skill, baseline,
-    competitor (every competitor of this run), a competitor name, or competitor:<name>. Without the option the pair
-    is skill:baseline when both conditions run. Returns (pairs, error)."""
+    competitor (every competitor of this run), a competitor name or competitor:<name>, variant (every variant of this
+    run) or variant-<name> / variant:<name> for a declared variant. Without the option the pair is skill:baseline
+    when both conditions run. Returns (pairs, error)."""
     if not values:
         return ([DEFAULT_PAIR] if set(DEFAULT_PAIR) <= set(conditions) else []), None
+    variants = variants or {}
     in_run = [c for c in conditions if competitor_name(c)]
+    in_variants = [c for c in conditions if variant_name(c)]
 
     def side(token: str) -> list[str] | str:
         if token in ("skill", "baseline"):
             return [token]
         if token == "competitor":
             return in_run
+        if token == "variant":
+            return in_variants
+        if token.startswith(("variant:", VARIANT_PREFIX)):
+            name = token[len("variant:"):] if token.startswith("variant:") else token[len(VARIANT_PREFIX):]
+            return [variant_condition(name)] if name in variants else (
+                f"unknown pair side {token!r}; declare the variant with --variant {name}=GITREF")
         name = token.split(":", 1)[1] if token.startswith("competitor:") else token
         return [competitor_condition(name)] if name in specs else f"unknown pair side {token!r}"
 
     pairs: list[tuple[str, str]] = []
     for item in (v.strip() for value in values for v in value.split(",") if v.strip()):
-        m = re.fullmatch(r"(.+?):(competitor:.+|[^:]+)", item)
+        m = re.fullmatch(r"(.+?):((?:competitor|variant):.+|[^:]+)", item)
         if not m:
             return [], f"--judge-pairs wants A:B, got {item!r}"
         left, right = side(m.group(1)), side(m.group(2))
         for found in (left, right):
             if isinstance(found, str):
                 return [], found
-        if not left or not right:
-            return [], f"--judge-pairs {item!r}: no competitor condition in this run (add --competitors or --condition competitor:<name>)"
+        for token, found in ((m.group(1), left), (m.group(2), right)):
+            if not found:
+                kind = "variant" if token == "variant" else "competitor"
+                return [], (f"--judge-pairs {item!r}: no {kind} condition in this run (add "
+                            + ("--variant NAME=GITREF" if kind == "variant" else "--competitors or --condition competitor:<name>")
+                            + ")")
         for a in left:
             for b in right:
                 if a != b and (a, b) not in pairs:
@@ -213,15 +409,17 @@ def make_workspace(case: dict, host: str, condition: str) -> Path:
     if root is not None:  # verbatim, binary-safe, keeps relative paths and modification times
         shutil.copytree(root, ws, dirs_exist_ok=True, ignore=shutil.ignore_patterns(".DS_Store"))
     (ws / Path(case["output"]).parent).mkdir(parents=True, exist_ok=True)
-    if condition == "skill" or competitor_name(condition):
+    if condition == "skill" or competitor_name(condition) or variant_name(condition):
         folder = ws / SKILL_FOLDER[host]
         folder.mkdir(parents=True)
-        if condition == "skill":
-            for skill in SKILLS:  # copies: a link would let the agent write through to the repo and reveal its path
+        if competitor_name(condition):
+            install_competitor(load_competitors()[competitor_name(condition)], folder)
+        else:
+            source = variant_of(condition)["root"] if variant_name(condition) else None
+            for skill in (SKILLS if source is None else sorted(p for p in source.iterdir() if (p / "SKILL.md").is_file())):
+                # copies: a link would let the agent write through to the repo and reveal its path
                 shutil.copytree(skill, folder / skill.name,
                                 ignore=shutil.ignore_patterns("__pycache__", "*.pyc", ".DS_Store"))
-        else:
-            install_competitor(load_competitors()[competitor_name(condition)], folder)
     subprocess.run(["git", "init", "-q"], cwd=ws, check=True)
     return ws
 
@@ -296,9 +494,9 @@ def skill_was_loaded(host: str, skill: str, log: str) -> bool:
 
 
 def condition_loaded(host: str, condition: str, case: dict, log: str) -> bool:
-    """Whether the skill this condition provides was opened: the case's own skill for `skill`, any of the installed
-    third-party skills (by folder name) for a competitor, never in the baseline."""
-    if condition == "skill":
+    """Whether the skill this condition provides was opened: the case's own skill for `skill` and for a variant of it,
+    any of the installed third-party skills (by folder name) for a competitor, never in the baseline."""
+    if condition == "skill" or variant_name(condition):
         return skill_was_loaded(host, case["skill"], log)
     name = competitor_name(condition)
     if name:
@@ -331,10 +529,13 @@ def omp_isolation_config() -> Path:
 
 
 def allowed_skills(condition: str, case: dict | None) -> set[str]:
-    """Skills a run of this condition may open: its own set plus diagram-design, which every condition has."""
+    """Skills a run of this condition may open: its own set plus diagram-design, which every condition has. A variant
+    may open any of our skills (the current names and those of its ref)."""
     allowed = {grade.DIAGRAM_SKILL.name}
     if condition == "skill":
         allowed |= {s.name for s in SKILLS}
+    elif variant_name(condition):
+        allowed |= {s.name for s in SKILLS} | set(variant_of(condition)["skills"])
     elif competitor_name(condition):
         allowed |= set(competitor_skill_names(load_competitors()[competitor_name(condition)]))
     return allowed
@@ -396,14 +597,19 @@ def slug_of(case: dict, host: str, condition: str, rep: int, repeat: int) -> str
 
 def run_one(case: dict, host: str, condition: str, rep: int, run_dir: Path, args) -> dict:
     out_dir = run_dir / "runs" / slug_of(case, host, condition, rep, args.repeat)
+    variant = variant_of(condition)
     if args.resume and finished(out_dir):
-        return json.loads((out_dir / "meta.json").read_text(encoding="utf-8"))
+        kept = json.loads((out_dir / "meta.json").read_text(encoding="utf-8"))
+        if variant is None or kept.get("variant_sha") == variant["sha"]:  # a run of another commit is not this variant
+            return kept
     shutil.rmtree(out_dir, ignore_errors=True)
     out_dir.mkdir(parents=True, exist_ok=True)
     timeout = case.get("timeout", args.timeout)
     base = {"case": case["id"], "skill": case["skill"], "host": host, "condition": condition, "rep": rep}
     if competitor_name(condition):
         base["competitor"] = competitor_name(condition)
+    if variant:
+        base.update({"variant": variant["name"], "variant_sha": variant["sha"]})
     if host in QUOTA_HIT:  # do not burn timeouts once the host has refused for quota; --resume picks these up
         meta = {**base, "skill_loaded": False, "exit_code": None, "error": "skipped: host usage limit reached",
                 "duration_s": 0}
@@ -420,7 +626,7 @@ def run_one(case: dict, host: str, condition: str, rep: int, run_dir: Path, args
     error = result["error"] or ("isolation: " + "; ".join(problems) if problems else None)
     meta = {**base, "skill_loaded": condition_loaded(host, condition, case, result["log"]),
             "exit_code": result["exit_code"], "error": error, "duration_s": result["duration_s"],
-            "timeout": timeout}
+            "timeout": timeout, "date": dt.date.today().isoformat()}
     (out_dir / "meta.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
     status = "ERROR" if meta["error"] else "done"
     print(f"[{status}] {case['id']} {host} {condition} r{rep} {meta['duration_s']}s"
@@ -807,11 +1013,19 @@ def main(argv=None) -> int:
     p = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     p.add_argument("--host", action="append", choices=["codex", "claude", "omp"], required=True)
     p.add_argument("--cases", action="append", help="glob on case id, e.g. 'post-writing/*' (repeatable)")
-    p.add_argument("--condition", action="append", metavar="{skill,baseline,both,competitor:NAME}",
+    p.add_argument("--condition", action="append", metavar="{skill,baseline,both,competitor:NAME,variant:NAME}",
                    help="what to run (repeatable; default both = skill + baseline). competitor:NAME installs that "
-                        "third-party skill from evals/competitors.json instead of ours")
+                        "third-party skill from evals/competitors.json instead of ours; variant:NAME selects a "
+                        "--variant without the default skill and baseline")
     p.add_argument("--competitors", action="store_true",
                    help="also run every competitor in evals/competitors.json (on the cases each is mapped to)")
+    p.add_argument("--variant", action="append", metavar="NAME=GITREF",
+                   help="also run condition variant-NAME: our skills as committed at GITREF (repeatable), on every "
+                        "case; exported with git archive into .cache/variants/<sha>")
+    p.add_argument("--adopt-runs", action="append", metavar="SRC=variant-NAME",
+                   help="before running, relabel the finished runs of condition SRC in --out as variant-NAME (a "
+                        "--variant) with their judge verdicts, so they stand for that ref without a rerun; needs "
+                        "--out DIR and --resume")
     p.add_argument("--jobs", type=int, default=3)
     p.add_argument("--timeout", type=int, default=600, help="seconds per agent run (a case's own timeout wins)")
     p.add_argument("--repeat", type=int, default=1, help="repetitions of every (case, host, condition)")
@@ -819,8 +1033,9 @@ def main(argv=None) -> int:
     p.add_argument("--judge", choices=["codex", "claude", "omp"], help="blind pairwise judge host")
     p.add_argument("--judge-pairs", action="append", metavar="A:B",
                    help="condition pairs to judge (repeatable or comma-separated); a side is skill, baseline, "
-                        "competitor (every competitor of this run) or a competitor name, e.g. skill:competitor or "
-                        "skill:humanizer. Default skill:baseline")
+                        "competitor (every competitor of this run) or a competitor name, variant (every variant) or "
+                        "variant-NAME, e.g. skill:competitor, skill:humanizer or skill:variant-pre. Default "
+                        "skill:baseline")
     p.add_argument("--omp-model", default="gpt-6-sol", help="model for the omp host (omp --model)")
     p.add_argument("--omp-thinking", help="omp --thinking level, e.g. medium")
     p.add_argument("--judge-mode", choices=["auto", "style"], default="auto",
@@ -844,8 +1059,12 @@ def main(argv=None) -> int:
         print("\n".join(problems) or "no cases matched", file=sys.stderr)
         return 2
     specs = load_competitors()
-    conditions, error = resolve_conditions(args.condition, args.competitors, specs)
-    pairs, pair_error = resolve_pairs(args.judge_pairs, conditions, specs) if not error else ([], None)
+    variants, error = parse_variants(args.variant)
+    adoptions, adopt_error = parse_adoptions(args.adopt_runs, variants, args.resume, args.out) if not error else ([], None)
+    error = error or adopt_error
+    conditions, cond_error = resolve_conditions(args.condition, args.competitors, specs, variants) if not error else ([], None)
+    error = error or cond_error
+    pairs, pair_error = resolve_pairs(args.judge_pairs, conditions, specs, variants) if not error else ([], None)
     error = error or pair_error
     if error:
         print(error, file=sys.stderr)
@@ -859,7 +1078,21 @@ def main(argv=None) -> int:
     if cache_problems:
         print("competitor skills cannot be installed:\n  " + "\n  ".join(cache_problems), file=sys.stderr)
         return 2
-    dirty = contaminated([s for name in used for s in competitor_skill_names(specs[name])])
+    exported = {}
+    for name, ref in variants.items():
+        try:
+            exported[name] = export_variant(name, ref)
+        except ValueError as exc:
+            print(exc, file=sys.stderr)
+            return 2
+        lacking = sorted({c["skill"] for c in cases} - set(exported[name]["skills"]))
+        if lacking:
+            print(f"warning: variant {name} ({ref}) has no skill {', '.join(lacking)}; its runs on those cases "
+                  "measure the bare model", file=sys.stderr)
+    VARIANTS.clear()
+    VARIANTS.update(exported)
+    dirty = contaminated([*(s for name in used for s in competitor_skill_names(specs[name])),
+                          *(s for v in exported.values() for s in v["skills"])])
     if dirty and not args.allow_contaminated:
         print("user-level skills would leak into the baseline:\n  " + "\n  ".join(dirty)
               + "\nremove them or pass --allow-contaminated", file=sys.stderr)
@@ -871,10 +1104,32 @@ def main(argv=None) -> int:
 
     stamp = dt.datetime.now().strftime("%Y%m%d-%H%M%S")
     run_dir = (Path(args.out) if args.out else REPO / "evals" / "results" / stamp).resolve()
+    if adoptions and not run_dir.is_dir():
+        print(f"--adopt-runs: {run_dir} does not exist", file=sys.stderr)
+        return 2
     run_dir.mkdir(parents=True, exist_ok=True)
+    adopted = []
+    if args.resume and (run_dir / "run.json").is_file():  # a rerun of the same command must not adopt twice
+        adopted = json.loads((run_dir / "run.json").read_text(encoding="utf-8")).get("adopted", [])
+    for src, dst in adoptions:
+        if any(a["from"] == src and a["to"] == dst for a in adopted):
+            print(f"{src} runs already adopted as {dst}", flush=True)
+            continue
+        try:
+            moved = adopt_runs(run_dir, src, dst, exported[variant_name(dst)])
+        except ValueError as exc:
+            print(exc, file=sys.stderr)
+            return 2
+        if not moved:
+            print(f"--adopt-runs: no {src} runs in {run_dir}", file=sys.stderr)
+            return 2
+        adopted.append({"from": src, "to": dst, "runs": moved})
+        print(f"adopted {moved} {src} runs as {dst} ({exported[variant_name(dst)]['sha'][:10]})", flush=True)
     info = {"id": run_dir.name, "started": dt.datetime.now().isoformat(timespec="seconds"), "hosts": args.host,
             "conditions": conditions, "cases": len(cases), "repeat": args.repeat, "contaminated": bool(dirty),
             "competitors": {name: competitor_record(specs[name]) for name in used},
+            "variants": {name: variant_record(v) for name, v in exported.items()},
+            **({"adopted": adopted} if adopted else {}),
             "judge_pairs": [pair_key(pair) for pair in pairs],
             "models": {k: v for k, v in {"codex": args.codex_model, "codex_effort": args.codex_effort,
                                           "claude": args.claude_model}.items() if v},
@@ -914,6 +1169,9 @@ def main(argv=None) -> int:
                 print(f"  competitor {name}: pass {grade._pct(b['competitor_pass'])} vs baseline "
                       f"{grade._pct(b['baseline_pass'])} (n={b['n']}); our skills {grade._pct(s['skill_pass'])} vs "
                       f"{grade._pct(s['competitor_pass'])} (n={s['n']}); loaded {grade._pct(c['loaded'])}")
+            for name, a in v.get("variants", {}).items():
+                print(f"  A/B skill vs variant-{name}: pass {grade._pct(a['skill_pass'])} vs {grade._pct(a['variant_pass'])} "
+                      f"(n={a['n']}); loaded {grade._pct(a['skill_loaded'])} vs {grade._pct(a['variant_loaded'])}")
     print(f"report: {run_dir / 'report.md'}")
     return 0
 

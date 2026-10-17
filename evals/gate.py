@@ -4,6 +4,7 @@
 Usage:
   python3 evals/gate.py freeze RUN_DIR [--model NAME] [--out evals/gate/reference.json]
   python3 evals/gate.py check  RUN_DIR [--against evals/gate/reference.json] [--config evals/gate/config.json] [--all]
+  python3 evals/gate.py check  RUN_DIR --reference-condition variant-NAME [--config evals/gate/config.json] [--all]
   python3 evals/gate.py aa     RUN_DIR [--config evals/gate/config.json]
   python3 evals/gate.py weak   OTHER_RUN_DIR [--against evals/gate/reference.json] [--out evals/gate/weak_spots.json]
 
@@ -25,6 +26,10 @@ reference on (host, case, rep) and exits 1 when a skill revision is worse. Per s
 `aa` is the noise test: it relabels the repetitions of one run (shifted by one and by two, and every single
 repetition against every other) and gates those pseudo-runs against the run itself. The outputs are the same
 outputs, so the gate must pass on all of them; it exits 1 when one fails.
+
+`check --reference-condition variant-NAME` needs no frozen file: inside one A/B run (run.py --variant NAME=GITREF) it
+gates the run's `skill` runs against the runs of that variant, with the same rules and tolerances. `skill` is the
+revision under test, the variant the reference; hosts are those present on both sides.
 
 `weak` records where the reference is worse than another run (CI of the difference excludes zero) in
 config.json's metrics; `check` prints that list so the gate never silently blesses the reference's weak spots.
@@ -49,6 +54,7 @@ REFERENCE = GATE_DIR / "reference.json"
 CONFIG = GATE_DIR / "config.json"
 WEAK_SPOTS = GATE_DIR / "weak_spots.json"
 SCHEMA = 1
+VARIANT_PREFIX = "variant-"  # run.py's A/B condition: our skills at another git ref
 
 
 def _round(v):
@@ -265,7 +271,8 @@ def render(result: dict, ref_meta: dict, new_info: dict, show_all: bool = False,
     if warns:
         lines += ["", "Warnings (worse than tolerance, CI reaches back inside it):"] + [
             f"  {r['scope']}: {r['metric']}: delta {r['delta']:+.3g}" for r in warns]
-    lines += ["", *render_weak_spots(weak, ref_meta, result)]
+    if not ref_meta.get("same_run"):
+        lines += ["", *render_weak_spots(weak, ref_meta, result)]
     lines += ["", "GATE FAILED" if fails else "GATE PASSED"]
     return "\n".join(lines)
 
@@ -300,6 +307,32 @@ def check(run_dir: Path, reference_path: Path, config_path: Path, show_all: bool
     weak_path = weak_path or reference_path.with_name(WEAK_SPOTS.name)
     weak = json.loads(weak_path.read_text(encoding="utf-8")) if weak_path.is_file() else None
     return (1 if result["failed"] else 0), _drift_note(ref) + render(result, ref, info, show_all, weak)
+
+
+def check_in_run(run_dir: Path, reference_condition: str, config_path: Path, show_all: bool = False) -> tuple[int, str]:
+    """Gate the `skill` runs of one run against the runs of another condition of the same run (an A/B variant), with
+    the rules of config.json. Both sides are paired on (host, case, rep) by evaluate()."""
+    if not reference_condition.startswith(VARIANT_PREFIX):
+        return 2, f"--reference-condition must be a variant-NAME condition, got {reference_condition!r}"
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+    info, records = stats.read_run(run_dir)
+    reference, new = _gated_records(records, reference_condition), _gated_records(records, "skill")
+    for condition, runs in ((reference_condition, reference), ("skill", new)):
+        if not runs:
+            return 2, f"no '{condition}' runs in {run_dir}"
+    hosts = sorted({r["host"] for r in reference} & {r["host"] for r in new})
+    if not hosts:
+        return 2, f"'{reference_condition}' and 'skill' runs in {run_dir} share no host"
+    reference, new = ([r for r in runs if r["host"] in hosts] for runs in (reference, new))
+    run_id = info.get("id", run_dir.name)
+    variant = (info.get("variants") or {}).get(reference_condition[len(VARIANT_PREFIX):])
+    label = f"{run_id} / {reference_condition}" + (f" = {variant['ref']} @ {variant['sha'][:10]}" if variant else "")
+    ref_meta = {"condition": reference_condition, "metrics_version": stats.METRICS_VERSION, "same_run": True,
+                "run": {"id": label, "hosts": hosts, "cases": len({r["case"] for r in reference}),
+                        "repeat": info.get("repeat"), "model": "; ".join(f"{k} {v}" for k, v in (info.get("models") or {}).items())
+                        or "host default"}}
+    result = evaluate(reference, new, config)
+    return (1 if result["failed"] else 0), render(result, ref_meta, {"id": f"{run_id} / skill"}, show_all)
 
 
 # ---------------------------------------------------------------- A/A noise test
@@ -384,6 +417,8 @@ def main(argv=None) -> int:
     c = sub.add_parser("check", help="gate a run against the reference")
     c.add_argument("run_dir")
     c.add_argument("--against", default=str(REFERENCE))
+    c.add_argument("--reference-condition", metavar="variant-NAME",
+                   help="gate this run's skill runs against that variant of the same run instead of a frozen reference")
     c.add_argument("--config", default=str(CONFIG))
     c.add_argument("--weak-spots", help="weak spots file (default: weak_spots.json next to the reference)")
     c.add_argument("--all", action="store_true", help="show every per-skill row")
@@ -423,8 +458,11 @@ def main(argv=None) -> int:
         Path(args.out).write_text(json.dumps(report, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
         print(f"{len(report['spots'])} weak spots of {report['reference_run']} vs {report['other_run']} -> {args.out}")
         return 0
-    code, text = check(Path(args.run_dir), Path(args.against), Path(args.config), args.all,
-                       Path(args.weak_spots) if args.weak_spots else None)
+    if args.reference_condition:
+        code, text = check_in_run(Path(args.run_dir), args.reference_condition, Path(args.config), args.all)
+    else:
+        code, text = check(Path(args.run_dir), Path(args.against), Path(args.config), args.all,
+                           Path(args.weak_spots) if args.weak_spots else None)
     print(text, file=sys.stderr if code == 2 else sys.stdout)
     return code
 

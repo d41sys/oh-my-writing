@@ -460,3 +460,78 @@ def test_diagram_is_not_enlarged_past_its_drawn_width(tmp_path):
     width = re.search(r'<div class="figure-art" style="--vbw:(\d+)">', (tmp_path / "report.html").read_text(encoding="utf-8"))
     assert width and int(width.group(1)) > 0
     assert json.loads(proc.stdout)["figures"][0]["print_scale"] <= 1
+
+
+# --------------------------------------------------------------------------
+# --md-out: portable Markdown
+# --------------------------------------------------------------------------
+
+PORTABLE_SRC = """---
+title: Atlas report
+subtitle: Progress to 30 June
+type: Project status report
+prepared_for: Steering committee
+date: 2026-07-01
+---
+
+# Atlas report
+
+## Summary
+
+<!-- internal note -->
+Figure [[fig:example-gantt]] shows the plan; see also [[fig:plan-flow]].
+
+![Q2 plan](example-gantt.html "Source: plan.xlsx")
+
+```mermaid caption="Plan flow" source="plan.md" id="plan-flow"
+flowchart LR
+  A --> B
+```
+
+```
+keep [[fig:not-a-ref]] verbatim
+```
+"""
+
+
+def test_md_out_is_portable_and_standalone(tmp_path):
+    src = tmp_path / "work" / "source.md"
+    src.parent.mkdir()
+    src.write_text(PORTABLE_SRC, encoding="utf-8")
+    out_md = tmp_path / "report.md"
+    proc = run(BUILD, src, "--diagrams", FIX, "--out", tmp_path / "report.html", "--md-out", out_md, "--json")
+    assert proc.returncode == 0, proc.stderr
+    md = out_md.read_text(encoding="utf-8")
+    assert md.startswith("# Atlas report\n\n*Progress to 30 June*\n\nProject status report · **Prepared for:** Steering committee · **Date:** 2026-07-01\n")
+    assert not md.startswith("---") and md.count("# Atlas report") == 1 and "internal note" not in md
+    assert "Figure 1 shows the plan; see also Figure 2." in md and "Figure Figure" not in md
+    assert "[[fig:example-gantt]]" not in md and "keep [[fig:not-a-ref]] verbatim" in md
+    assert "![Figure 1. Q2 plan](diagrams/example-gantt.svg)" in md
+    caption = next(l for l in md.splitlines() if l.startswith("*Figure 1.*"))
+    assert caption.startswith("*Figure 1.* Q2 plan.") and caption.endswith("Source: plan.xlsx") and len(caption) > 60  # carries the diagram's <desc>
+    assert "```mermaid\nflowchart LR\n  A --> B\n```\n\n*Figure 2.* Plan flow. Source: plan.md" in md
+    svg_file = tmp_path / "diagrams" / "example-gantt.svg"
+    assert svg_file.is_file() and json.loads(proc.stdout)["markdown_files"] == [str(svg_file)]
+    root = ET.fromstring(svg_file.read_text(encoding="utf-8"))
+    assert root.tag.endswith("svg") and "<style>" in svg_file.read_text(encoding="utf-8") and "<script" not in svg_file.read_text(encoding="utf-8")
+    assert (tmp_path / "report.html").is_file()
+
+
+def test_md_out_refuses_to_overwrite_the_source(tmp_path):
+    src = tmp_path / "report.md"
+    src.write_text("# T\n\ntext\n", encoding="utf-8")
+    proc = run(BUILD, src, "--md-out", src)
+    assert proc.returncode == 2 and "must not be the input file" in proc.stderr
+    assert src.read_text(encoding="utf-8") == "# T\n\ntext\n"
+
+
+def test_md_out_copies_image_figures_and_keeps_existing_svg(tmp_path):
+    png = bytes.fromhex("89504e470d0a1a0a0000000d49484452000000010000000108060000001f15c4890000000d49444154789c6360000002000001e221bc330000000049454e44ae426082")
+    (tmp_path / "src").mkdir()
+    (tmp_path / "src" / "chart.png").write_bytes(png)
+    (tmp_path / "src" / "report-source.md").write_text("# T\n\n![Chart](chart.png \"Source: x\")\n", encoding="utf-8")
+    out_md = tmp_path / "out" / "report.md"
+    proc = run(BUILD, tmp_path / "src" / "report-source.md", "--out", tmp_path / "out" / "report.html", "--md-out", out_md)
+    assert proc.returncode == 0, proc.stderr
+    assert "![Figure 1. Chart](diagrams/chart.png)" in out_md.read_text(encoding="utf-8")
+    assert (tmp_path / "out" / "diagrams" / "chart.png").read_bytes() == png

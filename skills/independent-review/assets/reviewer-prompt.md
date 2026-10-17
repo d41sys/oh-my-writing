@@ -2,7 +2,7 @@ Load when: sending a draft to an independent reviewer (fresh session, ideally a 
 
 # Reviewer prompt
 
-Fill every `{{placeholder}}`. Delete any optional line you cannot fill truthfully; do not invent it. Send the text inside the fence as the reviewer's whole prompt, in a new session, with read-only access.
+Fill every `{{placeholder}}`. Delete any optional line you cannot fill truthfully (sources, rubric, reading date); do not invent it. Send the text inside the fence as the reviewer's whole prompt, in a new session, with read-only access.
 
 ## Before you send
 
@@ -16,7 +16,7 @@ Check the filled prompt against this list. Remove anything that matches.
 - Anything about the writer's process, tools, or model.
 - Confidential or unpublished material the owner has not cleared to leave this session (see step 3 of the skill).
 
-Allowed: who reads the text, what that reader knows and needs, hard constraints (length, format, venue, house style), sources the text must agree with, the rubric, and the output format below.
+Allowed: who reads the text, what that reader knows and needs, what the reader must be able to answer after reading, the reading date, hard constraints (length, format, venue, house style), sources the text must agree with, the rubric, and the output format below. Not allowed: the draft's known weak spots, even as "check X carefully"; derive the reader's questions from the reader's job, not from what you already see missing.
 
 ## The prompt
 
@@ -34,7 +34,9 @@ Genre: {{GENRE}}
 Reader: {{WHO_THEY_ARE_AND_WHAT_THEY_ALREADY_KNOW}}
 The reader opens the document because: {{READER_REASON}}
 After reading, the reader has to: {{READER_NEXT_ACTION_OR_DECISION}}
+The reader needs to be able to answer: {{READER_NEEDS}}
 Hard constraints: {{LENGTH_FORMAT_VENUE_STYLE_RULES}}
+The reader reads this on: {{READING_DATE}}
 Review in this language: {{REVIEW_LANGUAGE}}
 
 Open your reply with one line: Reviewer-Model: <your own model id, or unknown>
@@ -46,15 +48,17 @@ Step 1. In two sentences, state what the document claims or asks of the
 reader, as you understood it. Do this before anything else.
 
 Step 2. Review for:
-1. Does the reader get what they came for, early enough?
+1. Decision readiness: can the reader answer each question in "needs to be
+   able to answer" from the page, early enough? Say which they cannot, and
+   treat a date without a year or a date already past on the reading date as
+   something to flag, not to repair.
 2. Faithfulness: any number, name, scope, or qualifier that differs from the
    sources, or a claim the text does not support. (Skip if no sources given.)
 3. Claim strength: statements stronger or weaker than the evidence in the text.
 4. Gaps and confusion: undefined terms, missing steps, jumps, contradictions.
-5. Structure: can the reader find the answer by skimming the headings and
-   first sentences?
-6. Fit: tone and length suitable for this reader and these constraints.
-7. Rubric criteria, if a rubric was given: score each with a reason.
+5. Structure and fit: can the reader find the answer from the headings and
+   first sentences, and do tone and length suit this reader and constraints?
+6. Rubric criteria, if a rubric was given: score each with a reason.
 
 Step 3. Report each finding as:
 - Severity: critical | major | minor | nit
@@ -88,6 +92,8 @@ VERDICT: ready | revise
 | `WHO_THEY_ARE_AND_WHAT_THEY_ALREADY_KNOW` | role, background, vocabulary they have | what you wish they believed |
 | `READER_REASON` | the question or task bringing them to the text | the writer's goal |
 | `READER_NEXT_ACTION_OR_DECISION` | the concrete act: approve, run, apply, reply | the conclusion you want them to reach |
+| `READER_NEEDS` | three to five questions anyone in that role would ask before acting, in plain words (funding call: what it costs, what it commits us to, by when, how success is judged; instructions: what to have ready, what each step does, how to know it worked) | questions that name the draft's gaps, the writer's worries or an expected answer |
+| `READING_DATE` | today's date, when the text has dates without a year or relative dates; otherwise delete the line | a guess |
 | `SOURCE_PATHS` | files, raw data, spec | your summary of them |
 | `RUBRIC_PATH_OR_TEXT` | a filled rubric; calibrated or labelled `calibration: none` | a rubric invented to fit the verdict |
 

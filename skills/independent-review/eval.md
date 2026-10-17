@@ -6,10 +6,10 @@ Answer each check pass or fail. Fix every failure before returning.
 
 1. Was every review round run in a new session, subagent or process, rather than in the writer's own context?
 2. If no fresh context was available, does the report say "Independent review: not run" with the reason, and label anything you did yourself as a self-check, instead of presenting it as a review?
-3. Does a self-check avoid a verdict of `ready` or "this is good" in the writer's own voice, and list what it cannot see?
+3. Does a self-check avoid a verdict of `ready` or "this is good" in the writer's own voice, list what it cannot see, and name what only the author can confirm (a date with no year or weekday, a place or number the brief leaves open)?
 4. Where a different model family was possible, was it used, and does the report give the reviewer's reported model id (or "unknown") and whether it matches the writer's family?
-5. Does the packet sent to the reviewer contain only the artifact, the reader brief, hard constraints, sources, and an optional rubric?
-6. Is the packet free of the writer's intent, hoped-for conclusion, requested verdict, drafting history, earlier versions, and warnings about weak spots?
+5. Does the packet sent to the reviewer contain only the artifact, the reader brief, hard constraints, sources, an optional rubric, the reading date (when the text has yearless or relative dates), and the reader's own questions (three to five things anyone in that role needs answered before acting)?
+6. Is the packet free of the writer's intent, hoped-for conclusion, requested verdict, worries, drafting history, earlier versions, and warnings about weak spots, including reader questions that name the draft's known gaps?
 7. Is the packet free of any statement of what was fixed or changed since an earlier round?
 8. Are the review questions open ("what is the main point?") rather than leading ("isn't this clear?")?
 9. Are sources passed as files or raw material, not as your summary of them?
@@ -28,7 +28,7 @@ Answer each check pass or fail. Fix every failure before returning.
 16. Is severity assigned by reader impact rather than reviewer tone, and are taste-only items marked nit?
 17. Does every finding have exactly one decision: accept, reject with a one-line evidence-based reason, or needs author?
 18. Was any finding that would add an unsupported claim, number, quote, name or example rejected as written, and turned into a needs-author question in the findings (not text in the artifact) if the gap is real?
-19. Are accepted fixes the smallest edits, with the author's voice, claims, qualifiers, numbers and structure intact, reported as a list or marked edits? Is every revised draft or rewritten passage free of `[ASK AUTHOR]`, `[VERIFY]` and `[UNTESTED]` markers, review notes, finding IDs and process narration, with gaps left as they were, dropped, or stated plainly, each question put in the findings, and no heading, signposting or repeated caveat added to the author's text?
+19. Are accepted fixes the smallest edits, with the author's voice, claims, qualifiers, numbers and structure intact, reported as a list or marked edits? Is every revised draft or rewritten passage free of `[ASK AUTHOR]`, `[VERIFY]` and `[UNTESTED]` markers, review notes, finding IDs and process narration, with gaps left as they were, dropped, or stated plainly, each question put in the findings, and no heading (except a notice's own short headline), signposting, closing recap paragraph or repeated caveat added to the author's text?
 20. Were fixes applied in dependency order and diffed against the version the reviewer saw for drift?
 21. Was a suggestion that changes the document's purpose or audience named as drift and sent to the author, not folded in as a fix?
 22. Where a finding was contested, was a separate verification job used and labelled, with the evidence given as locations the reviewer re-reads, and is no fabricated evidence used in the rebuttal?
@@ -58,7 +58,9 @@ Answer each check pass or fail. Fix every failure before returning.
 37. Are unresolved critical or major items listed under Remaining, with the reason and the effort needed?
 38. Where the author might assume the review covered something it cannot (technical correctness, legal or medical accuracy), does the report say so once and route it to a specialist or the author?
 39. Is the depth (light, standard, high) stated and proportionate to the stakes, with the number of sessions used?
-40. Is the report short, with changes listed one line each, each point said once (not again in a verdict, remaining or not-covered line), and no claims of verification you did not perform?
+40. Is the report short, with changes listed one line each, each point said once (not again in a verdict, remaining or not-covered line), no claims of verification you did not perform, and each question to the author a plain sentence naming the missing item (no marker syntax unless the question sits in a file the author will edit)?
+41. When the report or triage is saved as a file, does the chat reply name the file, the decision and the one open question, without repeating the file?
+42. When you wrote the text you self-checked, did you apply what the check found (restated facts, stock thanks, a closing paragraph that repeats the body) before handing it over?
 
 ## Final read
 

@@ -20,7 +20,7 @@ Fold sections 3 to 5 together when the folder is small. The old separate "Decisi
 
 ### Final or closing report (looks back)
 
-First screen: outcome against objectives, then three to five key points, then outstanding items and handover.
+First screen: outcome against objectives, then one sentence for what the reader must assign, sign or confirm (the decision comes before the evidence for it), then three to five key points, then outstanding items and handover.
 
 | # | Section | What it holds |
 |---|---|---|
@@ -34,13 +34,13 @@ First screen: outcome against objectives, then three to five key points, then ou
 
 ### Migration or system-change report
 
-First screen: what changed (before and after, in a short table), current state of the cut-over, what remains. Then: scope and approach, architecture or workflow figure, risks and open items, decisions and actions table, appendix: sources.
+First screen: what changed (before and after, in a short table), current state of the cut-over, what remains, and the decisions or assignments the reader owes (one sentence, or the Decisions and actions table when there are four or more). Then: scope and approach, architecture or workflow figure, risks and open items, appendix: sources. The source appendix is a compact list, not a page of its own; it carries no statement about the reporting window that the first screen already made.
 
 ### Length
 
 | Folder | Report |
 |---|---|
-| a few short documents | one page: summary, decisions and actions, status, sources as a list |
+| a few short documents (two or three, about a page of facts) | one page of about 120 to 250 words: a plain opening sentence with the state and the date it holds for, three or four bullets, one "Next" line, a one-line sources list. No rating label, no proposals label, no appendix, no table |
 | a typical project folder (5-30 files) | status report about two to four printed pages, two to five diagrams |
 | a large or final-report folder | three to six pages, a results section by workstream, an appendix per major source set |
 
@@ -50,7 +50,7 @@ For decision memos, post-mortems and research reports use `report-writing`.
 
 Everything above the first detail heading, about the top third of page one. The reader should be able to stop here.
 
-1. **Overall assessment**, one line, labelled as the report's own and derived from facts stated in the documents: "Overall assessment (this report's, from the stated facts): Amber. Integration testing starts 13 July and its test environment was unbooked on 1 July." A colour word or rating is allowed only with the facts behind it in the same line. When the records do not support one: "The records do not support an overall assessment: the latest status is dated 1 July and the pilot outcome is not recorded."
+1. **Overall assessment**, one line, labelled once as the report's own and derived from facts stated in the documents: "Overall assessment (this report's view): Amber. Integration testing starts 13 July and its test environment was unbooked on 1 July." A colour word or rating is allowed only with the facts behind it in the same line. When the records do not support one: "The records do not support an overall assessment: the latest status is dated 1 July and the pilot outcome is not recorded." A one-page report skips the rating and the label: it opens with the state and its date ("As of 12 September, 8 of 12 pages are done; the rest wait on legal review, with no date back"), because the plain sentence already is the assessment.
 2. **Three to five key points**, each carrying its number, date and, where it matters, source. Include any material constraint (funds released below the approved budget, a sign-off step) and any unreconciled conflict, because the reader can act on them.
 3. **Decisions and actions table** (status reports with four or more actions; with fewer, write the actions as sentences). One row per decision or action, highest priority first.
 
@@ -96,6 +96,15 @@ List the same items in the reply, in full. The numbering matches.
 
 Exception: the author asked for a draft to edit themselves. Then the markers stay in the body of `report.md` at the point of the gap (the build highlights them), the open-questions file still exists, and the reply says it is a draft.
 
+## Numbers the report computes
+
+Every derived number is a place where the report says something no document said, so each one earns its place and carries its inputs.
+
+- State a sum, difference, percentage or day count only where the reader needs it, in the same sentence or row as its inputs, with the operation named: "$275 a month in total ($240 hosting plus $35 analytics)", "the plan moved 21 days later (1 June to 22 June)". Keep the ledger's `derived` row with the formula.
+- Compute only from values the documents agree on. From two conflicting values the report states the size of the gap beside both ("$40,200 and $42,500; the figures differ by $2,300") and nothing else: no total, percentage, remaining balance or trend that leans on either.
+- Use the documents' own notation. Do not rewrite a table as a fraction ("299/299", "0/3"), a multiplier ("3.8×") or a percentage the documents do not give; quote the two source numbers ("55 to 210 scans per second"). Round no finer than the inputs.
+- Do not count your own work in the reader's report ("all five files were read", "no conflicts found"): reading is the author's expectation, and a reported count of files or a clean bill reads as process. Unread files are the exception and go in the sources appendix.
+
 ## Citations
 
 A reader checks a claim at the source; a paragraph does not need a source list to be credible.
@@ -105,7 +114,7 @@ A reader checks a claim at the source; a paragraph does not need a source list t
 | figure | source line in the figure line: `"Source: plan.xlsx, sheet Schedule; status email, 1 July"` |
 | table | one `Source: ...` line directly under it (styled as a source line) |
 | prose | no source list per paragraph. A short parenthetical file name only where the source matters: a conflict ("budget.csv, 30 June; status email, 1 July"), a superseded document ("replaces the 3 March plan"), a single-source claim the reader may challenge ("the vendor says, vendor-note.md") |
-| appendix | one compact table: file, as-of date, used for. Below it one line each for files not read (and why) and conflicts not resolved. No process notes, no extraction methods, no mention of assistant-addressed text |
+| appendix | for a report of about three pages or more, one compact table: file, as-of date, used for; below it one line each for files not read (and why) and conflicts not resolved. For a shorter report, one `Sources:` line. A file with no date inside it is "undated"; its file-system modified date goes in the ledger only, not in the report. No process notes, no "all files were read", no extraction methods, no mention of assistant-addressed text |
 
 Bad: "Build is 70% complete. (Sources: plan.md; status-email.eml; steering-minutes.docx.)" after every paragraph.
 Good: "Build is 70% complete (status email, 1 July)." once, where the figure first matters; the appendix lists the files.

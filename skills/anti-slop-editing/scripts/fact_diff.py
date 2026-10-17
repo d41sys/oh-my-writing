@@ -61,6 +61,8 @@ CITE_RES = [
 ]
 STRAIGHT_QUOTE_RE = re.compile(r'(?<![\w])"(?=\S)([^"]{1,600}?)(?<=\S)"(?!\w)')
 CURLY_QUOTE_RE = re.compile("\u201c([^\u201d]{1,600})\u201d")
+LOCATOR_RE = re.compile(r"\b[\w./-]+\.(?:md|txt|pdf|docx?|csv|tsv|json|ya?ml|toml|py|tex|html?|xlsx?|log)"
+                        r"(?::|#L|,? lines? )\d+(?:\s?[-–]\s?L?\d+)?")
 
 NUMBER_WORDS = {"two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8,
                 "nine": 9, "ten": 10, "eleven": 11, "twelve": 12}
@@ -191,6 +193,8 @@ class Extraction:
                 self.add("citations", flat(m.group(0)), m.start())
                 spans.append((m.start(), m.end()))
         work = mask(work, spans)
+        # notes.md:93-108 points at a place in the source; it is not a figure the text states
+        work = mask(work, [(m.start(), m.end()) for m in LOCATOR_RE.finditer(work)])
 
         # Quotes form their own category, but the numbers, words and names inside them are still facts
         # of the text: a figure quoted in the source and restated unquoted is not invented.
@@ -333,10 +337,14 @@ def compare(before: Extraction, after: Extraction, ignore: set[str]) -> dict:
                 if cat == "names" and not new_name_words(item, before_words):
                     continue
                 added.append({"item": item, "before": nb, "after": na, "context": context(after.text, a[item][1])})
+        derived = []
         if cat == "numbers":
             lost, added = _pair_units(lost, added)
+            added, derived = _split_derived(added, b)
         cats[cat] = {"before_count": sum(v[0] for v in b.values()), "after_count": sum(v[0] for v in a.values()),
                      "lost": lost, "added": added}
+        if derived:
+            cats[cat]["derived"] = derived
     return cats
 
 
@@ -372,6 +380,72 @@ def _pair_units(lost: list, added: list) -> tuple[list, list]:
     return lost, added
 
 
+DERIVED_MIN = 100  # a sum or difference below this matches some pair of source figures by chance; bare counts never qualify
+PRODUCT_MIN = 1000  # a product of a priced or measured figure and a count (rate x volume) at or above this
+OPERAND_MIN = 10  # operands under this (1, 2, 5) make chance matches; "x 1" is no calculation at all
+
+
+def _as_float(num: str) -> float | None:
+    try:
+        return float(num)
+    except ValueError:
+        return None
+
+
+def _exact(a: float, b: float) -> bool:
+    return abs(a - b) <= 1e-9 * max(1.0, abs(b))
+
+
+def _is_year(value: float, unit: str) -> bool:
+    return not unit and value.is_integer() and 1900 <= value <= 2100
+
+
+def _derivation(value: float, unit: str, pool: dict[str, set[float]]) -> str | None:
+    """How value follows exactly from two source figures, or None. Sums and differences need both operands in the
+    value's own unit; a product needs one operand in that unit and the other a bare count."""
+    same = sorted(v for v in pool.get(unit, set()) if v >= OPERAND_MIN and not _is_year(v, unit))
+    if unit and abs(value) >= DERIVED_MIN:
+        for i, x in enumerate(same):
+            for y in same[i:]:
+                if _exact(x + y, value):
+                    return f"{x:g} + {y:g}"
+                if _exact(y - x, value):
+                    return f"{y:g} - {x:g}"
+    if unit and abs(value) >= PRODUCT_MIN:
+        priced = sorted(pool.get(unit, set()))
+        counts = sorted(v for v in pool.get("", set()) if v >= OPERAND_MIN and not _is_year(v, ""))
+        for x in priced:
+            for n in counts:
+                if _exact(x * n, value):
+                    return f"{x:g} × {n:g}"
+    return None
+
+
+def _split_derived(added: list, before_items: dict) -> tuple[list, list]:
+    """New figures that follow exactly from two source figures by one sum, difference or rate-times-count are
+    calculations, not inventions: report them apart so the writer checks the arithmetic instead of hunting for a
+    source. Rounded results, percentages, multipliers, years and small figures stay flagged, because they match
+    some pair of source figures by chance."""
+    pool: dict[str, set[float]] = {}
+    for item in before_items:
+        num, unit = _num_value(item)
+        value = _as_float(num)
+        if value is not None and unit not in STRICT_UNITS:
+            pool.setdefault(unit, set()).add(value)
+    kept, derived = [], []
+    for a in added:
+        num, unit = _num_value(a["item"])
+        value = _as_float(num)
+        hit = None
+        if value is not None and unit not in STRICT_UNITS and not _is_year(value, unit):
+            hit = _derivation(value, unit, pool)
+        if hit:
+            derived.append({**a, "from": hit})
+        else:
+            kept.append(a)
+    return kept, derived
+
+
 def read_text(path: str) -> str:
     if path == "-":
         data = sys.stdin.buffer.read()
@@ -392,6 +466,9 @@ def render_human(report: dict) -> str:
             for it in d[kind]:
                 out.append(f"[FLAG] {cat} {kind}: \"{short(it['item'])}\" (before {it['before']}, after {it['after']})")
                 out.append(f"  -> {'before' if kind == 'lost' else 'after'}: \"...{short(it['context'], 90)}...\"")
+        for it in d.get("derived", []):
+            out.append(f"[CHECK] {cat} derived: \"{short(it['item'])}\" = {it['from']} from the source figures; "
+                       "confirm the arithmetic and that the reader sees the inputs")
         if not d["lost"] and not d["added"] and d["before_count"]:
             out.append(f"[OK] {cat}: {d['before_count']} unchanged")
     if report["markers_after"]:
