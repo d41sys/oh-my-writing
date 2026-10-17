@@ -1041,10 +1041,17 @@ def host_failed(r: dict) -> bool:
     return bool(r.get("error")) and not r["checks"][0]["passed"]
 
 
-def _judge_scores(judge: list[dict]) -> dict:
+DEFAULT_JUDGE_PAIR = "skill:baseline"
+
+
+def _pair_of(entry: dict) -> str:
+    return entry.get("pair") or DEFAULT_JUDGE_PAIR
+
+
+def _judge_scores(judge: list[dict], conds: tuple[str, str] = ("skill", "baseline")) -> dict:
     """Mean visual-judge score per condition and criterion, over pairs the judge scored."""
     out = {}
-    for cond in ("skill", "baseline"):
+    for cond in conds:
         rows = [j["scores"][cond] for j in judge if (j.get("scores") or {}).get(cond)]
         if rows:
             out[cond] = {"n": len(rows), **{
@@ -1053,23 +1060,79 @@ def _judge_scores(judge: list[dict]) -> dict:
     return out
 
 
+def _judge_counts(judge: list[dict], a: str, b: str) -> tuple[dict, dict]:
+    """Verdict tally over a pairwise judge's entries for the pair (a, b), and the same per style question (empty
+    unless some entry is a style verdict). Style entries are never added to the overall tally."""
+    verdicts = {a: 0, b: 0, "tie": 0, "inconsistent": 0, "error": 0}
+    style = {axis: dict.fromkeys(verdicts, 0) for axis in STYLE_AXES}
+    for j in judge:
+        if j.get("mode") == "style":  # two verdicts, counted per question
+            if j["winner"] == "error":
+                for axis in STYLE_AXES:
+                    style[axis]["error"] += 1
+                continue
+            for axis in STYLE_AXES:
+                style[axis][j[axis]] = style[axis].get(j[axis], 0) + 1
+            continue
+        verdicts[j["winner"]] = verdicts.get(j["winner"], 0) + 1
+    return verdicts, style if any(j.get("mode") == "style" for j in judge) else {}
+
+
+def _triple(r: dict) -> tuple:
+    return (r["case"], r["host"], r.get("rep", 1))
+
+
+def _paired_rows(rows: list[dict], conds: list[str]) -> tuple[dict[str, list[dict]], set]:
+    """Rows per condition, kept only on the (case, host, rep) triples where every condition in `conds` has a run and
+    none of those runs failed on the host. Also returns those triples."""
+    by: dict[tuple, dict[str, dict]] = {}
+    for r in rows:
+        by.setdefault(_triple(r), {})[r["condition"]] = r
+    ok = {k for k, c in by.items() if all(n in c and not host_failed(c[n]) for n in conds)}
+    return {n: [c[n] for k, c in by.items() if k in ok] for n in conds}, ok
+
+
+def _delta(a, b):
+    return None if a is None or b is None else a - b
+
+
+def _competitor_stats(rows: list[dict], name: str, has_skill: bool, has_baseline: bool) -> dict | None:
+    """A competitor against the baseline and against our skills, each on the triples where both have a gradable
+    run (a competitor that did not run a case, or that crashed on it, drops only its own comparisons)."""
+    if not any(r["condition"] == name for r in rows):
+        return None
+    out = {}
+    for label, other, present in (("vs_baseline", "baseline", has_baseline), ("vs_skill", "skill", has_skill)):
+        paired, _ = _paired_rows(rows, [other, name] if present else [name])
+        c, o = paired[name], paired.get(other, [])
+        sc, so = _scores(c), _scores(o)
+        out[label] = {"n": len(c), "competitor_pass": _rate(c), f"{other}_pass": _rate(o),
+                      "delta": _delta(_rate(o), _rate(c)) if label == "vs_skill" else _delta(_rate(c), _rate(o)),
+                      "competitor_score": sc["mean"], f"{other}_score": so["mean"],
+                      "score_delta": (_delta(so["mean"], sc["mean"]) if label == "vs_skill"
+                                      else _delta(sc["mean"], so["mean"]))}
+    loaded_rows = _paired_rows(rows, [name])[0][name]
+    out["loaded"] = _rate([{"passed": bool(r["skill_loaded"])} for r in loaded_rows])
+    return out
+
+
 def summarize(runs: list[dict], judge: list[dict]) -> dict:
+    """Pass rates and scores per host and skill. Skill against baseline is paired exactly as before (a triple counts
+    only when both gradable runs exist); every competitor condition is paired with the baseline and with our skills
+    separately, so a competitor that ran only some cases never removes pairs from the main comparison. `delta` is
+    skill minus baseline, competitor minus baseline in `competitors[name].vs_baseline`, and skill minus competitor
+    in `competitors[name].vs_skill`."""
     hosts = sorted({r["host"] for r in runs})
     skills = sorted({r["skill"] for r in runs})
-    # A (case, host, rep) counts only when both conditions produced a gradable run.
-    broken = {(r["case"], r["host"], r.get("rep", 1)) for r in runs if host_failed(r)}
-    present: dict[tuple, set] = {}
-    for r in runs:
-        present.setdefault((r["case"], r["host"], r.get("rep", 1)), set()).add(r["condition"])
     conditions = {r["condition"] for r in runs}
-    broken |= {pair for pair, conds in present.items() if conds != conditions}  # one side missing: unpaired
+    competitors = sorted(c for c in conditions if c.startswith("competitor-"))
+    needed = [c for c in ("skill", "baseline") if c in conditions]  # a one-sided run is not "unpaired"
     by = {}
     for host in hosts:
         for skill in skills + ["ALL"]:
             rows = [r for r in runs if r["host"] == host and (skill == "ALL" or r["skill"] == skill)]
-            valid = [r for r in rows if (r["case"], r["host"], r.get("rep", 1)) not in broken]
-            s = [r for r in valid if r["condition"] == "skill"]
-            b = [r for r in valid if r["condition"] == "baseline"]
+            paired, ok = _paired_rows([r for r in rows if r["condition"] in needed], needed)
+            s, b = paired.get("skill", []), paired.get("baseline", [])
             ps, pb = _rate(s), _rate(b)
             ss, sb = _scores(s), _scores(b)
             by[f"{host}/{skill}"] = {
@@ -1081,8 +1144,13 @@ def summarize(runs: list[dict], judge: list[dict]) -> dict:
                 "skill_n": len(s), "baseline_n": len(b),
                 "skill_loaded": _rate([{"passed": bool(r["skill_loaded"])} for r in s]),
                 "excluded": len({(r["case"], r.get("rep", 1)) for r in rows
-                                 if (r["case"], r["host"], r.get("rep", 1)) in broken}),
+                                 if r["condition"] in needed and _triple(r) not in ok}),
             }
+            stats = {c[len("competitor-"):]: _competitor_stats(rows, c, "skill" in conditions, "baseline" in conditions)
+                     for c in competitors}
+            stats = {name: st for name, st in stats.items() if st}
+            if stats:
+                by[f"{host}/{skill}"]["competitors"] = stats
     failing = {}
     for r in runs:
         if host_failed(r):
@@ -1091,21 +1159,17 @@ def summarize(runs: list[dict], judge: list[dict]) -> dict:
             if not c["passed"]:
                 key = f"{r['condition']}:{c['type']}"
                 failing[key] = failing.get(key, 0) + 1
-    verdicts = {"skill": 0, "baseline": 0, "tie": 0, "inconsistent": 0, "error": 0}
-    style = {axis: dict.fromkeys(verdicts, 0) for axis in STYLE_AXES}
-    for j in judge:
-        if j.get("mode") == "style":  # two verdicts, counted per question and never added to the overall tally
-            if j["winner"] == "error":
-                for axis in STYLE_AXES:
-                    style[axis]["error"] += 1
-                continue
-            for axis in STYLE_AXES:
-                style[axis][j[axis]] = style[axis].get(j[axis], 0) + 1
-            continue
-        verdicts[j["winner"]] = verdicts.get(j["winner"], 0) + 1
+    default = [j for j in judge if _pair_of(j) == DEFAULT_JUDGE_PAIR]
+    verdicts, style = _judge_counts(default, "skill", "baseline")
+    judge_pairs = {}
+    for pair in sorted({_pair_of(j) for j in judge} - {DEFAULT_JUDGE_PAIR}):
+        a, b = pair.split(":", 1)  # condition names never contain ':'
+        entries = [j for j in judge if _pair_of(j) == pair]
+        pair_verdicts, pair_style = _judge_counts(entries, a, b)
+        judge_pairs[pair] = {"a": a, "b": b, "verdicts": pair_verdicts, "style": pair_style,
+                             "scores": _judge_scores(entries, (a, b))}
     return {"by": by, "failing_checks": dict(sorted(failing.items())), "judge": verdicts,
-            "judge_scores": _judge_scores(judge), "judge_style": style if any(j.get("mode") == "style" for j in judge)
-            else {}}
+            "judge_scores": _judge_scores(default), "judge_style": style, "judge_pairs": judge_pairs}
 
 
 def _pct(x):
@@ -1117,6 +1181,59 @@ def _score_cell(v: dict, side: str) -> str:
     if mean is None:
         return "n/a"
     return f"{mean:.2f} ({v[f'{side}_score_min']:.2f}-{v[f'{side}_score_max']:.2f})"
+
+
+def _pct_score(rate, score) -> str:
+    return "n/a" if rate is None else f"{rate * 100:.0f}% ({score:.2f})"
+
+
+def _pts(delta) -> str:
+    return "n/a" if delta is None else f"{delta * 100:+.0f} pts"
+
+
+def _competitor_lines(summary: dict) -> list[str]:
+    rows = [(key, name, c) for key, v in summary["by"].items() for name, c in v.get("competitors", {}).items()]
+    if not rows:
+        return []
+    lines = ["", "## Competitors", "",
+             "Third-party skills installed instead of ours (evals/competitors.json), each run only on the cases it is "
+             "mapped to. Cells give pass rate and, in brackets, mean score. Each comparison uses only the cases and "
+             "repetitions where both sides produced a gradable run: competitor against baseline in the first group, "
+             "our skills against the competitor in the second, so the baseline and our-skills columns differ between "
+             "the groups when the sets of cases differ.", "",
+             "| host / skill | competitor | competitor | baseline | competitor minus baseline | n | our skills | "
+             "competitor | ours minus competitor | n | competitor loaded |",
+             "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
+    for key, name, c in rows:
+        b, s = c["vs_baseline"], c["vs_skill"]
+        label = f"**{key}**" if key.endswith("/ALL") else key
+        lines.append(f"| {label} | {name} | {_pct_score(b['competitor_pass'], b['competitor_score'])} | "
+                     f"{_pct_score(b['baseline_pass'], b['baseline_score'])} | {_pts(b['delta'])} | {b['n']} | "
+                     f"{_pct_score(s['skill_pass'], s['skill_score'])} | "
+                     f"{_pct_score(s['competitor_pass'], s['competitor_score'])} | {_pts(s['delta'])} | {s['n']} | "
+                     f"{_pct(c['loaded'])} |")
+    return lines
+
+
+def _judge_pair_lines(pair: str, info: dict, entries: list[dict]) -> list[str]:
+    """Report section for a judged pair other than skill:baseline."""
+    a, b = info["a"], info["b"]
+    v = info["verdicts"]
+    lines = ["", f"## Blind judge: {a} vs {b}", "",
+             f"Preferred {a}: {v[a]}; {b}: {v[b]}; tie: {v['tie']}; inconsistent across swapped order: "
+             f"{v['inconsistent']}; judge error (no verdict): {v.get('error', 0)}."]
+    if info["style"]:
+        lines += ["", f"| question | {a} | {b} | tie | inconsistent | error |", "|---|---:|---:|---:|---:|---:|"]
+        for axis, label in STYLE_AXES.items():
+            c = info["style"][axis]
+            lines.append(f"| {label} | {c[a]} | {c[b]} | {c['tie']} | {c['inconsistent']} | {c.get('error', 0)} |")
+    lines += ["", "| case | host | rep | judge | winner / reads human | faithful | reason |",
+              "|---|---|---:|---|---|---|---|"]
+    for r in entries:
+        reason = (r.get("reason") or "").replace("|", "/").replace("\n", " ")[:160]
+        lines.append(f"| {r['case']} | {r['host']} | {r.get('rep', 1)} | {r['judge']} | "
+                     f"{r.get('human', r['winner'])} | {r.get('faithful', '-')} | {reason} |")
+    return lines
 
 
 def render_report(results: dict) -> str:
@@ -1131,6 +1248,10 @@ def render_report(results: dict) -> str:
         if info.get("contaminated"):
             lines += ["", "**Warning:** user-level skills with the same names were installed; the baseline may have "
                           "seen them."]
+        if info.get("competitors"):
+            lines += ["", "Competitors (local cache, unmodified): " + "; ".join(
+                f"{n} = {c['repo']} @ {(c.get('commit') or 'unpinned')[:10]}, {c['license']}"
+                for n, c in info["competitors"].items()) + "."]
         lines += [""]
     lines += ["## Pass rate and mean score by skill", "",
               "Pass rate: share of runs in which every check passed. Mean score: average over runs of the share of "
@@ -1146,10 +1267,12 @@ def render_report(results: dict) -> str:
         lines.append(f"| {label} | {_pct(v['skill_pass'])} | {_pct(v['baseline_pass'])} | {diff} | "
                      f"{_score_cell(v, 'skill')} | {_score_cell(v, 'baseline')} | "
                      f"{_pct(v['skill_loaded'])} | {v['skill_n']}+{v['baseline_n']} | {v['excluded']} |")
+    lines += _competitor_lines(summary)
+    comps = sorted({r["condition"] for r in runs if r["condition"].startswith("competitor-")})
     lines += ["", "## Cases", "",
               "| case | host | rep | baseline | with skills | score baseline / skills | "
-              "failed checks (with skills / baseline) |",
-              "|---|---|---:|:---:|:---:|---|---|"]
+              "failed checks (with skills / baseline) |" + "".join(f" {c} |" for c in comps),
+              "|---|---|---:|:---:|:---:|---|---|" + "---|" * len(comps)]
     index = {(r["case"], r["host"], r.get("rep", 1), r["condition"]): r for r in runs}
     for case, host, rep in sorted({(r["case"], r["host"], r.get("rep", 1)) for r in runs}):
         s, b = index.get((case, host, rep, "skill")), index.get((case, host, rep, "baseline"))
@@ -1170,13 +1293,16 @@ def render_report(results: dict) -> str:
             bad = [f"{c['type']} ({c['detail']})" for c in r["checks"] if not c["passed"]]
             return "; ".join(bad) or "none"
 
+        cells = "".join(f" {'-' if (r := index.get((case, host, rep, c))) is None else mark(r) + ' ' + score(r)} |"
+                        for c in comps)
         lines.append(f"| {case} | {host} | {rep} | {mark(b)} | {mark(s)} | {score(b)} / {score(s)} | "
-                     f"{fails(s)} / {fails(b)} |".replace("\n", " "))
+                     f"{fails(s)} / {fails(b)} |".replace("\n", " ") + cells)
     if summary["failing_checks"]:
         lines += ["", "## Failed checks by type", "", "| condition:check | failures |", "|---|---:|"]
         lines += [f"| {k} | {v} |" for k, v in summary["failing_checks"].items()]
-    pairwise = [r for r in results["judge"] if r.get("mode") != "style"]
-    styled = [r for r in results["judge"] if r.get("mode") == "style"]
+    default_judge = [r for r in results["judge"] if _pair_of(r) == DEFAULT_JUDGE_PAIR]
+    pairwise = [r for r in default_judge if r.get("mode") != "style"]
+    styled = [r for r in default_judge if r.get("mode") == "style"]
     if pairwise:
         j = summary["judge"]
         lines += ["", "## Blind pairwise judge", "",
@@ -1212,6 +1338,8 @@ def render_report(results: dict) -> str:
             reason = (r.get("reason") or "").replace("|", "/").replace("\n", " ")[:160]
             lines.append(f"| {r['case']} | {r['host']} | {r.get('rep', 1)} | {r['judge']} | "
                          f"{r.get('human', 'error')} | {r.get('faithful', 'error')} | {reason} |")
+    for pair, info in (summary.get("judge_pairs") or {}).items():
+        lines += _judge_pair_lines(pair, info, [r for r in results["judge"] if _pair_of(r) == pair])
     lines += ["", "## Limits", "",
               "Checks are mechanical: they detect invented numbers, names and citations, lost negations and qualifiers, "
               "missing gap markers, leftover stock patterns and leaked context, and for report cases missed facts, "

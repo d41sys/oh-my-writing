@@ -340,6 +340,9 @@ def compare(before: Extraction, after: Extraction, ignore: set[str]) -> dict:
     return cats
 
 
+STRICT_UNITS = {"%", "pp", "bps", "x", "×"}  # adding these changes the meaning: 12 -> 12% is not a restatement
+
+
 def _num_value(item: str) -> tuple[str, str]:
     """('512', 's') for '512.0 s'; trailing zero decimals are dropped so 512.0 and 512 compare equal."""
     num, _, unit = item.partition(" ")
@@ -351,19 +354,22 @@ def _num_value(item: str) -> tuple[str, str]:
 
 
 def _pair_units(lost: list, added: list) -> tuple[list, list]:
-    """A bare figure restated with a unit (512.0 -> '512 seconds') or with a different zero tail (512.0 -> 512)
-    is the same figure: drop the pair. Two different units (5 ms vs 5 s) stay flagged."""
+    """A bare figure restated with an implied unit (512.0 -> '512 seconds') or a different zero tail
+    (512.0 -> 512) is the same figure: drop the pair. Different units (5 ms vs 5 s) and percent or multiplier
+    units (12 -> 12%) stay flagged."""
     lost, added = list(lost), list(added)
     for a in list(added):
         a_num, a_unit = _num_value(a["item"])
         for l in lost:
             l_num, l_unit = _num_value(l["item"])
-            if l_num == a_num and (l_unit == a_unit or not l_unit or not a_unit):
-                lost.remove(l)
-                added.remove(a)
-                break
+            if l_num != a_num or (l_unit and a_unit and l_unit != a_unit):
+                continue
+            if (l_unit or a_unit) in STRICT_UNITS:
+                continue
+            lost.remove(l)
+            added.remove(a)
+            break
     return lost, added
-
 
 def read_text(path: str) -> str:
     if path == "-":

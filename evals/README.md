@@ -9,6 +9,9 @@ evals/
 ├── run.py                      # runs cases on agent hosts (with repetitions), then grades
 ├── grade.py                    # deterministic checks; re-grades a results directory
 ├── review_pairs.py             # one-file blind A/B page for rating pairs yourself
+├── stats.py                    # deterministic statistics benchmark: fixed metrics on every output, CIs, paired comparisons
+├── gate.py                     # regression gate: freeze a reference, fail when a skill revision is worse on the statistics
+├── gate/                       # config.json (tolerances) and reference.json (frozen reference run)
 └── results/<run-id>/           # git-ignored: workspaces, replies, logs, results.json, report.md
 ```
 
@@ -39,6 +42,33 @@ The runner refuses to run when a skill with the same name is installed at user l
 `--repeat N` runs every (case, host, condition) N times; run folders get an `__r<k>` suffix and `meta.json` records `rep`. The grader pairs skill and baseline per (case, host, repetition), so a crash in one repetition excludes only that pair. `--timeout` is the default per-run limit; a case's own `timeout` wins.
 
 `--resume` with the same `--out` keeps finished runs and judge verdicts (per repetition) and redoes only errored or missing ones. When a host refuses for usage limits, the remaining runs on that host are skipped immediately (recorded as host errors) so `--resume` can finish them after the limit resets.
+
+## Competitor skills
+
+Besides `skill` and `baseline`, the runner can install a third-party skill in place of ours (`--condition competitor:<name>`, repeatable; `--competitors` adds every competitor). The names, source folders, license, case mapping and install layout are in `evals/competitors.json`; the skills themselves are read from the local source cache (`.cache/omw_sources/<owner>__<repo>/`, git-ignored) and copied into the run's temporary workspace only. Nothing from the cache is copied into this repository or committed. The runner fails before any run when a cache folder or listed path is missing.
+
+| competitor | source | competes on (our skill) | also `style/*` |
+|---|---|---|---|
+| `humanizer` | blader/humanizer | anti-slop-editing | yes |
+| `avoid-ai-writing` | conorbronsdon/avoid-ai-writing (`skills/avoid-ai-writing`) | anti-slop-editing | yes |
+| `great-writer` | d-wwei/great-writer | post-writing | yes |
+| `marketing-copywriting` | coreyhaines31/marketingskills (`skills/copywriting`) | post-writing | no |
+| `proficiently-cover-letter` | proficientlyjobs/proficiently-claude-skills (`skills/cover-letter` + `shared`) | career-documents | no |
+| `resumeskills` | Paramchoudhary/ResumeSkills (cover-letter-generator, cold-email-writer, resume-tailor, resume-bullet-writer) | career-documents | no |
+| `doc-coauthoring` | anthropics/skills (`skills/doc-coauthoring`) | structured-drafting | no |
+
+A competitor runs only on the cases whose `skill` is in its `competes_on` list, plus every `style/*` case when it has `style: true`. Its workspace holds only its own skill folders, so the competitor sees none of ours, and the prompt is the same as in the other conditions. Run folders are named `<case>__<host>__competitor-<name>[__r<k>]`; `meta.json` records `condition: competitor-<name>`, `competitor: <name>` and whether any of the installed skills was opened (`skill_loaded`, by folder name: a `skill://<name>` read on omp, a `skills/<name>/SKILL.md` read or `Skill` call elsewhere). `run.json` records, per competitor, the repository, the commit pinned in `.cache/omw_sources/SHAS.txt` (null when unlisted), the license, the installed skills and the mapping. Two caveats apply: these skills were written for other tasks, so low scores on checks such as "no added facts" say how well a skill fits this benchmark, not how good it is elsewhere; and the proficiently skills expect a job-search data folder and a job URL fetcher that the workspace does not have.
+
+Pairing: skill against baseline is paired exactly as before. Each competitor is paired with the baseline, and with our skills, on the (case, host, repetition) triples where both sides produced a gradable run, so a competitor that covers only some cases never removes pairs from the main table. The report adds a "Competitors" table (competitor minus baseline, ours minus competitor, each with its own n and the competitor's load rate) and one extra column per competitor in the case table; `results.json` carries the same numbers under `summary.by["<host>/<skill>"].competitors`.
+
+`--judge-pairs A:B` (repeatable or comma-separated) chooses which pairs the blind judge compares; each side is `skill`, `baseline`, `competitor` (every competitor of this run) or a competitor name. Without it only `skill:baseline` is judged, as before. Entries for other pairs carry `pair` in `judge.json`, name the winning condition in `winner` (style entries name it in `human` and `faithful`), use their own judge folders and presentation-order seed, and get their own report section; they never enter the `skill:baseline` tally. Judging needs both outputs, so cases a competitor did not run are skipped.
+
+Add competitors to a finished run instead of redoing it (finished runs and judge verdicts are kept, only competitor runs execute):
+
+```bash
+python3 evals/run.py --host omp --repeat 3 --competitors --jobs 4 --judge omp --judge-pairs skill:competitor \
+  --resume --out evals/results/v-voice-omp
+```
 
 ## Case format
 
@@ -118,6 +148,58 @@ Gap markers (`[ASK AUTHOR: ...]`, `[VERIFY: ...]`, `[UNTESTED ...]`) are strippe
 `--judge` runs a blind pairwise judge in both presentation orders. For a case with `judge.mode` `visual` the judge also sees page images: the report HTML is printed to PDF with headless Chrome (`CHROME` overrides the path) and the first six pages are rasterised with `pdftoppm -r 60`. Codex receives them with `codex exec -i`; Claude Code is told to open them with the Read tool. The prompt holds the task, the extracted source text (each file cut to 5000 characters, 60000 in total, with the cut stated), both report texts (cut at 30000 characters) and asks for 1-5 scores on accuracy against the sources, covering what the reader needs, professional tone, diagram usefulness and design, and layout, then a verdict. If rendering fails for either side the judge falls back to text only for both, and `judge.json` says so (`render_note`). Scores are stored in `judge.json` per pair and averaged per condition in `report.md`.
 
 `python3 evals/review_pairs.py <run_dir>` writes `review/<run-id>.html`, a self-contained page for you to rate the same pairs blind: per (case, repetition) the task, the source documents (expandable) and report A and B side by side (the HTML report in a sandboxed iframe, or the markdown as text), in seeded random order. Rate each pair A better / Tie / B better, add a note; ratings persist in the browser (localStorage); Export JSON downloads them with the A/B mapping. Reveal unlocks once every pair is rated and shows which side had the skills. `review/` is a local folder: do not commit it.
+
+## Statistics benchmark and regression gate
+
+The checks and the judge answer "did this case pass" and "which text is preferred". `stats.py` adds numbers that do not depend on a case's own wording: the same fixed rules (`METRICS_VERSION`) run over every output, so two skill revisions, or a skill and a competitor, can be compared metric by metric. No model is involved: the same files give the same numbers, and the bootstrap uses a fixed seed (20261017, 2000 resamples).
+
+```bash
+python3 evals/stats.py evals/results/<run-id> [--json out.json] [--detail ALL|<skill>]   # metrics, aggregates, with-skills minus baseline
+python3 evals/stats.py --compare <run-A> <run-B> --condition skill                       # did revision B get worse than A, and where
+python3 evals/stats.py --metrics                                                          # every definition, direction and reason
+python3 evals/gate.py freeze evals/results/<run-id> --model <name>                       # write evals/gate/reference.json
+python3 evals/gate.py check  evals/results/<new-run-id> [--all]                          # exit 1 on regression
+```
+
+**Metrics** (all computed on the deliverable file; prose metrics on the text with gap markers removed; `better` is the direction a reader would call an improvement; `-` means context only):
+
+| metric | better | definition | why a reader cares |
+|---|---|---|---|
+| `invented_facts` | lower | numbers, URLs, citations (names where the case's `no_added_facts` covers names) in no input, input file name or prompt; fact_diff "added"; the case's `allow` list applies | an invented figure or link is a lie the reader cannot see |
+| `invented_facts_per_1000w` | lower | the same, per 1000 words | a long report is not punished for length |
+| `lost_required_facts` | lower | misses in the case's `facts_recalled` plus numbers/negations lost per its `preserves` checks; skipped when the case names none | a dropped "not" reverses the meaning |
+| `slop_per_1000w` | lower | slop_scan findings per 1000 prose words, the case's own profile (default professional); not for analysis outputs | stock vocabulary and chatbot residue cost trust |
+| `stock_phrases_per_1000w` | lower | hits of a fixed list of well-known stock phrases (`STOCK_PHRASES`), independent of slop_scan | an independent check on "a chatbot wrote this" |
+| `gap_markers_leaked` | lower | unresolved placeholders: `[ASK AUTHOR ...]`, `[VERIFY ...]`, `[UNTESTED ...]`, `[TODO]`/`[TBD]`/`[INSERT ...]`, `[Your name]`-style fills, `{{field}}`, lorem ipsum, `XXX`, bare TBD/TODO, unless the text is already in the sources; code excluded | an email that goes out signed `[Your name]` is unfinished |
+| `headings_per_1000w` | - | markdown headings per 1000 words | context for the next row |
+| `short_text_headings` | lower | headings in an output under 400 words | scaffolding on a short note |
+| `repeated_sentences` | lower | sentences of 6+ words that repeat an earlier one (identical, or word 3-shingle Jaccard 0.6 or more) | padding |
+| `hedge_per_1000w` | lower | hedge and caveat words per 1000 words (`HEDGES`) | fog; but a correct hedge is not a defect, so the gate does not use it by default |
+| `sentence_length_cv` | higher | standard deviation / mean of words per sentence in running prose (3+ sentences) | uniform sentences read as machine-made |
+| `mean_sentence_length` | - | mean words per sentence in running prose | context |
+| `flesch_reading_ease` | higher | 206.835 - 1.015 w/s - 84.6 syl/w over running prose (vowel-group syllables; 3+ sentences) | reading effort |
+| `list_line_ratio` | - | bullet and numbered lines / non-blank, non-heading, non-code lines | context |
+| `length_ratio` | - | words / midpoint of the case's `word_count` min and max | context |
+| `length_deviation` | lower | abs(length_ratio - 1) | the length the reader asked for is part of the request |
+| `process_talk` | lower | meta-talk in the deliverable ("I rewrote the", "this report was generated by", "as an AI", "here is the revised", skill and script names), unless already in the sources; not for analysis outputs | the reader does not care how the text was produced |
+| `check_pass_rate` | higher | share of the case's own checks that passed (grade.py) | the case author's definition of correct |
+| `case_passed` | higher | 1 when every check passed | one broken requirement is a failed run |
+| `words` | - | whitespace tokens of the output | context for every rate |
+
+**Case kinds** (`stats.CASE_KIND`, part of the rules): `reader` is finished text that goes to a person as it is (emails, posts, letters, updates, READMEs, PR bodies); a gap marker left in it is a leak. `draft` is text the author must still finish or read (reports with open gaps, drafts whose case requires a marker in the reply or file): markers are counted but never fail the gate. `analysis` is text about text (audits, reviews, triage, voice profiles, reviewer prompts): it quotes the patterns and describes its own review, so the slop, stock-phrase, rhythm and process-talk metrics are not computed. A test keeps every case classified and keeps cases that require markers out of `reader`.
+
+**Statistics.** A metric that does not apply to an output (analysis kind, no required facts, fewer than 3 sentences) is empty, and a pair is formed only where both sides have a value. A case's repetitions are averaged first, then the bootstrap (percentile, 95%) resamples cases, because repetitions of one case are not independent cases. Means, medians and CIs are over cases. Differences are paired on (host, case, rep), with the exact two-sided sign-test p-value over cases. A verdict (`better` / `worse`) needs the CI to exclude zero; with fewer than 3 paired cases the verdict is `few`. At 3 to 5 cases (most skills have 3) three same-signed differences always exclude zero and the sign test cannot reach p < 0.05 below 6, so per-skill flags are leads to inspect, not findings; the all-skills row carries the weight. Host errors are excluded from both sides.
+
+**Gate.** `gate.py freeze` stores the with-skills runs of a results directory (all metrics per case and repetition) with run id, host versions, model, skill versions from each `SKILL.md`, the metric version and a fingerprint of the scoring files (fact_diff.py, slop_scan.py, the rule data in stats.py, the case files). `gate.py check` scores the new run the same way, pairs it with the reference on (host, case, rep) and exits 1 when, for any skill or for all skills together:
+
+- invented facts: the new total is above the reference total (`hard.invented_facts_slack_per_run` in `gate/config.json`, default 0);
+- leaked markers: any gap marker or placeholder in a `reader` case (`hard.leaked_markers_max`, default 0; absolute, not relative to the reference);
+- check pass rate: below the reference by more than `hard.check_pass_rate_tolerance` (0.02);
+- any metric in `metrics` with `gated` not false: the paired change is worse than its `tolerance` (the metric's own unit) AND its 95% CI excludes zero on the worse side. Worse than tolerance with a CI that includes zero is printed as a warning and does not fail.
+
+Exit codes: 0 pass, 1 regression, 2 not comparable (different `METRICS_VERSION`, no matching runs). If the scoring files changed since the freeze, `check` prints a warning because old and new numbers may not be comparable; re-freeze when the change is intended (and re-freeze from a run scored with the new files). Freeze the reference from the run you accept as the current skill set, never from the candidate being tested; after accepting a revision, freeze again.
+
+Limits: the hard invented-facts rule has no noise allowance (one extra invented figure among 126 runs fails it); raise `invented_facts_slack_per_run` if rerunning the same skill version fails it. Gate runs are LLM runs, so judge a failure by the table (which metric, which skill, which cases), not by the exit code alone. `stock_phrases_per_1000w` and `process_talk` are near zero for current models, so they guard against a return of the problem and do not separate revisions today.
 
 ## What the numbers mean
 

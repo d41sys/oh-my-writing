@@ -9,11 +9,15 @@ Usage:
   python3 evals/run.py --host codex --judge codex --judge-mode style  # judge every case on those two questions
   python3 evals/run.py --host codex --cases 'project-report/*' --repeat 3 --judge codex
   python3 evals/run.py --host omp --judge omp --repeat 3   # omp host, default model gpt-6-sol
+  python3 evals/run.py --host omp --cases 'anti-slop-editing/*' --condition competitor:humanizer   # a third-party skill instead of ours
+  python3 evals/run.py --host omp --competitors --judge omp --judge-pairs skill:competitor --resume --out DIR   # add every mapped competitor to a finished run
 
 Each run gets a fresh git workspace outside this repository holding copies (not links) of the case files, the case
 fixtures and, in the `skill` condition, every skill under the host's project skill folder; the agent can neither
-write through to the repository nor see its path. In the `baseline` condition no skill is copied. The prompt never
-names a skill.
+write through to the repository nor see its path. In the `baseline` condition no skill is copied. In a
+`competitor:<name>` condition only the third-party skill folders listed for that name in evals/competitors.json are
+copied from .cache/omw_sources (never into this repository), and only on cases that competitor is mapped to. The
+prompt never names a skill.
 """
 
 from __future__ import annotations
@@ -51,8 +55,152 @@ SOURCE_CHARS_TOTAL = 60000
 REPORT_CHARS = 30000
 
 
-def contaminated() -> list[str]:
-    return [str(d / s.name) for d in USER_SKILL_DIRS for s in SKILLS if (d / s.name).exists()]
+def contaminated(names: list[str] | None = None) -> list[str]:
+    """User-level skill folders that would be visible to every condition: ours, plus the named extra skills."""
+    wanted = [s.name for s in SKILLS] + list(names or [])
+    return [str(d / n) for d in USER_SKILL_DIRS for n in wanted if (d / n).exists()]
+
+
+# ---------------------------------------------------------------- competitors
+
+COMPETITORS_FILE = Path(__file__).resolve().parent / "competitors.json"
+COMPETITOR_PREFIX = "competitor-"
+DEFAULT_PAIR = ("skill", "baseline")
+
+
+def competitor_condition(name: str) -> str:
+    return COMPETITOR_PREFIX + name
+
+
+def competitor_name(condition: str) -> str | None:
+    return condition[len(COMPETITOR_PREFIX):] if condition.startswith(COMPETITOR_PREFIX) else None
+
+
+def load_competitors(path: Path | None = None) -> dict[str, dict]:
+    """name -> spec from competitors.json, each with 'name' and 'root' (its folder in the source cache)."""
+    data = json.loads((path or COMPETITORS_FILE).read_text(encoding="utf-8"))
+    cache = REPO / data["cache"]
+    return {name: {**spec, "name": name, "root": cache / spec["repo"]} for name, spec in data["competitors"].items()}
+
+
+def competitor_problems(spec: dict) -> list[str]:
+    """Why this competitor cannot be installed (empty when it can)."""
+    root = spec["root"]
+    if not root.is_dir():
+        return [f"{spec['name']}: source cache folder {root} is missing; fetch {spec['repo']} into "
+                f"{root.parent} (pinned commits are listed in {root.parent / 'SHAS.txt'})"]
+    problems = [f"{spec['name']}: {item['from']!r} is not in {root}" for item in spec["install"]
+                if not (root / item["from"]).is_dir()]
+    if not problems and not competitor_skill_names(spec):
+        problems.append(f"{spec['name']}: none of its install folders holds a SKILL.md")
+    if spec.get("license_file") and not (root / spec["license_file"]).is_file():
+        problems.append(f"{spec['name']}: license file {spec['license_file']} is missing in {root}")
+    return problems
+
+
+def competitor_skill_names(spec: dict) -> list[str]:
+    """Folder names under the skill folder that are skills (hold a SKILL.md); 'shared' support folders are not."""
+    return [item["to"] for item in spec["install"] if (spec["root"] / item["from"] / "SKILL.md").is_file()]
+
+
+def competitor_applies(spec: dict, case: dict) -> bool:
+    """A competitor runs only on the cases of the skills it competes with, and on style/* if it asks for them."""
+    return case["skill"] in spec["competes_on"] or bool(spec.get("style") and case["id"].startswith("style/"))
+
+
+def condition_applies(condition: str, case: dict, specs: dict[str, dict]) -> bool:
+    name = competitor_name(condition)
+    return True if name is None else competitor_applies(specs[name], case)
+
+
+def competitor_commit(spec: dict) -> str | None:
+    shas = spec["root"].parent / "SHAS.txt"
+    if not shas.is_file():
+        return None
+    for line in shas.read_text(encoding="utf-8", errors="replace").splitlines():
+        parts = line.split()
+        if len(parts) == 2 and parts[0] == spec["repo"]:
+            return parts[1]
+    return None
+
+
+def competitor_record(spec: dict) -> dict:
+    """What run.json stores about a competitor: where it came from, at which commit, under which license."""
+    return {"repo": spec["repo"], "commit": competitor_commit(spec), "license": spec["license"],
+            "license_file": spec.get("license_file"), "skills": competitor_skill_names(spec),
+            "competes_on": spec["competes_on"], "style": bool(spec.get("style"))}
+
+
+def install_competitor(spec: dict, folder: Path) -> None:
+    problems = competitor_problems(spec)
+    if problems:
+        raise RuntimeError("; ".join(problems))
+    for item in spec["install"]:  # copies, like our own skills
+        shutil.copytree(spec["root"] / item["from"], folder / item["to"],
+                        ignore=shutil.ignore_patterns(".git", "__pycache__", "*.pyc", ".DS_Store", "node_modules"))
+
+
+def resolve_conditions(values: list[str] | None, all_competitors: bool,
+                       specs: dict[str, dict]) -> tuple[list[str], str | None]:
+    """Conditions to run, in order, from repeated --condition values (default 'both') plus --competitors.
+    Returns (conditions, error)."""
+    values = values or ["both"]
+    out: list[str] = []
+    for value in values:
+        if value == "both":
+            wanted = ["skill", "baseline"]
+        elif value in ("skill", "baseline"):
+            wanted = [value]
+        elif value.startswith("competitor:"):
+            name = value.split(":", 1)[1]
+            if name not in specs:
+                return [], f"unknown competitor {name!r}; known: {', '.join(sorted(specs))}"
+            wanted = [competitor_condition(name)]
+        else:
+            return [], f"--condition must be skill, baseline, both or competitor:<name>, got {value!r}"
+        out += [w for w in wanted if w not in out]
+    if all_competitors:
+        out += [c for c in map(competitor_condition, specs) if c not in out]
+    return out, None
+
+
+def resolve_pairs(values: list[str] | None, conditions: list[str],
+                  specs: dict[str, dict]) -> tuple[list[tuple[str, str]], str | None]:
+    """Judged condition pairs from --judge-pairs (comma lists and repeats allowed). A side is skill, baseline,
+    competitor (every competitor of this run), a competitor name, or competitor:<name>. Without the option the pair
+    is skill:baseline when both conditions run. Returns (pairs, error)."""
+    if not values:
+        return ([DEFAULT_PAIR] if set(DEFAULT_PAIR) <= set(conditions) else []), None
+    in_run = [c for c in conditions if competitor_name(c)]
+
+    def side(token: str) -> list[str] | str:
+        if token in ("skill", "baseline"):
+            return [token]
+        if token == "competitor":
+            return in_run
+        name = token.split(":", 1)[1] if token.startswith("competitor:") else token
+        return [competitor_condition(name)] if name in specs else f"unknown pair side {token!r}"
+
+    pairs: list[tuple[str, str]] = []
+    for item in (v.strip() for value in values for v in value.split(",") if v.strip()):
+        m = re.fullmatch(r"(.+?):(competitor:.+|[^:]+)", item)
+        if not m:
+            return [], f"--judge-pairs wants A:B, got {item!r}"
+        left, right = side(m.group(1)), side(m.group(2))
+        for found in (left, right):
+            if isinstance(found, str):
+                return [], found
+        if not left or not right:
+            return [], f"--judge-pairs {item!r}: no competitor condition in this run (add --competitors or --condition competitor:<name>)"
+        for a in left:
+            for b in right:
+                if a != b and (a, b) not in pairs:
+                    pairs.append((a, b))
+    return pairs, None
+
+
+def pair_key(pair: tuple[str, str]) -> str:
+    return f"{pair[0]}:{pair[1]}"
 
 
 def make_workspace(case: dict, host: str, condition: str) -> Path:
@@ -65,12 +213,15 @@ def make_workspace(case: dict, host: str, condition: str) -> Path:
     if root is not None:  # verbatim, binary-safe, keeps relative paths and modification times
         shutil.copytree(root, ws, dirs_exist_ok=True, ignore=shutil.ignore_patterns(".DS_Store"))
     (ws / Path(case["output"]).parent).mkdir(parents=True, exist_ok=True)
-    if condition == "skill":
+    if condition == "skill" or competitor_name(condition):
         folder = ws / SKILL_FOLDER[host]
         folder.mkdir(parents=True)
-        for skill in SKILLS:  # copies: a link would let the agent write through to the repo and reveal its path
-            shutil.copytree(skill, folder / skill.name,
-                            ignore=shutil.ignore_patterns("__pycache__", "*.pyc", ".DS_Store"))
+        if condition == "skill":
+            for skill in SKILLS:  # copies: a link would let the agent write through to the repo and reveal its path
+                shutil.copytree(skill, folder / skill.name,
+                                ignore=shutil.ignore_patterns("__pycache__", "*.pyc", ".DS_Store"))
+        else:
+            install_competitor(load_competitors()[competitor_name(condition)], folder)
     subprocess.run(["git", "init", "-q"], cwd=ws, check=True)
     return ws
 
@@ -143,6 +294,17 @@ def skill_was_loaded(host: str, skill: str, log: str) -> bool:
     return False
 
 
+def condition_loaded(host: str, condition: str, case: dict, log: str) -> bool:
+    """Whether the skill this condition provides was opened: the case's own skill for `skill`, any of the installed
+    third-party skills (by folder name) for a competitor, never in the baseline."""
+    if condition == "skill":
+        return skill_was_loaded(host, case["skill"], log)
+    name = competitor_name(condition)
+    if name:
+        return any(skill_was_loaded(host, s, log) for s in competitor_skill_names(load_competitors()[name]))
+    return False
+
+
 def execute(host: str, prompt: str, ws: Path, out_dir: Path, args, read_only=False, timeout: int | None = None,
             images: list[Path] | None = None) -> dict:
     timeout = timeout or args.timeout
@@ -192,6 +354,8 @@ def run_one(case: dict, host: str, condition: str, rep: int, run_dir: Path, args
     out_dir.mkdir(parents=True, exist_ok=True)
     timeout = case.get("timeout", args.timeout)
     base = {"case": case["id"], "skill": case["skill"], "host": host, "condition": condition, "rep": rep}
+    if competitor_name(condition):
+        base["competitor"] = competitor_name(condition)
     if host in QUOTA_HIT:  # do not burn timeouts once the host has refused for quota; --resume picks these up
         meta = {**base, "skill_loaded": False, "exit_code": None, "error": "skipped: host usage limit reached",
                 "duration_s": 0}
@@ -204,7 +368,7 @@ def run_one(case: dict, host: str, condition: str, rep: int, run_dir: Path, args
                         ignore=shutil.ignore_patterns(".git", ".agents", ".claude"))
     finally:
         shutil.rmtree(ws, ignore_errors=True)
-    meta = {**base, "skill_loaded": condition == "skill" and skill_was_loaded(host, case["skill"], result["log"]),
+    meta = {**base, "skill_loaded": condition_loaded(host, condition, case, result["log"]),
             "exit_code": result["exit_code"], "error": result["error"], "duration_s": result["duration_s"],
             "timeout": timeout}
     (out_dir / "meta.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
@@ -497,9 +661,12 @@ def side_text(case: dict, ws: Path) -> str | None:
     return None
 
 
-def judge_pair(case, host, rep, run_dir, args) -> dict | None:
+def judge_pair(case, host, rep, run_dir, args, pair: tuple[str, str] = DEFAULT_PAIR) -> dict | None:
+    """Blind pairwise verdict between the outputs of two conditions (skill vs baseline unless `pair` says otherwise);
+    the winner is the name of a condition, tie, inconsistent or error."""
+    x, y = pair
     workspaces = {cond: run_dir / "runs" / slug_of(case, host, cond, rep, args.repeat) / "workspace"
-                  for cond in ("skill", "baseline")}
+                  for cond in pair}
     texts = {cond: side_text(case, ws) for cond, ws in workspaces.items()}
     if any(t is None for t in texts.values()):
         return None
@@ -508,7 +675,8 @@ def judge_pair(case, host, rep, run_dir, args) -> dict | None:
     if mode == "style":
         texts = {cond: grade.strip_markers(t) for cond, t in texts.items()}
     shots, render_note = None, None
-    tail = f"{host}" + (f"__r{rep}" if args.repeat > 1 else "")
+    tail = f"{host}" + (f"__r{rep}" if args.repeat > 1 else "") + ("" if pair == DEFAULT_PAIR else f"__{x}-vs-{y}")
+    pair_field = {} if pair == DEFAULT_PAIR else {"pair": pair_key(pair)}
     if visual:
         found, notes = {}, []
         for cond, ws in workspaces.items():
@@ -526,10 +694,11 @@ def judge_pair(case, host, rep, run_dir, args) -> dict | None:
             shots = found
         else:
             render_note = "text only, " + "; ".join(notes)
-    seed = f"{args.seed}:{case['id']}:{host}" + (f":{rep}" if rep > 1 else "")
-    first = random.Random(seed).choice(["skill", "baseline"])
-    second = "baseline" if first == "skill" else "skill"
-    picks, collected, last_reply = [], {"skill": [], "baseline": []}, ""
+    seed = f"{args.seed}:{case['id']}:{host}" + (f":{rep}" if rep > 1 else "") \
+        + ("" if pair == DEFAULT_PAIR else f":{x}:{y}")
+    first = random.Random(seed).choice([x, y])
+    second = y if first == x else x
+    picks, collected, last_reply = [], {x: [], y: []}, ""
     style_picks = {"human": [], "faithful": []}
     for tag, (a, b) in {"order1": (first, second), "order2": (second, first)}.items():
         verdict, reply, extra = judge_once(
@@ -548,14 +717,14 @@ def judge_pair(case, host, rep, run_dir, args) -> dict | None:
                       if l.strip() and not l.startswith(("VERDICT", "SCORES")))
     if mode == "style":
         human, faithful = (combine_picks(style_picks[axis]) for axis in ("human", "faithful"))
-        entry = {"case": case["id"], "host": host, "rep": rep, "judge": args.judge, "mode": "style",
+        entry = {"case": case["id"], "host": host, "rep": rep, **pair_field, "judge": args.judge, "mode": "style",
                  "winner": "error" if "error" in (human, faithful) else "style", "human": human,
                  "faithful": faithful, "picks": style_picks, "reason": reason[:400]}
         print(f"[judge] {case['id']} {host} r{rep}: human={human} faithful={faithful}", flush=True)
         return entry
     winner = combine_picks(picks)
-    entry = {"case": case["id"], "host": host, "rep": rep, "judge": args.judge, "winner": winner, "picks": picks,
-             "reason": reason[:400]}
+    entry = {"case": case["id"], "host": host, "rep": rep, **pair_field, "judge": args.judge, "winner": winner,
+             "picks": picks, "reason": reason[:400]}
     if visual:
         entry["visual"] = shots is not None
         if render_note:
@@ -573,12 +742,20 @@ def main(argv=None) -> int:
     p = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     p.add_argument("--host", action="append", choices=["codex", "claude", "omp"], required=True)
     p.add_argument("--cases", action="append", help="glob on case id, e.g. 'post-writing/*' (repeatable)")
-    p.add_argument("--condition", choices=["skill", "baseline", "both"], default="both")
+    p.add_argument("--condition", action="append", metavar="{skill,baseline,both,competitor:NAME}",
+                   help="what to run (repeatable; default both = skill + baseline). competitor:NAME installs that "
+                        "third-party skill from evals/competitors.json instead of ours")
+    p.add_argument("--competitors", action="store_true",
+                   help="also run every competitor in evals/competitors.json (on the cases each is mapped to)")
     p.add_argument("--jobs", type=int, default=3)
     p.add_argument("--timeout", type=int, default=600, help="seconds per agent run (a case's own timeout wins)")
     p.add_argument("--repeat", type=int, default=1, help="repetitions of every (case, host, condition)")
     p.add_argument("--out", help="results directory (default evals/results/<timestamp>)")
     p.add_argument("--judge", choices=["codex", "claude", "omp"], help="blind pairwise judge host")
+    p.add_argument("--judge-pairs", action="append", metavar="A:B",
+                   help="condition pairs to judge (repeatable or comma-separated); a side is skill, baseline, "
+                        "competitor (every competitor of this run) or a competitor name, e.g. skill:competitor or "
+                        "skill:humanizer. Default skill:baseline")
     p.add_argument("--omp-model", default="gpt-6-sol", help="model for the omp host (omp --model)")
     p.add_argument("--omp-thinking", help="omp --thinking level, e.g. medium")
     p.add_argument("--judge-mode", choices=["auto", "style"], default="auto",
@@ -601,7 +778,23 @@ def main(argv=None) -> int:
     if problems or not cases:
         print("\n".join(problems) or "no cases matched", file=sys.stderr)
         return 2
-    dirty = contaminated()
+    specs = load_competitors()
+    conditions, error = resolve_conditions(args.condition, args.competitors, specs)
+    pairs, pair_error = resolve_pairs(args.judge_pairs, conditions, specs) if not error else ([], None)
+    error = error or pair_error
+    if error:
+        print(error, file=sys.stderr)
+        return 2
+    if args.judge_pairs and not args.judge:
+        print("--judge-pairs needs --judge", file=sys.stderr)
+        return 2
+    used = list(dict.fromkeys(n for c in [*conditions, *(c for pair in pairs for c in pair)]
+                              if (n := competitor_name(c))))
+    cache_problems = [m for name in used for m in competitor_problems(specs[name])]
+    if cache_problems:
+        print("competitor skills cannot be installed:\n  " + "\n  ".join(cache_problems), file=sys.stderr)
+        return 2
+    dirty = contaminated([s for name in used for s in competitor_skill_names(specs[name])])
     if dirty and not args.allow_contaminated:
         print("user-level skills would leak into the baseline:\n  " + "\n  ".join(dirty)
               + "\nremove them or pass --allow-contaminated", file=sys.stderr)
@@ -614,9 +807,10 @@ def main(argv=None) -> int:
     stamp = dt.datetime.now().strftime("%Y%m%d-%H%M%S")
     run_dir = (Path(args.out) if args.out else REPO / "evals" / "results" / stamp).resolve()
     run_dir.mkdir(parents=True, exist_ok=True)
-    conditions = ["skill", "baseline"] if args.condition == "both" else [args.condition]
     info = {"id": run_dir.name, "started": dt.datetime.now().isoformat(timespec="seconds"), "hosts": args.host,
             "conditions": conditions, "cases": len(cases), "repeat": args.repeat, "contaminated": bool(dirty),
+            "competitors": {name: competitor_record(specs[name]) for name in used},
+            "judge_pairs": [pair_key(pair) for pair in pairs],
             "models": {k: v for k, v in {"codex": args.codex_model, "codex_effort": args.codex_effort,
                                           "claude": args.claude_model}.items() if v},
             "diagram_design_version": diagram_design_version(),
@@ -624,21 +818,24 @@ def main(argv=None) -> int:
     (run_dir / "run.json").write_text(json.dumps(info, indent=2), encoding="utf-8")
 
     jobs = [(c, h, cond, rep) for c in cases for h in args.host for cond in conditions
-            for rep in range(1, args.repeat + 1)]
+            if condition_applies(cond, c, specs) for rep in range(1, args.repeat + 1)]
     print(f"{len(jobs)} runs -> {run_dir}", flush=True)
     with cf.ThreadPoolExecutor(max_workers=args.jobs) as pool:
         list(pool.map(lambda j: run_one(*j, run_dir, args), jobs))
 
-    if args.judge and len(conditions) == 2:
+    if args.judge and pairs:
         judge_file = run_dir / "judge.json"
         kept = []
         if args.resume and judge_file.is_file():
             kept = [v for v in json.loads(judge_file.read_text(encoding="utf-8")) if v["winner"] != "error"]
-        done = {(v["case"], v["host"], v.get("rep", 1)) for v in kept}
-        pairs = [(c, h, rep) for c in cases for h in args.host for rep in range(1, args.repeat + 1)
-                 if (c["id"], h, rep) not in done]
+        done = {(v["case"], v["host"], v.get("rep", 1), v.get("pair", pair_key(DEFAULT_PAIR))) for v in kept}
+        todo = [(c, h, rep, pair) for pair in pairs for c in cases for h in args.host
+                for rep in range(1, args.repeat + 1)
+                if all(condition_applies(cond, c, specs) for cond in pair)
+                and (c["id"], h, rep, pair_key(pair)) not in done]
         with cf.ThreadPoolExecutor(max_workers=args.jobs) as pool:
-            verdicts = kept + [v for v in pool.map(lambda x: judge_pair(*x, run_dir, args), pairs) if v]
+            verdicts = kept + [v for v in pool.map(lambda x: judge_pair(x[0], x[1], x[2], run_dir, args, x[3]), todo)
+                               if v]
         judge_file.write_text(json.dumps(verdicts, indent=2), encoding="utf-8")
 
     results = grade.grade_run(run_dir)
@@ -647,6 +844,11 @@ def main(argv=None) -> int:
             print(f"{key}: with skills {grade._pct(v['skill_pass'])}, baseline {grade._pct(v['baseline_pass'])}, "
                   f"score {grade._score_cell(v, 'skill')} vs {grade._score_cell(v, 'baseline')}, "
                   f"skill loaded {grade._pct(v['skill_loaded'])}")
+            for name, c in v.get("competitors", {}).items():
+                b, s = c["vs_baseline"], c["vs_skill"]
+                print(f"  competitor {name}: pass {grade._pct(b['competitor_pass'])} vs baseline "
+                      f"{grade._pct(b['baseline_pass'])} (n={b['n']}); our skills {grade._pct(s['skill_pass'])} vs "
+                      f"{grade._pct(s['competitor_pass'])} (n={s['n']}); loaded {grade._pct(c['loaded'])}")
     print(f"report: {run_dir / 'report.md'}")
     return 0
 

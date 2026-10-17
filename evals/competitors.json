@@ -1,0 +1,66 @@
+{
+  "_comment": "Third-party skills the benchmark can install in place of ours (condition competitor:<name>). They are read from the local cache and copied into the run's workspace only; nothing here is copied into this repository. 'repo' is the folder in .cache/omw_sources (commit pins come from SHAS.txt there). 'install' lists folders to copy: 'from' relative to the repo folder, 'to' relative to the host's project skill folder. 'competes_on' names our skills whose cases the competitor is run on; 'style' also runs it on every style/* case. 'license_file' is a path relative to the repo folder or null when the repository ships none (then 'license' states what the repository declares).",
+  "cache": ".cache/omw_sources",
+  "competitors": {
+    "humanizer": {
+      "repo": "blader__humanizer",
+      "license": "MIT",
+      "license_file": "LICENSE",
+      "install": [{"from": ".", "to": "humanizer"}],
+      "competes_on": ["anti-slop-editing"],
+      "style": true
+    },
+    "avoid-ai-writing": {
+      "repo": "conorbronsdon__avoid-ai-writing",
+      "license": "MIT",
+      "license_file": "LICENSE",
+      "install": [{"from": "skills/avoid-ai-writing", "to": "avoid-ai-writing"}],
+      "competes_on": ["anti-slop-editing"],
+      "style": true
+    },
+    "great-writer": {
+      "repo": "d-wwei__great-writer",
+      "license": "MIT",
+      "license_file": "LICENSE",
+      "install": [{"from": ".", "to": "great-writer"}],
+      "competes_on": ["post-writing"],
+      "style": true
+    },
+    "marketing-copywriting": {
+      "repo": "coreyhaines31__marketingskills",
+      "license": "MIT",
+      "license_file": "LICENSE",
+      "install": [{"from": "skills/copywriting", "to": "copywriting"}],
+      "competes_on": ["post-writing"],
+      "style": false
+    },
+    "proficiently-cover-letter": {
+      "repo": "proficientlyjobs__proficiently-claude-skills",
+      "license": "MIT (declared in the repository README; no LICENSE file)",
+      "license_file": null,
+      "install": [{"from": "skills/cover-letter", "to": "cover-letter"},
+                  {"from": "shared", "to": "shared"}],
+      "competes_on": ["career-documents"],
+      "style": false
+    },
+    "resumeskills": {
+      "repo": "Paramchoudhary__ResumeSkills",
+      "license": "MIT",
+      "license_file": "LICENSE",
+      "install": [{"from": "skills/cover-letter-generator", "to": "cover-letter-generator"},
+                  {"from": "skills/cold-email-writer", "to": "cold-email-writer"},
+                  {"from": "skills/resume-tailor", "to": "resume-tailor"},
+                  {"from": "skills/resume-bullet-writer", "to": "resume-bullet-writer"}],
+      "competes_on": ["career-documents"],
+      "style": false
+    },
+    "doc-coauthoring": {
+      "repo": "anthropics__skills",
+      "license": "Apache-2.0 (declared in the repository README for its open-source skills; no LICENSE file)",
+      "license_file": null,
+      "install": [{"from": "skills/doc-coauthoring", "to": "doc-coauthoring"}],
+      "competes_on": ["structured-drafting"],
+      "style": false
+    }
+  }
+}

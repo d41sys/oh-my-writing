@@ -364,6 +364,10 @@ def test_bare_figure_restated_with_unit_is_the_same_figure(tmp_path):
     unit_change = write(tmp_path, "unit.md", "Backoff caps at 512 s and jitter is 0.1.\n")
     _, report = diff_json(swapped, unit_change)
     assert added_items(report, "numbers") == {"512 s"}
+    pct_before = write(tmp_path, "pct_before.md", "MAE fell by 12 points.\n")
+    pct_after = write(tmp_path, "pct_after.md", "MAE fell by 12%.\n")
+    _, report = diff_json(pct_before, pct_after)
+    assert added_items(report, "numbers") == {"12%"}
 
 
 
