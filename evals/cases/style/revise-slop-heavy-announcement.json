@@ -46,8 +46,8 @@
     },
     {
       "type": "regex",
-      "pattern": "(?i)(?:not|n't)[^.\\n]{0,60}(?:date|vendor)|(?:date|vendor)[^.\\n]{0,60}(?:not|n't|still)",
-      "note": "the receipt-reading limit stays"
+      "pattern": "(?i)(?:not|n't)[^.\\n]{0,60}(?:date|vendor)|(?:date|vendor)[^.\\n]{0,60}(?:not|n't|still)|still[^.\\n]{0,20}(?:need|have|must)[^.\\n]{0,40}(?:date|vendor)",
+      "note": "the receipt-reading limit stays; 'you'll still need to type in the date and vendor' states it as plainly as 'it does not read the date or vendor'"
     },
     {
       "type": "regex",

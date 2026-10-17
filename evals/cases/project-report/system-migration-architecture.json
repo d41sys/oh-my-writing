@@ -76,9 +76,10 @@
         "99.2%",
         "99.95%",
         "290 s",
-        "6 s"
+        "6 s",
+        "4"
       ],
-      "note": "categories are numbers and urls only: a month and year in brackets such as (July 2026) reads as an author-year citation to the fact checker and no document here cites papers. Allowed: money with or without a currency sign, zero-stripped day and month numbers from ISO dates, and derived before/after values: differences and percentage changes of the six metrics in metrics.csv (650 ms, 155 scans/s, 73 min, $3,500 a month, 284 s, 0.75 pp) and 7, the number of components the design doc lists"
+      "note": "categories are numbers and urls only: a month and year in brackets such as (July 2026) reads as an author-year citation to the fact checker and no document here cites papers. Allowed: money with or without a currency sign, zero-stripped day and month numbers from ISO dates, and derived before/after values: differences and percentage changes of the six metrics in metrics.csv (650 ms, 155 scans/s, 73 min, $3,500 a month, 284 s, 0.75 pp) and 7, the number of components the design doc lists The ordinal 4 is the Priority number of the fourth action row, which the skill's actions table prescribes."
     },
     {
       "type": "not_regex",
@@ -92,13 +93,13 @@
     },
     {
       "type": "not_regex",
-      "pattern": "(?i)(rollback|TrackerLegacy)[^.\\n]{0,60}(was|has been|is) (shut down|decommissioned|switched off|retired)\\b",
-      "note": "the checklist plans the TrackerLegacy shutdown after 29 August; it is not done"
+      "pattern": "(?i)(?<!whether )(?<!if )(rollback|TrackerLegacy)[^.\\n]{0,60}(was|has been|is) (shut down|decommissioned|switched off|retired)\\b",
+      "note": "the checklist plans the TrackerLegacy shutdown after 29 August; it is not done ('Confirm whether TrackerLegacy was shut down' is a question, not a claim, so it is not matched)"
     },
     {
       "type": "regex",
-      "pattern": "(?is)cron[^\\n]{0,250}(no owner|unassigned|not assigned|nobody|no one|owner[^.\\n]{0,30}(missing|blank|open|needed|tbd|unknown|not (yet )?(named|assigned))|ASK AUTHOR)",
-      "note": "the open owner of the cron export removal is stated"
+      "pattern": "(?is)cron[^\\n]{0,250}(no (?:assigned |named |recorded |identified )?owner|unowned|unassigned|not assigned|to be assigned|nobody|no one|owner[^.\\n]{0,30}(missing|blank|open|needed|tbd|unknown|not (yet )?(named|assigned))|ASK AUTHOR)",
+      "note": "the open owner of the cron export removal is stated (any wording, including 'unowned' and an action row whose owner reads 'to be assigned')"
     },
     {
       "type": "not_regex",

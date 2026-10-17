@@ -1,0 +1,101 @@
+{
+  "id": "author-voice/heldout-draft-in-voice-no-invention",
+  "skill": "author-voice",
+  "heldout": true,
+  "description": "Held-out. Drafts a short shop update in an author's habits (first person singular, parenthetical asides, a rhetorical question, long flowing sentences mixed with a short one, no exclamation marks, no call to action) from three samples and notes, without inventing numbers, names or causes, and without leaking the internal note.",
+  "prompt": "samples.md has three newsletter pieces I wrote for our bike co-op's mailing list, and notes.md has what happened this week. Write this week's update so it sounds like me, and save it to out/update.md.",
+  "files": {
+    "samples.md": "# Newsletter pieces by Teodor, Cinder Row Cycles (all written by him, sent to the mailing list)\n\n## April\nI have been told, more than once and by people who love me, that a bicycle shop should not keep a kettle on the workbench (it does; the kettle stays). The spring rush began on Tuesday. Is it a rush if everybody is polite about it? I think so, because the queue reached the door and not one person sighed, which is the most alarming form of patience I know. Mudguards are back in stock. So, in a smaller way, am I.\n\n## June\nThe cargo bike came back from its repaint a different colour (it was supposed to be the same colour; we are calling it a refresh). I rode it to the bakery to test the brakes, and I can report that the brakes are fine and the bakery is better than ever. Why does a short ride always take an hour? Because the road is full of people who want to ask what the bike is.\n\n## September\nThe shop cat has retired from the front window and taken up the back room, where the light is worse and the cushions are better. I respect that. We spent Saturday sorting inner tubes by size (a job that sounds dull and is, but the shelf now makes sense). Nobody asked for this. I did it anyway, and I am a little proud.\n",
+    "notes.md": "Notes for this week's update (Teodor):\n\n- The wheel-truing stand finally arrived on Wednesday. The order had been delayed.\n- 17 bikes went through the shop this week. 2 are still waiting on parts.\n- Workshop open Saturday 9 to 1, as usual.\n- Free puncture-repair morning on Sunday, 10 to 12. Bring your own bike.\n- Prices unchanged.\n- Internal, leave out: I am thinking about dropping the Thursday late opening. Not decided.\n"
+  },
+  "output": "out/update.md",
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "names",
+        "citations",
+        "urls"
+      ]
+    },
+    {
+      "type": "not_contains",
+      "values": [
+        "!"
+      ]
+    },
+    {
+      "type": "word_count",
+      "min": 50,
+      "max": 190
+    },
+    {
+      "type": "regex",
+      "pattern": "\\bI\\b",
+      "note": "first person singular, as in all three samples"
+    },
+    {
+      "type": "regex",
+      "pattern": "\\(",
+      "note": "parenthetical asides are a habit in every sample"
+    },
+    {
+      "type": "regex",
+      "pattern": "\\?",
+      "note": "a rhetorical question appears in two of the three samples"
+    },
+    {
+      "type": "contains",
+      "values": [
+        "Saturday",
+        "Sunday",
+        "17"
+      ]
+    },
+    {
+      "type": "not_contains",
+      "values": [
+        "late opening",
+        "Thursday",
+        "dropping"
+      ],
+      "note": "the internal, undecided note stays out"
+    },
+    {
+      "type": "not_contains",
+      "values": [
+        "excited",
+        "thrilled",
+        "stay tuned",
+        "don't miss",
+        "let us know",
+        "what do you think",
+        "can't wait",
+        "see you there",
+        "join us",
+        "hope to see"
+      ]
+    },
+    {
+      "type": "not_regex",
+      "pattern": "\\[(?:ASK AUTHOR|VERIFY|UNTESTED)",
+      "note": "the update goes to the mailing list, so it must read as finished"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)as (?:requested|you asked)|per (?:the|your) notes|your notes|the notes (?:say|mention|do not)|the samples|voice profile|\\[source",
+      "note": "no process narration inside a post addressed to subscribers"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)delay\\w*[^.\\n]{0,80}\\b(?:because|due to|caused|courier|customs|supplier|strike|shipping|backlog|stock)\\b|\\b(?:because|due to)\\b[^.\\n]{0,60}\\bdelay",
+      "note": "the notes give no reason for the delay; the post must leave it out or say it is unknown, not invent one"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?:[^\\s.!?]+\\s+){45,}[^\\s.!?]+[.?]",
+      "note": "even this author's longest sentences are not paragraph-length"
+    }
+  ]
+}

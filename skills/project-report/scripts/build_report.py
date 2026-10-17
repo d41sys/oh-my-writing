@@ -47,9 +47,9 @@ Portable Markdown (--md-out FILE):
 
 Checks (reported, and fatal with --strict):
     figure without caption or source line, unresolved [[fig:...]], gap markers
-    left in the text, numbers inside diagram labels that appear neither in the
-    --ledger file (or, without one, in the report text), external references
-    inside a diagram.
+    left in the text, numbers inside diagram labels (including bare scale or
+    grid numbers) that appear neither in the --ledger file (or, without one, in
+    the report text), external references inside a diagram.
 
 Exit codes: 0 ok, 1 --strict and a check failed, 2 bad input (missing file,
 missing diagram without --allow-missing).
@@ -439,7 +439,7 @@ def numbers_missing(labels: list[str], reference: str) -> list[tuple[str, str]]:
     known = {norm_num(t) for t in NUM_RE.findall(reference)}
     bad = []
     for label in labels:
-        if re.fullmatch(r"\d{1,2}", label.strip()):
+        if label.strip() == "0":  # a zero baseline needs no source; every other printed number does
             continue
         for tok in NUM_RE.findall(label):
             if norm_num(tok) not in known:
@@ -933,7 +933,11 @@ def build(report_md: Path, args) -> tuple[str, dict, tuple[str, dict[Path, str |
     for n, labels in ctx.svg_texts:
         for label, tok in numbers_missing(labels.splitlines(), reference):
             unmatched.append({"figure": n, "label": label, "number": tok})
-            ctx.warnings.append(f"figure {n}: number {tok} in label '{label}' is not in the {'ledger' if args.ledger else 'report text'}")
+            where = "ledger" if args.ledger else "report text"
+            if re.fullmatch(NUM_RE, label.strip()):
+                ctx.warnings.append(f"figure {n}: bare number {tok} is not in the {where}; it reads as a scale tick or grid label, so label the values directly and draw no numeric ticks")
+            else:
+                ctx.warnings.append(f"figure {n}: number {tok} in label '{label}' is not in the {where}")
     marker_total = sum(ctx.markers.values())
     if marker_total:
         ctx.warnings.append(f"{marker_total} gap marker(s) remain in the report")

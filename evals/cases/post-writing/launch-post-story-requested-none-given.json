@@ -20,7 +20,7 @@
         "75%",
         "10 k"
       ],
-      "note": "no invented figure or link; the exact ratio of the two supplied figures (4x, 75%) and '10k' for 10,000 are fine"
+      "note": "no invented figure or link; the exact ratio of the two supplied figures (4x, 75%) and '10k' for 10,000 are fine; a supplied figure restated in compound form ('180-to-45-ms') drops its unit and is read as a new bare number, but it is the same supplied figure"
     },
     {
       "type": "markers",

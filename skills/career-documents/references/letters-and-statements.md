@@ -68,7 +68,7 @@ Test: a reader who knows the company can tell which company and which role the o
 - Natural first person, confident and approachable, no template phrases ("aligns perfectly", "excited about the opportunity" as filler).
 
 ### 2.8 Format and regional conventions
-- Salutation: a named person if findable; otherwise "Dear Hiring Manager" or "Dear Search Committee" (or the team's own name, if the posting gives it). Never a bracket slot. Avoid "To Whom It May Concern".
+- Salutation: a named person if findable, written exactly as the source gives it ("Dear Sam Whitfield"); a title (Ms, Mr, Dr) or a gender is added only when the source states it, because a guess from a first name can be wrong; otherwise "Dear Hiring Manager" or "Dear Search Committee" (or the team's own name, if the posting gives it). Never a bracket slot. Avoid "To Whom It May Concern".
 - Sign-off by region: US usually "Sincerely" or "Best regards"; UK "Kind regards", and "Yours sincerely" with a named recipient or "Yours faithfully" with "Dear Sir or Madam"; Australia and New Zealand "Kind regards", with "Cheers" only once rapport exists and the organization is informal.
 - Full business-letter block (date, recipient, address, RE line) when the letter is a separate document; omit the address block when the letter is the body of an email or a portal text. Add a reference line with the requisition ID for large employers.
 - Email submission: subject with name and role; attach or paste as the instructions say; mention attachments; proofread the address and subject.

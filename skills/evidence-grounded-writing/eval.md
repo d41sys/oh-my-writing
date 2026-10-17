@@ -17,13 +17,13 @@ Answer each check pass or fail. Fix every failure before returning.
 8. Is every guarantee-style word (always, never, all, proven, guarantees) backed by a proof or exhaustive check, or reworded?
 9. Does causal wording (causes, leads to, drives, because) appear only where the design isolates the cause, with correlational wording elsewhere?
 10. Is every non-significant or negative result described as "not detected", with the limit of the study, rather than as "no effect"?
-11. Are null results, conflicts between sources and failure conditions still in the text, with no limit cancelled by a superlative and no midpoint invented between conflicting figures?
+11. Are null results, conflicts (between sources, or two answers in one set of notes) and failure conditions still in the text, with both values and who gave each, a plain statement that they differ when the author could not be asked, no limit cancelled by a superlative and no midpoint invented between conflicting figures?
 
 ## Comparisons, numbers and statistics
 
 12. Does every comparison name or imply the same baseline, metric, conditions and time, or state the differences?
 13. Does every percentage change say its base, and is it clear whether the change is relative or in percentage points?
-14. Does each important figure carry its unit, denominator and period, or is the missing item stated plainly (or the figure left out of the reader's text) with the question in the reply?
+14. Does each important figure carry its unit, denominator and period, or is the missing item stated plainly (or the figure left out of the reader's text) with the question in the reply? Does every figure the material states (a duration beside its endpoints, a position in a schedule) survive shortening?
 15. Did you recompute the arithmetic (changes, sums, ratios) rather than trusting the text?
 16. Is each number that appears more than once identical everywhere, or is the difference named?
 17. Is rounding free of changes to meaning, and is precision no finer than the measurement?

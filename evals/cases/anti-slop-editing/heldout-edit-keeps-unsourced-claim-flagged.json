@@ -1,0 +1,81 @@
+{
+  "id": "anti-slop-editing/heldout-edit-keeps-unsourced-claim-flagged",
+  "skill": "anti-slop-editing",
+  "heldout": true,
+  "description": "Held-out. A clinic announcement with stock framing, a staged reveal, a commitment claim and chatbot closers, plus an unsourced survey statistic ('A recent survey found 62%...'). The edit removes the machine-sounding phrasing, keeps the figures, negations, hedge and scope, does not invent or attribute a source for the survey claim, and flags that claim to the author (reply or file).",
+  "prompt": "This clinic announcement sounds machine-written. Take the AI-sounding phrasing out of announcement.md and save the edited version to out/announcement.md.",
+  "files": {
+    "announcement.md": "In today's fast-paced world, Brightwater Dental is thrilled to announce text reminders. This release marks a pivotal step for patients, underscoring our commitment to patient care.\n\nHere's the thing: missed appointments fell. Between 1 June and 31 August, missed appointments at the Elm Street practice dropped from 14% to 9%. We did not change opening hours, and the reminder text does not include any clinical details. The reminders may also reduce late cancellations, though we have only 3 months of data.\n\nA recent survey found that 62% of patients prefer text messages to phone calls. We hope this helps you plan your next visit, and let us know in the comments what you think!\n"
+  },
+  "output": "out/announcement.md",
+  "checks": [
+    {
+      "type": "preserves",
+      "source": "announcement.md",
+      "categories": [
+        "numbers",
+        "negations",
+        "certainty",
+        "scope"
+      ]
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "citations",
+        "urls"
+      ]
+    },
+    {
+      "type": "slop_absent",
+      "patterns": [
+        "era-opener",
+        "pivotal",
+        "trailing-rider",
+        "commitment-claim",
+        "staged-reveal",
+        "chat-closer",
+        "engagement-bait"
+      ]
+    },
+    {
+      "type": "markers",
+      "target": "both",
+      "min": 1,
+      "max": 4,
+      "note": "the survey claim names no survey, publisher or date, so the author has to be asked; the question may sit in the reply or the file"
+    },
+    {
+      "type": "regex",
+      "target": "both",
+      "pattern": "(?is)\\[(?:ASK AUTHOR|VERIFY)[^\\]]*(survey|62|source|who|which|where|cite|citation|study)",
+      "note": "the flag must be about the unsourced survey claim, not a side detail"
+    },
+    {
+      "type": "markers",
+      "target": "output",
+      "min": 0,
+      "max": 0,
+      "note": "the edited announcement is published patient-facing text; the gap goes in the reply, none belongs in the saved file"
+    },
+    {
+      "type": "not_regex",
+      "target": "output",
+      "pattern": "(?i)according to (?:a|an|the|our) (?:study|survey|report|analysis|poll|review)|(?:studies|surveys|research|polls|analysts|experts|dentists|clinics) (?:show|shows|found|find|say|agree|confirm)|(?:published|conducted|carried out) (?:by|in)",
+      "note": "nothing says who ran the survey or where it appeared; the edit must cut or keep the sentence, not attach a made-up source in its place"
+    },
+    {
+      "type": "contains",
+      "values": [
+        "62%",
+        "Elm Street"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\bmay\\b|\\bmight\\b|\\bcould\\b",
+      "note": "the hedge on late cancellations survives"
+    }
+  ]
+}

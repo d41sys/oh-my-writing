@@ -1,0 +1,128 @@
+{
+  "id": "post-writing/heldout-thread-keeps-mild-winter-caveat",
+  "skill": "post-writing",
+  "heldout": true,
+  "description": "Held-out. Repurpose a finished club blog post into a thread. Figures with units survive, the negative finding (site visits not reduced) stays, the cause of the improvement stays hedged (a mild winter may explain some or all of the gap) together with the one-winter, small-sample limit, nothing is added (no figures, names, links, endorsement), the canonical link is kept, and the thread is restructured rather than pasted.",
+  "prompt": "Turn the write-up in writeup.md into a thread for Bluesky. Save the thread to out/thread.md. No hashtags.",
+  "files": {
+    "writeup.md": "# We put timers on our hive feeders. More colonies came through winter.\n\nCanonical: https://example.org/marrowby/feeder-timers\n\nBy Odalys Prieto, Marrowby Bee Club\n\nLast autumn the club fed its hives by hand. Someone had to visit each site every few days to top up the syrup. This year we fitted battery timers to the feeders on 12 hives across 3 apiary sites, so the syrup went out on a fixed schedule from 6 October to 24 November. Each timer cost 14 pounds.\n\nWe counted colonies on 15 March. 11 of the 12 timer-fed colonies were alive. The winter before, with hand feeding, 9 of 12 colonies on the same sites were alive. The timers did not reduce the number of site visits, because we still checked every hive for disease every two weeks.\n\nWe think the schedule helped, but we cannot be sure of it. This winter was milder than the one before, and the mild weather may explain some or all of the difference. We have one winter of data and 12 colonies in each group, so a gap of two colonies is small.\n\nIf you try timers on your own hives, count your colonies in March and compare them with last year before you decide.\n"
+  },
+  "output": "out/thread.md",
+  "checks": [
+    {
+      "type": "preserves",
+      "source": "writeup.md",
+      "categories": [
+        "numbers",
+        "negations",
+        "certainty"
+      ],
+      "allow_lost": [
+        "14 pound",
+        "6 october",
+        "24 november",
+        "15 march",
+        "two weeks",
+        "may",
+        "think",
+        "2 week"
+      ],
+      "note": "figures and the 'did not reduce site visits' negation must survive; hedge words may change, the mild-winter hedge is checked below"
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "urls",
+        "citations"
+      ],
+      "allow": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "14 pounds",
+        "14",
+        "6 october",
+        "24 november",
+        "15 march"
+      ],
+      "note": "thread numbering is allowed; no other figure or link"
+    },
+    {
+      "type": "contains",
+      "values": [
+        "example.org/marrowby/feeder-timers"
+      ],
+      "note": "canonical link kept"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)mild[^.\\n]{0,200}\\b(may|might|could|possibly|some or all|cannot rule|can't rule|not sure|unclear|partly)\\b|\\b(may|might|could|possibly|some or all|cannot rule|can't rule|not sure|unclear|partly)\\b[^.\\n]{0,200}mild",
+      "note": "the mild-winter explanation stays hedged, in whichever hedge word"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)(one|single|1) (winter|season|year)",
+      "note": "the one-winter limit is carried over"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(timers?|the schedule|scheduled feeding) (saved|rescued|worked|works|prevented|fixed|solved|guarantees?)\\b|\\bproves? (that )?(the )?(timers?|schedule)|\\bthe timers (are|were) (the reason|why)",
+      "note": "the post says the authors cannot be sure; the thread must not turn the finding into a proven cause"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)site visits?|visit",
+      "note": "the finding that timers did not cut visits is carried over"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)(^|\\s)#\\w",
+      "note": "no hashtags were requested"
+    },
+    {
+      "type": "slop_absent",
+      "patterns": [
+        "era-opener",
+        "scenario-opener",
+        "staged-hook",
+        "endorsement-closer",
+        "engagement-bait",
+        "announce-note",
+        "chat-opener",
+        "chat-closer"
+      ]
+    },
+    {
+      "type": "not_contains",
+      "values": [
+        "retweet",
+        "repost",
+        "follow me",
+        "follow for more",
+        "like and share"
+      ]
+    },
+    {
+      "type": "similarity",
+      "source": "writeup.md",
+      "max": 0.6,
+      "note": "restructured, not pasted"
+    },
+    {
+      "type": "word_count",
+      "min": 90,
+      "max": 420,
+      "note": "more than one post, shorter than the source"
+    }
+  ]
+}

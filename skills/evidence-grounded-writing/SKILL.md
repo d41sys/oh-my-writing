@@ -4,7 +4,7 @@ description: Writes and checks claims against evidence. Builds a claims ledger (
 license: MIT
 compatibility: Optional helper script needs Python 3.10+ standard library; the skill works without it.
 metadata:
-  version: "1.4"
+  version: "1.5"
   skill-author: d41sys
 ---
 
@@ -63,11 +63,11 @@ Pick the mode from the request. Modes share steps 1 to 3.
 - **Never invent anything.** No facts, numbers, quotes, sources, credentials, dates or experiences. Missing material becomes a marker or one question. Reason: a fluent invented detail is indistinguishable from a real one to the next reader.
 - **Correlation stays correlation.** Use "associated with", "observed alongside", "after" unless the design isolates the cause. Exception: a controlled experiment or a well-argued identification strategy supports causal verbs; the sentence should say which.
 - **A comparison needs a shared frame.** Same baseline, metric, conditions and period, or the differences are stated. Reason: otherwise the gap may come from the setup, not the thing compared. Exception: informal comparisons are fine if marked as rough.
-- **Numbers carry their context.** Unit, denominator, period, and the comparison base for any percentage change; round without changing the meaning; keep a number identical everywhere it appears unless the difference is named. Exception: counts, dates and version labels need no denominators or intervals.
+- **Numbers carry their context.** Unit, denominator, period, and the comparison base for any percentage change; round without changing the meaning; keep a number identical everywhere it appears unless the difference is named. A figure the material states stays when shortening or restyling, even if it can be derived from others in the text (a stated duration beside its start and end times, a position such as "sprint 3 of 8"): the reader looks for the stated span, and a cut figure is a change the author did not ask for. Exception: counts, dates and version labels need no denominators or intervals.
 - **Cite what was read, for the sentence it supports.** Never write or guess a reference. Secondary sources are marked as such. Exception: well-known background facts in a casual post may go uncited if the author confirms they are common knowledge.
 - **Name sources instead of "studies show".** Replace vague attribution with who, what, when, or cut the claim. Exception: a sentence summarising a cited body of work may say "several studies" if the citation list follows directly.
 - **No blanket caveats.** Put a limit where it changes how the reader should act, and say it once. Reason: a caveat on every line gets skipped. Exception: legally or medically required disclaimers stay as written.
-- **Keep nulls, conflicts and failure conditions.** Negative, null and unexpected results stay with their weight; two credible sources that disagree are both reported with the likely reason, never averaged into a midpoint; a limit is not cancelled by a superlative in the next clause. Reason: a result set with the inconvenient parts removed misleads even when each sentence is true.
+- **Keep nulls, conflicts and failure conditions.** Negative, null and unexpected results stay with their weight; two credible sources that disagree, or two answers from one speaker or one set of notes, are both reported with who gave each and the likely reason, never averaged into a midpoint; a limit is not cancelled by a superlative in the next clause. When the author cannot be asked, the reader text itself says plainly that the material gives two figures and does not settle which is right, and nothing computed leans on either. A conflict is not an unsupported claim to cut: dropping both figures hides the disagreement, so the question goes to the reply and the text keeps both. Reason: a result set with the inconvenient parts removed misleads even when each sentence is true.
 - **Keep the statement class.** A measured fact, an estimate, a calculation, a forecast, an opinion and a recommendation stay what they are; an estimate is never rewritten as a fact or a scenario as a prediction.
 - **Say what was checked, and by whom.** The report names the sources opened, the ones not opened, and what the check cannot show (a machine screen is not verification; an audit of the text is not a judgment of the study). If you wrote or edited the text yourself, say the audit is not independent and suggest a fresh reader (`independent-review`). Never write "all citations verified" into the document.
 - **Editing never upgrades.** Do not turn "in two trials" into "in trials", "may help" into "helps", or "no difference detected" into "no difference". Strengthening is allowed only after new evidence is on the table and recorded.
@@ -91,6 +91,7 @@ Convert any other placeholder spelling (a to-do tag, a citation-needed tag, a co
 | Gap | In the reader's text | In the reply and `open-questions.md` |
 | --- | --- | --- |
 | claim has no source | cut, or "The sources do not report X." | `[ASK AUTHOR: source for the claim about other apps]` |
+| two values for one thing, author cannot be asked | both values with who gave each, "the material does not settle which is right"; nothing computed from either | `[ASK AUTHOR: which of the two figures is right?]` |
 | outside fact to confirm | what the named source says, attributed to it | `[VERIFY: price quoted in the vendor note against the current list]` |
 | number lacks unit or denominator | leave the figure out, or give it only as far as the notes do ("62 of the nurses surveyed") | `[ASK AUTHOR: denominator for the 40%]` |
 | code or step nobody ran | say it is untried ("not yet run on Windows") or omit it | `[UNTESTED]` plus the command |

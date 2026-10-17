@@ -1,0 +1,82 @@
+{
+  "id": "structured-drafting/heldout-speaker-revises-figure",
+  "skill": "structured-drafting",
+  "heldout": true,
+  "description": "Held-out. In an interview transcript the speaker corrects her own member count and later her own price. The article must use the corrected figures as the current ones, not the discarded ones; keep the speaker's hedges on the loan counts (rough, ledger is the authority) and the unsigned lease (the second site stays unconfirmed); add no figures or names; and carry no gap marker in the published article (questions go to the reply).",
+  "prompt": "Here is my chat with Rutendo in chat.md. Write a short profile (around 300 words) from it for our neighbourhood newsletter and save it to out/profile.md. I'm away today, so don't wait for me.",
+  "files": {
+    "chat.md": "Interview transcript. Rutendo Maphosa runs the Greystone Tool Library, a lending library for tools in a converted garage. Interviewer: Hana.\n\nHana: How many people use the library now?\nRutendo: We have about 120 members. Hmm, no, that was the spring number. We are at 164 since the summer drive.\nHana: And how many loans a month?\nRutendo: Roughly 90 a month in winter, and closer to 140 in summer, I think. Our volunteer Alfie keeps the ledger, so he would know better than I do.\nHana: What is the most borrowed item?\nRutendo: The pressure washer, by a mile. We bought it second-hand for 220 pounds, and a member then donated a second one.\nHana: Is it free to join?\nRutendo: Membership is 15 pounds a year. Oh, to be exact, it was 12 until June and then we raised it to 15. The 12 is the old price.\nHana: What is next?\nRutendo: A second site in the old fire station. But the council has not signed the lease, and I do not want to say it is happening until they do.\n"
+  },
+  "output": "out/profile.md",
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "names",
+        "urls",
+        "citations"
+      ],
+      "allow": [
+        "5",
+        "2",
+        "1"
+      ],
+      "note": "'second' site / 'two' pressure washers may appear as small counts"
+    },
+    {
+      "type": "regex",
+      "pattern": "\\b164\\b",
+      "note": "the corrected member count is the current figure"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(?:with|has|have|had|is|are|at|of|reached|counts?)\\s+(?:about |around |roughly |nearly )?120\\b|\\b120\\s+(?:members|people|households|borrowers)\\b",
+      "note": "120 is the speaker's discarded spring figure and must not be reported as the current membership"
+    },
+    {
+      "type": "regex",
+      "pattern": "\\b15\\b",
+      "note": "the current membership price"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)(?:membership|fee|joining|price|costs?|charges?)[^.\\n]{0,40}(?:is|are|costs?|at|of)\\s+(?:£|gbp )?12\\b(?!\\s*(?:until|before|prior|pounds? (?:until|before)))",
+      "note": "12 pounds is the old price; it may be mentioned only as the earlier price"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)\\b(?:roughly|about|around|approximately|an estimate|estimated|closer to|nearly|some)\\b[^.\\n]{0,40}\\b(?:90|140)\\b|\\b(?:90|140)\\b[^.\\n]{0,120}\\b(?:estimate|roughly|approximately|approximate|ledger|not exact|best guess|think)\\b",
+      "note": "the loan counts were given as rough; the hedge stays"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)(lease|fire station|second site)[^.\\n]{0,220}(not (yet )?signed|has not signed|hasn.t signed|unsigned|pending|awaiting|waiting|not (yet )?confirmed|yet to sign|until|if )|(not (yet )?signed|unsigned|pending|awaiting|waiting)[^.\\n]{0,220}(lease|fire station|second site)",
+      "note": "the second site stays unconfirmed"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(?:second site|fire station)\\b[^.\\n]{0,40}\\b(?:is opening|will open|is happening|opens in|is confirmed|has been secured)\\b",
+      "note": "the lease is unsigned; the site must not be reported as happening"
+    },
+    {
+      "type": "contains",
+      "values": [
+        "pressure washer",
+        "Greystone"
+      ]
+    },
+    {
+      "type": "markers",
+      "target": "output",
+      "min": 0,
+      "max": 0,
+      "note": "a newsletter profile is published as written; questions to the author go in the reply"
+    },
+    {
+      "type": "word_count",
+      "min": 170,
+      "max": 520
+    }
+  ]
+}

@@ -48,9 +48,20 @@ python <skill-dir>/scripts/fact_diff.py --ignore names before.md after.md   # ca
 
 Exit 0 means nothing mechanical was lost or added; exit 1 means review the listed items; exit 2 means an input problem.
 
-A `[CHECK] numbers derived` line is a new figure that follows exactly from two source figures (a sum or difference in the same unit, or a rate times a count). It is not counted as added. Check the arithmetic, and make sure the reader can see the inputs it came from.
+A `[CHECK] numbers derived` line is a new figure that is arithmetic on source figures, so it is not counted as added. It qualifies in four ways:
+- a sum or difference of two source figures in the same unit;
+- a price or quoted rate times a count;
+- a sum or difference of two such derived figures;
+- a gap or total whose two source operands are written right beside it ("310 ms, 10 ms over the 300 ms limit").
 
-What it tracks: numbers with units and percent (comma separators and spelled numbers two to twelve normalize), negations, certainty and scope words, capitalized names and acronyms, URLs, inline code and code blocks, quoted strings, and citation markers. It also counts gap markers (`[ASK AUTHOR ...]`, `[VERIFY ...]` and similar) left in the edited text; the edited text should have none unless the author asked for a draft to edit.
+Check the arithmetic, and make sure the reader can see the inputs it came from.
+
+What it tracks:
+- numbers with units and percent (comma separators and spelled numbers two to twelve normalize);
+- dates, as one fact in any format: "2026-04-06", "6 April" and "April 6, 2026" are the same date, and "13–31 July" gives both ends;
+- negations, certainty and scope words, capitalized names and acronyms, URLs, inline code and code blocks, quoted strings, and citation markers.
+
+Source locators (`notes.md:12-18`) and thread counters ("3/7" opening or closing a post) are not figures. It also counts gap markers (`[ASK AUTHOR ...]`, `[VERIFY ...]` and similar) left in the edited text; the edited text should have none unless the author asked for a draft to edit.
 
 What it cannot do:
 - It does not know meaning. A clean run is "no mechanical preservation errors found", never "meaning verified".

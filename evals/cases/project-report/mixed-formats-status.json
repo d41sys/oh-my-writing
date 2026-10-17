@@ -194,8 +194,8 @@
     },
     {
       "type": "regex",
-      "pattern": "(?is)(pen(etration)?[- ]?test|security test)[^\\n]{0,250}(no owner|unassigned|not assigned|no one|nobody|owner[^.\\n]{0,30}(missing|blank|open|needed|tbd|unknown|to be agreed|not (yet )?(named|assigned|agreed))|ASK AUTHOR)",
-      "note": "the open owner of the penetration test is stated"
+      "pattern": "(?is)(pen(etration)?[- ]?test|security test)[^\\n]{0,250}(no (?:assigned |named |recorded |identified )?owner|unowned|unassigned|not assigned|to be assigned|no one|nobody|owner[^.\\n]{0,30}(missing|blank|open|needed|tbd|unknown|to be agreed|not (yet )?(named|assigned|agreed))|ASK AUTHOR)",
+      "note": "the open owner of the penetration test is stated (in any wording, including 'no assigned owner' and an action row whose owner reads 'to be assigned', which is the skill's own wording for a gap)"
     },
     {
       "type": "not_regex",

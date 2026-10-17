@@ -364,6 +364,22 @@ def test_ledger_check_flags_numbers_missing_from_ledger(tmp_path):
     assert proc.returncode == 1
 
 
+def test_ledger_check_flags_bare_scale_numbers_but_not_a_zero_baseline(tmp_path):
+    diagrams = tmp_path / "diagrams"
+    diagrams.mkdir()
+    (diagrams / "bars.svg").write_text(
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 100"><title>Bars</title><desc>Two bars.</desc>'
+        '<text x="0" y="90">0</text><text x="0" y="60">50</text><text x="0" y="30">100</text>'
+        '<text x="40" y="90">Spent 45</text></svg>', encoding="utf-8")
+    ledger = tmp_path / "ledger.md"
+    ledger.write_text("Spent 45 (F2).", encoding="utf-8")
+    md = "# T\n\n![Spend](bars.svg \"Source: s\")\n"
+    proc, _ = build(tmp_path, md, "--ledger", ledger, "--strict", diagrams=diagrams)
+    assert proc.returncode == 1
+    assert "bare number 50" in proc.stdout and "bare number 100" in proc.stdout
+    assert "bare number 0" not in proc.stdout and "number 45" not in proc.stdout
+
+
 def test_warnings_for_missing_source_caption_and_crossref(tmp_path):
     md = "# T\n\n![](example-gantt.html)\n\nSee [[fig:ghost]].\n"
     proc, doc = build(tmp_path, md, "--json")

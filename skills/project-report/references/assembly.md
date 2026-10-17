@@ -117,7 +117,7 @@ House style lives in `assets/report.css` (colours as custom properties at the to
 |---|---|
 | figure has no caption / source line | add alt text and the quoted source in the figure line |
 | unresolved `[[fig:slug]]` | use the file name without extension, or the Mermaid `id` |
-| number in a diagram label is not in the ledger or report | correct the diagram, or add the missing fact to the ledger with its source |
+| number in a diagram label is not in the ledger or report | correct the diagram, or add the missing fact to the ledger with its source. A bare number (an axis tick, a grid or step number) is flagged too: label the values directly and draw no numeric ticks |
 | gap markers remain | in a reader-facing report: rewrite the gap as a plain statement and move the question to `open-questions.md`. In a draft the author asked for: expected; state the count in the reply |
 | `note:` figure prints at under 75% scale | redraw nearer the printed width, or cut nodes and labels; it is a note, not a warning, and does not fail `--strict` |
 | diagram references an external URL | redraw without external assets |

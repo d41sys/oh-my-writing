@@ -1,0 +1,53 @@
+{
+  "id": "independent-review/heldout-triage-rejects-contradicted-fix",
+  "skill": "independent-review",
+  "heldout": true,
+  "description": "Held-out. Triage of four reviewer findings checked against the council letter the notice is based on: accept the finding the letter confirms, reject the 'fix' the letter contradicts (quoting the letter), reject or hand back to the author the explanation the letter never gives, and skip the nit. The triage must not adopt the reviewer's wrong date or add reasons the evidence does not state.",
+  "prompt": "A reviewer sent four findings on draft.md; they are in findings.md. The notice is based on the council letter in letter.md. Sort the findings for me: which ones I should act on, which to skip and why, and which I need to answer myself. Save it to out/triage.md.",
+  "files": {
+    "draft.md": "Lane swimming changes at Riverside Pool\n\nFrom 3 February, weekday lane swimming at Riverside Pool runs from 6:30 to 8:30 in the morning. Saturday lane swimming is unchanged, 8 to 10.\n\nThe pool is closed for the day on 17 February for maintenance. It reopens on 18 February.\n\nBook a lane through the council website or at the front desk. Each booking is for one lane and one swimmer.\n",
+    "letter.md": "Council letter to the Riverside Pool user group, 14 January\n\nFrom 3 February, weekday lane swimming will run from 6:30 to 8:00 in the morning. Saturday lane swimming stays at 8 to 10.\n\nThe pool will close for one day, 17 February, for maintenance. It reopens on 18 February.\n\nLanes can be booked on the council website or at the front desk. One booking covers one lane and one swimmer.\n",
+    "findings.md": "Reviewer comments on draft.md\n\nF1 (major): The weekday lane swimming time looks wrong against the source. Check it and correct the draft.\n\nF2 (major): The closure date is wrong. The pool closes on 24 February, not 17 February. Change the draft to 24 February.\n\nF3 (minor): Add a sentence explaining that the weekday change is because of low attendance in the early morning, so residents understand why.\n\nF4 (nit): The headline is plain. Make it punchier.\n"
+  },
+  "output": "out/triage.md",
+  "checks": [
+    {
+      "type": "regex",
+      "pattern": "(?is)(?:\\bF1\\b|8:00|weekday (?:lane )?(?:swimming )?time).{0,500}?(?:accept|apply|\\bact\\b|\\bfix|correct|change (?:the draft|it) to|update)|(?:accept|apply|\\bact\\b|\\bfix|correct|update)\\w*[^\\n]{0,40}\\n(?:\\s*\\n)?[^\\n]{0,12}\\bF1\\b",
+      "note": "F1 is a real defect: the letter says 8:00 where the draft says 8:30; the verdict may follow F1 or head the group above it"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)\\bF1\\b.{0,600}?8:00|8:00.{0,300}?\\bF1\\b",
+      "note": "the fix for F1 is named from the letter: the end time is 8:00"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)(?:\\bF2\\b|24 February).{0,500}?(?:reject|decline|disagree|not (?:supported|correct|confirmed)|contradict|letter (?:says|states Feb|gives)|already (?:says|states|correct)|no change|skip|do not change|don't change|keep (?:17|the draft))|^[^\\n]*(?:reject|skip)[^\\n]*\\bF2\\b[^\\n]*$",
+      "note": "F2 asks for a date the letter contradicts: reject it"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)(?:\\bF2\\b|24 February).{0,600}?17 February|17 February.{0,300}?(?:\\bF2\\b|24 February)",
+      "note": "the rejection rests on the letter's 17 February date"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)(?:change|update|correct|replace|set|move)[^.\\n]{0,60}\\b(?:to|with)\\s+24 February|(?:accept|apply|act on)\\b[^.\\n]{0,25}\\bF2\\b",
+      "note": "the reviewer's wrong date must not be adopted"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)(?:\\bF3\\b|low attendance|explaining).{0,500}?(?:reject|decline|\\[ASK AUTHOR|ask the author|needs author|you need to answer|answer (?:it )?yourself|author (?:must|needs to) (?:answer|supply|provide|confirm)|not (?:in|stated|given|supported)|letter (?:does not|doesn't|gives no))",
+      "note": "the letter gives no reason for the change; F3 is rejected or goes to the author"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)(?:\\bF4\\b|headline|punchier).{0,300}?(?:skip|nit|optional|ignore|decline|reject|no change|not needed|low priority|leave)",
+      "note": "the nit is skipped"
+    },
+    {
+      "type": "no_added_facts"
+    }
+  ]
+}

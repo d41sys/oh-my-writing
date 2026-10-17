@@ -26,7 +26,7 @@ Voice is a dial set by the genre and the reader. Warm does not mean exclamatory 
 
 | Type | Register | Density | Notes |
 |---|---|---|---|
-| Decision memo | Cool, direct, active | High | Recommendation in the first lines; opinionated but fair to the options it rejected |
+| Decision memo | Cool, direct, active | High | Recommendation in the first lines (when the notes leave the choice open, that it is open and where the evidence points); opinionated but fair to the options it rejected |
 | Research report | Cool, data-led | High | Findings before background; every number with a baseline |
 | Competitive report | Cool, fair | High | Honest about the client's weak spots; no brochure language about rivals |
 | Executive summary | Plain, compact | Highest | Standalone; no method; no new claims |
@@ -44,7 +44,7 @@ Concessions ("the data does not cover X") run at full strength in research and d
 
 **Spine:**
 
-1. Recommendation (one to three sentences), confidence and its reason, decision needed and by when.
+1. Recommendation (one to three sentences; when the notes leave the choice open, that it is open and where the evidence points), confidence and its reason, decision needed and by when.
 2. Why now and what is at stake (short; the reader usually knows the context).
 3. Options considered, each with what it costs and gives up. Include doing nothing or the current arrangement only when the notes describe it.
 4. Evidence behind the recommendation, ordered by what the reader will challenge first.
@@ -137,7 +137,7 @@ The report answers three questions, and every section earns its place by moving 
 
 **Shape:**
 
-1. The finding or recommendation in one to three sentences.
+1. The finding or recommendation in one to three sentences. When the notes leave the choice open, say so here and give the evidence's direction instead of a recommendation.
 2. Three to five supporting points, each with its key number and baseline.
 3. Confidence and the main caveat.
 4. The decision or next step, with date.

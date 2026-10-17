@@ -9,7 +9,9 @@
   "output": "out/article.md",
   "checks": [
     {
-      "type": "no_added_facts"
+      "type": "no_added_facts",
+      "allow": ["2"],
+      "note": "the case requires the article to say plainly that the two baseline figures differ (its own regex accepts 'two figures', 'two baselines', 'two different'); the word 'two' there counts the figures the transcript gives and is not a fact the transcript lacks"
     },
     {
       "type": "contains",

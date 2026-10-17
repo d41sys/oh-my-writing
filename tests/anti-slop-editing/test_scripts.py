@@ -644,3 +644,61 @@ def test_rate_times_volume_and_the_gap_between_two_costs_are_derived(tmp_path):
     assert derived == {"1680", "2040", "360"}
     # annualising assumes a 365-day year the source never states: still flagged
     assert {"131400", "365 day"} <= added_items(report, "numbers")
+
+
+def test_round_fraction_or_time_unit_times_a_count_is_not_a_calculation(tmp_path):
+    # 0.5 x 4,000 and 30 min x 100 land on round figures by chance; inventing 2,000 or 3,000 min must stay flagged
+    before = write(tmp_path, "before.md", "Ratio 0.5 across 4,000 tickets. Calls last 30 min; 100 calls a week.\n")
+    after = write(tmp_path, "after.md", "That is 2,000 tickets and 3,000 min of calls.\n")
+    _, report = diff_json(before, after)
+    assert report["categories"]["numbers"].get("derived", []) == []
+    assert {"2000", "3000 min"} <= added_items(report, "numbers")
+
+
+def test_bare_restatement_of_a_figure_the_source_gives_with_a_unit_is_not_added(tmp_path):
+    before = write(tmp_path, "before.md", "Sizing took 90 minutes. Latency fell from 180 ms to 45 ms. Churn was 12%.\n")
+    after = write(tmp_path, "after.md", "Sizing took 25 minutes instead of 90. The 180-to-45 drop held. "
+                                        "Churn was 12. A new 70 appears.\n")
+    _, report = diff_json(before, after)
+    added = added_items(report, "numbers")
+    assert "90" not in added and "180" not in added
+    assert {"12", "70"} <= added  # a percent stays strict; an unrelated bare figure stays flagged
+
+
+def test_thread_position_counters_are_not_figures_but_a_mid_sentence_ratio_is(tmp_path):
+    before = write(tmp_path, "before.md", "Builds fell from 14 min to 9 min.\n")
+    after = write(tmp_path, "after.md", "1/3 Builds fell from 14 min to 9 min.\n\nThe cache did it. 2/3\n\n"
+                                        "(3/3) Only 2/5 runners were warm.\n")
+    _, report = diff_json(before, after)
+    added = added_items(report, "numbers")
+    assert not {"1/3", "2/3", "3/3"} & added
+    assert added  # the 2/5 inside the sentence is a stated figure
+
+
+def test_a_date_is_one_fact_in_any_format_and_a_moved_date_is_still_flagged(tmp_path):
+    before = write(tmp_path, "before.md", "Go-live is planned for 2026-04-06. Review on 3 March 2026.\n")
+    after = write(tmp_path, "after.md", "Go-live is planned for 6 April. The review is on March 3, 2026. "
+                                        "Training starts on 9 April.\n")
+    _, report = diff_json(before, after)
+    numbers = report["categories"]["numbers"]
+    assert {"date:--04-09"} == added_items(report, "numbers")  # an invented day is still a new fact
+    assert numbers["lost"] == []  # 2026-04-06 -> 6 April and 3 March 2026 -> March 3, 2026 are the same dates
+
+
+def test_day_ranges_and_a_year_inside_an_iso_date_are_source_facts(tmp_path):
+    before = write(tmp_path, "before.md", "Testing 2026-07-13 to 2026-07-31; pilot 2026-08-03 to 2026-08-14.\n")
+    after = write(tmp_path, "after.md", "Testing ran 13–31 July and the pilot 3 to 14 August, all in 2026. "
+                                        "The review moved to 20-August.\n")
+    _, report = diff_json(before, after)
+    assert added_items(report, "numbers") == {"date:--08-20"}
+
+
+def test_a_small_gap_is_a_calculation_only_when_its_operands_sit_beside_it(tmp_path):
+    before = write(tmp_path, "before.md", "Limit: 300 ms. Vendor A measured 310 ms. Vendor B measured 240 ms.\n")
+    after = write(tmp_path, "after.md", "Vendor A measured 310 ms, 10 ms over the 300 ms limit. "
+                                        "Elsewhere in a long paragraph that runs on about other things entirely, "
+                                        "Vendor B had a 70 ms margin.\n")
+    _, report = diff_json(before, after)
+    numbers = report["categories"]["numbers"]
+    assert {d["item"] for d in numbers.get("derived", [])} == {"10 ms"}
+    assert "70 ms" in added_items(report, "numbers")  # operands not beside it: still a figure to check

@@ -17,7 +17,8 @@
       ],
       "allow": [
         "800"
-      ]
+      ],
+      "note": "a supplied figure with its unit elided in a comparison ('25 minutes instead of 90') is read as a new bare number, but it is the same supplied figure; any other new figure still fails"
     },
     {
       "type": "preserves",

@@ -25,7 +25,7 @@ Answer each check pass or fail. Fix every failure before returning.
 ## Format and conventions
 
 15. Does the document type, length, file type and section order match the target's written instructions, or the stated common-practice norm that the user is told to verify?
-16. Were region-dependent items (photo, birth date, marital status, nationality, referees, spelling, date order, sign-off) handled for the stated market, or omitted and flagged when the market is unknown?
+16. Were region-dependent items (photo, birth date, marital status, nationality, referees, spelling, date order, sign-off) handled for the stated market, or omitted and flagged when the market is unknown? Does the salutation use the recipient's name as the source gives it, with no title or gender the source does not state?
 17. For a résumé or CV: is every bullet an action with a scope or result, one to two lines, with varied openers and no duty-list phrasing?
 18. For a résumé or CV: do titles, dates and structure match the master or the candidate's original headings, and is the plain-text reading order coherent?
 19. For a letter or statement: does it answer every prompt question or criterion, include at least one specific true result, and stay inside the governing limit?

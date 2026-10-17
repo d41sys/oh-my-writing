@@ -117,9 +117,10 @@
         "9",
         "9.5 h",
         "2.8 h",
-        "88%"
+        "88%",
+        "21"
       ],
-      "note": "categories are numbers and urls only: a month and year in brackets such as (July 2026) reads as an author-year citation to the fact checker and no document here cites papers. Allowed: money with or without a currency sign, zero-stripped day and month numbers from ISO dates in the plans, and derived values for a closing report: remaining budget (9,200), per-line savings, 90% of budget spent, before/after differences and percentage changes of the five KPIs, the 21-day go-live slip"
+      "note": "categories are numbers and urls only: a month and year in brackets such as (July 2026) reads as an author-year citation to the fact checker and no document here cites papers. Allowed: money with or without a currency sign, zero-stripped day and month numbers from ISO dates in the plans, and derived values for a closing report: remaining budget (9,200), per-line savings, 90% of budget spent, before/after differences and percentage changes of the five KPIs, the 21-day go-live slip (also written '21 calendar days', which the checker reads as the bare number 21)"
     },
     {
       "type": "regex",
@@ -147,8 +148,8 @@
     },
     {
       "type": "regex",
-      "pattern": "(?i)lessons? learn(ed|t)|what (worked|did not work)|do next time|what we learn",
-      "note": "the lessons-learned document is reflected"
+      "pattern": "(?i)lessons? learn(ed|t)|what (worked|did not work)|do next time|what we learn|(?:freez\\w*[^.\\n]{0,30}scope|sampl\\w*[^.\\n]{0,30}source|(?:ask|check)\\w*[^.\\n]{0,40}(?:phone|chat)|data quality)",
+      "note": "the lessons-learned document is reflected: under any heading ('Lessons for subsequent work', 'Lessons carried forward') or as a paragraph, by its own recommendations (freeze scope, sample each source system, ask about phone and chat channels, check data quality)"
     },
     {
       "type": "not_regex",

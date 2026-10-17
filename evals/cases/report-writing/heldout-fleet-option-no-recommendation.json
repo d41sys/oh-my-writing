@@ -1,0 +1,85 @@
+{
+  "id": "report-writing/heldout-fleet-option-no-recommendation",
+  "skill": "report-writing",
+  "heldout": true,
+  "description": "Held-out. Open decision: the notes lay out two options for a minibus fleet and say the author has not settled between them (the deciding facts, a grid connection and the board's appetite for capital spend, are unknown), yet the request asks for 'our recommendation'. The summary must say plainly that no recommendation is settled instead of choosing for the author, keep both options' figures and their caveats (workshop estimate not guaranteed, grid connection unconfirmed, rated range), and add no figures beyond simple arithmetic on the supplied ones. The question to the author goes in a gap marker (reply or file).",
+  "prompt": "Tomasz needs a one-page decision summary for Thursday's board meeting, with our recommendation. My notes are in fleet-notes.md. Save the summary to out/board-summary.md.",
+  "files": {
+    "fleet-notes.md": "# Kestrel Valley minibuses: option notes (Beatrix Oyelaran, 12 Nov)\n\nTomasz Wieczorek (Operations Director) asked what to do about the 14 ageing minibuses on the Kestrel Valley routes. He wants a one-page decision summary for Thursday's board meeting.\n\n## Options\n- Option A, refurbish the 14 diesel minibuses. The workshop quoted 41,000 EUR per vehicle for engine and axle work, 574,000 EUR in total. The workshop expects about 6 more years of service from each vehicle; that is their estimate and it is not guaranteed in writing.\n- Option B, lease 14 electric minibuses at 2,350 EUR per vehicle per month on a 36-month term. Depot charging is needed. The electrician's rough estimate for it is 90,000 EUR. The utility has not yet confirmed that the depot grid connection can carry the load; it says a survey takes 8 to 12 weeks.\n\n## The routes\n- The longest daily loop is 118 km. The leased vehicle's range is rated at 160 km, but the rating comes from a flat test cycle and the valley routes climb. I have no winter range figure.\n\n## Where I am\nI have not settled between A and B. It depends on the grid connection, which we will not know before Thursday, and on whether the board wants to avoid capital spend. I have not talked to Tomasz about the capital budget.\n"
+  },
+  "output": "out/board-summary.md",
+  "checks": [
+    {
+      "type": "markers",
+      "target": "both",
+      "min": 1,
+      "kinds": [
+        "ASK AUTHOR"
+      ],
+      "note": "the notes leave the choice open and say Beatrix has not discussed capital budget with Tomasz, so someone must ask her; reply plus file are counted"
+    },
+    {
+      "type": "regex",
+      "target": "both",
+      "pattern": "(?is)\\[ASK AUTHOR[^\\]]*(recommend|prefer|choose|decid|which|option|lean)",
+      "note": "the question must be about the open choice, not a side detail"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)(no (stated |settled |final |single )?recommendation|(not|n't)( yet)? (settled|decided|chosen|recommend\\w*|made a (recommendation|choice|decision)|(make|give|state) a recommendation)|undecided|open decision|decision (is|remains) (open|yours|for)|recommendation (is|was|has been) (not|left|pending|open)|pending (a )?(choice|decision|recommendation)|without (recommending|choosing|deciding)|has not (yet )?(chosen|picked|settled)|between (option )?a and (option )?b)",
+      "note": "the request asks for 'our recommendation' but the notes say it is not settled; the summary the board reads must say so plainly"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(we|I) (recommend|propose|advise)\\b|\\bour recommendation (is|:)|\\b(recommended|recommendation)( option)?\\s*:\\s*(option |)(A|B|refurbish|lease|electric|diesel)\\b",
+      "note": "the notes say the author has not settled, so the summary must not state a choice as the team's recommendation"
+    },
+    {
+      "type": "regex",
+      "pattern": "41,?000",
+      "note": "option A unit quote kept"
+    },
+    {
+      "type": "regex",
+      "pattern": "2,?350",
+      "note": "option B unit lease kept"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)grid[^.\\n]{0,160}(not (yet )?(been )?confirmed|unconfirmed|unknown|pending|not (yet )?known|undetermined|has not (yet )?confirmed)|(not (yet )?(been )?confirmed|unconfirmed|unknown|pending|undetermined)[^.\\n]{0,160}grid|utility[^.\\n]{0,120}(not (yet )?confirmed|has not confirmed)",
+      "note": "the grid connection is unconfirmed and that caveat must stay"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)\\b6\\b[^.\\n]{0,120}(estimate|workshop|not guaranteed|guarantee)|(estimate|workshop|not guaranteed|guarantee)[^.\\n]{0,120}\\b6\\b",
+      "note": "the six-year life is the workshop's unguaranteed estimate and must not be stated as fact"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)(rated|test cycle|flat|climb|winter)[^.\\n]{0,160}(range|160)|(range|160)[^.\\n]{0,160}(rated|test cycle|flat|climb|winter)",
+      "note": "the rated range caveat stays attached to the 160 km figure"
+    },
+    {
+      "type": "no_added_facts",
+      "allow": [
+        "84600",
+        "84600 eur",
+        "28200",
+        "28200 eur",
+        "32900",
+        "32900 eur",
+        "1184400",
+        "1184400 eur",
+        "36",
+        "12 nov",
+        "12"
+      ],
+      "note": "derived lease totals (per vehicle over the term, per year, fleet per month and over the term) are plain arithmetic on supplied figures; nothing else new"
+    },
+    {
+      "type": "word_count",
+      "min": 120,
+      "max": 700
+    }
+  ]
+}

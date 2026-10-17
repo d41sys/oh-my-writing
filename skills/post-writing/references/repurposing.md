@@ -49,7 +49,7 @@ Length bands for these channels are snapshot heuristics (see [platforms](platfor
 
 - **Thesis and truth conditions.** A hypothesis stays a hypothesis; "may reduce" does not become "reduces". Do not strip hedges that carry real uncertainty to make the version punchier.
 - **Numbers.** Keep the figure, unit, baseline and conditions. Do not round up (2.4x is not "nearly 3x"), merge numbers measured under different conditions, or drop the sample or setup that makes the number meaningful. If a number cannot keep its condition in the available space, link to where it is stated, or leave it out and say what it supports.
-- **Scope.** A result in one model system, one environment or one dataset does not become a general claim. State the environment in one phrase if space allows.
+- **Scope.** A result in one model system, one environment or one dataset does not become a general claim. State the environment in one phrase if space allows. When the source hedges about the untested case ("a larger setup may behave differently, because ..."), the version keeps that claim and its hedge in one sentence about that case; "we did not test X" followed by a separate sentence about something nearby drops the caution, because the reader no longer learns what might differ.
 - **Names, quotes and attributions.** Quote only what the source quotes, exactly. Do not add endorsements.
 - **Causal chains.** Compress descriptions freely; do not shorten "A led to B led to C" into "A led to C", reorder it, or supply a cause the source does not give.
 - **Measured versus projected.** Keep observations separate from model projections or the author's expectations.

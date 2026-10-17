@@ -11,7 +11,8 @@
   "checks": [
     {
       "type": "regex",
-      "pattern": "(?ism)(?:F4|resident quote|concrete figure).{0,500}?(?:reject|\\[ASK AUTHOR|ask the author|needs author|you need to answer|answer (?:it )?yourself|author (?:must|needs to) (?:answer|supply|provide)|decline)|^[^\\n]*(?:reject|\\[ASK AUTHOR)[^\\n]*(?:resident quote|concrete figure)[^\\n]*$"
+      "pattern": "(?ism)(?:F4|resident quote|concrete figure).{0,500}?(?:reject|\\[ASK AUTHOR|ask the author|needs author|needs? (?:your|my) (?:own )?(?:answer|input|decision)|(?:you|I) (?:need|must|have) to answer|for you to answer|answer (?:it )?yourself|author (?:must|needs to) (?:answer|supply|provide)|decline)|^[^\\n]*(?:reject|\\[ASK AUTHOR)[^\\n]*(?:resident quote|concrete figure)[^\\n]*$",
+      "note": "F4 must be rejected or handed back to the author; the prompt asks which findings 'I need to answer myself', so a verdict worded 'Needs your answer' says the same as 'needs author'"
     },
     {
       "type": "regex",

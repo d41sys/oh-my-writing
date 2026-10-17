@@ -1,0 +1,128 @@
+{
+  "id": "project-report/heldout-folder-spend-conflict-owner-gap",
+  "skill": "project-report",
+  "heldout": true,
+  "description": "Held-out. A small project folder (charter, task list, budget sheet, status email) where the email and the budget sheet give different spend figures, one task has no owner, and a task is still planned. The report keeps both spend figures and says they differ, marks the missing owner without inventing one, keeps planned work planned and the out-of-scope item out, adds no figures beyond arithmetic on the supplied ones, and plans a diagram or figure reference.",
+  "prompt": "Everything about the Reminderline pilot is in the docs/ folder. Write a status report for the practice board from those documents: plain professional tone, with a diagram where it helps. Save the report to out/report.md. I'm away today, so don't wait for me.",
+  "files": {
+    "docs/charter.md": "# Reminderline pilot charter (signed 1 September 2026)\n\nSponsor: Ngozi Adeyemi (practice manager). Delivery lead: Casimir Brandt (IT).\n\nGoal: send appointment reminders by text message to patients of the 3 Orchard Row clinics, to cut missed appointments.\n\nApproved budget: 24,000 GBP. Any change over 2,000 GBP needs Ngozi's approval.\n\nGo-live: 30 November 2026.\n\nScope: reminders only. Two-way rebooking by text is out of scope for this pilot.\n",
+    "docs/tasks.csv": "Task,Start,End,Owner,Status\nGateway contract,2026-09-07,2026-09-25,Casimir Brandt,done\nPatient list export,2026-09-28,2026-10-23,Casimir Brandt,in progress (60% complete)\nConsent wording for patients,2026-10-12,2026-11-06,,not started\nStaff briefing,2026-11-16,2026-11-20,Lindiwe Fofanah,planned\nGo-live,2026-11-30,2026-11-30,Ngozi Adeyemi,planned\n",
+    "docs/budget.csv": "Line,Approved GBP,Spent to 10 October GBP\nGateway licence,14000,12600\nIntegration work,7000,5800\nPatient communications,3000,0\nTotal,24000,18400\n",
+    "docs/status-email.txt": "From: Casimir Brandt\nTo: Ngozi Adeyemi\nDate: 13 October 2026\nSubject: Reminderline status\n\nHi Ngozi,\n\nThe patient list export is about 60% done. We are at 21,900 GBP spent so far out of the 24,000 GBP budget. The consent wording has not been started because I am not sure whose job it is, and patients cannot be texted until it exists. Go-live is still 30 November.\n\nCasimir\n"
+  },
+  "output": "out/report.md",
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "allow": [
+        "14000",
+        "12600",
+        "7000",
+        "5800",
+        "3000",
+        "0",
+        "24000",
+        "18400",
+        "21900",
+        "2000",
+        "3500",
+        "3500 gbp",
+        "5600",
+        "5600 gbp",
+        "2100",
+        "2100 gbp",
+        "77%",
+        "76.7%",
+        "91%",
+        "91.3%",
+        "91.25%",
+        "23%",
+        "23.3%",
+        "2026",
+        "10 october",
+        "13 october",
+        "october",
+        "60",
+        "60%",
+        "1",
+        "2",
+        "3",
+        "6",
+        "7",
+        "9",
+        "10",
+        "13",
+        "16",
+        "20",
+        "23",
+        "25",
+        "28",
+        "30"
+      ],
+      "note": "source figures with or without a currency sign (the checker treats 14,000 and 14000 as different items), plus remaining budget and percent of budget for the two spend figures; nothing else new"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?s)(?=.*18,?400)(?=.*21,?900)",
+      "note": "both conflicting spend figures stay in the report"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)(18,?400|21,?900).{0,500}(differ|conflict|disagree|discrepan|reconcil|do not match|does not match|doesn.t match|inconsisten|mismatch)|(differ|conflict|disagree|discrepan|reconcil|do not match|does not match|doesn.t match|inconsisten|mismatch).{0,500}(18,?400|21,?900)",
+      "note": "the two figures are set side by side with the difference stated, not merged or silently resolved"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?im)^#{1,4}\\s+.*\\b(executive summary|summary|overview)\\b"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?im)^#{1,4}\\s+.*\\b(progress|status)\\b"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?im)^#{1,4}\\s+.*\\b(risks?|issues?|open (points|questions|items))\\b"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?im)^#{1,4}\\s+.*\\bnext steps\\b|^#{1,4}\\s+.*\\b(actions?|decisions?)\\b"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)(```mermaid|!\\[[^\\]]*\\]\\([^)]+\\)|\\bFigure \\d)",
+      "note": "a diagram block, an image reference or a numbered figure reference"
+    },
+    {
+      "type": "markers",
+      "target": "both",
+      "min": 1,
+      "max": 10,
+      "note": "gaps reach the author as markers in the reply or the report; a third-party report may state the gap in plain words and put the author's questions in the reply"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)consent",
+      "note": "the unowned consent wording task appears"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)consent[^.\\n]{0,100}(owned by|owner is|assigned to|led by|will be (done|handled|written) by|is (casimir|ngozi|lindiwe)|responsib\\w+ (is|lies with))\\s*(Casimir|Ngozi|Lindiwe)|(Casimir|Ngozi|Lindiwe)[^.\\n]{0,60}(owns|is responsible for|will write|is writing) the consent",
+      "note": "no owner may be invented for the consent wording"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)(staff briefing|go-live)[^.\\n]{0,60}\\b(is |was |has been )?(complete|completed|done|finished|under way|underway|in progress)\\b",
+      "note": "planned tasks stay planned"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)(two-way|rebooking)[^.\\n]{0,100}\\b(will|is|are) (be )?(included|delivered|part of|built|added)\\b",
+      "note": "two-way rebooking is out of scope and must not be presented as in scope"
+    },
+    {
+      "type": "word_count",
+      "min": 220,
+      "max": 2000
+    }
+  ]
+}

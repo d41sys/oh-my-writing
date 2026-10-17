@@ -29,7 +29,7 @@ Answer each check pass or fail. Fix every failure before returning.
 
 ## Apply
 
-17. Did the work start from the author's material, with every fact, number, name, opinion, reaction and experience traceable to the author's brief, and nothing carried over from the samples' own content? Where the material had a gap, is it stated plainly or left out, and not filled?
+17. Did the work start from the author's material, with every fact, number, name, opinion, reaction and experience traceable to the author's brief, and nothing carried over from the samples' own content? Is every figure one the brief states, with no remainder, total or difference computed from them? Where the material had a gap, is it stated plainly or left out, and not filled?
 18. Were strong traits followed, moderate ones followed unless content or reader argued otherwise, and weak ones left alone?
 19. Is no trait applied as a quota (a contraction, dash or short sentence added to match a figure)?
 20. Is the channel handled by keeping identity and changing register, with any extrapolated channel stated? When a finished piece was adapted, are its claim, numbers and qualifiers unchanged?

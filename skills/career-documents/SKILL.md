@@ -3,7 +3,7 @@ name: career-documents
 description: "Writes and edits truthful career documents from the candidate's real material: résumés, academic CVs, tailoring to a job posting, cover letters, statements of purpose, personal statements, motivation letters, LinkedIn and portfolio profiles, short application-form answers, and cold, networking, warm-intro, thank-you or prospective-supervisor emails. Never invents experience, dates, titles, skills, contacts or numbers. Use when the user asks to write, rewrite, tailor, shorten or review a resume, CV, cover letter, SOP, personal statement, motivation letter, LinkedIn headline or About section, application answer, or a job-search, networking or academic outreach email."
 license: MIT
 metadata:
-  version: "1.3"
+  version: "1.4"
   skill-author: d41sys
 ---
 

@@ -10,13 +10,13 @@ Use the sections the documents support; cut the rest and say so in the reply. Th
 |---|---|---|---|
 | - | Title block | title, reader, period, report date, evidence cut-off | brief |
 | 1 | Summary | the one-line overall assessment, then three to five key points ([first screen](#first-screen)) | everything, written last |
-| 2 | Decisions and actions | table: priority, action, owner or "to be assigned", timing or "not set", basis | notes, emails, plan, ledger gaps |
-| 3 | Progress against plan | planned vs actual: milestones, deliverables, percent complete and how it is measured; the timeline figure | plan, status emails, notes |
+| 2 | Decisions and actions | table: priority, action, owner or "to be assigned", timing or "not set", basis. With fewer than four actions: a short Next steps section of sentences | notes, emails, plan, ledger gaps |
+| 3 | Progress and schedule | planned vs actual: milestones, deliverables, percent complete and how it is measured; the timeline figure | plan, status emails, notes |
 | 4 | Budget and results | spend and effort vs plan, measured outcomes; each figure with unit, date and source; limits and sign-off steps | spreadsheets, reports, minutes |
-| 5 | Risks and issues | each item not already in the actions table: description, impact, status; open risks first | risk log, notes, emails |
+| 5 | Risks and issues | every open risk and issue the documents record: description, impact, status; open risks first. The actions hold only the response and the Summary only the one that changes a decision, so each fact sits under its own heading once | risk log, notes, emails, plan notes |
 | A | Appendix: sources | [compact table](#citations): file, as-of date, used for; not read; unresolved conflicts | inventory, ledger |
 
-Fold sections 3 to 5 together when the folder is small. The old separate "Decisions needed" and "Next steps" sections are the Decisions and actions table at the top; do not repeat them later.
+Headings carry the names above, in the words a reader scans for, so the Summary, the schedule, the risks and the next steps can be found at a glance; never a private label ("Delivery position", "Assessment and decisions"). Where the folder is small, fold sections 3 to 5 together by joining their names ("Progress, schedule and risks"), and keep a section for risks whenever a document records a risk, an at-risk item or an open issue. The old separate "Decisions needed" and "Next steps" sections are the Decisions and actions table at the top (or the Next steps sentences); do not repeat them later. A one-page report has no headings.
 
 ### Final or closing report (looks back)
 
@@ -34,7 +34,7 @@ First screen: outcome against objectives, then one sentence for what the reader 
 
 ### Migration or system-change report
 
-First screen: what changed (before and after, in a short table), current state of the cut-over, what remains, and the decisions or assignments the reader owes (one sentence, or the Decisions and actions table when there are four or more). Then: scope and approach, architecture or workflow figure, risks and open items, appendix: sources. The source appendix is a compact list, not a page of its own; it carries no statement about the reporting window that the first screen already made.
+First screen, under a `Summary` heading: what changed (before and after, in a short table), current state of the cut-over, what remains, and the decisions or assignments the reader owes (one sentence, or the Decisions and actions table when there are four or more). Then, under plain names: scope and approach, architecture or workflow figure, risks and open items, appendix: sources. The source appendix is a compact list, not a page of its own; it carries no statement about the reporting window that the first screen already made.
 
 ### Length
 
@@ -48,7 +48,7 @@ For decision memos, post-mortems and research reports use `report-writing`.
 
 ## First screen
 
-Everything above the first detail heading, about the top third of page one. The reader should be able to stop here.
+Everything under the `Summary` heading (a final report: under Outcome against objectives; a one-page report has no heading), about the top third of page one. The reader should be able to stop here.
 
 1. **Overall assessment**, one line, labelled once as the report's own and derived from facts stated in the documents: "Overall assessment (this report's view): Amber. Integration testing starts 13 July and its test environment was unbooked on 1 July." A colour word or rating is allowed only with the facts behind it in the same line. When the records do not support one: "The records do not support an overall assessment: the latest status is dated 1 July and the pilot outcome is not recorded." A one-page report skips the rating and the label: it opens with the state and its date ("As of 12 September, 8 of 12 pages are done; the rest wait on legal review, with no date back"), because the plain sentence already is the assessment.
 2. **Three to five key points**, each carrying its number, date and, where it matters, source. Include any material constraint (funds released below the approved budget, a sign-off step) and any unreconciled conflict, because the reader can act on them.
@@ -115,6 +115,8 @@ A reader checks a claim at the source; a paragraph does not need a source list t
 | table | one `Source: ...` line directly under it (styled as a source line) |
 | prose | no source list per paragraph. A short parenthetical file name only where the source matters: a conflict ("budget.csv, 30 June; status email, 1 July"), a superseded document ("replaces the 3 March plan"), a single-source claim the reader may challenge ("the vendor says, vendor-note.md") |
 | appendix | for a report of about three pages or more, one compact table: file, as-of date, used for; below it one line each for files not read (and why) and conflicts not resolved. For a shorter report, one `Sources:` line. A file with no date inside it is "undated"; its file-system modified date goes in the ledger only, not in the report. No process notes, no "all files were read", no extraction methods, no mention of assistant-addressed text |
+
+Locate a source by what the reader sees in the file: a section heading, a sheet name, a slide, a date ("plan.xlsx, sheet Schedule", "risk register, tab Open items"). Line and row numbers ("rows 5-11", "lines 8-23") are positions in the author's working copy, are not in the reader's file, and read as figures beside real ones; the ledger may keep them, the reader's report does not.
 
 Bad: "Build is 70% complete. (Sources: plan.md; status-email.eml; steering-minutes.docx.)" after every paragraph.
 Good: "Build is 70% complete (status email, 1 July)." once, where the figure first matters; the appendix lists the files.

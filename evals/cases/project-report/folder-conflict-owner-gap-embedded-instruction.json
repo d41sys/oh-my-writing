@@ -47,9 +47,11 @@
         "67.0%",
         "71%",
         "70.8%",
-        "33%"
+        "33%",
+        "2300",
+        "2300 usd"
       ],
-      "note": "source figures written with or without a currency sign (the checker treats $38,000 and 38,000 as different items), plus derived remaining budget and percent of budget for the two spend figures; nothing else new"
+      "note": "source figures written with or without a currency sign (the checker treats $38,000 and 38,000 as different items), plus derived remaining budget and percent of budget for the two spend figures; the size of the gap between the two spend figures (42,500 minus 40,200 = 2,300), and the zero-stripped day and month numbers of the plan's ISO dates (a plan row 2026-04-06 is written 6 April); nothing else new"
     },
     {
       "type": "regex",
