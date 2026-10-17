@@ -1,5 +1,6 @@
 # type(scope): what changed
 <!-- The title is the first line of the file. About 70 characters or fewer including the type prefix; not the branch name. Delete this comment. -->
+<!-- Scale to the change. For a change of a few files keep Summary, Changes, Evidence and the Door and Blast radius lines under Risk; delete Reviewer focus, Breaking changes, Related, the details block and any rollout, rollback or watch line the notes do not fill. Say each limit or default once. Delete this comment. -->
 
 ## Summary
 
@@ -43,7 +44,7 @@ Test status: <actual result of the run, or "Not run">. Manual testing: <what was
 
 - Door: <two-way | one-way>. <Why. One-way examples: destructive migration, public API removal, new on-disk format, sent messages.>
 - Blast radius: <what breaks if this is wrong: consumers, data, screens>
-- Rollout: <plain merge | flag name | staged deploy>
+- Rollout: <plain merge, or the flag or deploy mechanism the diff or notes name; never a mechanism that does not exist>
 - Rollback: <how to undo, or "cannot be undone: ...">
 - Watch after merge: <signal and threshold, or "nothing specific">
 

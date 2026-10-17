@@ -54,6 +54,8 @@ Concessions ("the data does not cover X") run at full strength in research and d
 
 **Density:** typically one to two pages of body; the appendix may be long.
 
+**Short memo (under about 600 words):** one opening paragraph holds the recommendation, the main reason, how sure you are and why, and what would change it, in plain sentences; the options and risks follow as short paragraphs under at most two or three plain headings. No separate summary, no labelled "Confidence:" or "Decision requested:" lines, and no caveat that appears both in the opening and again below.
+
 **Decision record variant:** for a standing technical or organizational decision, keep the same content as a compact record: status, context, options considered, decision, reasoning, consequences accepted. Keep it findable and short; link the evidence rather than paste it.
 
 **Traps:** a recommendation buried after the background; options listed without what each costs; a "balanced" memo that never takes a position; a risk section that lists risks without the effect on the recommendation; weights hidden in a score.
@@ -204,6 +206,8 @@ This is the blameless document written for the team. A public blog post that tel
 5. What went well and where luck helped. Luck is a finding too.
 6. Action items: each tied to a verified cause and specific enough to check (name the system, threshold, document, or step; "improve monitoring" is not an action), with an owner, a date, and the evidence that will show it worked. Prefer changes to systems and checks over retraining or reminders. If the author gave no owner or date, the document says "Owner: to be assigned" and "Date: not set", and the question goes to the reply and `open-questions.md`; do not assign one, and do not leave a marker in the document.
 7. Open questions and what is not known.
+
+**Short incident (a page or less):** fold the spine into a summary paragraph that carries impact and main cause, one timeline, one causes passage and the follow-ups. Say each fact once: impact figures are not repeated under a second Impact heading, a timeline entry is not retold in the causes, and an unknown (for example why an alert was slow) is stated once where it matters and then only pointed to by the follow-up that investigates it. "Owner: to be assigned" and "Date: not set" are said once for the whole action list, not on every row.
 
 **Blameless is a method, not a tone.** People are not the cause; the conditions in which a reasonable person acted that way are. Name roles and systems, not culprits, unless the people consented. If a statement ends at "human error," "carelessness," or "operator did not follow the procedure," keep going: why did the system allow, encourage, or fail to catch that? A root cause that restates the problem or whose only fix is "remind the team" is still a symptom.
 

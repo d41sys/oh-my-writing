@@ -33,11 +33,11 @@ Answer each check pass or fail. Fix every failure before returning.
 
 ## Structure, visuals, and voice
 
-21. Does the executive summary stand alone, contain no method, and introduce no figure or claim missing from the body?
+21. Does the executive summary stand alone, contain no method, and introduce no figure or claim missing from the body (and does a short report have none, with its opening paragraph doing that job)?
 22. Is each table or figure chosen for the relationship it shows, with a caption that states the finding, and does the report still make sense without the figures?
 23. Is color never the only carrier of meaning, and is missing data shown as missing, not zero?
-24. Is the register right for the type (cool and active for decisions, terse for status, plain for investors and post-mortems) with no hype or empty adjectives carrying weight?
-25. Is hedging confined to the claims that are genuinely uncertain, with no blanket qualifiers?
+24. Is the register right for the type (cool and active for decisions, terse for status, plain for investors and post-mortems) with no hype or empty adjectives carrying weight, no headings in a text under about 400 words or in a message, no framework labels the author would not write ("Confidence: medium", "Decision rule"), and the author's own person (no third-person narration about the author)?
+25. Is hedging confined to the claims that are genuinely uncertain, with no blanket qualifiers, and is each caveat or unknown stated once at its claim instead of again in the summary, the body and the close?
 26. For a status report: does the first line give health, trend, the biggest blocker or decision needed, and what happens next, and does each decision carry its date and the cost of a slip?
 27. For a post-mortem: is it blameless (roles and conditions, no name beside a verdict), are causes traced to mechanisms with evidence, are times and durations the author's own or computed from given timestamps, and do action items name the specific change, an owner, a date, and how success will be seen?
 28. For an audit report: does it lead with what failed and the verdict, and does it separate "could not check" from "broken"?

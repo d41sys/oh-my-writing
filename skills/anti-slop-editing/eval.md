@@ -40,11 +40,15 @@ Answer each check pass or fail. Fix every failure before returning.
 ## Honesty of the report
 
 24. Does the What changed list match the delivered text, with no phrase listed as removed that is still present?
-25. Does the report say which checks ran (scanner, preservation script) and which did not, labelling reading-only checks as model-only, and calling a clean script run "no mechanical errors" rather than "meaning verified"?
+25. Does the report say which checks did not run, labelling reading-only checks as model-only, and call a clean script run "no mechanical errors" rather than "meaning verified", without padding the report with process claims the reader cannot use?
 26. Are residuals (kept, protected, source-blocked, pass limit) listed with a one-line reason each?
 27. Did you stay within two editing passes, and state how many were used and why you stopped?
 28. For non-English text, did you skip the English word lists and say that lexical lists do not transfer?
 29. Did the output avoid any claim or hint about who wrote the text?
+
+## Reads like a person
+
+30. Does the output avoid adding what the audit removes: no new headings, lists, bold, transitions or repeated caveats, no point stated twice, and the author's person and register kept? In `detect`, does the reply answer what was asked in plain sentences, without a severity scheme, an editing plan or a summary the user did not need?
 
 ## Final read
 

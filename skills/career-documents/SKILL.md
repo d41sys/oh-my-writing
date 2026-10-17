@@ -3,7 +3,7 @@ name: career-documents
 description: "Writes and edits truthful career documents from the candidate's real material: résumés, academic CVs, tailoring to a job posting, cover letters, statements of purpose, personal statements, motivation letters, LinkedIn and portfolio profiles, short application-form answers, and cold, networking, warm-intro, thank-you or prospective-supervisor emails. Never invents experience, dates, titles, skills, contacts or numbers. Use when the user asks to write, rewrite, tailor, shorten or review a resume, CV, cover letter, SOP, personal statement, motivation letter, LinkedIn headline or About section, application answer, or a job-search, networking or academic outreach email."
 license: MIT
 metadata:
-  version: "1.2"
+  version: "1.3"
   skill-author: d41sys
 ---
 
@@ -70,6 +70,7 @@ Modes: **build** (new or refreshed master), **tailor** (one target), **letter** 
 - **Other languages.** The English cliché and phrase lists in this skill do not transfer. For Vietnamese or other languages, apply the structural, evidence and preservation checks, and say that the lexical lists were skipped. Document conventions (photo, personal data, length) also differ by country; ask or have the user verify.
 - **Cliché control.** Phrases such as "results-driven", "passionate", "team player", "proven track record", "responsible for" and "excited to leverage" are signals to replace with evidence. Exception: keep a phrase the posting requires as a term of art, or one the candidate genuinely says.
 - **Reports are short and true.** List what changed and why. Do not claim improvements in match, readability or interview odds that were not measured.
+- **Write like the person, not the process.** A letter, statement, email or form answer reads as one person writing to one reader: no headings, bullets or labels (except a criteria letter the employer structures, and the section headings and bullets a résumé or CV uses by norm); plain transitions with no signposting ("In summary", "I am writing to"); prose when there are fewer than about four parallel items. Say each gap, limit or "I have not yet" once, at the claim it limits; do not restate the pitch in the close or add a second thank-you or offer. Keep the candidate's own person, contractions and formality, and the recipient's level of formality. Reason: committees and recruiters read hundreds of these, and process-shaped structure and repeated hedging read as written by a template. Exception: a genre norm that requires structure; faithfulness rules are unchanged (every qualifier, number and gap still appears once).
 
 ## Gaps in reader-facing documents
 

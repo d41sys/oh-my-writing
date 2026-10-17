@@ -15,7 +15,7 @@ Answer each check pass or fail. Fix every failure before returning.
 6. Is every gap handled by stating the claim at the strength the facts support, stating plainly what the material does not give, or leaving the sentence out, rather than filled with a plausible detail, and is each question for the author (`[ASK AUTHOR: ...]`, `[VERIFY: ...]`, `[UNTESTED]`) in the reply and not in the post?
 7. Is every real-looking episode, customer, quote or "imagine a team..." scene either from the author's material or absent? Where the author asked for a story and gave none, does the post have no invented scene and no blank at the story slot, with the question for a real moment in the reply, and is any hypothetical one the author asked for labelled inside the post?
 8. Do numbers carry their conditions (what was measured, against what, over what period), and are none rounded upward or stripped of a qualifier?
-9. Are limitations, trade-offs or failed attempts that matter to the reader still present?
+9. Are limitations, trade-offs or failed attempts that matter to the reader still present, each stated once beside the claim it limits rather than repeated in a summary, a closing line or a later post of a thread?
 10. Is any fear, urgency or vulnerability in the text real and stated plainly, not staged?
 11. Is every link, handle, call to action, offer, deadline, discount and testimonial from the author's material or request, or else left out with the question in the reply?
 12. Are availability, status and dates stated as the author gave them (a beta not described as shipped), or stated at the weaker strength with `[VERIFY: availability]` in the reply?
@@ -35,7 +35,7 @@ Answer each check pass or fail. Fix every failure before returning.
 20. Is each concept introduced before a later passage depends on it?
 21. For technical or abstract points, does the concrete example come before the explanation?
 22. In incident and design stories, is the real order kept, with no invented reason for a transition and any inference labelled as inference?
-23. Is formatting proportional to length, with lists only for parallel items and tables only for repeated fields?
+23. Is formatting proportional to length (no headings in a post, email or note under about 400 words), with lists only for parallel items of about four or more, and tables only for repeated fields?
 24. Is each adjective of praise either backed by a stated fact or removed?
 
 ## Ending
@@ -55,7 +55,7 @@ Answer each check pass or fail. Fix every failure before returning.
 
 ## Final read
 
-34. Read aloud, does it sound like the author talking to the reader, with no sentence you would not say?
+34. Read aloud, does it sound like the author talking to the reader, in the author's person and register, with plain transitions, no signposting or labels, and no sentence you would not say?
 35. Was `anti-slop-editing` run as the last pass if available, or its checks applied, and was the author's voice sample respected over any generic rule?
 36. Does the reply say the post is a draft for the author to publish, without claiming it was published, scheduled or sent?
 

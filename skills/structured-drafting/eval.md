@@ -17,7 +17,7 @@ Answer each check pass or fail. Fix every failure before returning.
 
 6. Is every unit in the draft traceable to supplied material, and are authors' views labelled as such?
 7. Is every missing example, number, quote, source, credential or opinion handled as a plain stated gap or an omitted sentence in the draft, and as a question to the author (marker line in the reply), with nothing invented?
-8. Are contradictions in the material surfaced, with both values and who gave each kept in the draft, a plain statement that the material does not settle which is right when the author could not be asked, and nothing downstream computed from either?
+8. Are contradictions in the material surfaced, with both values and who gave each kept in the draft (not left out, not folded into a range), a plain statement that the material does not settle which is right when the author could not be asked, and nothing downstream computed from either?
 9. Do tentative, unconfirmed and attributed items keep that status in the draft (nothing decided, confirmed or stated as fact that the material left open)?
 10. Is the author's material unchanged on disk (draft written separately)?
 
@@ -40,7 +40,7 @@ Answer each check pass or fail. Fix every failure before returning.
 
 ## Draft blocks
 
-22. Does each block open with its message (or deliberately hold it for a stated turn), give evidence, and hand off?
+22. Does each block open with its message (or deliberately hold it for a stated turn) and give evidence, with a plain bridge only where the next block does not follow on its own?
 23. Are claims, qualifiers, numbers, names, negations and status the same strength as in the material?
 24. Is each block's form (prose, list, table, quote, code) a deliberate choice, and are real lists kept as lists?
 25. Does the ending serve the reader's next need, with no stock closer, recap padding or invented conclusion? If the shape expects a recommendation or next step that the material lacks, does the draft say so plainly (or leave it out) and the reply carry the question, not a guess?
@@ -62,6 +62,7 @@ Answer each check pass or fail. Fix every failure before returning.
 ## Hand-off
 
 34. Does the final note say what was not verified and which sibling skill to run next (`evidence-grounded-writing`, `anti-slop-editing`, `author-voice`, `independent-review`)?
+35. Does the draft read as the author wrote it: no headings in a text under about 400 words or in an email, letter or post, plain transitions with no signposting or analysis labels, prose for fewer than about four items, the author's own person and register, and each caveat or limit stated once at the claim it limits?
 
 ## Final read
 

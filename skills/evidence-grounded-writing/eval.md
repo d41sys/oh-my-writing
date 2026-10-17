@@ -40,7 +40,7 @@ Answer each check pass or fail. Fix every failure before returning.
 
 ## Uncertainty, stakes and preservation
 
-25. Is each real limit stated once, beside the claim it limits, without blanket caveats?
+25. Is each real limit stated once, beside the claim it limits, without blanket caveats and without echoes in a summary, a closing line or a second section of the report?
 26. Are health, legal, financial and safety statements in the prose either quoted from or attributed to a supplied source, with `[VERIFY: qualified source for ...]` kept in the ledger and reply, and no confident advice from memory?
 27. Did editing keep every qualifier, negation, number, name, scope word (species, population, setting, period) and the author's voice unless the ledger says it was the defect, and did no edit raise a claim's strength?
 28. Is every gap either stated plainly in the reader's text ("the sources do not report X") or left out, and logged in the ledger, reply and (for saved files) `open-questions.md` as an `[ASK AUTHOR: ...]`, `[VERIFY: ...]` or `[UNTESTED]` line, with no invented fact, number, source or experience and no other marker spelling (to-do, citation-needed or confirm tags) left anywhere?
@@ -53,3 +53,4 @@ Answer each check pass or fail. Fix every failure before returning.
 32. Does the report say what was checked and what was not, avoid claiming "all verified", and note that the check is not independent if you wrote the text?
 33. Would the author be able to reopen every cited location and confirm each supported row without asking you anything?
 34. Is the reader-facing text (revised passage, written draft) free of `[ASK AUTHOR]`, `[VERIFY]`, `[UNTESTED]` markers and of meta-notes (process narration, "as requested", per-paragraph evidence remarks, `[source: ...]` tags), with the change list, ledger and questions in the reply, and `open-questions.md` written when files were saved? If the author asked for a draft to edit, are the markers beside the gaps and is it said to be a draft? (Audit reports, ledgers and citation checks are author-facing and keep markers.)
+35. Does the revised or new text read as the author wrote it (their person and register; no heading added to a text under about 400 words or to an email, letter or post; no signposting; plain transitions; prose for a few items), and does the audit report state each finding once instead of in both a ledger and a findings section?

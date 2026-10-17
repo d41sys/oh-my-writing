@@ -5,7 +5,7 @@ Answer each check pass or fail. Fix every failure before returning.
 ## Evidence (build and update)
 
 1. Does every trait row cite either a short quote with its sample name or a measured figure with its set?
-2. Does every row carry a strength of strong, moderate or weak, consistent with the rubric in the trait catalog?
+2. Does every row carry a strength of strong, moderate or weak, consistent with the rubric in the trait catalog, or, when every row shares one strength and scope, does the header state it once?
 3. Is every row above weak backed by at least three samples, or by a figure that holds across samples?
 4. If there are fewer than five samples or about a thousand words in total, is confidence marked low and no row above moderate? With a single sample, is every row weak, is it stated that one sample is not a voice, and is more material requested?
 5. Are the excluded samples listed with the reason for each exclusion (ghost-written, heavily edited, AI-drafted, translated, quoted, too old)? Was a style guide, an admired author's text or an assistant's earlier draft kept out of the evidence?
@@ -50,3 +50,4 @@ Answer each check pass or fail. Fix every failure before returning.
 
 30. Read the output as the author. Would they recognize their own habits in it, and would they find nothing they did not say or believe?
 31. Could a reader who has only this output tell which profile, sections and sample set it came from, and how sure the profile is?
+32. Does the text read as the author wrote it (their person, contractions and formality; no heading in a short text, email, letter or post unless the samples use one; each caveat once, at its claim; plain transitions; no actor added that the material leaves out), and does a profile built from few samples state its limits once instead of on every row?

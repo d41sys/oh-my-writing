@@ -52,14 +52,14 @@ Everything above the first detail heading, about the top third of page one. The 
 
 1. **Overall assessment**, one line, labelled as the report's own and derived from facts stated in the documents: "Overall assessment (this report's, from the stated facts): Amber. Integration testing starts 13 July and its test environment was unbooked on 1 July." A colour word or rating is allowed only with the facts behind it in the same line. When the records do not support one: "The records do not support an overall assessment: the latest status is dated 1 July and the pilot outcome is not recorded."
 2. **Three to five key points**, each carrying its number, date and, where it matters, source. Include any material constraint (funds released below the approved budget, a sign-off step) and any unreconciled conflict, because the reader can act on them.
-3. **Decisions and actions table** (status reports). One row per decision or action, highest priority first.
+3. **Decisions and actions table** (status reports with four or more actions; with fewer, write the actions as sentences). One row per decision or action, highest priority first.
 
 | Priority | Action | Owner | Timing | Basis |
 |---|---|---|---|---|
 | 1 | Book the integration test environment (report's proposal) | to be assigned | before 13 July (plan.md) | no booking owner in the project records |
 | 2 | Confirm which spend figure is current: $48,200 or $50,000 | to be assigned | not set | two unreconciled figures |
 
-Rules for the table: an action is a proposal unless a document records it as agreed (then it says so and names the document); an owner is named only if a document names one; a timing comes from a document or reads "not set"; the basis states why the row exists.
+Rules for the table: an action is a proposal unless a document records it as agreed (then it says so and names the document); an owner is named only if a document names one; a timing comes from a document or reads "not set"; the basis states why the row exists. When every row would carry the same label or the same "to be assigned" or "not set", say that once in a sentence above the table ("These are this report's proposals; no document names an owner or a date for any of them") and drop the repeated cells or the columns.
 
 Also first screen: no scene-setting, no restated title, no "this report provides an overview", no inventory of sources, no note about how the report was produced. Draft it last; every number in it appears in a later section.
 
@@ -125,6 +125,7 @@ Define the tone as properties you can check, not as a mood:
 | Calibrated | observed, reported, estimated and planned are kept apart | "reported by Dana" vs "measured"; "planned" never reads as done |
 | Neutral on problems | state the problem, its impact and the owner; no blame, no softening | "Integration testing started 9 days late" not "faced some minor delays" |
 | Finished | no placeholder, no note to the author, no instruction aimed at an assistant | the report reads as complete to someone who never saw the folder |
+| Said once | each unknown, limit, unconfirmed item and "this report's proposal" label appears once, at the claim or above the list it covers | no caveat from the summary is retold in a section, a table note and the close |
 
 Before and after, same facts:
 

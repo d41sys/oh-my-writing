@@ -3,7 +3,7 @@ name: independent-review
 description: Reviews a finished or near-finished draft through a reader or reviewer who does not share the writer's context, so the verdict is not contaminated by what the writer meant. Covers fresh-reader tests, independent reviewer prompts, rubric calibration against human-chosen examples, blind pairwise comparison of two versions, finding triage by reader impact, point-by-point responses to reviewer comments, and stop rules. Use when the user asks to review, critique, test or sanity-check a draft, wants a fresh pair of eyes or a second opinion, asks whether a reader will understand it, wants to choose between two versions, has reviewer or editor comments to sort or answer, or asks you to grade your own writing.
 license: MIT
 metadata:
-  version: "1.2"
+  version: "1.3"
   skill-author: d41sys
 ---
 
@@ -78,6 +78,7 @@ When the job is a reply to reviewers rather than a review of a draft, follow [re
 - **Match cost to stakes.** Each round costs time, tokens and human attention; report the number of sessions used. Exception: High depth justifies the extra reviewer.
 - **Reader review does not replace specialists.** A smooth read says nothing about whether a proof, number, medical or legal statement is right. Route those to a domain check or a human.
 - **Languages.** Review in the language of the document. Lexical pattern lists from English do not transfer; structure, evidence and clarity checks do.
+- **Write like the person, not the process.** A revised draft, passage or response letter you hand back keeps the author's person, register and structure: no heading added to a short text, email, letter or post; no signposting ("In summary", "This section"); each caveat once, at its claim; prose when there are fewer than about four items. The review report reads like one colleague's notes: plain sentences, each point said once (a finding is not repeated in a verdict line, a remaining list and a not-covered line), no framework labels the author would not use. Reason: the author has to live with this prose, and a report that says everything three times buries the one thing to do. Exception: the fixed fields in Output are required at Standard and High depth; faithfulness rules are unchanged.
 
 ## Output
 
@@ -92,12 +93,12 @@ Fresh-reader test: main point restated: matches brief | partly | misses
 Reviewer verdict (verbatim line): <ready | revise>
 Rubric: <n> criteria, calibration <calibrated | partly | none> | no rubric used
 
-Findings
+Findings (a table for more than three; otherwise one plain sentence each: quote, reader impact, decision)
 | # | Severity | Location | Reader impact (one line) | Decision | Reason |
 Accepted fixes applied: <list, one line each>
 Needs author: <list of [ASK AUTHOR: ...] and [VERIFY: ...] items; this report is author-facing, so markers stay here and never go into a revised text>
-Remaining after stop: <what is unresolved and why>
-Not covered: <what this review cannot tell, e.g. technical correctness>
+Remaining after stop: <what is unresolved and why; omit anything already listed as needs author>
+Not covered: <only what this review cannot tell and the author might assume it did, e.g. technical correctness; omit when nothing is likely to be assumed>
 ```
 
 If nothing is wrong, the report is two lines: the run line and "no accepted findings".

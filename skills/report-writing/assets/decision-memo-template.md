@@ -1,6 +1,6 @@
 # <Decision title: the choice, stated as a verb phrase>
 
-<!-- Template note, delete before sending: a gap in the notes is stated plainly in the memo ("The notes give no cost for option B.") or the sentence is omitted. Questions for the author go in the reply and open-questions.md, not here. Add a draft banner with markers only if the author asked for a draft to edit. -->
+<!-- Template note, delete before sending: a gap in the notes is stated plainly in the memo ("The notes give no cost for option B.") or the sentence is omitted. Questions for the author go in the reply and open-questions.md, not here. Add a draft banner with markers only if the author asked for a draft to edit. For a memo under about 600 words, do not keep the labelled lines or the full set of headings below: write the recommendation, how sure you are and why, and what would change it as plain sentences in one opening paragraph, then the options and risks in short paragraphs under two or three headings at most. Say each caveat once. -->
 
 To: <decision-maker> | From: <author> | Date: <YYYY-MM-DD> | Decision needed by: <date>
 

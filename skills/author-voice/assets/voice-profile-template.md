@@ -41,6 +41,8 @@ They are observations, not targets. Strength: strong = holds in nearly every sam
 every set; moderate = holds in about half the samples or in one set only; weak = seen in one or
 two samples, or numbers that swing widely. Omit anything weaker than weak. -->
 
+<!-- Few samples: when every row has the same strength and scope, say it once in the Confidence cell above and drop the Strength and Holds in columns here and below. Leave out any section that would be empty (Splits, Stated preferences, Declared rules, Never-do zones) instead of keeping an empty table. -->
+
 | Trait | Observation | Evidence | Strength | Holds in |
 |---|---|---|---|---|
 | Sentence length | <mean 14, median 12, stdev 8; short sentences between longer ones> | <voice_stats public set: mean 14.2, stdev 8.1> | <strong> | <all sets> |

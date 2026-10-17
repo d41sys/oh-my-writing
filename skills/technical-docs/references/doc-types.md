@@ -53,7 +53,7 @@ Taking explanation out of a tutorial often exposes a spot where the learner was 
 
 Build it like this:
 
-1. Name the outcome in one concrete sentence ("In this tutorial we will build a CLI that ..."). Say what will be built, not what the learner will "understand" or "learn"; write in the first person plural ("we") and point out in passing what the learner should notice. State the learning goal as a real outcome (what they can now do), not an abstraction.
+1. Name the outcome in one concrete sentence ("In this tutorial we will build a CLI that ..."; for a getting-started guide, "In this guide we will ..."). Say what will be built, not what the learner will "understand" or "learn"; write in the first person plural ("we") and point out in passing what the learner should notice. State the learning goal as a real outcome (what they can now do), not an abstraction.
 2. Choose a bounded exercise that finishes in one sitting and yields something real. The exercise is meaningful (a visible achievement), completable, logical in sequence, and complete enough to touch every tool and concept the lesson promises.
 3. Fix the environment: exact tool versions, a starting repo or files, and a way to reset if a step fails.
 4. Write one path. Offer no "or use X instead", no database menus. Required platform branches are the only forks, and they are labeled.
@@ -157,6 +157,6 @@ When a user asks for one document that spans types ("a tutorial that also docume
 
 1. Name the primary reader state (here: a newcomer learning by doing) and write that page to its contract. It uses only the endpoints the lesson needs.
 2. Put the remaining material in its own page of the right type (here: a reference page listing every endpoint in one layout) and link to it from the spot in the tutorial where the reader would ask "what else can I call?". Link back from the reference.
-3. Tell the user in two lines what you split and why, so the change is visible and reversible.
+3. Tell the user what you split and why, in the reply, naming each file ("the guide is `getting-started.md`; the separate reference page `configuration.md` lists every key"), so the change is visible and reversible. The page text itself does not narrate the split.
 4. If the user explicitly wants a single file, keep one document but separate the parts under their own H2 sections, label each with its type, and make the reference part self-contained. Say it is a compromise.
 5. Create the second page only when it has real content from the source; never a stub.

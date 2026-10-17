@@ -28,7 +28,7 @@ Answer each check pass or fail. Fix every failure before returning.
 16. Is severity assigned by reader impact rather than reviewer tone, and are taste-only items marked nit?
 17. Does every finding have exactly one decision: accept, reject with a one-line evidence-based reason, or needs author?
 18. Was any finding that would add an unsupported claim, number, quote, name or example rejected as written, and turned into a needs-author question in the findings (not text in the artifact) if the gap is real?
-19. Are accepted fixes the smallest edits, with the author's voice, claims, qualifiers, numbers and structure intact, reported as a list or marked edits? Is every revised draft or rewritten passage free of `[ASK AUTHOR]`, `[VERIFY]` and `[UNTESTED]` markers, review notes, finding IDs and process narration, with gaps left as they were, dropped, or stated plainly, and each question put in the findings?
+19. Are accepted fixes the smallest edits, with the author's voice, claims, qualifiers, numbers and structure intact, reported as a list or marked edits? Is every revised draft or rewritten passage free of `[ASK AUTHOR]`, `[VERIFY]` and `[UNTESTED]` markers, review notes, finding IDs and process narration, with gaps left as they were, dropped, or stated plainly, each question put in the findings, and no heading, signposting or repeated caveat added to the author's text?
 20. Were fixes applied in dependency order and diffed against the version the reviewer saw for drift?
 21. Was a suggestion that changes the document's purpose or audience named as drift and sent to the author, not folded in as a fix?
 22. Where a finding was contested, was a separate verification job used and labelled, with the evidence given as locations the reviewer re-reads, and is no fabricated evidence used in the rebuttal?
@@ -56,9 +56,9 @@ Answer each check pass or fail. Fix every failure before returning.
 35. Does the review stop within two rounds, or is the extra round approved by the user?
 36. Is the "edit, re-review, repeat until clean" loop absent?
 37. Are unresolved critical or major items listed under Remaining, with the reason and the effort needed?
-38. Does the report say what the review does not cover (for example technical correctness, legal or medical accuracy), and route those to a specialist or the author?
+38. Where the author might assume the review covered something it cannot (technical correctness, legal or medical accuracy), does the report say so once and route it to a specialist or the author?
 39. Is the depth (light, standard, high) stated and proportionate to the stakes, with the number of sessions used?
-40. Is the report short, with changes listed one line each, and no claims of verification you did not perform?
+40. Is the report short, with changes listed one line each, each point said once (not again in a verdict, remaining or not-covered line), and no claims of verification you did not perform?
 
 ## Final read
 

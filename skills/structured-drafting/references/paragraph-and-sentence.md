@@ -73,8 +73,8 @@ Connectives make a relation visible; they never create it. If the relation is no
 
 ## Hand-offs between blocks
 
-- End a block with what the next one picks up: the question left open, the term about to be needed, or the contrast about to be drawn.
-- Begin a block with its message; the first sentence should tell the reader which of the outline lines they are on.
+- Where the next block does not follow on its own, end a block with what it picks up: the question left open, the term about to be needed, or the contrast about to be drawn. Say it plainly, in the author's voice; do not announce the structure ("The next section", "Having seen this"). Where the next block follows naturally, just stop.
+- Begin a block with its message. The reader should know where they are from what it says, not from a label or a restated outline line.
 - Add a bridge sentence only when the relation exists in the material. A bridge that invents a relation turns an outline into a story the author did not tell.
 - Headings name what the section contains or says; decorative headings, emoji prefixes and catchy labels give the skim reader nothing.
 

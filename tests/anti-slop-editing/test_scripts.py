@@ -355,6 +355,17 @@ def test_number_quoted_in_source_and_restated_unquoted_is_not_added(tmp_path):
     _, report = diff_json(before, invented)
     assert {i["item"] for i in report["categories"]["numbers"]["added"]} == {"110000 usd"}
 
+def test_bare_figure_restated_with_unit_is_the_same_figure(tmp_path):
+    before = write(tmp_path, "before.md", "Backoff caps at 512.0 and jitter is 0.1.\n")
+    after = write(tmp_path, "after.md", "Backoff caps at 512 seconds with 0.1 seconds of jitter.\n")
+    _, report = diff_json(before, after)
+    assert report["categories"]["numbers"]["added"] == [] and report["categories"]["numbers"]["lost"] == []
+    swapped = write(tmp_path, "swapped.md", "Backoff caps at 512.0 ms and jitter is 0.1.\n")
+    unit_change = write(tmp_path, "unit.md", "Backoff caps at 512 s and jitter is 0.1.\n")
+    _, report = diff_json(swapped, unit_change)
+    assert added_items(report, "numbers") == {"512 s"}
+
+
 
 
 def added_items(report, cat):

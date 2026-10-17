@@ -4,7 +4,7 @@ description: Audits and edits prose for AI-writing patterns such as stock vocabu
 license: MIT
 compatibility: Optional helper scripts need Python 3.10+; the skill works without them.
 metadata:
-  version: "1.2"
+  version: "1.3"
   skill-author: d41sys
 ---
 
@@ -78,6 +78,7 @@ Steps:
 12. **Do not chase a detector.** The goal is clear, accurate, recognizably the author's text. Never add roughness or typos to change a classifier score. Reason: that is a different task and it degrades the text.
 13. **Reports are short and true.** List what changed and why, from the delivered text. Name checks that did not run. Never call a skipped check done, and never claim a phrase was removed if it is still there.
 14. **The edited text is clean.** In `edit` and `rewrite` mode the edited text is what the reader receives, so it holds no `[ASK AUTHOR: ...]`, `[VERIFY: ...]` or `[UNTESTED]` marker and no note to the author: no process narration ("I removed...", "as requested", "per your instruction"), no `[source: ...]` tags, no comment about the scan. A gap is never filled with an invented value and never announced inside the text; the span stays as the author wrote it or is cut. Questions go in the reply under "Questions for the author", one marker line each, and, when the edited text is written to a file, also in `open-questions.md` beside it (create it only when there is at least one question). Reason: a marker in published text looks unfinished, and the author who said "don't wait for me" will not answer before it ships. Exceptions: the user asked for a draft to edit (markers may stay in the text; say so); and author-facing output, which is every `detect` report (findings may suggest a marker as the fix), the What changed, Left alone and Checks lists, and any `open-questions.md`.
+15. **Write like the person, not the process.** An edit must not add what it removes. Do not introduce headings, lists, bold, transitions or a new caveat, and do not state the same point twice (a replacement sentence that restates its neighbour is a new template). Keep the author's person and register: first person stays first person, and a plain "Hi everyone ... Thanks, Finance" note does not become platform copy. A real limit appears once, at the claim it limits. In `detect`, answer what the user asked in plain sentences: what sounds off, the quoted span and why, not an editing plan, a severity scheme or a list of what the scan did. Reason: readers judge an edit by whether a person could have written it, and process-shaped additions (headings, labels, repeated caveats, a tidy closing line) are the tells this skill removes. Exception: a genre that needs structure (a README, a report) keeps the structure it already has; faithfulness rules are unchanged.
 
 ## Output
 
@@ -86,12 +87,12 @@ Match the user's destination; keep reports short. The edited text (`edit`, `rewr
 **detect**
 
 ```
-Summary: one or two sentences: overall health, biggest concern, what is solid.
-Findings (ranked P0, P1, P2)
+Summary: one or two sentences: overall health, biggest concern, what is solid. Skip it for a short text or when the user asked only what sounds off.
+Findings (ranked P0, P1, P2; drop the P labels when there are fewer than four)
 1. [P1] L5 "quoted span" - pattern - why it costs the reader - short fix. (clear problem | judgment call)
 2. ...
-Left alone: spans that matched but are fine, with the reason.
-Checks: scanner ran or model-only; editing passes: 0.
+Left alone: only spans a reader would expect to see flagged, with the reason.
+Checks: say "model-only" when the scanner did not run, and name any check that could not run. Leave out process claims the reader cannot use ("scanner ran", "source unchanged") unless something went wrong.
 ```
 
 **edit** (default)

@@ -35,7 +35,7 @@ Answer each check pass or fail. Fix every failure before returning.
 ## Language
 
 22. Are career clichés (for example "results-driven", "passionate", "team player", "proven track record", "responsible for", "excited to leverage") replaced with evidence, or kept only because the posting requires the term or the author really says it?
-23. Do the sentences read as one person writing, with the author's sample or voice profile taking priority over generic rules where one exists?
+23. Do the sentences read as one person writing (the candidate's person and register; no headings, bullets or labels in a letter, email or form answer; each gap or limit said once at its claim; no restated pitch or second thank-you in the close; plain transitions), with the author's sample or voice profile taking priority over generic rules where one exists?
 24. For a non-English draft: were structural, evidence and preservation checks applied, and is it stated that English lexical lists were skipped?
 
 ## Hand-off

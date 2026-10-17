@@ -333,9 +333,36 @@ def compare(before: Extraction, after: Extraction, ignore: set[str]) -> dict:
                 if cat == "names" and not new_name_words(item, before_words):
                     continue
                 added.append({"item": item, "before": nb, "after": na, "context": context(after.text, a[item][1])})
+        if cat == "numbers":
+            lost, added = _pair_units(lost, added)
         cats[cat] = {"before_count": sum(v[0] for v in b.values()), "after_count": sum(v[0] for v in a.values()),
                      "lost": lost, "added": added}
     return cats
+
+
+def _num_value(item: str) -> tuple[str, str]:
+    """('512', 's') for '512.0 s'; trailing zero decimals are dropped so 512.0 and 512 compare equal."""
+    num, _, unit = item.partition(" ")
+    if num.endswith("%"):
+        num, unit = num[:-1], "%"
+    if re.fullmatch(r"\d+\.0+", num):
+        num = num.split(".")[0]
+    return num, unit
+
+
+def _pair_units(lost: list, added: list) -> tuple[list, list]:
+    """A bare figure restated with a unit (512.0 -> '512 seconds') or with a different zero tail (512.0 -> 512)
+    is the same figure: drop the pair. Two different units (5 ms vs 5 s) stay flagged."""
+    lost, added = list(lost), list(added)
+    for a in list(added):
+        a_num, a_unit = _num_value(a["item"])
+        for l in lost:
+            l_num, l_unit = _num_value(l["item"])
+            if l_num == a_num and (l_unit == a_unit or not l_unit or not a_unit):
+                lost.remove(l)
+                added.remove(a)
+                break
+    return lost, added
 
 
 def read_text(path: str) -> str:
