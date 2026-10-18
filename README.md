@@ -1,3 +1,5 @@
+> **Oh My Writing v2:** ten writing skills (anti-slop editing, author voice, drafting, evidence, review, posts, reports, docs, career, project reports). Setup, including replacing the old academic-writing install: [INSTALL.md](INSTALL.md).
+
 # academic-writing
 
 A Claude Code skill that writes ML/CV/NLP paper sections (one part at a time, or a whole paper) from your results and notes, with checking built in:
