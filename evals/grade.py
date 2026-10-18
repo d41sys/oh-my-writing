@@ -589,7 +589,9 @@ def check_rhythm(check, text, case):
 
 def check_markers(check, text, case):
     kinds = check.get("kinds", MARKER_KINDS)
-    n = len(re.findall(r"\[(?:" + "|".join(map(re.escape, kinds)) + r")\b", text))
+    # the same question asked in the reply and again in open-questions.md is one question
+    found = re.findall(r"\[(?:" + "|".join(map(re.escape, kinds)) + r")\b[^\]]*\]?", text)
+    n = len({" ".join(m.casefold().split()) for m in found})
     lo, hi = check.get("min", 1), check.get("max")
     ok = n >= lo and (hi is None or n <= hi)
     return ok, f"{n} markers (min {lo}, max {hi})"

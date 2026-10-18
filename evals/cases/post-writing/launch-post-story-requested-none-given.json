@@ -37,8 +37,8 @@
     {
       "type": "not_regex",
       "target": "output",
-      "pattern": "(?i)\\b(?:already (?:running|in production|used by|serving)|(?:teams|customers|users) (?:are|have been) (?:already )?(?:running|using|seeing|reporting|saying)|early (?:users|adopters) (?:report|say|are))\\b",
-      "note": "the notes say nobody runs 2.4 in production yet; the missing story must not be filled with a claim about users"
+      "pattern": "(?i)\\b(?:already (?:running|in production|used by|serving)|(?<!\\bno )(?<!\\bNo )(?:teams|customers|users) (?:are|have been) (?:already )?(?:running|using|seeing|reporting|saying)|early (?:users|adopters) (?:report|say|are))\\b",
+      "note": "the notes say nobody runs 2.4 in production yet; the missing story must not be filled with a claim about users A negated statement ('No customers are running 2.4 yet') restates the notes and must not trip this check."
     },
     {
       "type": "not_regex",

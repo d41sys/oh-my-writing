@@ -10,7 +10,9 @@
   "checks": [
     {
       "type": "no_added_facts",
-      "allow": ["2"],
+      "allow": [
+        "2"
+      ],
       "note": "the case requires the article to say plainly that the two baseline figures differ (its own regex accepts 'two figures', 'two baselines', 'two different'); the word 'two' there counts the figures the transcript gives and is not a fact the transcript lacks"
     },
     {
@@ -41,8 +43,8 @@
     },
     {
       "type": "regex",
-      "pattern": "(?is)(?:^|\\n\\s*\\n)(?=(?:(?!\\n\\s*\\n).)*\\b31\\b)(?=(?:(?!\\n\\s*\\n).)*\\b25\\b)(?:(?!\\n\\s*\\n).)*?(?:differ|conflict|inconsisten|contradict|unclear|not clear|(?:does|did) not (?:say|settle|reconcile|resolve)|doesn.t (?:say|settle)|can.t (?:say|tell)|cannot (?:say|tell)|not sure|which (?:is|figure|number|one)|two (?:figures|numbers|baselines|answers|different)|either|disagree|not (?:been )?(?:settled|reconciled)|another (?:answer|figure|number)|later (?:answer|figure|number)|different (?:figure|number|answer|estimate)|(?:two|conflicting|differing) estimates|less certain|uncertain|not (?:be )?(?:treated as )?(?:a )?precise)",
-      "note": "both baselines must sit together in one paragraph that says plainly they differ or are unsettled; the transcript gives 31% and then 25% for the same old flow, and the author cannot be asked, so the gap is stated in the article rather than resolved or hidden"
+      "pattern": "(?is)(?:^|\\n\\s*\\n)(?=(?:(?!\\n\\s*\\n).)*\\b31\\b)(?=(?:(?!\\n\\s*\\n).)*\\b25\\b)(?:(?!\\n\\s*\\n).)*?(?:differ|conflict|less clear|do(?:es)? not establish|inconsisten|contradict|unclear|not clear|(?:does|did) not (?:say|settle|reconcile|resolve)|doesn.t (?:say|settle)|can.t (?:say|tell)|cannot (?:say|tell)|not sure|which (?:is|figure|number|one)|two (?:figures|numbers|baselines|answers|different)|either|disagree|not (?:been )?(?:settled|reconciled)|another (?:answer|figure|number)|later (?:answer|figure|number)|different (?:figure|number|answer|estimate)|(?:two|conflicting|differing) estimates|less certain|uncertain|not (?:be )?(?:treated as )?(?:a )?precise)",
+      "note": "both baselines must sit together in one paragraph that says plainly they differ or are unsettled; the transcript gives 31% and then 25% for the same old flow, and the author cannot be asked, so the gap is stated in the article rather than resolved or hidden 'The earlier figure is less clear ... do not establish a single starting figure' says plainly that the two answers disagree."
     },
     {
       "type": "not_regex",

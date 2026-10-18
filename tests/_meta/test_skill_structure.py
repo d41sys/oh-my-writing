@@ -180,3 +180,15 @@ def test_skill_holds_no_benchmark_scenario(skill):
         found += [f"{rel}: name {n}" for n in names
                   if len(n) >= 4 and n.lower() not in vocabulary and re.search(rf"\b{n}\b", text)]
     assert not found, "benchmark material inside the skill:\n" + "\n".join(sorted(set(found))[:20])
+
+
+@pytest.mark.parametrize("skill", SKILL_DIRS, ids=lambda p: p.name)
+def test_description_does_not_quote_a_benchmark_prompt(skill):
+    """The description decides whether a skill loads. A five-word run from a case prompt inside it makes the skill
+    load because it recalls the test, so routing results on that case measure nothing."""
+    prompts = [json.loads(p.read_text(encoding="utf-8"))["prompt"] for p in CASES.rglob("*.json")]
+    grams = {tuple(w[i:i + 5]) for text in prompts for w in [_words(text)] for i in range(len(w) - 4)}
+    front = yaml.safe_load((skill / "SKILL.md").read_text(encoding="utf-8").split("---")[1])
+    words = _words(front["description"])
+    shared = {" ".join(words[i:i + 5]) for i in range(len(words) - 4) if tuple(words[i:i + 5]) in grams}
+    assert not shared, f"description quotes case prompts: {sorted(shared)}"

@@ -42,7 +42,7 @@
     {
       "type": "markers",
       "min": 1,
-      "max": 6,
+      "max": 5,
       "target": "both",
       "note": "gaps reach the author as markers, in the reply or the report: a report for a third-party reader may state the gap in plain words and put the author's questions in the reply. The reply lists the same questions in full as open-questions.md (the skill's output contract) and the checker counts both, so each distinct gap counts twice: up to 3 distinct gaps for a two-document folder"
     },

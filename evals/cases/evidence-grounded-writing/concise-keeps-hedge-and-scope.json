@@ -8,14 +8,56 @@
   },
   "output": "out/tight.md",
   "checks": [
-    { "type": "contains", "values": ["human"] },
-    { "type": "regex", "pattern": "(?i)\\b(?:in|of|among) (?:\\d+ )?(?:\\w+ )?mice\\b|\\bmouse\\b", "note": "the claim stays scoped to mice (\"in mice\" or \"a study of 24 mice\")" },
-    { "type": "regex", "pattern": "(?i)\\b(may|might|could)\\b" },
-    { "type": "not_regex", "pattern": "(?i)(?<!may )(?<!might )(?<!could )(?<!may have )(?<!might have )(?<!could have )\\b(reduces|reduced|shrinks|prevents|eliminates|demonstrates|proves)\\b", "note": "no stronger verb; 'may have reduced' keeps the hedge" },
-    { "type": "preserves", "source": "draft.md", "categories": ["numbers"] },
-    { "type": "not_contains", "values": ["it is important to note", "it should also be pointed out", "on the basis of the results"] },
-    { "type": "word_count", "min": 18, "max": 60 },
-    { "type": "not_regex", "pattern": "\\[(?:ASK AUTHOR|VERIFY|UNTESTED)\\b", "target": "output", "note": "the tighter paragraph is abstract text for readers and the task leaves nothing open, so no placeholder belongs in it" },
-    { "type": "similarity", "source": "draft.md", "min": 0.1 }
+    {
+      "type": "contains",
+      "values": [
+        "human"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b(?:in|of|among) (?:\\d+ )?(?:\\w+ )?mice\\b|\\bmouse\\b",
+      "note": "the claim stays scoped to mice (\"in mice\" or \"a study of 24 mice\")"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b(may|might|could)\\b"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)(?<!may )(?<!might )(?<!could )(?<!may have )(?<!might have )(?<!could have )(?<!may have been )(?<!might have been )(?<!could have been )\\b(reduces|reduced|shrinks|prevents|eliminates|demonstrates|proves)\\b",
+      "note": "no stronger verb; 'may have reduced' keeps the hedge 'may have been reduced' keeps the hedge in passive form."
+    },
+    {
+      "type": "preserves",
+      "source": "draft.md",
+      "categories": [
+        "numbers"
+      ]
+    },
+    {
+      "type": "not_contains",
+      "values": [
+        "it is important to note",
+        "it should also be pointed out",
+        "on the basis of the results"
+      ]
+    },
+    {
+      "type": "word_count",
+      "min": 18,
+      "max": 60
+    },
+    {
+      "type": "not_regex",
+      "pattern": "\\[(?:ASK AUTHOR|VERIFY|UNTESTED)\\b",
+      "target": "output",
+      "note": "the tighter paragraph is abstract text for readers and the task leaves nothing open, so no placeholder belongs in it"
+    },
+    {
+      "type": "similarity",
+      "source": "draft.md",
+      "min": 0.1
+    }
   ]
 }

@@ -702,3 +702,14 @@ def test_a_small_gap_is_a_calculation_only_when_its_operands_sit_beside_it(tmp_p
     numbers = report["categories"]["numbers"]
     assert {d["item"] for d in numbers.get("derived", [])} == {"10 ms"}
     assert "70 ms" in added_items(report, "numbers")  # operands not beside it: still a figure to check
+
+
+def test_template_field_labels_and_words_after_a_colon_are_not_new_names(tmp_path):
+    before = write(tmp_path, "before.md", "The trustees meet on 19 November about the fee.\n")
+    after = write(tmp_path, "after.md", "Constraints: Return one page. Keep quotes exact.\n"
+                                        "Open with one line: Reviewer-Model: <id>\nVERDICT: ready\n"
+                                        "We will ask Marisol Okafor about the fee.\n")
+    _, report = diff_json(before, after)
+    names = added_items(report, "names")
+    assert not {"VERDICT", "Reviewer-Model", "Return", "Keep"} & names
+    assert "Marisol Okafor" in names  # a new person mid-sentence is still flagged

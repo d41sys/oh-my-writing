@@ -42,8 +42,8 @@
     },
     {
       "type": "regex",
-      "pattern": "(?i)(no (?:option|recommendation|decision|choice)[^.\\n]{0,40}(?:selected|chosen|made|yet)|not (?:yet )?(?:selected|decided|chosen|picked)|still (?:open|undecided|to be decided)|undecided|(?:choose|decide|pick|select|align on)[^.\\n]{0,40}(?:option|path|fix|approach))",
-      "note": "the update says the choice is open and asks the team to make it; the prompt asks for 'what is needed from them', not a recommendation, so no gap marker is required"
+      "pattern": "(?i)(no (?:option|recommendation|decision|choice|fix|solution)[^.\\n]{0,40}(?:selected|chosen|made|yet)|not (?:yet )?(?:selected|decided|chosen|picked)|still (?:open|undecided|to be decided)|undecided|(?:choose|decide|pick|select|align on)[^.\\n]{0,40}(?:option|path|fix|approach))",
+      "note": "the update says the choice is open and asks the team to make it; the prompt asks for 'what is needed from them', not a recommendation, so no gap marker is required 'No fix has been chosen' says the choice is open."
     },
     {
       "type": "not_regex",

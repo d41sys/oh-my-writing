@@ -115,6 +115,7 @@ def _match_dates(lost: list, added: list, before_items: dict, after_items: dict)
     return lost, added
 
 
+FIELD_LABEL_RE = re.compile(r"[A-Z]{3,}|[A-Z][a-z]+(?:-[A-Z][a-z]+)+")  # VERDICT, Reviewer-Model
 LIST_MARKER_RE = re.compile(r"^[ \t]*(?:\d+[.)]|[-*+])[ \t]+", re.M)
 # Markers this skill tells the editor to insert; their wording is a question, not a fact.
 MARKER_RE = re.compile(r"\[(?:ASK AUTHOR|VERIFY|CONFIRM|UNTESTED|CITATION NEEDED)\b[^\]\n]*\]", re.I)
@@ -313,7 +314,10 @@ class Extraction:
             if not tokens:
                 continue
             prefix = work[: m.start()].rstrip(" \t")
-            at_start = (not prefix) or prefix[-1] in ".!?\n\"\u201c(-*\u2022>#"
+            # "VERDICT: ready" and "Reviewer-Model: <id>" are field labels of a template, not names
+            if work[m.end(): m.end() + 1] == ":" and len(tokens) == 1 and FIELD_LABEL_RE.fullmatch(tokens[0]):
+                continue
+            at_start = (not prefix) or prefix[-1] in ".!?:\n\"\u201c(-*\u2022>#"
             if at_start:
                 while tokens and tokens[0].lower() in COMMON_START:
                     tokens.pop(0)

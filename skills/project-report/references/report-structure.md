@@ -10,13 +10,13 @@ Use the sections the documents support; cut the rest and say so in the reply. Th
 |---|---|---|---|
 | - | Title block | title, reader, period, report date, evidence cut-off | brief |
 | 1 | Summary | the one-line overall assessment, then three to five key points ([first screen](#first-screen)) | everything, written last |
-| 2 | Decisions and actions | table: priority, action, owner or "to be assigned", timing or "not set", basis. With fewer than four actions: a short Next steps section of sentences | notes, emails, plan, ledger gaps |
+| 2 | Next steps | the decisions and actions the reader owes: priority, action, owner or "to be assigned", timing or "not set", basis; a table when there are several, sentences when there are one or two | notes, emails, plan, ledger gaps |
 | 3 | Progress and schedule | planned vs actual: milestones, deliverables, percent complete and how it is measured; the timeline figure | plan, status emails, notes |
 | 4 | Budget and results | spend and effort vs plan, measured outcomes; each figure with unit, date and source; limits and sign-off steps | spreadsheets, reports, minutes |
 | 5 | Risks and issues | every open risk and issue the documents record: description, impact, status; open risks first. The actions hold only the response and the Summary only the one that changes a decision, so each fact sits under its own heading once | risk log, notes, emails, plan notes |
 | A | Appendix: sources | [compact table](#citations): file, as-of date, used for; not read; unresolved conflicts | inventory, ledger |
 
-Headings carry the names above, in the words a reader scans for, so the Summary, the schedule, the risks and the next steps can be found at a glance; never a private label ("Delivery position", "Assessment and decisions"). Where the folder is small, fold sections 3 to 5 together by joining their names ("Progress, schedule and risks"), and keep a section for risks whenever a document records a risk, an at-risk item or an open issue. The old separate "Decisions needed" and "Next steps" sections are the Decisions and actions table at the top (or the Next steps sentences); do not repeat them later. A one-page report has no headings.
+Headings carry the names above, in the words a reader scans for, so the Summary, the schedule, the risks and the next steps can be found at a glance; never a private label ("Delivery position", "Assessment and decisions"). Where the folder is small, fold sections 3 to 5 together by joining their names ("Progress, schedule and risks"), and keep a section for risks whenever a document records a risk, an at-risk item or an open issue. The old separate "Decisions needed" and "Next steps" sections are the Next steps section near the top; do not repeat them later. A one-page report has no headings.
 
 ### Final or closing report (looks back)
 
@@ -34,7 +34,7 @@ First screen: outcome against objectives, then one sentence for what the reader 
 
 ### Migration or system-change report
 
-First screen, under a `Summary` heading: what changed (before and after, in a short table), current state of the cut-over, what remains, and the decisions or assignments the reader owes (one sentence, or the Decisions and actions table when there are four or more). Then, under plain names: scope and approach, architecture or workflow figure, risks and open items, appendix: sources. The source appendix is a compact list, not a page of its own; it carries no statement about the reporting window that the first screen already made.
+First screen, under a `Summary` heading: what changed (before and after, in a short table), current state of the cut-over, what remains, and the decisions or assignments the reader owes (one sentence, or a Next steps table when there are several). Then, under plain names: scope and approach, architecture or workflow figure, risks and open items, appendix: sources. The source appendix is a compact list, not a page of its own; it carries no statement about the reporting window that the first screen already made.
 
 ### Length
 
@@ -52,7 +52,7 @@ Everything under the `Summary` heading (a final report: under Outcome against ob
 
 1. **Overall assessment**, one line, labelled once as the report's own and derived from facts stated in the documents: "Overall assessment (this report's view): Amber. Integration testing starts 13 July and its test environment was unbooked on 1 July." A colour word or rating is allowed only with the facts behind it in the same line. When the records do not support one: "The records do not support an overall assessment: the latest status is dated 1 July and the pilot outcome is not recorded." A one-page report skips the rating and the label: it opens with the state and its date ("As of 12 September, 8 of 12 pages are done; the rest wait on legal review, with no date back"), because the plain sentence already is the assessment.
 2. **Three to five key points**, each carrying its number, date and, where it matters, source. Include any material constraint (funds released below the approved budget, a sign-off step) and any unreconciled conflict, because the reader can act on them.
-3. **Decisions and actions table** (status reports with four or more actions; with fewer, write the actions as sentences). One row per decision or action, highest priority first.
+3. **Next steps** (status reports; a table when there are several actions, sentences when there are one or two). One row per decision or action, highest priority first.
 
 | Priority | Action | Owner | Timing | Basis |
 |---|---|---|---|---|
@@ -83,7 +83,7 @@ A gap is something the documents do not say. The reader's report states it as a 
 # Open questions: Atlas status report
 
 1. [ASK AUTHOR: who owns booking the test environment?]
-   Blocks: Decisions and actions, row 1. The report says: "Owner: to be assigned."
+   Blocks: Next steps, row 1. The report says: "Owner: to be assigned."
 2. [VERIFY: ...]
    Blocks: ...
 

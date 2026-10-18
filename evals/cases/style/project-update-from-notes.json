@@ -55,8 +55,8 @@
     },
     {
       "type": "regex",
-      "pattern": "(?i)\\b8 handhelds|eight handhelds|8 (?:of the )?(?:units|scanners|devices)",
-      "note": "the ask for Kwame"
+      "pattern": "(?i)\\b(?:8|eight)\\s+(?:\\w+\\s+)?handhelds|8 (?:of the )?(?:units|scanners|devices)",
+      "note": "the ask for Kwame 'the eight remaining handhelds' states the same ask."
     },
     {
       "type": "not_regex",

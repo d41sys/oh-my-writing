@@ -19,7 +19,7 @@ One line per section, each line a full message that the ledger supports. Reading
 | # | Section | Message (a complete sentence) | Ledger IDs | Table or figure |
 |---|---------|-------------------------------|------------|-----------------|
 | 1 | Summary (heading `Summary`): assessment and key points | [one-line overall assessment, labelled as the report's own, or "the records do not support one"; three to five key points, including any material constraint] | [IDs] | none |
-| 2 | Decisions and actions (fewer than four actions: Next steps, in sentences) | [priority, action (report's proposal unless a document says agreed), owner from a document or "to be assigned", timing from a document or "not set"] | [IDs] | [Table 1] |
+| 2 | Next steps (decisions and actions) | [priority, action (report's proposal unless a document says agreed), owner from a document or "to be assigned", timing from a document or "not set"] | [IDs] | [Table 1] |
 | 3 | Progress and schedule | [planned vs actual, and what moved] | [IDs] | [Figure 1] |
 | 4 | Budget and results | [measured outcomes and spend with units and dates; limits and sign-off steps] | [IDs] | [Table 2] |
 | 5 | Risks and issues | [every open risk or issue a document records, with impact and status; the actions hold only the response] | [IDs] | |
