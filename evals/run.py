@@ -576,6 +576,13 @@ def execute(host: str, prompt: str, ws: Path, out_dir: Path, args, read_only=Fal
         log = partial.decode(errors="replace") if isinstance(partial, bytes) else partial
         code, error = None, f"timeout after {timeout}s"
     (out_dir / "log.txt").write_text(log, encoding="utf-8")
+    if host == "omp" and error is None:
+        # omp silently switches to the user's fallback chain when the requested model is out of quota; such a run
+        # measures another model, so it is an error, not a result
+        wanted = args.omp_model.split("/")[-1].split(":")[0]
+        other = sorted({m for m in re.findall(r'"model":\s*"([^"]+)"', log) if m.split("/")[-1].split(":")[0] != wanted})
+        if other:
+            error = f"model fallback: {', '.join(other)}"
     if host == "claude":
         reply_file.write_text(parse_claude(log), encoding="utf-8")
     elif host == "omp":
@@ -868,9 +875,12 @@ def judge_once(case, a_text, b_text, judge_host, run_dir, tag, args, shots=None,
         if images and judge_host in ("claude", "omp"):
             for image in images:
                 shutil.copyfile(image, ws / image.name)
-        execute(judge_host, prompt, ws, out_dir, args, read_only=True, images=images if judge_host == "codex" else None)
+        result = execute(judge_host, prompt, ws, out_dir, args, read_only=True,
+                         images=images if judge_host == "codex" else None)
     finally:
         shutil.rmtree(ws, ignore_errors=True)
+    if result["error"]:
+        return "ERROR", "", {}
     reply = (out_dir / "reply.md").read_text(encoding="utf-8", errors="replace")
     if mode == "style":
         verdicts = parse_style_verdicts(reply)
