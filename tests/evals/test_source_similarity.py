@@ -70,14 +70,58 @@ def test_non_english_file_is_skipped(tmp_path):
     assert ss.build_doc(f, "zh.md") is None
 
 
-def test_skill_folder_files_take_references_but_not_scripts_or_nested_skills(tmp_path):
-    for rel in ("SKILL.md", "references/a.md", "scripts/b.md", "sub/SKILL.md", "sub/references/c.md", "README.md",
-                "extra.md"):
+def test_skill_folder_files_take_every_asset_but_not_nested_skills_tests_or_readme(tmp_path):
+    for rel in ("SKILL.md", "references/a.md", "scripts/b.py", "scripts/tests/t.py", "agents/openai.yaml", "assets/t.html",
+                "sub/SKILL.md", "sub/references/c.md", "README.md", "extra.md", "references/notes.zh.md", "dist/x.md",
+                "scripts/b.md"):
         p = tmp_path / "skill" / rel
         p.parent.mkdir(parents=True, exist_ok=True)
         p.write_text("text", encoding="utf-8")
-    got = sorted(str(p.relative_to(tmp_path / "skill")) for p in ss.skill_folder_files(tmp_path / "skill", tmp_path))
-    assert got == ["SKILL.md", "extra.md", "references/a.md"]
+    got = {str(p.relative_to(tmp_path / "skill")): legacy
+           for p, legacy in ss.skill_folder_files(tmp_path / "skill", tmp_path)}
+    assert got == {"SKILL.md": True, "extra.md": True, "references/a.md": True, "scripts/b.py": False,
+                   "agents/openai.yaml": False, "assets/t.html": False, "scripts/b.md": False}
+
+
+def test_code_lines_are_compared_whitespace_and_comment_blind_and_runs_need_five_lines(tmp_path):
+    shared = ["total_value = compute_total(items, tax_rate)  # sum", "result_rows = [row for row in table if row.ok]",
+              "if not result_rows: raise ValueError('nothing to report')", "report_path = output_dir / 'report.html'",
+              "report_path.write_text(render(result_rows), encoding='utf-8')"]
+    ours = tmp_path / "ours.py"
+    theirs = tmp_path / "theirs.py"
+    ours.write_text('"""Docstring prose that explains the whole script in one line."""\nx = 1\n'
+                    + "\n".join(shared) + "\n", encoding="utf-8")
+    theirs.write_text("# a comment line that is not code at all\n"
+                      + "\n".join(l.replace(" = ", "=") for l in shared[:4]) + "\ny = 2\n"
+                      + shared[4].strip() + "\n", encoding="utf-8")
+    od = ss.load_file(ours, "ours.py", "s", False, keep_text=True)
+    td = ss.load_file(theirs, "theirs.py", "", False)
+    assert od[0].kind == "py" and "Docstring prose" in " ".join(s.text for s in od[0].sents)   # docstring is prose
+    assert len(od[1].words) == 5                                  # `x = 1` is under 20 characters
+    assert set(od[1].words) == set(td[1].words)                   # whitespace and the comment do not matter
+    index = {}
+    for p, h in enumerate(ss.gram_hashes(od[1].words, 5)):
+        index.setdefault(h, []).append((0, p))
+    corpus = ss.Corpus("src", code=[td[1]])
+    cov, runs = ss.verbatim_pass(corpus, [od[1]], index, n=5, docs=corpus.code)
+    assert sum(cov[0]) == 5 and runs[0].length == 5               # the stray `y = 2` line is dropped, run stays whole
+    short = ss.gram_hashes(od[1].words[:4], 5)
+    assert short == []                                            # four lines never make a 5-line run
+
+
+def test_load_file_splits_markdown_into_prose_and_fenced_code(tmp_path):
+    f = tmp_path / "a.md"
+    f.write_text("Keep every figure the author gave, with its unit.\n```python\nresult = compute_everything(a, b, c)  # c\n```\n",
+                 encoding="utf-8")
+    doc, code, why = ss.load_file(f, "a.md", "", True)
+    assert why is None and doc.legacy and doc.kind == "md" and "print" not in " ".join(s.text for s in doc.sents)
+    assert code.kind == "md-fence" and len(code.words) == 1 and code.lines[0] == 3
+    y = tmp_path / "o.yaml"
+    y.write_text("interface:\n  short_description: \"Cut filler words before you cut any claim in the draft\"\n",
+                 encoding="utf-8")
+    ydoc, ycode, _ = ss.load_file(y, "o.yaml", "", False)
+    assert ydoc.kind == "yaml" and not ydoc.legacy and ycode is None
+    assert "Cut filler words" in ydoc.sents[0].text
 
 
 def test_verbatim_pass_finds_longest_run_with_lines(tmp_path):

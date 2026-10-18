@@ -1,14 +1,14 @@
 # Third-party Notices
 
-Oh My Writing references adapt and reorganize permitted writing guidance. Acknowledgments are in README.md. Reorganization does not erase original copyright or license obligations. The following notices are preserved for redistributed adaptations; they do not imply endorsement or that source software is bundled.
+Oh My Writing was inspired by the projects listed below and used them as references; acknowledgments are in README.md. Their license notices are kept here out of respect for their authors and their terms. Listing a project does not imply its endorsement, and no source software is bundled.
 
-## Adaptation scope
+## Scope
 
-The English writing references were merged, rewritten, reorganized by editorial purpose, and supplemented with conditions and examples. Source runtimes, datasets, and repository snapshots are not part of the knowledge library. No unlicensed Leey21 source text is redistributed.
+The English writing references in this repository are our own text, written with these projects as references and extended with our own conditions and examples. Source runtimes, datasets and repository snapshots are not included. No unlicensed Leey21 source text is redistributed.
 
-Diátaxis-derived adaptations in `references/knowledge/structure-and-argument.md`, `references/knowledge/structure-and-argument/documentation-navigation.md`, `references/knowledge/structure-and-argument/tutorial-vs-howto-construction.md`, and `references/writing-report.md` are provided under CC-BY-SA 4.0, with attribution to Daniele Procida and contributors. The project’s default license does not override this scope. The source work was reorganized, paraphrased, combined with writing guidance, and extended with examples and evaluation boundaries.
+Material following Diátaxis in `references/knowledge/structure-and-argument.md`, `references/knowledge/structure-and-argument/documentation-navigation.md`, `references/knowledge/structure-and-argument/tutorial-vs-howto-construction.md`, and `references/writing-report.md` are provided under CC-BY-SA 4.0, with attribution to Daniele Procida and contributors. The project’s default license does not override this scope.
 
-The skills under `skills/` were written from this library in new wording and organization; they do not bundle source skill files. The `skills/technical-docs/` skill adapts the Diátaxis documentation model and is provided under CC-BY-SA 4.0 with the same attribution. The notices below continue to apply to any adapted expression these skills retain.
+The skills under `skills/` are written in our own words and do not bundle source skill files; see `docs/SOURCE_SIMILARITY.md` for the measured overlap. The `skills/technical-docs/` skill follows the Diátaxis documentation model and is provided under CC-BY-SA 4.0 with the same attribution.
 
 ## avoid-ai-writing
 

@@ -3,7 +3,7 @@ name: technical-docs
 description: Writes and revises technical documentation by first deciding what the reader needs (learn by doing, achieve a goal, look up a fact, or understand why), then producing the matching page type. Covers tutorials and getting-started guides, how-to guides, reference and API/CLI/config pages, architecture explanations, READMEs, code walkthroughs, pull request descriptions, commit messages, changelogs, release notes, migration guides and decision records (ADRs). Use when asked to "write a README", "document this API", "write a tutorial", "write a quickstart", "write a how-to guide for this tool", "explain this architecture", "walk through this code", PR or MR descriptions from a diff or change notes, "write a commit message", "write an ADR", "write release notes", "write a changelog", "write a migration guide", or "fix our docs structure". A blog-style how-to post or a launch announcement post goes to post-writing.
 license: CC-BY-SA-4.0
 metadata:
-  version: "1.7"
+  version: "1.8"
   skill-author: d41sys
 ---
 
@@ -144,4 +144,4 @@ Reply:  [ASK AUTHOR: which license applies?]
 
 ## Attribution
 
-The four-type model (tutorial, how-to guide, reference, explanation) and its reader-need compass come from Diátaxis by Daniele Procida and contributors, licensed CC-BY-SA 4.0. This skill is an adapted, reorganized summary in different words, extended with README, PR, changelog and code-walkthrough guidance; it is shared under the same license, CC-BY-SA 4.0.
+The four-type model (tutorial, how-to guide, reference, explanation) and its reader-need compass come from Diátaxis by Daniele Procida and contributors, licensed CC-BY-SA 4.0. This skill builds on that model in its own words and adds README, PR, changelog and code-walkthrough guidance. It is shared under the same license, CC-BY-SA 4.0.

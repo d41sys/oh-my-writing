@@ -1,0 +1,37 @@
+{
+  "name": "oh-my-writing",
+  "version": "2.1.0",
+  "description": "Installer for Oh My Writing v2: ten writing Agent Skills for Claude Code, Codex and omp.",
+  "license": "MIT",
+  "author": "d41sys",
+  "homepage": "https://github.com/d41sys/academic-writing-skill",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/d41sys/academic-writing-skill.git"
+  },
+  "keywords": [
+    "agent-skills",
+    "writing",
+    "claude-code",
+    "codex",
+    "omp"
+  ],
+  "bin": {
+    "oh-my-writing": "bin/oh-my-writing.mjs"
+  },
+  "files": [
+    "bin/",
+    "skills/",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md",
+    "README.md",
+    "INSTALL.md",
+    "CONTRIBUTING.md",
+    "docs/USAGE.md",
+    "docs/BENCHMARK.md",
+    "docs/SOURCE_SIMILARITY.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}

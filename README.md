@@ -1,41 +1,14 @@
-> **Oh My Writing v2:** ten writing skills (anti-slop editing, author voice, drafting, evidence, review, posts, reports, docs, career, project reports). Setup, including replacing the old academic-writing install: [INSTALL.md](INSTALL.md).
+# Oh My Writing
 
-# academic-writing
+Writing skills for AI agents that draft and edit **without AI slop, invented facts, or a flattened author voice**. Ten [Agent Skills](https://agentskills.io/specification) for Claude Code, Codex and omp: anti-slop editing, author voice, drafting from notes, evidence checks, independent review, posts, reports, technical docs, career documents, and project reports with designed diagrams.
 
-A Claude Code skill that writes ML/CV/NLP paper sections (one part at a time, or a whole paper) from your results and notes, with checking built in:
-
-1. **Story card** (`paper/STORY.md`) approved by you before any prose.
-2. **Outline** as `% TL;DR` comments, one per paragraph, each naming its source.
-3. **Draft** under the outline.
-4. **Check**: self-check (fact trace, story trace, AI-wording scans, section rules), then an **external review by a different model** (Codex CLI, fresh read-only session per round, at most two rounds).
-5. **Hand-off**: the drafted part plus a short list of items for you to approve.
-
-Optional: give an example paper and the skill writes `paper/EXEMPLAR_NOTES.md`, an analysis of its research design (question, design lever, argument chain, benchmark construction, claims vs evidence) and what transfers to your paper.
-
-Project-specific review lessons go in `paper/WRITING_LESSONS.md` in each project; the skill applies them if present.
-
-## Install (global)
 ```bash
-git clone git@github.com:d41sys/academic-writing-skill.git ~/academic-writing-skill
-ln -s ~/academic-writing-skill ~/.claude/skills/academic-writing
+npx github:d41sys/academic-writing-skill
 ```
-Update: `git -C ~/academic-writing-skill pull`.
 
-## Use
-"Rewrite the abstract", "write the introduction", or "write the paper". Works alongside the ARIS research skills (`paper-plan`, `paper-claim-audit`, `citation-audit`).
+The installer links the skills for every host and backs up the old `academic-writing` skill. Manual install, plugin install and uninstall are in [INSTALL.md](INSTALL.md).
 
-## Test the scans
-`tests/scan_fixture.tex` is a positive control for the Tier-1/Tier-2 scans in `references/ai-tells.md`: Tier 1 must hit lines 2, 4, 12 only; Tier 2 must flag only paragraph 3.
-
-## Slash command
-```bash
-mkdir -p ~/.claude/commands && ln -s ~/academic-writing-skill/commands/academic-writing.md ~/.claude/commands/academic-writing.md
-```
-Then: `/academic-writing rewrite the abstract` or `/academic-writing write the introduction, example paper: arXiv 2505.23941`.
-
-## Oh My Writing skills
-
-`skills/` holds ten general writing skills built from the Oh My Writing library below. They follow the [Agent Skills specification](https://agentskills.io/specification): each skill is `skills/<name>/SKILL.md` with on-demand `references/`, `assets/` templates, optional stdlib-only `scripts/`, a self-check `eval.md` run before returning output, and `agents/openai.yaml` for Codex. The academic-writing skill above stays at the repository root and is not part of the plugin.
+## Skills
 
 | Skill | Use it to |
 |---|---|
@@ -50,50 +23,142 @@ Then: `/academic-writing rewrite the abstract` or `/academic-writing write the i
 | `career-documents` | Truthful résumés, CVs, cover letters, statements of purpose, profiles and outreach |
 | `project-report` | Turn a folder of project documents into a sourced, professional project report with designed diagrams, as one print-ready HTML file plus a Markdown copy that reads on its own |
 
-`project-report` draws its diagrams with the separate [diagram-design](https://github.com/cathrynlavery/diagram-design) skill when it is installed, and falls back to Mermaid blocks otherwise. Install it next to these skills:
+Ask in plain words, for example "edit this so it doesn't read like AI, keep every fact" or "make a project report from these documents". The matching skill loads on its own. Anything missing from your material comes back as `[ASK AUTHOR: …]` or `[VERIFY: …]`, never as a guess.
 
-```bash
-git clone https://github.com/cathrynlavery/diagram-design.git ~/diagram-design
-ln -s ~/diagram-design/skills/diagram-design ~/.agents/skills/diagram-design
-ln -s ~/diagram-design/skills/diagram-design ~/.claude/skills/diagram-design
-```
+**Usage guide:** [docs/USAGE.md](docs/USAGE.md) covers what to ask, what you get, combining skills, the helper scripts and troubleshooting.
 
-Install by linking the skill folders where each host looks for them. Claude Code reads `~/.claude/skills`; Codex reads `~/.agents/skills`; omp reads its own `~/.omp/agent/skills` and, with its Claude and Agents providers enabled (the default on this setup), the two folders above:
+## Benchmark
 
-```bash
-git clone git@github.com:d41sys/academic-writing-skill.git ~/academic-writing-skill
-mkdir -p ~/.agents/skills ~/.claude/skills
-for d in ~/academic-writing-skill/skills/*/; do
-  ln -s "${d%/}" ~/.agents/skills/
-  ln -s "${d%/}" ~/.claude/skills/
-done
-```
+59 realistic writing tasks, 3 runs each, omp with gpt-6-sol. Measured on the commit before v2's last two skill edits (routing descriptions and reworded passages); the current version has not been re-run in full. Details, judge results and limits: [docs/BENCHMARK.md](docs/BENCHMARK.md).
 
-As a plugin: the repository root has `plugin.json` ([Agent Plugins](https://agent-plugins.org/) 1.0.0), `.codex-plugin/plugin.json` and `.claude-plugin/` (Claude Code: `/plugin marketplace add d41sys/academic-writing-skill`, then `/plugin install oh-my-writing@oh-my-writing`).
+| | With skills | No skills |
+|---|---|---|
+| Tuned cases (126 runs) | **89%** | 42% |
+| Held-out set 1 (21 runs) | **81%** | 57% |
 
-Validate and test:
+| Pack | Ours passed | Theirs passed | Runs |
+|---|---|---|---|
+| avoid-ai-writing | **37** | 21 | 42 |
+| humanizer | **37** | 17 | 42 |
+| great-writer | **35** | 17 | 39 |
+| doc-coauthoring | **22** | 18 | 24 |
+| marketing copywriting | **18** | 12 | 21 |
+| proficiently cover letter | **15** | 8 | 15 |
+| ResumeSkills | **15** | 9 | 15 |
 
-```bash
-for d in skills/*/; do uvx --from 'git+https://github.com/agentskills/agentskills.git#subdirectory=skills-ref' skills-ref validate "$d"; done
-uv run --with pytest --with pyyaml python -m pytest tests/_meta -q
-for t in tests/*/; do [ -d "$t" ] && [ "$(basename "$t")" != _meta ] && uv run --with pytest python -m pytest "$t" -q; done
-```
+The checks measure faithfulness: invented facts, lost hedges and negations, missing gap markers, stock phrasing. A blind judge preferred our output to every pack except humanizer, and split close to even against no skills. See the limits in the benchmark doc.
 
-`tests/_meta` checks the shared contract for every skill: allowed frontmatter keys, quoted `metadata.version`, the license, the 500-line limit, `eval.md` and `agents/openai.yaml`, links that stay inside the skill, tests for any `scripts/`, and the absence of internal library IDs and source-repository names. Skill text is written in our own words; sources are thanked in Acknowledgments.
+**Tests:** about 690 unit tests cover the skill contract, every helper script, the grader and the installer. Run `for t in tests/*/; do uv run --with pytest --with pyyaml python -m pytest "$t" -q; done`.
 
-Benchmark: `evals/` runs realistic writing tasks on Codex and Claude Code with and without the skills and grades them mechanically (invented facts, lost negations and qualifiers, missing gap markers, leftover stock phrasing, leaked context), with an optional blind pairwise judge. `project-report` cases use real document folders in `evals/fixtures/` (docx, xlsx, pptx, pdf, eml, csv, md, with conflicts, superseded versions, noise and an embedded instruction), answer keys, diagram and HTML checks, repeated runs and a visual judge that scores page screenshots. `evals/review_pairs.py` builds a blind A/B page for rating the outputs yourself. See [evals/README.md](evals/README.md):
+## Contributing
 
-```bash
-python3 evals/run.py --host codex --host claude --jobs 4
-python3 evals/run.py --host codex --cases 'project-report/*' --repeat 3 --jobs 6 --judge codex
-python3 evals/review_pairs.py evals/results/<run>
-```
+Bug reports with a real failing example, new benchmark cases and rule fixes are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, skill rules (your own wording, general rules not test fixes, no invented facts) and how to add a case.
 
 ## License
 
-MIT, see [LICENSE](LICENSE). Exception: Diátaxis-derived material, including `skills/technical-docs/`, stays CC-BY-SA 4.0 because that license requires adaptations to keep it. Third-party notices are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+MIT, see [LICENSE](LICENSE). Exception: `skills/technical-docs/` follows the Diátaxis framework and is CC-BY-SA 4.0. Notices are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
-## Oh My Writing: local knowledge and evaluation
+## Acknowledgments
+
+Oh My Writing was inspired by the projects below, and we used them as references while writing our own skills. The skills are our own work and wording: they do not include or redistribute these projects' skill packages ([similarity check](docs/SOURCE_SIMILARITY.md)). Much writing advice is shared across many sources, and we do not claim to have originated the ideas behind it. Their benchmark results do not transfer to Oh My Writing, or the other way round.
+
+| Project | What inspired us or served as a reference |
+|---|---|
+| [Avoid AI Writing](https://github.com/conorbronsdon/avoid-ai-writing) | Context-sensitive editing, diagnostic patterns, preservation and no-op boundaries |
+| [Humanizer](https://github.com/blader/humanizer) | Concrete writing tells, false positives and author voice |
+| [Marketing Skills](https://github.com/coreyhaines31/marketingskills) | Audience research, positioning, copy, outreach, lifecycle and communications |
+| [GreatWriter](https://github.com/d-wwei/great-writer) | Narrative, voice, adaptation and revision techniques |
+| [Everything Claude Code](https://github.com/affaan-m/everything-claude-code) | Article writing, comparison validity and evaluation methods |
+| [Scientific Agent Skills](https://github.com/K-Dense-AI/scientific-agent-skills) | Scientific evidence, specialist reporting, review and visual communication |
+| [AI Research Skills](https://github.com/Orchestra-Research/AI-Research-SKILLs) | ML/systems manuscripts, citations, evaluation and publication practice |
+| [Anthropic Skills](https://github.com/anthropics/skills) | Collaborative drafting, fresh-reader review and skill evaluation |
+| [Diátaxis](https://github.com/evildmp/diataxis-documentation-framework) | Reader-purpose distinctions and documentation construction |
+| [STORM](https://github.com/stanford-oval/storm) | Perspective-driven inquiry and evidence-grounded synthesis |
+| [Awesome AI Research Writing](https://github.com/Leey21/awesome-ai-research-writing) | Inspiration for bounded writing operations; no unlicensed original text is redistributed |
+| [ARIS (Auto-claude-code-research-in-sleep)](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep) | Paper planning and drafting, claim and citation audits, review/rebuttal, figures, talks, grants and patent writing |
+| [mattpocock/skills](https://github.com/mattpocock/skills) | Writing-for-agents, draft shaping and interview-style clarification methods |
+| [garden-skills](https://github.com/ConardLi/garden-skills) | Long-form article presentation and reader-facing layout |
+| [ResumeSkills](https://github.com/Paramchoudhary/ResumeSkills) | Résumé, CV, cover-letter, LinkedIn-profile and portfolio methods |
+| [proficiently-claude-skills](https://github.com/proficientlyjobs/proficiently-claude-skills) | Truthful cover-letter and résumé tailoring |
+| [jezweb/claude-skills](https://github.com/jezweb/claude-skills) | Award applications, proposals and regional business English |
+| [diagram-design](https://github.com/cathrynlavery/diagram-design) | Diagram drawing for `project-report`; used as a separately installed skill, not bundled |
+| University career and writing centers, DAAD, European Education Area | Statement-of-purpose, personal-statement and motivation-letter guidance (cited per unit) |
+
+Copyright and license notices are kept in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). `skills/technical-docs/` follows the Diátaxis framework and is released under CC-BY-SA 4.0, as that framework's license asks.
+
+### Research and evaluation reading
+
+Further background: [Agent Skills specification](https://agentskills.io/specification), [skill evaluation](https://agentskills.io/skill-creation/evaluating-skills), [Anthropic context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents), [building effective agents](https://www.anthropic.com/engineering/building-effective-agents), [agent evaluations](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents), and the community site [claude.dev](https://claude.dev/). Community commentary is not an official product contract or measured result for this library.
+
+### Foundational writing and detector reading
+
+The earlier research also drew on these attributed reading leads, directly or through the projects above. They remain background reading, not mandatory reference-loading steps. Their empirical findings have not been independently reproduced by this library.
+
+| Reading | Ideas acknowledged |
+|---|---|
+| George D. Gopen and Judith A. Swan, *The Science of Scientific Writing* | Reader expectations, topic/stress positions, and actions expressed through verbs |
+| Zachary C. Lipton and Jacob Steinhardt, *Troubling Trends in Machine Learning Scholarship* | Explanation versus speculation, unnecessary formalism, and fair attribution of empirical gains |
+| Roy Levin and David D. Redell, *How (and How Not) to Write a Good Systems Paper*; systems-writing guidance by Gernot Heiser and Irene Zhang | Originality, significance, verifiability, evaluation design, and thesis-driven abstracts |
+| Wikipedia's AI Cleanup guidance; Charity Majors' *Confessions of an Unrepentant Sloper*; Simon Willison's *LLM Cliché Highlighter* | Formulaic rhetoric, stylistic homogenization, and contextual review of lexical signals |
+| Liang and colleagues' 2023 detector-bias research; Jabarian and Imas' 2025 detector research | False-positive risks and the limits of inferring authorship from classifier outputs |
+
+Platform-ranking descriptions, including discussion of `xai-org/x-algorithm` in the surveyed marketing material, are research leads rather than verified current platform rules. No ranking weights or engagement outcomes are assumed by the writing references.
+
+### Publisher guideline sources
+
+The local [publisher export profiles](references/knowledge/visuals-and-formatting/publisher-export-profiles.md) contain the substantive planning knowledge. These primary URLs support attribution and future maintenance, not mandatory online reference loading. Dates describe the inherited source snapshots, not fresh verification by this project.
+
+| Publisher scope | Primary instructions and snapshot boundary |
+|---|---|
+| Nature flagship | [Final submission](https://www.nature.com/nature/for-authors/final-submission) and [figure specifications](https://research-figure-guide.nature.com/figures/preparing-figures-our-specifications), source review 2026-10-01; not portfolio-wide. |
+| Science flagship | [Initial](https://www.science.org/content/page/instructions-preparing-initial-manuscript) and [revised](https://www.science.org/content/page/instructions-preparing-revised-manuscript) instructions, historical 2026-07-23 snapshot; fresh access was blocked in the 2026-10-01 source review. |
+| Cell Press | [Figure guidelines](https://www.cell.com/information-for-authors/figure-guidelines), source review 2026-10-01; journal and article-type exceptions apply. |
+| PLOS | [PLOS Computational Biology figures](https://journals.plos.org/ploscompbiol/s/figures), source review 2026-10-01; verify the selected journal. |
+| Elsevier | [Formats checklist](https://www.elsevier.com/about/policies-and-standards/author/artwork-and-media-instructions/artwork-formats-checklist) and [artwork sizing](https://www.elsevier.com/about/policies-and-standards/author/artwork-and-media-instructions/artwork-sizing), source review 2026-10-01; journal instructions override general defaults. |
+| IEEE journals | [Resolution and size](https://journals.ieeeauthorcenter.ieee.org/create-your-ieee-journal-article/create-graphics-for-your-article/resolution-and-size/), page modified 2025-02-25, source review 2026-10-01. |
+| BMC Bioinformatics | [Submission guidelines](https://link.springer.com/journal/12859/submission-guidelines), source review 2026-10-01; one journal example, not a BMC-wide guarantee. |
+| ACS | [Legacy manuscript graphics](https://pubsapp.acs.org/paragonplus/submission/general/graphics_prep.html), updated 2006-01-21; not a current universal digital-export standard. |
+
+
+## Paper writing: academic-writing (legacy)
+
+The repository root still holds the original `academic-writing` skill for ML/CV/NLP paper sections. It is not part of v2 and not installed by default. To use it beside v2: `ln -sfn ~/oh-my-writing ~/.claude/skills/academic-writing`.
+
+
+A Claude Code skill that writes ML/CV/NLP paper sections (one part at a time, or a whole paper) from your results and notes, with checking built in:
+
+1. **Story card** (`paper/STORY.md`) approved by you before any prose.
+2. **Outline** as `% TL;DR` comments, one per paragraph, each naming its source.
+3. **Draft** under the outline.
+4. **Check**: self-check (fact trace, story trace, AI-wording scans, section rules), then an **external review by a different model** (Codex CLI, fresh read-only session per round, at most two rounds).
+5. **Hand-off**: the drafted part plus a short list of items for you to approve.
+
+Optional: give an example paper and the skill writes `paper/EXEMPLAR_NOTES.md`, an analysis of its research design (question, design lever, argument chain, benchmark construction, claims vs evidence) and what transfers to your paper.
+
+Project-specific review lessons go in `paper/WRITING_LESSONS.md` in each project; the skill applies them if present.
+
+### Install (global)
+```bash
+git clone git@github.com:d41sys/academic-writing-skill.git ~/academic-writing-skill
+ln -s ~/academic-writing-skill ~/.claude/skills/academic-writing
+```
+Update: `git -C ~/academic-writing-skill pull`.
+
+### Use
+"Rewrite the abstract", "write the introduction", or "write the paper". Works alongside the ARIS research skills (`paper-plan`, `paper-claim-audit`, `citation-audit`).
+
+### Test the scans
+`tests/scan_fixture.tex` is a positive control for the Tier-1/Tier-2 scans in `references/ai-tells.md`: Tier 1 must hit lines 2, 4, 12 only; Tier 2 must flag only paragraph 3.
+
+### Slash command
+```bash
+mkdir -p ~/.claude/commands && ln -s ~/academic-writing-skill/commands/academic-writing.md ~/.claude/commands/academic-writing.md
+```
+Then: `/academic-writing rewrite the abstract` or `/academic-writing write the introduction, example paper: arXiv 2505.23941`.
+
+
+## Research library (maintainers)
+
 
 Oh My Writing is an independently organized writing knowledge library, separate from the existing academic-writing runtime above. Start with [the subject index](references/knowledge/index.md), [coverage and limitations](references/knowledge-review.md), or the [research report](WRITING_RESEARCH_REPORT.md).
 
@@ -146,63 +211,3 @@ See [retrieval options](references/retrieval.md) and [sandbox protocol](referenc
 
 The sandbox prepares workspaces and evaluates mechanical criteria. It does **not** enforce OS/network isolation, prove that self-reported references were read, or certify author voice and argument quality. Host permissions and observed telemetry must be supplied separately. The hand-authored sample responses exercise the harness; they are not model benchmark results.
 
-## Acknowledgments
-
-Thanks to the following projects and their contributors. Their work informed the writing knowledge that we merged, rewrote, reorganized, and extended. This is not a distribution of their skill packages, a claim of original authorship of all underlying ideas, or evidence that their benchmark results transfer to Oh My Writing.
-
-| Project | Contribution we learned from |
-|---|---|
-| [Avoid AI Writing](https://github.com/conorbronsdon/avoid-ai-writing) | Context-sensitive editing, diagnostic patterns, preservation and no-op boundaries |
-| [Humanizer](https://github.com/blader/humanizer) | Concrete writing tells, false positives and author voice |
-| [Marketing Skills](https://github.com/coreyhaines31/marketingskills) | Audience research, positioning, copy, outreach, lifecycle and communications |
-| [GreatWriter](https://github.com/d-wwei/great-writer) | Narrative, voice, adaptation and revision techniques |
-| [Everything Claude Code](https://github.com/affaan-m/everything-claude-code) | Article writing, comparison validity and evaluation methods |
-| [Scientific Agent Skills](https://github.com/K-Dense-AI/scientific-agent-skills) | Scientific evidence, specialist reporting, review and visual communication |
-| [AI Research Skills](https://github.com/Orchestra-Research/AI-Research-SKILLs) | ML/systems manuscripts, citations, evaluation and publication practice |
-| [Anthropic Skills](https://github.com/anthropics/skills) | Collaborative drafting, fresh-reader review and skill evaluation |
-| [Diátaxis](https://github.com/evildmp/diataxis-documentation-framework) | Reader-purpose distinctions and documentation construction |
-| [STORM](https://github.com/stanford-oval/storm) | Perspective-driven inquiry and evidence-grounded synthesis |
-| [Awesome AI Research Writing](https://github.com/Leey21/awesome-ai-research-writing) | Inspiration for bounded writing operations; no unlicensed original text is redistributed |
-| [ARIS (Auto-claude-code-research-in-sleep)](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep) | Paper planning and drafting, claim and citation audits, review/rebuttal, figures, talks, grants and patent writing |
-| [mattpocock/skills](https://github.com/mattpocock/skills) | Writing-for-agents, draft shaping and interview-style clarification methods |
-| [garden-skills](https://github.com/ConardLi/garden-skills) | Long-form article presentation and reader-facing layout |
-| [ResumeSkills](https://github.com/Paramchoudhary/ResumeSkills) | Résumé, CV, cover-letter, LinkedIn-profile and portfolio methods |
-| [proficiently-claude-skills](https://github.com/proficientlyjobs/proficiently-claude-skills) | Truthful cover-letter and résumé tailoring |
-| [jezweb/claude-skills](https://github.com/jezweb/claude-skills) | Award applications, proposals and regional business English |
-| [diagram-design](https://github.com/cathrynlavery/diagram-design) | Diagram drawing for `project-report`; used as a separately installed skill, not bundled |
-| University career and writing centers, DAAD, European Education Area | Statement-of-purpose, personal-statement and motivation-letter guidance (cited per unit) |
-
-Copyright and license notices are preserved in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). In particular, the identified Diátaxis adaptations remain CC-BY-SA 4.0. Acknowledgment does not replace license compliance.
-
-### Research and evaluation reading
-
-Further background: [Agent Skills specification](https://agentskills.io/specification), [skill evaluation](https://agentskills.io/skill-creation/evaluating-skills), [Anthropic context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents), [building effective agents](https://www.anthropic.com/engineering/building-effective-agents), [agent evaluations](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents), and the community site [claude.dev](https://claude.dev/). Community commentary is not an official product contract or measured result for this library.
-
-### Foundational writing and detector reading
-
-The earlier research also drew on these attributed reading leads, directly or through the projects above. They remain background reading, not mandatory reference-loading steps. Their empirical findings have not been independently reproduced by this library.
-
-| Reading | Ideas acknowledged |
-|---|---|
-| George D. Gopen and Judith A. Swan, *The Science of Scientific Writing* | Reader expectations, topic/stress positions, and actions expressed through verbs |
-| Zachary C. Lipton and Jacob Steinhardt, *Troubling Trends in Machine Learning Scholarship* | Explanation versus speculation, unnecessary formalism, and fair attribution of empirical gains |
-| Roy Levin and David D. Redell, *How (and How Not) to Write a Good Systems Paper*; systems-writing guidance by Gernot Heiser and Irene Zhang | Originality, significance, verifiability, evaluation design, and thesis-driven abstracts |
-| Wikipedia's AI Cleanup guidance; Charity Majors' *Confessions of an Unrepentant Sloper*; Simon Willison's *LLM Cliché Highlighter* | Formulaic rhetoric, stylistic homogenization, and contextual review of lexical signals |
-| Liang and colleagues' 2023 detector-bias research; Jabarian and Imas' 2025 detector research | False-positive risks and the limits of inferring authorship from classifier outputs |
-
-Platform-ranking descriptions, including discussion of `xai-org/x-algorithm` in the surveyed marketing material, are research leads rather than verified current platform rules. No ranking weights or engagement outcomes are assumed by the writing references.
-
-### Publisher guideline sources
-
-The local [publisher export profiles](references/knowledge/visuals-and-formatting/publisher-export-profiles.md) contain the substantive planning knowledge. These primary URLs support attribution and future maintenance, not mandatory online reference loading. Dates describe the inherited source snapshots, not fresh verification by this project.
-
-| Publisher scope | Primary instructions and snapshot boundary |
-|---|---|
-| Nature flagship | [Final submission](https://www.nature.com/nature/for-authors/final-submission) and [figure specifications](https://research-figure-guide.nature.com/figures/preparing-figures-our-specifications), source review 2026-10-01; not portfolio-wide. |
-| Science flagship | [Initial](https://www.science.org/content/page/instructions-preparing-initial-manuscript) and [revised](https://www.science.org/content/page/instructions-preparing-revised-manuscript) instructions, historical 2026-07-23 snapshot; fresh access was blocked in the 2026-10-01 source review. |
-| Cell Press | [Figure guidelines](https://www.cell.com/information-for-authors/figure-guidelines), source review 2026-10-01; journal and article-type exceptions apply. |
-| PLOS | [PLOS Computational Biology figures](https://journals.plos.org/ploscompbiol/s/figures), source review 2026-10-01; verify the selected journal. |
-| Elsevier | [Formats checklist](https://www.elsevier.com/about/policies-and-standards/author/artwork-and-media-instructions/artwork-formats-checklist) and [artwork sizing](https://www.elsevier.com/about/policies-and-standards/author/artwork-and-media-instructions/artwork-sizing), source review 2026-10-01; journal instructions override general defaults. |
-| IEEE journals | [Resolution and size](https://journals.ieeeauthorcenter.ieee.org/create-your-ieee-journal-article/create-graphics-for-your-article/resolution-and-size/), page modified 2025-02-25, source review 2026-10-01. |
-| BMC Bioinformatics | [Submission guidelines](https://link.springer.com/journal/12859/submission-guidelines), source review 2026-10-01; one journal example, not a BMC-wide guarantee. |
-| ACS | [Legacy manuscript graphics](https://pubsapp.acs.org/paragonplus/submission/general/graphics_prep.html), updated 2006-01-21; not a current universal digital-export standard. |

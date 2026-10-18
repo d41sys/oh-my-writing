@@ -1,10 +1,47 @@
-# Install Oh My Writing v2 (replaces the academic-writing install)
+# Install Oh My Writing v2.1 (replaces the academic-writing install)
 
 Oh My Writing v2 is the ten skills in `skills/`. They replace the old single `academic-writing` skill as your everyday writing setup. Claude Code, Codex and omp all load them from the same two folders.
 
-Time: about 5 minutes.
+Time: about 1 minute with npx, about 5 minutes by hand.
 
-## 1. Remove the old academic-writing install
+## Install with npx
+
+Needs Node 18 or newer and git.
+
+```bash
+npx github:d41sys/academic-writing-skill
+```
+
+Copies the ten skills to `~/.oh-my-writing/skills/` and links them into `~/.agents/skills` (Codex, omp) and `~/.claude/skills` (Claude Code, omp). The old `academic-writing` skill, its link and `~/.claude/commands/academic-writing.md` are moved to `~/.oh-my-writing/backup/<timestamp>/`, not deleted. If published to npm later, `npx oh-my-writing` does the same.
+
+Flags (add them after the command, for example `npx github:d41sys/academic-writing-skill install --dry-run`):
+
+| Flag | Effect |
+|---|---|
+| `--dry-run` | Print what would happen, change nothing |
+| `--yes` | Skip the confirmation prompt |
+| `--hosts claude,codex,omp` | Install for these hosts only (default: all) |
+| `--copy` | Copy into the host folders instead of symlinking |
+| `--force` | Back up and replace an existing folder that has a skill's name (without it, the install stops) |
+| `--keep-academic-writing` | Leave the old academic-writing install where it is |
+| `--with-diagram-design` | Also `git clone` [diagram-design](https://github.com/cathrynlavery/diagram-design) into `~/.oh-my-writing/diagram-design` and link it |
+
+Check, uninstall, roll back:
+
+```bash
+npx github:d41sys/academic-writing-skill doctor                    # versions, hosts, broken links, leftovers, duplicates
+npx github:d41sys/academic-writing-skill list                      # which host sees which skill
+npx github:d41sys/academic-writing-skill uninstall                 # removes only the links/copies it made
+npx github:d41sys/academic-writing-skill uninstall --restore       # same, then moves the backed-up academic-writing back
+```
+
+`uninstall` tracks its own entries in `~/.oh-my-writing/manifest.json`. A folder you put in place of one of its links is left alone.
+
+## Manual install
+
+Use this if you do not want npx. Same result as above.
+
+### 1. Remove the old academic-writing install
 
 The old install is a folder in `~/.agents/skills/` and a link in `~/.claude/skills/`. Move the folder aside instead of deleting it, so you can roll back:
 
@@ -15,14 +52,14 @@ mkdir -p ~/skills-backup
 [ -L ~/.claude/commands/academic-writing.md ] && rm ~/.claude/commands/academic-writing.md
 ```
 
-## 2. Get the code
+### 2. Get the code
 
 ```bash
 git clone https://github.com/d41sys/academic-writing-skill.git ~/oh-my-writing
-git -C ~/oh-my-writing checkout v2.0.0
+git -C ~/oh-my-writing checkout v2.1.0
 ```
 
-## 3. Link the ten skills
+### 3. Link the ten skills
 
 ```bash
 mkdir -p ~/.agents/skills ~/.claude/skills
@@ -42,7 +79,7 @@ Where each host reads:
 
 **Plugin instead of links.** Claude Code: run `/plugin marketplace add d41sys/academic-writing-skill`, then `/plugin install oh-my-writing@oh-my-writing`. Codex can read `.codex-plugin/plugin.json`. Use either links or the plugin, not both: two copies of the same skill compete for routing.
 
-## 4. Optional: diagrams for project-report
+### 4. Optional: diagrams for project-report
 
 ```bash
 git clone https://github.com/cathrynlavery/diagram-design.git ~/diagram-design
@@ -52,7 +89,7 @@ ln -sfn ~/diagram-design/skills/diagram-design ~/.claude/skills/diagram-design
 
 Without it, `project-report` falls back to Mermaid diagrams.
 
-## 5. Check it works
+### 5. Check it works
 
 ```bash
 ls -l ~/.agents/skills ~/.claude/skills | grep oh-my-writing   # ten links in each
@@ -93,14 +130,14 @@ for s in ~/oh-my-writing/skills/*/; do rm -f ~/.agents/skills/$(basename "$s") ~
 mv ~/skills-backup/academic-writing ~/.agents/skills/ && ln -s ../../.agents/skills/academic-writing ~/.claude/skills/academic-writing   # roll back
 ```
 
-## Known limits (from the v2 benchmark)
+## Known limits (from the benchmark)
 
-Run on omp with gpt-6-sol, 3 repeats per case:
+Measured on omp with gpt-6-sol, 3 repeats per case, on the commit just before the last two skill edits in v2 (generic routing descriptions and reworded source passages). The current version has not been re-run in full. Details: [docs/BENCHMARK.md](docs/BENCHMARK.md).
 
 | Case set | With the skills | Without skills |
 |---|---|---|
 | Tuned cases | 89% | 42% |
-| Held-out cases | 81% (17/21) | 57% |
+| Held-out set 1 | 81% (17/21) | 57% |
 
 - **Against seven other public writing-skill packs**, these skills passed more cases than every one of them.
 - **The checks were written by the same team as the skills.** A blind model judge preferred the no-skill output about as often as the skill output, so the skills are more reliable on facts than clearly better-sounding.
