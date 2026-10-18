@@ -8,6 +8,8 @@ npx github:d41sys/academic-writing-skill
 
 The installer links the skills for every host and backs up the old `academic-writing` skill. Manual install, plugin install and uninstall are in [INSTALL.md](INSTALL.md).
 
+> **Access:** the GitHub repository is private for now, so every install path (npx, plugin, clone) needs GitHub access on that machine: an SSH key added to GitHub, or `gh auth login`.
+
 ## Skills
 
 | Skill | Use it to |

@@ -4,6 +4,8 @@ Oh My Writing v2 is the ten skills in `skills/`. They replace the old single `ac
 
 Time: about 1 minute with npx, about 5 minutes by hand.
 
+> **Access:** the GitHub repository is private for now, so every install path (npx, plugin, clone) needs GitHub access on that machine: an SSH key added to GitHub, or `gh auth login`.
+
 ## Install with npx
 
 Needs Node 18 or newer and git.
