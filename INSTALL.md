@@ -4,7 +4,7 @@ Oh My Writing v2 is the ten skills in `skills/`. They replace the old single `ac
 
 Time: about 1 minute with npx, about 5 minutes by hand.
 
-> **Access:** the GitHub repository is private for now, so every install path (npx, plugin, clone) needs GitHub access on that machine: an SSH key added to GitHub, or `gh auth login`.
+> **Access:** the GitHub repository is private for now, so every install path (npx, plugin, clone) needs GitHub access on that machine: an SSH key added to GitHub, or `gh auth login` followed by `gh auth setup-git`.
 
 ## Install with npx
 
@@ -121,7 +121,7 @@ The skills never invent facts. Anything missing from your material comes back as
 v2 has no paper-section skill yet. The old paper workflow (story card, then outline, then draft, then external review) is still in this repository's root `SKILL.md`. To keep it beside v2, link it under its old name:
 
 ```bash
-ln -sfn ~/oh-my-writing ~/.claude/skills/academic-writing
+ln -sfn ~/oh-my-writing ~/.claude/skills/academic-writing   # needs the manual clone; the npx install copies only skills/
 ```
 
 ## Update and roll back

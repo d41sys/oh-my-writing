@@ -6,9 +6,9 @@ Oh My Writing was inspired by the projects listed below and used them as referen
 
 The English writing references in this repository are our own text, written with these projects as references and extended with our own conditions and examples. Source runtimes, datasets and repository snapshots are not included. No unlicensed Leey21 source text is redistributed.
 
-Material following Diátaxis in `references/knowledge/structure-and-argument.md`, `references/knowledge/structure-and-argument/documentation-navigation.md`, `references/knowledge/structure-and-argument/tutorial-vs-howto-construction.md`, and `references/writing-report.md` are provided under CC-BY-SA 4.0, with attribution to Daniele Procida and contributors. The project’s default license does not override this scope.
+Material adapted from Diátaxis and modified (reorganized and paraphrased) in `references/knowledge/structure-and-argument.md`, `references/knowledge/structure-and-argument/documentation-navigation.md`, `references/knowledge/structure-and-argument/tutorial-vs-howto-construction.md`, and `references/writing-report.md` are provided under CC-BY-SA 4.0, with attribution to Daniele Procida and contributors. The project’s default license does not override this scope.
 
-The skills under `skills/` are written in our own words and do not bundle source skill files; see `docs/SOURCE_SIMILARITY.md` for the measured overlap. The `skills/technical-docs/` skill follows the Diátaxis documentation model and is provided under CC-BY-SA 4.0 with the same attribution.
+The skills under `skills/` are written in our own words and do not bundle source skill files; see `docs/SOURCE_SIMILARITY.md` for the measured overlap. The `skills/technical-docs/` skill adapts the Diátaxis documentation model and is provided under CC-BY-SA 4.0 with the same attribution.
 
 ## avoid-ai-writing
 

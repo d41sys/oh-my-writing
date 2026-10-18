@@ -8,7 +8,7 @@ npx github:d41sys/academic-writing-skill
 
 The installer links the skills for every host and backs up the old `academic-writing` skill. Manual install, plugin install and uninstall are in [INSTALL.md](INSTALL.md).
 
-> **Access:** the GitHub repository is private for now, so every install path (npx, plugin, clone) needs GitHub access on that machine: an SSH key added to GitHub, or `gh auth login`.
+> **Access:** the GitHub repository is private for now, so every install path (npx, plugin, clone) needs GitHub access on that machine: an SSH key added to GitHub, or `gh auth login` followed by `gh auth setup-git`.
 
 ## Skills
 
@@ -58,7 +58,7 @@ Bug reports with a real failing example, new benchmark cases and rule fixes are 
 
 ## License
 
-MIT, see [LICENSE](LICENSE). Exception: `skills/technical-docs/` follows the Diátaxis framework and is CC-BY-SA 4.0. Notices are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+MIT, see [LICENSE](LICENSE). Exception: Diátaxis-derived material, including `skills/technical-docs/`, is adapted from Diátaxis and stays CC-BY-SA 4.0. Notices are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 ## Acknowledgments
 
@@ -86,7 +86,7 @@ Oh My Writing was inspired by the projects below, and we used them as references
 | [diagram-design](https://github.com/cathrynlavery/diagram-design) | Diagram drawing for `project-report`; used as a separately installed skill, not bundled |
 | University career and writing centers, DAAD, European Education Area | Statement-of-purpose, personal-statement and motivation-letter guidance (cited per unit) |
 
-Copyright and license notices are kept in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). `skills/technical-docs/` follows the Diátaxis framework and is released under CC-BY-SA 4.0, as that framework's license asks.
+Copyright and license notices are kept in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Diátaxis-derived material, including `skills/technical-docs/`, is adapted from Diátaxis and modified, and stays CC-BY-SA 4.0 as its license requires.
 
 ### Research and evaluation reading
 
