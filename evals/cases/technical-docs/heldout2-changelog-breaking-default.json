@@ -27,12 +27,12 @@
     },
     {
       "type": "regex",
-      "pattern": "(?is)windows[^\\n]{0,120}(?:not (?:yet )?(?:been )?tested|untested|not run|unverified|wasn't tested|was not tested|hasn't been tested|no testing|not verified)|(?:not (?:yet )?(?:been )?tested|untested|unverified)[^\\n]{0,80}windows",
+      "pattern": "(?is)windows[^\\n]{0,120}(?:not (?:yet )?(?:been )?tested|untested|not run|unverified|wasn['’]t tested|was not tested|hasn['’]t been tested|no testing|not verified)|(?:not (?:yet )?(?:been )?tested|untested|unverified)[^\\n]{0,80}windows",
       "note": "the notes say Windows was not tested; the entry says so as a plain statement"
     },
     {
       "type": "regex",
-      "pattern": "(?is)dry[- ]run[^\\n]{0,250}\\b(?:not|n't|only|just|yet)\\b[^\\n]{0,60}\\bpull\\b|\\bpull\\b[^\\n]{0,80}\\b(?:not|n't|yet|without)\\b[^\\n]{0,60}dry[- ]run|dry[- ]run[^\\n]{0,60}\\bpush\\b[^\\n]{0,40}\\bonly\\b|\\bonly\\b[^\\n]{0,40}\\bpush\\b[^\\n]{0,60}dry[- ]run|dry[- ]run[^\\n]{0,200}\\bpull\\b[^\\n]{0,60}\\b(?:not|n't|yet|unsupported)\\b",
+      "pattern": "(?is)dry[- ]run[^\\n]{0,250}\\b(?:not|n['’]t|only|just|yet)\\b[^\\n]{0,60}\\bpull\\b|\\bpull\\b[^\\n]{0,80}\\b(?:not|n['’]t|yet|without)\\b[^\\n]{0,60}dry[- ]run|dry[- ]run[^\\n]{0,60}\\bpush\\b[^\\n]{0,40}\\bonly\\b|\\bonly\\b[^\\n]{0,40}\\bpush\\b[^\\n]{0,60}dry[- ]run|dry[- ]run[^\\n]{0,200}\\bpull\\b[^\\n]{0,60}\\b(?:not|n['’]t|yet|unsupported)\\b",
       "note": "dry run is limited to push"
     },
     {
@@ -41,8 +41,8 @@
     },
     {
       "type": "regex",
-      "pattern": "(?m)^#{1,3}\\s*\\[?3\\.2\\.0",
-      "note": "the entry opens with a heading for the version"
+      "pattern": "(?m)^#{1,3}\\s*(?:sluicer\\s+)?v?\\[?3\\.2\\.0",
+      "note": "the entry opens with a heading for the version, bare or with the project name ('# sluicer 3.2.0', run variant-iso r3)"
     },
     {
       "type": "no_added_facts",

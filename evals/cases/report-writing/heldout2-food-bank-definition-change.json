@@ -11,7 +11,7 @@
   "checks": [
     {
       "type": "regex",
-      "pattern": "(?is)\\b(?:not|isn't|aren't|can't|cannot|shouldn't|should not|n't)\\b[^.\\n]{0,60}\\b(?:comparable|compared|like[- ]for[- ]like|reliable|comparison)\\b|\\b(?:different|differing|changed|changing|new|revised|old|previous|earlier)\\s+(?:counting|definition|method|basis|rules?)\\b|\\b(?:counting|definition|method|basis)\\s+(?:rule\\s+)?(?:changed|differs?|differ)\\b|\\bonce (?:per|a) month\\b|\\b(?:every|each) visit\\b",
+      "pattern": "(?is)\\b(?:not|isn['’]t|aren['’]t|can['’]t|cannot|shouldn['’]t|should not|n['’]t)\\b[^.\\n]{0,60}\\b(?:comparable|compared|like[- ]for[- ]like|reliable|comparison)\\b|\\b(?:different|differing|changed|changing|new|revised|old|previous|earlier)\\s+(?:counting|definition|method|basis|rules?)\\b|\\b(?:counting|definition|method|basis)\\s+(?:rule\\s+)?(?:changed|differs?|differ)\\b|\\bonce (?:per|a) month\\b|\\b(?:every|each) visit\\b",
       "note": "Q1 and Q2 were counted differently; the report says so in any wording"
     },
     {
@@ -25,11 +25,10 @@
       "note": "both quarters' figures and the two differences the notes state"
     },
     {
-      "type": "markers",
-      "min": 1,
-      "max": 6,
+      "type": "regex",
       "target": "both",
-      "note": "Q2 was not recalculated the old way; the author is asked for it, in the reply or the report"
+      "pattern": "(?is)\\b(?:not|n['’]t|never|yet to|no)\\b[^.\\n]{0,60}\\b(?:recalculat\\w*|restat\\w*|re-?count\\w*|re-?based|re-?run)\\b|\\b(?:recalculat\\w*|restat\\w*|re-?count\\w*)\\b[^.\\n]{0,100}\\b(?:not|n['’]t|needed|required|pending|outstanding|unavailable|missing)\\b|\\b(?:can|could|is it possible to|please)\\b[^.\\n?]{0,80}\\b(?:recalculat\\w*|restat\\w*)",
+      "note": "Q2 was not recalculated the old way; the report or the reply says so or asks for the figure, in plain words or as a question: 'Q2 has not been recalculated using the earlier method' (runs baseline r1-r3, variant-iso r3, skill r2) carries the gap with no bracket marker. Replaces a count of [ASK AUTHOR]/[VERIFY] markers, which tested the skill's notation, not whether the gap was surfaced"
     },
     {
       "type": "no_added_facts",
@@ -40,13 +39,15 @@
         "21.05%",
         "21",
         "90",
+        "90 h",
+        "90 hours",
         "9.4%",
         "9%",
         "4%",
         "4.0%",
         "4.02%"
       ],
-      "note": "derived percentages and the hours difference are arithmetic on the supplied figures; 'Q2,' with a comma reads as the number 2"
+      "note": "derived percentages and the hours difference (2,240 - 2,150 = 90 hours, runs baseline r1-r3, skill r1/r3, variant-iso r1/r3) are arithmetic on the supplied figures; 'Q2,' with a comma reads as the number 2"
     },
     {
       "type": "word_count",

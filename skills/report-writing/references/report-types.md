@@ -106,7 +106,7 @@ Everything in the research spine applies, plus these specifics.
 
 **Reader's job:** decide who to treat as the real rivals, how to differentiate, and where to stand.
 
-The report answers three questions, and every section earns its place by moving toward them: who do we compete with, how do we compete, and where is the position we can defend.
+The report settles three things: who the rivals are, on what grounds we meet them, and which position we can hold. A section that moves none of them forward is cut.
 
 **Before assembling:** lock the brief. What is the client's differentiator, who do they sell to, which two tensions define their target position (for example memorability versus credibility, or developer ergonomics versus strict enterprise controls), and what must not be traded away. Scoring against no brief drifts. Finish each competitor profile before assembling; partial profiles undermine every map built on them.
 
@@ -173,7 +173,7 @@ Covers pitch deck, one-pager, investor memo, periodic investor update, accelerat
 
 Investor, customer or partner outreach messages (cold emails, pitches, sales follow-ups) are out of scope for all of the writing skills here; this section covers the materials, not the message that asks for a meeting.
 
-**Golden rule: the materials must agree with each other.** Before drafting any piece, create or confirm one list of canonical facts: traction metrics, pricing and revenue assumptions, raise size and instrument, use of funds, team names and titles, milestones and dates. If drafts or assets disagree, stop and resolve it before writing more. Check every number in every asset against that list before sending.
+**Golden rule: the materials must agree with each other.** Before drafting any piece, create or confirm one list of canonical facts: traction figures, pricing and the revenue assumptions behind it, how much is being raised and in what form, where the money goes, who is on the team and in what role, milestones and dates. If drafts or assets disagree, stop and resolve it before writing more. Check every number in every asset against that list before sending.
 
 **Workflow:** list canonical facts; list missing assumptions and log them as questions for the author in the reply; choose the asset; draft with the logic visible, stating each missing assumption plainly in the asset ("The notes give no churn figure for the downside case.") or leaving the claim out; cross-check every number.
 

@@ -14,14 +14,23 @@
       "source": "notice.md",
       "categories": [
         "numbers",
-        "negations",
         "certainty",
         "scope"
       ],
       "allow_lost": [
         "more than"
       ],
-      "note": "'more than ever' belongs to the era-opener that goes; every figure, negation, hedge and 'only' stays"
+      "note": "'more than ever' belongs to the era-opener that goes; every figure, hedge and 'only' stays. Negations are not counted by word: an edit may say 'bring your own boots' or 'there won't be parking' for 'boots are not (supplied)' and 'we will not be able to offer parking' (runs baseline r2, competitor-humanizer r2/r3); the two negated facts are checked by meaning in the next two checks"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)(?:bring|wear|byo|your own|own)[^.;\\n]{0,25}boots|boots[^.\\n]{0,40}\\b(?:not|n['’]t|yourself|your own|bring)\\b",
+      "note": "boots are not supplied: stated as a negation or as an instruction to bring your own, in any wording"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)(?:\\bno\\b|\\bnot\\b|n['’]t|\\bwithout\\b|\\bunavailable\\b)[^.\\n]{0,40}parking|parking[^.\\n]{0,40}(?:\\bnot\\b|n['’]t|\\bunavailable\\b|\\bno\\b)",
+      "note": "no parking on the lane: 'no parking', 'there won't be parking' and 'we cannot offer parking' all count"
     },
     {
       "type": "no_added_facts",

@@ -48,16 +48,33 @@
         "21200 usd",
         "55%",
         "54.9%",
-        "54.94%"
+        "54.94%",
+        "250",
+        "250 usd",
+        "450",
+        "450 usd",
+        "41400",
+        "41400 usd",
+        "41850",
+        "41850 usd",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10"
       ],
-      "note": "source amounts with or without a currency sign, plus the budget and spend totals and their share"
+      "note": "source amounts with or without a currency sign, plus arithmetic on them: budget and spend totals and their share, demolition $250 under its $6,400 (6,400 - 6,150), plumbing $700 over and demolition $250 under = $450 net over, the $41,400 works budget (47,050 - 5,650 contingency) and the $41,850 forecast (6,150 + 15,400 + 11,200 + 9,100) in runs baseline r1-r3; '1' to '10' are the row numbers of an action table (runs skill r3, variant-iso r1-r3), 'rows 5-10' source references and 'the last two' for two documents (skill r1)"
     },
     {
-      "type": "markers",
-      "min": 1,
-      "max": 8,
+      "type": "regex",
       "target": "both",
-      "note": "gaps reach the author as markers in the reply or the report; each distinct gap may count twice"
+      "pattern": "(?is)fire[- ]safety.{0,250}?(?:\\b(?:no|without|missing|blank|unnamed|unassigned|not (?:yet )?(?:been )?(?:assigned|named|listed|identified))\\b.{0,30}?\\bowner\\b|\\bowner\\b\\W{0,3}(?:is\\s+|has\\s+)?(?:missing|blank|not (?:named|listed|assigned|identified|given)|unassigned|unnamed|unknown|tbc)|\\bunassigned\\b|(?:assign|name|identify|appoint|find|confirm)\\w*\\s+(?:an?\\s+|the\\s+)?(?:owner|someone|person)|\\bwho\\s+(?:owns|is responsible|will own)\\b)|\\bwho\\s+(?:owns|is responsible for|will own)\\b.{0,60}fire[- ]safety|(?:\\bno|\\bwithout|\\bmissing|\\bunnamed|\\bunassigned|(?:assign|name|identify|appoint)\\w*\\s+(?:an?\\s+)?)\\s*owner\\b.{0,80}fire[- ]safety",
+      "note": "the schedule leaves the fire-safety owner blank, so the report or the reply says there is no owner or asks for one, in plain words or as a question to the author; baseline r1-r3 say 'Fire-safety sign-off has no date or assigned owner' and 'Assign an owner and date for fire-safety sign-off' with no bracket marker, which is a gap stated, not a gap hidden. Replaces a count of [ASK AUTHOR]/[VERIFY] markers, which tested the skill's notation, not whether the gap was surfaced"
     },
     {
       "type": "regex",

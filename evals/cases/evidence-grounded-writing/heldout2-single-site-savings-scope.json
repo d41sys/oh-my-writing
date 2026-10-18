@@ -41,12 +41,12 @@
     },
     {
       "type": "regex",
-      "pattern": "(?is)\\b(?:one|single|only|a single|1)\\s+(?:\\w+\\s+)?(?:building|library|branch|site|winter|location)\\b|\\btwo winters\\b|\\bonly (?:at|in) (?:the )?Calder",
-      "note": "the result comes from one building over two winters; the paragraph says so in any wording"
+      "pattern": "(?is)\\b(?:one|single|only|a single|1)\\s+(?:\\w+\\s+)?(?:building|library|branch|site|winter|location)\\b|\\btwo winters\\b|\\bonly (?:at|in) (?:the )?Calder|\\b(?:not|cannot|can['’]t|n['’]t)\\s+(?:\\w+\\s+){0,2}(?:establish|show|prove|demonstrate|support|guarantee|confirm|generali[sz]e|justify)[^.\\n]{0,100}(?:\\belsewhere\\b|\\b(?:other|all|every|further|remaining|additional|more)\\s+(?:\\w+\\s+){0,3}(?:branches|buildings|libraries|sites|locations)\\b)",
+      "note": "the result comes from one building over two winters; the paragraph says so in any wording, or limits what it establishes to the other branches: 'These results are not weather-adjusted, and the milder 2025-26 winter means they do not establish that heat pumps would cut costs in all 14 branches' (runs skill r3, variant-iso r2/r3) and 'do not establish savings for other buildings' (baseline r3) keep the draft's overreach out without the words 'one building'"
     },
     {
       "type": "regex",
-      "pattern": "(?is)\\b(?:not|no|never|without|unadjusted|un-adjusted|haven't|hasn't|wasn't|weren't|isn't|aren't)\\b[^.\\n]{0,80}\\b(?:weather|degree[- ]day|temperature)|\\b(?:weather|degree[- ]day|temperature)\\b[^.\\n]{0,80}\\b(?:not|unadjusted|un-adjusted|wasn't|weren't|isn't|aren't)\\b|\\bmilder\\b|\\bwarmer\\b",
+      "pattern": "(?is)\\b(?:not|no|never|without|unadjusted|un-adjusted|haven['’]t|hasn['’]t|wasn['’]t|weren['’]t|isn['’]t|aren['’]t)\\b[^.\\n]{0,80}\\b(?:weather|degree[- ]day|temperature)|\\b(?:weather|degree[- ]day|temperature)\\b[^.\\n]{0,80}\\b(?:not|unadjusted|un-adjusted|wasn['’]t|weren['’]t|isn['’]t|aren['’]t)\\b|\\bmilder\\b|\\bwarmer\\b",
       "note": "the milder winter and the missing weather adjustment are stated, in any wording"
     },
     {

@@ -11,8 +11,8 @@
   "checks": [
     {
       "type": "not_regex",
-      "pattern": "(?i)\\b(?:partner|argument|oven|off the record|spoken)\\b",
-      "note": "the partner remark was made off the record and he asked that it not be printed"
+      "pattern": "(?i)\\b(?:partner|argument|argued|arguing|disagreement|dispute|off the record)\\b|(?:fallen|falling) out|\\b(?:not|n['’]t|never)\\s+(?:been\\s+)?spoken\\b|\\b(?:stopped|not)\\s+(?:speaking|talking)\\b",
+      "note": "the partner remark was made off the record and he asked that it not be printed. The bare word 'oven' is not banned: a first tray comes out of an oven in the printable part of the interview (runs baseline r1-r3, competitor-doc-coauthoring r1-r3, skill r1/r3, variant-iso r1-r3 all say so without touching the quarrel); only the quarrel is the off-record fact"
     },
     {
       "type": "contains",
@@ -28,7 +28,7 @@
     },
     {
       "type": "regex",
-      "pattern": "(?is)(?:(?:hope|would like|wants?|aims?|'d like|’d like|like to|idea|wish|dream)(?:(?!\\n\\n).){0,100}(?:second shop|second location|second bakery|Tanner Road)|(?:second shop|second location|second bakery|Tanner Road)(?:(?!\\n\\n).){0,200}(?:hope|would like|wants?|aims?|'d like|’d like|like to|idea|wish|dream|not (?:yet )?(?:signed|agreed|settled)|no lease|hasn't signed|has not signed|isn't signed|nothing(?:'s| is| has been) (?:agreed|signed|settled)|haven't signed|nothing agreed))",
+      "pattern": "(?is)(?:(?:hope|would like|wants?|aims?|'d like|’d like|like to|idea|wish|dream)(?:(?!\\n\\n).){0,100}(?:second shop|second location|second bakery|Tanner Road)|(?:second shop|second location|second bakery|Tanner Road)(?:(?!\\n\\n).){0,200}(?:hope|would like|wants?|aims?|'d like|’d like|like to|idea|wish|dream|not (?:yet )?(?:signed|agreed|settled)|no lease|hasn['’]t signed|has not signed|isn['’]t signed|nothing(?:'s| is| has been) (?:agreed|signed|settled)|haven['’]t signed|nothing agreed))",
       "note": "the second shop is a wish, not a plan with a lease; the profile says so in any wording"
     },
     {
@@ -38,12 +38,20 @@
         "names",
         "urls",
         "citations"
-      ]
+      ],
+      "allow": [
+        "Saturdays",
+        "Street",
+        "Wakes",
+        "Morning",
+        "Dawn"
+      ],
+      "note": "capitalised headline words are not names: 'Before the Street Wakes' (runs competitor-doc-coauthoring r2/r3, variant-iso r3), 'At Four in the Morning' (skill r3) and the plural weekday 'Saturdays' (baseline r2/r3)"
     },
     {
       "type": "not_regex",
-      "pattern": "(?i)(?<!not )(?<!n't )(?<!never )\\bsigned a lease\\b|\\bhas signed\\b|\\blease (?:is|was|has been) signed\\b",
-      "note": "no lease has been signed"
+      "pattern": "(?i)(?<!not )(?<!n['’]t )(?<!never )\\bsigned a lease\\b|\\bhas signed\\b|(?<!no )(?<!not )\\blease (?:is|was|has been) signed\\b",
+      "note": "no lease has been signed; 'no lease has been signed' (runs baseline r3, skill r1, variant-iso r1) says the opposite and is not a claim"
     },
     {
       "type": "not_regex",

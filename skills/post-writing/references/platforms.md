@@ -26,7 +26,7 @@ Load when: fitting a post to a specific channel, checking display limits and con
   - Contrarian: the claim, the observation or number that changed the view, two or three reasons, the alternative, an invitation to disagree.
   - List: a count and a credibility anchor in the first line, numbered points with one line each, a closing insight.
   - How-to: the outcome, numbered steps with concrete actions, the common failure, one next move.
-- **Document or carousel post:** one idea per slide; slide 1 must work alone as the thumbnail; keep a single visual template; end on one action. The text above the document is a second hook; write it as a standalone post, not "see attached". Judge a carousel by whether readers reach the end, and fix slide 1 or the framework before the middle.
+- **Document or carousel post:** one idea per slide; slide 1 must work alone as the thumbnail; keep a single visual template; end on one action. The caption above the document is a second hook, so it has to read as a complete post on its own; a bare "see attached" wastes it. Judge a carousel by whether readers reach the end, and fix slide 1 or the framework before the middle.
 - **Avoid:** performative vulnerability, fake founder reflection, praise-stacking, corporate speak with no person behind it, a single-sentence-per-line "poem" format used for drama rather than readability, and stock openers ("Excited to share", "Here's what I learned") that postpone the point.
 - **Links:** put the link where the reader would naturally want it. Some authors place it in a comment instead; treat that as a style choice to verify, not a reach tactic.
 

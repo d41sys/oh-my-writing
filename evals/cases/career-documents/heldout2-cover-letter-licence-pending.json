@@ -44,9 +44,13 @@
         "7 year",
         "7 years",
         "CNO",
-        "RN"
+        "RN",
+        "Dear",
+        "Hiring",
+        "Manager",
+        "Team"
       ],
-      "note": "2019 to 2026 is seven years, and CNO and RN abbreviate names the sources give in full"
+      "note": "2019 to 2026 is seven years, and CNO and RN abbreviate names the sources give in full; a generic salutation ('Dear Hiring Manager', runs competitor-proficiently-cover-letter r1-r3) names nobody"
     },
     {
       "type": "not_regex",

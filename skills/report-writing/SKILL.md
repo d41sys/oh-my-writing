@@ -3,7 +3,7 @@ name: report-writing
 description: "Writes and revises reports that support a decision or record findings, including decision memos (which vendor, option or plan to pick, from pilot notes), research and analysis reports, market and competitive reports, executive summaries, status or progress reports, investor update materials, audit reports, lessons-learned entries, and blameless post-mortems of an outage or incident from raw notes. Leads with the answer and how sure the author is, keeps observation, inference and recommendation apart, and makes comparisons fair and numbers traceable. Use when asked to write a decision memo or a memo on which vendor or option to choose, an executive summary, market or competitive analysis, research report, status report, investor update, one-pager, audit report, or a post-mortem or incident write-up for the team, or to turn findings into a recommendation. Not for ML paper sections, blog posts (including a public post telling an incident's story), outreach emails, or technical documentation."
 license: MIT
 metadata:
-  version: "1.10"
+  version: "1.11"
   skill-author: d41sys
 ---
 

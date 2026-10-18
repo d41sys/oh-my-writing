@@ -116,7 +116,7 @@ Use a small fixed set: yes, partial, no, unknown, not applicable. Each cell maps
 
 A bibliography is necessary but not enough. For a report that leans on market numbers, keep a claim ledger alongside the source list (in the appendix, or a companion file). If `evidence-grounded-writing` is available, route the full ledger to it.
 
-**Statement classes.** Label each material statement as exactly one of: reported fact, estimate, qualitative fact (an attributable event, policy, or feature), calculation, forecast, opinion, recommendation. Do not rewrite an estimate as a fact, a scenario as a prediction, an interview theme as prevalence, or a recommendation as an evidence claim.
+**Statement classes.** Label each material statement as exactly one of: reported fact, estimate, qualitative fact (an attributable event, policy, or feature), calculation, forecast, opinion, recommendation. Rephrasing never moves a statement up a class: an estimate stays an estimate, a scenario stays conditional, something several interviewees said is not a measured share, and a recommendation is not a finding.
 
 **Source record** (give each a short stable ID): title and publisher; link; original producer (for aggregators, both the platform and the original producer); publication date and retrieval date (write `date not stated` rather than guessing); geography and population covered; currency, base year, and nominal or real basis; unit and denominator; classification and version; preliminary, revised, or final status; how it was collected or estimated; known limits and revisions; licence or terms.
 

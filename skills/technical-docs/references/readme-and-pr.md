@@ -37,9 +37,9 @@ Use for onboarding, "how does this feature work", architecture tours, PR tours, 
 3. **Follow the execution path.** Order steps by how control or data actually moves: entry point, routing, core logic, side effects, edge case. Each step should depend on the one before. A list of files in alphabetical order is an inventory, not a walkthrough.
 4. **Anchor every step** to a real file, and a line range or pattern. Verify each path and range exists before writing; never guess a line number. Prefer a pattern or function name where lines move. The first step names a real file or directory. Use a directory step to orient, a file-and-range step for substance, a single selected block when one block matters more than the file, and a text-only step rarely, usually just the close.
 5. **Explain what the code cannot say for itself.** Each substantive step answers four things, briefly:
-   - Situation: what the reader is looking at.
-   - Mechanism: how it works.
-   - Implication: why it matters to this reader.
+   - Where we are: the file or screen in front of the reader.
+   - What happens: the mechanism at this point.
+   - So what: the consequence for this reader.
    - Gotcha: what a smart reader would miss.
    Do not restate the code in English ("this loop iterates over items"). Name the file and function, then give the reason, constraint or surprise.
 6. **Size to the reader.** A quick tour is five to eight steps; an onboarding walkthrough nine to thirteen; an architecture tour about fourteen to eighteen; a PR tour seven to eleven and covers changed files first. These are rough bands, not quotas: cut rather than pad.

@@ -18,30 +18,30 @@
     },
     {
       "type": "regex",
-      "pattern": "\\b21\\s?(?:kg|kilo)",
-      "note": "the notes state the difference (21 kg less); the post keeps it"
+      "pattern": "(?i)\\b21\\s?(?:kg|kilo)|twenty[- ]one\\s+(?:kg|kilo)",
+      "note": "the notes state the difference (21 kg less); the post keeps it, in digits or in words ('Twenty-one kilograms less food waste per week', run competitor-great-writer r2)"
     },
     {
       "type": "regex",
-      "pattern": "(?i)\\b(?:3|three) of (?:our |the )?(?:5|five)\\b|\\b(?:3|three) (?:primary )?schools\\b",
-      "note": "the scope: 3 of the 5 primary schools"
+      "pattern": "(?i)\\b(?:3|three)\\s+of\\s+(?:\\S+\\s+){0,3}(?:5|five)\\b|\\b(?:3|three)\\s+(?:\\S+\\s+){0,3}(?:schools|primaries)\\b",
+      "note": "the scope: 3 of the 5 primary schools, as 'three of Ashgrove's five primary schools' (runs skill r1/r2, baseline r1-r3) or 'three Ashgrove primary schools' (competitor-marketing-copywriting r3)"
     },
     {
       "type": "regex",
-      "pattern": "(?is)free[- ](?:school[- ])?meals?[^.\\n]{0,120}(?:did not|didn't|unchanged|no change|same|stayed|flat|held|steady|71%[^.\\n]{0,30}71%)|(?:did not|didn't|unchanged|no change|stayed|same)[^.\\n]{0,100}free[- ](?:school[- ])?meals?",
+      "pattern": "(?is)free[- ](?:school[- ])?meals?[^.\\n]{0,120}(?:did not|didn['’]t|unchanged|no change|same|stayed|flat|held|steady|71%[^.\\n]{0,30}71%)|(?:did not|didn['’]t|unchanged|no change|stayed|same)[^.\\n]{0,100}free[- ](?:school[- ])?meals?",
       "note": "the null finding on free-meal uptake is carried over, in any wording"
     },
     {
       "type": "regex",
-      "pattern": "(?is)(?:we think|we believe|likely|probably|\\bmay\\b|might|suggests?|seems?|appears?|our guess|not tested|haven't tested|didn't test|did not test|untested)[^.\\n]{0,120}(?:cook|kitchen|prepar|order)|(?:cook|kitchen|prepar|order)[^.\\n]{0,120}(?:we think|we believe|likely|probably|\\bmay\\b|might|suggests?|seems?|appears?|our guess|not tested|haven't tested|didn't test|did not test|untested)",
-      "note": "the reason for the drop was not tested, so the post hedges it"
+      "pattern": "(?is)(?:we think|we believe|likely|probably|\\bmay\\b|might|suggests?|seems?|appears?|our guess|not tested|haven['’]t tested|didn['’]t test|did not test|untested)[^.\\n]{0,120}(?:cook|kitchen|prepar|order)|(?:cook|kitchen|prepar|order)[^.\\n]{0,120}(?:we think|we believe|likely|probably|\\bmay\\b|might|suggests?|seems?|appears?|our guess|not tested|haven['’]t tested|didn['’]t test|did not test|untested)|\\b(?:may|might|could|possibly|probably|likely)\\s+(?:\\w+\\s+){0,3}(?:explain|account for|be (?:why|the reason))|(?:not|n['’]t)\\s+(?:yet\\s+)?test(?:ed)?\\s+(?:the\\s+|that\\s+|this\\s+)?(?:cause|explanation|reason|idea|theory)|possible\\s+(?:explanation|reason|cause)|working\\s+(?:explanation|theory|hypothesis)",
+      "note": "the reason for the drop was not tested, so the post hedges it; the hedge may sit in the sentence after the one naming the kitchen: 'This gave kitchens an order count before cooking. We think that may explain the drop, but we haven't tested the cause' (run competitor-great-writer r3), 'One possible explanation is that kitchens cooked to the orders received' (r2), 'Our working explanation is that advance orders helped kitchens cook closer to demand. We haven't tested that explanation' (competitor-marketing-copywriting r2)"
     },
     {
       "type": "contains",
       "values": [
-        "example.org/ashgrove-preorder-lunch",
         "10 December"
-      ]
+      ],
+      "note": "the roll-out is not final until the board meets on 10 December; the notes' 'Full write-up' link is a pointer for the author, and posts that leave it out (runs baseline r2, competitor-great-writer r2/r3, competitor-marketing-copywriting r1, variant-iso r2) still carry every fact; no_added_facts still rejects any other link"
     },
     {
       "type": "no_added_facts",

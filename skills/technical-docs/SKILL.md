@@ -3,7 +3,7 @@ name: technical-docs
 description: Writes and revises technical documentation by first deciding what the reader needs (learn by doing, achieve a goal, look up a fact, or understand why), then producing the matching page type. Covers tutorials and getting-started guides, how-to guides, reference and API/CLI/config pages, architecture explanations, READMEs, code walkthroughs, pull request descriptions, commit messages, changelogs, release notes, migration guides and decision records (ADRs). Use when asked to "write a README", "document this API", "write a tutorial", "write a quickstart", "write a how-to guide for this tool", "explain this architecture", "walk through this code", PR or MR descriptions from a diff or change notes, "write a commit message", "write an ADR", "write release notes", "write a changelog", "write a migration guide", or "fix our docs structure". A blog-style how-to post or a launch announcement post goes to post-writing.
 license: CC-BY-SA-4.0
 metadata:
-  version: "1.6"
+  version: "1.7"
   skill-author: d41sys
 ---
 

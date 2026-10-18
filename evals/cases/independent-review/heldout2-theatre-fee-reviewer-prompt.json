@@ -74,9 +74,13 @@
         "7",
         "8",
         "9",
-        "10"
+        "10",
+        "END MEMO",
+        "MEMO",
+        "END",
+        "English"
       ],
-      "note": "list numbering a prompt makes necessary is not a new figure"
+      "note": "list numbering a prompt makes necessary is not a new figure; 'END MEMO' is the delimiter closing the pasted memo (run baseline r3) and 'English' the language of the review (runs skill r2, variant-iso r2)"
     },
     {
       "type": "word_count",

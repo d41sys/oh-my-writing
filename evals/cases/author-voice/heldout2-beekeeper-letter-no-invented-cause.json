@@ -47,12 +47,13 @@
     },
     {
       "type": "regex",
-      "pattern": "(?i)\\b(?:don't|do not|doesn't|didn't|haven't|hasn't|can't|cannot|couldn't|not|no|unknown|unclear|unexplained|mystery|nobody|yet)\\b[^.\\n]{0,60}\\b(?:why|cause|reason|explanation|know|known|sure|looked|checked|say|idea|happened)\\b|\\b(?:why|cause|reason|explanation)\\b[^.\\n]{0,60}\\b(?:unknown|unclear|not known|isn't known|mystery|yet|unexplained)\\b",
+      "pattern": "(?i)\\b(?:don['’]t|do not|doesn['’]t|didn['’]t|haven['’]t|hasn['’]t|can['’]t|cannot|couldn['’]t|not|no|unknown|unclear|unexplained|mystery|nobody|yet)\\b[^.\\n]{0,60}\\b(?:why|cause|reason|explanation|know|known|sure|looked|checked|say|idea|happened)\\b|\\b(?:why|cause|reason|explanation)\\b[^.\\n]{0,60}\\b(?:unknown|unclear|not known|isn['’]t known|mystery|yet|unexplained)\\b",
       "note": "the loss is reported as unexplained, in any wording"
     },
     {
       "type": "regex",
-      "pattern": "(?i)\\b(?:two|2)\\b[^.\\n]{0,60}\\b(?:hives?|colonies)\\b|\\b(?:hives?|colonies)\\b[^.\\n]{0,60}\\b(?:two|2)\\b|\\b12\\b"
+      "pattern": "(?i)\\b(?:two|2)\\b[^.\\n]{0,60}\\b(?:hives?|colonies)\\b|\\b(?:hives?|colonies)\\b[^.\\n]{0,60}\\b(?:two|2)\\b|\\b12\\b|\\btwelve\\b|\\b(?:lost|losing|lose)\\s+(?:two|2)\\b",
+      "note": "the two lost hives or the 12 that remain, as digits or words; 'Twelve hives are going into winter ... we lost two over summer' (run variant-iso r3) reports both"
     },
     {
       "type": "not_contains",
@@ -83,7 +84,8 @@
     },
     {
       "type": "word_count",
-      "min": 60,
+      "min": 40,
+      "note": "the three samples run 43, 51 and 57 words, so a 56 to 59 word letter (runs skill r2, variant-iso r2/r3, baseline r3) matches their length; the floor only rules out a stub",
       "max": 220
     }
   ]
