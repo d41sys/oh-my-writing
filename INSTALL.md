@@ -58,7 +58,7 @@ mkdir -p ~/skills-backup
 
 ```bash
 git clone https://github.com/d41sys/academic-writing-skill.git ~/oh-my-writing
-git -C ~/oh-my-writing checkout v2.1.0
+git -C ~/oh-my-writing checkout v2.2.0
 ```
 
 ### 3. Link the ten skills
