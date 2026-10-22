@@ -1,0 +1,61 @@
+{
+  "id": "reader/research-statement-undated-logbooks",
+  "skill": "career-documents",
+  "description": "One paragraph of a research statement from dense project notes with a dead end and an unrelated side thread. The output should follow the sample paragraph: first person, a narrative turn (the idea that changed the approach), the result in a figure or two, the next step, no staged contrasts or hedging stack, no internal codes.",
+  "prompt": "Paragraph 2 of my research statement (what I did, why it matters, where it goes next) from notes.md. Keep it concise and tell the story of what I did. statement-sample.md is a colleague's that worked; match how it reads. Save it to out/rs-para2.md.",
+  "files": {
+    "notes.md": "Research statement, para 2 (current work). Postdoc at the Halden Institute for Maritime History (2 yrs). They want \"what you've done, why it matters, where it goes\". ~140 words. Keep it concise and tell the story of what I did. -- Dalia\n\nPhD (Aug 2021 - Jun 2025). Corpus: 412 ship's logbooks, Brightwater Company archive, 1790-1840. 19 have no date at all (cover lost / pages rebound). Dating by hand = how archivists did it, slow, by eye.\nAttempt 1: classify the pages directly from 14 letterform measures (slant, x-height ratio, 'st' ligature, long-s...). SVM got 71% right decade; random forest 78%. Looked ok, but it was dating the page and kept confusing neighbouring decades. \nAttempt 2 (dead end): paper watermarks. ~60% of logs rebound later; useless. Also tried automatic HTR on the logs, character error 23%, dropped.\nTHE TURN: stop dating pages, date scribes. 6 main hands (H1-H6) write 83% of all logs. Payroll book PB-1802 gives start/leave years for clerks, so each hand has a tenure window. Date the hand, then the log inherits the window. \nResult: 17 of 19 undated logs now sit in a ~10-year window (+-5). 2 still ambiguous: H4 and H5 overlap 1811-1816.\nChecked on the 60 logs where date known (held out): 54 right (90%).\nNext (postdoc): Corvane Company archive, ~900 logs; test whether the tenure-window idea transfers when no payroll book survives. Collaboration idea with archivist Priya Nand (Corvane). Also fix the H4/H5 overlap via ink analysis? maybe.\nHours spent: 3 yrs of transcribing, don't mention. Supervisor Prof. Aldous Weir.\n",
+    "statement-sample.md": "My doctoral work began as a quarrel with the map. The county's tithe maps for 1840 show field boundaries that the surveyors of the 1880s could no longer find, and historians had treated the gap as carelessness. I thought it was evidence. By laying 212 parish maps over one another, I found that the missing boundaries cluster around enclosures agreed by private act, which the tithe clerks recorded and the later surveyors did not. The lost fields were a trail, not an error.\n\nThat changed my question from where the boundaries went to who stopped writing them down. In the second half of the thesis I follow the clerks themselves, asking how a record that looks neutral was shaped by a few people's habits. At Halden I want to take that question to a larger and messier archive: first at the harbour, then along the coast.\n"
+  },
+  "output": "out/rs-para2.md",
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "urls",
+        "citations"
+      ],
+      "sources": [
+        "notes.md"
+      ],
+      "allow": [
+        "10 year",
+        "10-year"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\bscribes?\\b|\\bhands?\\b|\\bclerks?\\b",
+      "note": "the central idea: date the hand, not the page"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b17\\b\\s*(?:of|out of)\\s*(?:the\\s*)?\\b19\\b|seventeen",
+      "note": "result"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)Corvane",
+      "note": "next step"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)(?:two|2)\\b[^.\\n]{0,80}(?:ambigu|unresolved|remain|undecided|still|overlap)|(?:ambigu|unresolved|remain|overlap)[^.\\n]{0,60}(?:two|2)\\b",
+      "note": "the two unresolved logs are not hidden"
+    },
+    {
+      "type": "word_count",
+      "min": 88,
+      "max": 204
+    },
+    {
+      "type": "slop_density",
+      "max": 7
+    }
+  ],
+  "judge": {
+    "mode": "reader"
+  },
+  "style_ref": "statement-sample.md"
+}

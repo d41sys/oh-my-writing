@@ -1,0 +1,61 @@
+{
+  "id": "reader/pool-lockers-portfolio-entry",
+  "skill": "career-documents",
+  "description": "Portfolio project description from design notes with a dead end and side details. The output should read like the sample entry: a project title, a one-line metadata strip, a short story (what was found by watching people, what was changed and why, the result), and an honest note about what the author did not change, in plain language without design buzzwords or a list of tools.",
+  "prompt": "Write the portfolio entry for the pool lockers project from notes.md. Same format as my other entries on the site, other-entry.md. Keep it concise and tell the story of what I did. Save it to out/lockers.md.",
+  "files": {
+    "notes.md": "portfolio entry: Harbour Lane Pool lockers. (Hanne Okafor, freelance product/service designer)\nClient: Harbour Lane Leisure Centre (council-run). Contact Gareth Pugh, facilities mgr. 11 wks, 2 days/wk, Feb-Apr. Fee irrelevant.\nBrief given: \"people complain about the lockers, make them better.\" 312 lockers, 5 zones A-E, coin-return, number on the door.\nWhat I did:\n- 14 h observation over 4 Saturdays; 80 users watched at the lockers. 34 of 80 forgot their locker number at least once & walked the rows trying doors. 11 jammed / coin issues. Staff desk logged 9 \"lost locker\" requests a week avg.\n- Interviews x 7 (5 users, 2 lifeguards). Lifeguard: \"half my shift is locker numbers\".\n- Tried: (1) big numbers on doors -- no change in test (dead end, 1 wk), (2) phone app idea -- killed by Gareth in 10 min, no budget, no phones in wet area; (3) cardboard wristbands w/ number, 12 testers, good.\n- Built: colour per zone painted on floor and on the aisle ends + embossed silicone wristband with number + zone colour at the coin slot. Wristband 0.42 GBP each. Total pilot cost 1,150 GBP (paint + 400 bands + signs).\n- Pilot: zone C only (62 lockers) for 6 weeks. Lost-locker requests at desk: 9/wk -> 3/wk (whole centre figure 9 was before; zone C accounts for ... unclear, don't split hairs). Hmm: say desk requests overall 9 to 3.\n- NOT changed: the coin mechanism -- council contract with vendor Lockwise to 2027, jams are still there (11 of 80 observed, didn't measure after).\n- Gareth rolling out to zones A,B,D,E in summer with own budget (not my work).\nTools: Miro, Figma, paint swatches, my kid's chalk (lol). Not needed.\nPortfolio format: see other-entry.md. ~150 words. Keep it concise and tell the story of what I did.\n",
+    "other-entry.md": "# Waiting-room wayfinding, Oakfield Vets\n\n**Client:** Oakfield Veterinary Clinic  **Role:** service designer  **Time:** 8 weeks\n\nOakfield's reception was losing ten minutes of every morning to the same question: \"Where do I go with the cat?\" Dogs and cats shared one waiting room, and anxious animals sat nose to nose.\n\nI spent three mornings watching the room and found that people did not ignore the signs. They never saw them, because every sign was above eye level and aimed at standing visitors. So we stopped adding signs. A floor stripe now splits the room, a colour-coded lead tag goes on at reception, and the cat side faces the wall.\n\nIn a four-week trial the clinic's staff counted the same question twelve times in the first week and twice in the last. I did not touch the booking system, which still sends the same reminder to everyone.\n"
+  },
+  "output": "out/lockers.md",
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "urls",
+        "citations"
+      ],
+      "sources": [
+        "notes.md"
+      ],
+      "allow": [
+        "11 weeks",
+        "11 wks"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b(?:9|nine)\\b[^.\\n]{0,70}\\b(?:3|three)\\b",
+      "note": "result"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)zone C|\\b62\\b",
+      "note": "the pilot scope"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b(?:6|six)[- ]weeks?\\b",
+      "note": "pilot length"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)coin",
+      "note": "the thing that was not changed"
+    },
+    {
+      "type": "word_count",
+      "min": 87,
+      "max": 203
+    },
+    {
+      "type": "slop_density",
+      "max": 7
+    }
+  ],
+  "judge": {
+    "mode": "reader"
+  },
+  "style_ref": "other-entry.md"
+}

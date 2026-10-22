@@ -1,0 +1,62 @@
+{
+  "id": "reader/logger-store-and-forward-rationale",
+  "skill": "technical-docs",
+  "description": "Design-rationale section of a thesis chapter from lab-book notes. The output should read like the accepted sample section: a short story (the plan that failed, what the author learned, what was built, what it costs), plain first-person sentences, jargon translated, only the figures that carry the argument, and the cost of the choice stated once.",
+  "prompt": "Write section 4.2 (the design rationale) of my thesis chapter from notes.md. Match the style of the accepted section in sample-section.md. Save it to out/section-4-2.md.",
+  "files": {
+    "notes.md": "ch4 §4.2 -- why the loggers store-and-forward. my labbook + Teun's emails (Teun = supervisor)\n\nVarga Textile Museum. 3 storerooms: S1 east wing (14 loggers), S2 basement (17), S3 attic (10) = 41. Logger = HL-2 board, RH/T sensor, 868 MHz FSK radio, 2 x AA. Gateway on 1st floor above S1.\n\nPLAN A (Jan-Feb): every reading live to the gateway, 1 per 30 s, dashboard.\n- S2 concrete ceiling -> PL-0214 test week: 38% of packets lost. Retries ate the battery: projected 11 wks (target 12 months).\n- asked Dr Halloran + Yusuf (conservators) what they need. NOT 30 s. They need (a) RH swing > 5 points inside 24 h -- the \"24h-5 rule\" in the Hamel Collection loan agreement, (b) a trace they can hand a lender. \nPLAN B (Feb-Mar): adaptive rate, 30 s when delta big, 10 min otherwise. Battery 7 mo in bench test. Firmware got ugly, BUG-31/-33/-37 (state machine), dropped after 3 wks.\nPLAN C = what I built: sample every 5 min into local flash (4 MB = 94 days of readings). Every 2 h, on the even hour (00:00, 02:00 ...), send the batch; gateway acks each batch; unacked batch stays and goes again with the next. After 3 failed batches the logger shows LATE (LED blink) so whoever walks the rounds sees it.\nResults Mar-May: n = 1,240 batches, 99.1% delivered within 3 attempts. S2 per-packet loss still ~38% but nobody cares now. Battery: 26% used after 4 months -> ~15.5 months projected.\nCost of C: dashboard is up to 2 h behind. Can't watch a spike live. Accepted bc the 24h rule is the only hard threshold. Teun: \"say plainly what you gave up\". Loan exhibition week (S1 only): 4 loggers switched to 15-min batches.\n\nside stuff, probably not needed: tried LoRa on HL-1 prototype, range better but 1% duty cycle kills 30 s reporting anyway; stayed on FSK since 60 HL-2 boards already bought (2,340 EUR). Clock drift +-2 s/day, fixed at gateway by NTP stamping. Sensor accuracy +-1.8% RH. Teun suggested mesh routing -- no time (14 wks left). Yusuf's stair photos nice, not for thesis.\n",
+    "sample-section.md": "## 3.4 Why the valves are polled, not pushed\n\nI began by letting each valve report its own state, because that is how the vendor's controller is meant to be used. It worked on the bench and failed in the glasshouse. Forty valves sharing one radio channel talked over each other, and on humid mornings the controller lost about a fifth of their messages.\n\nPolling turns the arrangement around. The controller asks each valve in turn, once a minute, and waits for the answer. A missing answer is noticed at once, which the push design could never promise, and no two valves ever speak together. Over six weeks in the glasshouse the controller recorded 99.6% of the answers it asked for.\n\nThe price is delay. A valve that sticks open is found at the next poll, so up to a minute passes before anyone knows. I kept that price because the growers' own rule only asks for a stuck valve to be closed within ten minutes. Where a bed needs a faster reaction, in the seedling house, the poll interval drops to fifteen seconds for those eight valves alone.\n\nI did not try to make the vendor's push mode work. Its retry setting looked promising, but it multiplied the traffic that caused the loss in the first place.\n"
+  },
+  "output": "out/section-4-2.md",
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "urls",
+        "citations"
+      ],
+      "sources": [
+        "notes.md"
+      ],
+      "allow": [
+        "15 min",
+        "12 months",
+        "5 points"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b(?:2|two)[- ]?(?:hours?|hrs?|h)\\b|every other hour|every even hour|even hours?",
+      "note": "batch interval"
+    },
+    {
+      "type": "regex",
+      "pattern": "38\\s?%",
+      "note": "why live streaming failed in the basement"
+    },
+    {
+      "type": "regex",
+      "pattern": "99\\.1\\s?%",
+      "note": "delivery result"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)(?:up to|as (?:much|long) as|at most|about|behind by)[^.\\n]{0,25}(?:2|two)[- ]hours?|(?:2|two)[- ]?(?:hours?|hrs?|h)\\s+(?:behind|late|old|stale|out of date)|(?:behind|delay|lag)[^.\\n]{0,25}(?:2|two)[- ]?(?:hours?|hrs?|h)\\b|(?:up to|as (?:much|long) as|at most)[^.\\n]{0,25}(?:2|two)[- ]?(?:hrs?|h)\\b|(?:live|real[- ]time)\\s+(?:view|trace|reading|feed|data|monitoring|display)|watch a spike",
+      "note": "the cost of the design is stated"
+    },
+    {
+      "type": "word_count",
+      "min": 131,
+      "max": 305
+    },
+    {
+      "type": "slop_density",
+      "max": 7
+    }
+  ],
+  "judge": {
+    "mode": "reader"
+  },
+  "style_ref": "sample-section.md"
+}

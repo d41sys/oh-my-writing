@@ -1,0 +1,62 @@
+{
+  "id": "reader/tree-ring-conference-abstract",
+  "skill": "evidence-grounded-writing",
+  "description": "Conference abstract (200-word cap) from a lab's notes: a new method, simulation and field numbers, a dead end and a delicate positioning request. The output should follow the accepted abstract: one idea, plain statement of what was tried and found, a couple of paired figures, the limit stated once in one sentence, no hype, no heading scaffolding.",
+  "prompt": "Conference abstract for NRS 2026 (200 words max) from notes.md. The accepted abstract in last-year-abstract.md is the model for how it should be built. Save it to out/abstract.md.",
+  "files": {
+    "notes.md": "NRS 2026 (Northern Ring Society annual meeting) abstract. 150-200 words, no references, one paragraph, talk not poster. Deadline 15 Dec. Author: Maren Oyelaran, Tarn Dendro Lab.\n\nWhat: a new matching score for crossdating SHORT tree-ring series. Called GTS (gap-tolerant score). The usual t-value (Baillie-Pilcher style) assumes no missing rings; short oak series often miss 1-3 rings, one missing ring shifts everything after it and the t-value collapses.\nGTS: allows up to 3 gaps, penalises each, picks best alignment. Written in R, pkg ringgap 0.3.\nSimulations: 3,000 synthetic series, lengths 40-95 rings, 0-3 rings deleted at random. \n at 40 rings: t-value dates 52% correctly, GTS 71%.\n at 80 rings: 91% vs 94%. (so mostly helps the short ones)\nReal data: Kellmoor Wood, 58 oak series. t-value dated 41 of 58. GTS dated 49 of 58. 2 of GTS's 8 extra dates not yet checked against radiocarbon -- sample sent, back in Feb. \nCost: GTS ~4.2 min per series vs 20 s for t-value (12x). Fine for 58, not for 5,000.\nDead end: a Bayesian version, never finished, drop. \nLimits: oak only, one region (Kellmoor). Not tested on conifers, which have more locally absent rings.\nTalk title: probably \"Dating the short ones\". Co-author: Gideon Pask (stats). \nDon't claim it replaces the t-value; Prof. Soames (committee) bristles at that.\n",
+    "last-year-abstract.md": "Dating small timbers with a sorting trick\n\nTimbers cut from the narrow end of a beam usually have too few rings to date by eye. We tested whether a simple ordering step, run before the usual comparison, helps. We took 1,500 simulated beam ends of 30 to 70 rings and added the noise real wood has: a wet year that thins a ring, a ring too faint to count. Without the step, the standard comparison dated 61% of the 30-ring series correctly. With it, 78%. On long series the gain disappeared, 95% against 96%, so the step helps mainly where the old method struggles.\n\nOn 44 real beam ends from Ashby Hall we dated 37 with the step and 32 without; the other seven stayed undated either way. The step runs in under a second per series. We tested only pine from one estate, and we cannot yet say how it behaves on other species. We offer it as an addition to the standard comparison, not a replacement for it.\n"
+  },
+  "output": "out/abstract.md",
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "urls",
+        "citations"
+      ],
+      "sources": [
+        "notes.md"
+      ],
+      "allow": [
+        "1 to 3 rings",
+        "1-3 rings",
+        "12"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "71\\s?%",
+      "note": "GTS on short series"
+    },
+    {
+      "type": "regex",
+      "pattern": "52\\s?%",
+      "note": "baseline on short series"
+    },
+    {
+      "type": "regex",
+      "pattern": "\\b49\\b[^.\\n]{0,40}\\b58\\b|\\b58\\b[^.\\n]{0,60}\\b49\\b",
+      "note": "real-data result"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\boak\\b",
+      "note": "scope of the data"
+    },
+    {
+      "type": "word_count",
+      "min": 102,
+      "max": 200
+    },
+    {
+      "type": "slop_density",
+      "max": 7
+    }
+  ],
+  "judge": {
+    "mode": "reader"
+  },
+  "style_ref": "last-year-abstract.md"
+}

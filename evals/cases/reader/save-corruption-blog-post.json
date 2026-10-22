@@ -1,0 +1,63 @@
+{
+  "id": "reader/save-corruption-blog-post",
+  "skill": "post-writing",
+  "description": "Blog post about a technical result from engineer's notes with dead ends, a rig figure, a field figure and a side thread. The output should read like the sample post: a title that names the thing, a story told in order (symptom, wrong guesses, the clue, the fix, the result), conversational but not jokey, the numbers that matter, no moral or call-to-action closer.",
+  "prompt": "Draft a post for the Mothlight dev blog about the save-corruption fix, from notes.md. Keep it concise and tell the story of what we did. last-post.md is our previous one; match it. Save it to out/post.md.",
+  "files": {
+    "notes.md": "Mothlight dev blog -- save corruption post. Written by Kit (eng). first person plural.\nGame: Lantern Fen on the Glowmoth handheld. Ticket SAVE-88. \nBeta wk 3 crash telemetry: 212 corrupt-save reports out of 71,900 saves = about 1 in 340. Players lose a whole save (1.2 MB). Worst on low battery.\nTheories, in the order we wasted time:\n 1. flash wear -- 6 units, 50k writes each, zero corruption. dead end, 2 days.\n 2. our compression lib (zstd wrapper) -- swapped for raw, still corrupt. dead end, 1 day.\n 3. Dev kit with a battery cable pulled during save -> corrupt in about 1 of 6 tries. THIS. \nCause: the old code did open(save, truncate) then write 1.2 MB. For ~40 ms the file is empty or half-written. Power dies in that window = corrupt save, and the \"backup\" was the same file.\nFix (merged build 0.9.4): write to save.tmp, fsync, rename over save.dat. MothFS rename is atomic -- confirmed in the vendor doc p.14, and we tested. Also keep previous save as save.bak (1.2 MB more flash per slot, 3 slots).\nPower-cut rig (servo + relay, random cut 0-80 ms into the save): 5,000 cuts, old code 61 corrupt (1.2%), new code 0.\nField: release builds, first 3 weeks, 1.9M saves, 0 corrupt-save reports. save time 38 ms -> 41 ms.\n(Note the rig rate 1.2% is higher than the field 0.3% bc rig always cuts during a save, players don't.)\nTed wanted to add checksums on top: maybe later, not needed now.\nRelated: Glowmoth firmware 2.1 will ship its own atomic-save call in spring, we'll move to it. \nTone: our blog is chatty, but not jokey. No title like \"How we fixed\". Last one = last-post.md. Keep it concise and tell the story of what we did.\n",
+    "last-post.md": "# The minimap that lagged on Tuesdays\n\nOur beta testers kept telling us the minimap in Lantern Fen lagged. Not always: mostly after long sessions, and mostly on Tuesdays, which nobody could explain.\n\nWe blamed the renderer first, because it was the newest code. Two days of profiling showed it was innocent. We blamed the map data next. Also innocent.\n\nThe Tuesday clue is what cracked it. On Tuesdays the testers' build downloaded a content patch in the background, and the download code and the minimap both wanted the same small pool of memory. Every few seconds the minimap waited its turn, and the player saw a stutter.\n\nThe fix was embarrassingly small: give the minimap its own pool. Frame time on the worst device went from 31 ms to 17 ms, and the lag reports stopped. We also learned to ask testers what else happens on the day it breaks, which would have saved us the two days.\n\nIf you play the beta, the fix is in build 0.9.2. Tell us if the Tuesday lag comes back.\n"
+  },
+  "output": "out/post.md",
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "urls",
+        "citations"
+      ],
+      "sources": [
+        "notes.md"
+      ],
+      "allow": [
+        "0.9.4",
+        "1.9 million",
+        "2.1",
+        "50000"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)1 in 340|0\\.3\\s?%|\\b212\\b",
+      "note": "size of the problem"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\.tmp|temp(?:orary)? file|rename|renam",
+      "note": "the cause/fix mechanism"
+    },
+    {
+      "type": "regex",
+      "pattern": "1\\.9\\s?(?:million|M)\\b|1,9\\d\\d,\\d{3}",
+      "note": "field result"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b38\\s?ms|\\b41\\s?ms",
+      "note": "what it costs"
+    },
+    {
+      "type": "word_count",
+      "min": 107,
+      "max": 249
+    },
+    {
+      "type": "slop_density",
+      "max": 7
+    }
+  ],
+  "judge": {
+    "mode": "reader"
+  },
+  "style_ref": "last-post.md"
+}

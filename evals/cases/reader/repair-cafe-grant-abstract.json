@@ -1,0 +1,61 @@
+{
+  "id": "reader/repair-cafe-grant-abstract",
+  "skill": "evidence-grounded-writing",
+  "description": "Public grant abstract (150-word cap) from messy applicant notes with many figures and an unreliable estimate. The output should read like the funded example: plain English, one story of who benefits and what changes, only the few figures that support the ask, no acronyms from the notes, no stacked qualifiers.",
+  "prompt": "Write the 150-word public abstract for the Dunmore Civic Fund application from notes.md. The fund published a funded example, funded-example.md; match how it reads. Save it to out/abstract.md.",
+  "files": {
+    "notes.md": "Dunmore Civic Fund, Small Grants round 4. Need the public abstract. Fund guidance: \"max 150 words, plain English: what you will do, who benefits, what changes. No jargon, no acronyms.\"\n\nUs: Fixers' Bench Dunmore, volunteer repair cafe, running since 2021. 3 sites: Library annex (Tue eve), Eastgate church hall (1st+3rd Sat), Mill St unit (monthly since Sept).\nNumbers 2023 (from the tally sheets, SS = sessions, IB = items brought, R% = repair rate): SS 61, IB 1,184, repaired 702 (R% 59). Est. 4.1 t kept out of the bin -- NB only weighed at 9 sessions and scaled up, so \"estimated\".\n23 active volunteers, 6 with PAT electrical test training. Waiting list for the Tue session: people queue from 17:15, doors 18:00, 20+ turned away most weeks.\nHamid thinks we should mention the sewing circle (ran 2022, 3 regulars, stopped). No.\nCrowdfunder 2023 raised 640 GBP, nice but not a plan.\n\nTHE ASK: 18,400 GBP over 18 months = 9,100 tools + PAT kit + parts shelf, 6,800 coordinator 0.2 FTE, 2,500 insurance + venue.\nWHAT WE'LL DO: open a 4th site on the Harrowby estate by month 6 (bus 14 was cut in 2022, nearest repair place now 5 km away), train 10 more volunteers, a coordinator so Mill St can open weekly.\nSupport letters: Dunmore Library, Cllr Pratt (ward member Harrowby), Harrowby Tenants' Assoc.\nTargets (don't overpromise): ~600 more items a year across new capacity.\nHarrowby: 1,900 homes, 31% no car (census 2021).\n",
+    "funded-example.md": "Brookside Tool Library lends tools and runs weekly mending sessions from a former bakery in Alder Hill. Last year 340 households borrowed from us, and more than half of the drills and ladders they borrowed went to people who had never owned them.\n\nWith this grant we will open a second collection point at the Linden Court flats, where the nearest hardware shop is a forty-minute bus ride away. A paid part-time coordinator will keep it open three afternoons a week, and eight volunteers will be trained to check and repair tools on site.\n\nResidents who cannot get to us will be able to borrow what they need to fix a damp wall or hang a door, without buying a tool they will use once. In the first year we expect about 250 more loans.\n"
+  },
+  "output": "out/abstract.md",
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "urls",
+        "citations"
+      ],
+      "sources": [
+        "notes.md"
+      ],
+      "allow": [
+        "18 months",
+        "59%"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "18,?400",
+      "note": "the ask"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)Harrowby",
+      "note": "the new site"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b702\\b|\\b59\\s?%|(?:1,?184)",
+      "note": "what the group already does"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b(?:ten|10)\\b[^.\\n]{0,40}volunteers|volunteers[^.\\n]{0,40}\\b(?:ten|10)\\b",
+      "note": "volunteers trained"
+    },
+    {
+      "type": "word_count",
+      "min": 81,
+      "max": 150
+    },
+    {
+      "type": "slop_density",
+      "max": 7
+    }
+  ],
+  "judge": {
+    "mode": "reader"
+  },
+  "style_ref": "funded-example.md"
+}

@@ -24,6 +24,8 @@ python3 evals/run.py --host codex --cases 'anti-slop-editing/*'    # one skill
 python3 evals/run.py --host codex --judge codex                    # add blind pairwise preference
 python3 evals/run.py --host codex --cases 'style/*' --judge codex   # style track: human register and fidelity judged apart
 python3 evals/run.py --host codex --judge codex --judge-mode style  # judge every selected case on those two questions
+python3 evals/run.py --host codex --cases 'reader/*' --judge codex  # reader track: fit, flow and fidelity judged apart
+python3 evals/run.py --host omp --omp-model <writer> --judge omp --judge-omp-model gpt-6.1-sol  # writers on one model, judge on another
 python3 evals/run.py --host codex --cases 'project-report/*' --repeat 3 --jobs 4 \
     --judge codex --out evals/results/project-report-bench          # report benchmark: 3 repetitions, visual judge
 python3 evals/review_pairs.py evals/results/project-report-bench    # blind A/B page for you -> review/<run-id>.html
@@ -118,14 +120,15 @@ Only `skill` (HEAD) and `variant-pre` execute; baseline, competitor and `variant
 }
 ```
 
-- `id` equals `<folder>/<file name without .json>`; the folder is the skill's name, or `style` for the style track. `skill` is a directory under `skills/` and is what the report groups by.
+- `id` equals `<folder>/<file name without .json>`; the folder is the skill's name, or `style` or `reader` for those tracks. `skill` is a directory under `skills/` and is what the report groups by.
 - `files` are written into the workspace; keep inputs short (under about 500 words) and fictional.
 - `output` is the deliverable file the agent must write. A missing output file fails the case.
 - Each check may set `"target"`: `output` (default), `reply` (the agent's final message) or `both`.
 - Optional `fixtures`: `"evals/fixtures/<case-slug>"`, a folder copied verbatim (binary-safe, relative paths and modification times kept) into the workspace root. `files` may then be `{}`, or both may be used. For text checks the grader extracts the fixtures' text (docx, xlsx, pptx, pdf via `pdftotext`, eml, html, csv ... through `skills/project-report/scripts/inventory.py`), so `no_added_facts`, `preserves` and `similarity` see Office and PDF content; a fixture is named in `source`/`sources` by its path inside the folder (`docs/budget.xlsx`). `no_added_facts` also treats the input file names, and relative links to inputs or into the output folder, as known. CSV/TSV sources are read cell by cell so `14,171` is not one number.
 - Optional `timeout` (seconds) overrides `--timeout` for this case (report cases use 2400).
 - Optional `deliverables`: files the agent is asked to write, e.g. `["out/report.md", "out/report.html"]`. `output` stays the primary text file; the grader records in `results.json` which deliverables exist.
-- Optional `judge`: `{"mode": "visual", "render": "out/report.html"}` switches the blind judge for this case to the visual judge (below). `render` must be listed in `deliverables`. `{"mode": "style"}` switches it to the style judge (below) and takes no `render`. Other cases keep the text judge.
+- Optional `judge`: `{"mode": "visual", "render": "out/report.html"}` switches the blind judge for this case to the visual judge (below). `render` must be listed in `deliverables`. `{"mode": "style"}` switches it to the style judge and `{"mode": "reader"}` to the reader judge (both below); neither takes a `render`. Other cases keep the text judge.
+- Optional `style_ref`: the name of one of the case's `files`, the example or guide whose style the output must match. The reader judge is told to judge fit against it; `--validate` rejects a name that is not in `files`.
 
 Check types:
 
@@ -176,6 +179,16 @@ The mechanical checks find tells that a word list can see and facts that a diff 
 2. **Faithful**: which is more faithful to the inputs (every figure, name, date, limit and commitment kept; nothing invented; nothing material dropped)?
 
 Gap markers (`[ASK AUTHOR: ...]`, `[VERIFY: ...]`, `[UNTESTED ...]`) are stripped from both texts before the judge sees them (`grade.strip_markers`: a marker inside a sentence is cut out, a line or heading left empty is dropped), so a text is neither rewarded nor punished for how it handles a gap; whether a marker belongs in the file is the `markers` check's job. A response can win one question and lose the other. `judge.json` stores `human` and `faithful` (each `skill`, `baseline`, `tie`, `inconsistent` or `error`) and both pick lists per entry; `winner` is `style`, or `error` when either answer is missing. The report has a separate "Blind style judge" section with one column per question, and style entries are never added to the overall pairwise tally. `--judge-mode style` on a visual case judges its extracted text, without page images.
+
+### Reader judge
+
+`judge.mode: "reader"` in a case, or `--judge-mode reader` for every case in the run, answers three separate questions in both presentation orders, with gap markers stripped as for the style judge:
+
+1. **Fit**: which reads like the document that was asked for, in the style of the case's `style_ref` file, or of the genre, house style and reader the task names?
+2. **Flow**: which is coherent, concise and tells one clear story in plain sentences? Stacked caveats, "X, not Y" contrasts, untranslated internal shorthand, piled-up numbers, inline arithmetic, template headings where prose would do, uniform sentence shapes and a missing author voice count against a response; length is not a virtue.
+3. **Faithful**: which invents nothing and drops nothing the reader needs? Leaving out a detail the reader does not need is not a fault.
+
+The case ids are `reader/<name>`; held-out ones are `reader/heldout-<name>`. Each question is combined over both orders like the style judge (`combine_picks`). `judge.json` stores `fit`, `flow` and `faithful` per entry with `mode: "reader"` and both pick lists; `winner` is `reader`, or `error` when any answer is missing. The report has a "Blind reader judge" section with one row per question (skill, baseline, tie, inconsistent, error), and reader entries are never added to the overall pairwise tally; other judged pairs get the same table in their own section. `flow_validation.py` only reads style and text verdicts and leaves reader entries out.
 
 ## Visual judge and review page
 
@@ -271,4 +284,4 @@ Claude Code must be able to run `claude -p` non-interactively with its configure
 
 ## omp host
 
-`--host omp` (and `--judge omp`) runs `omp -p --mode json --no-session --no-rules --no-lsp --auto-approve --model <--omp-model, default gpt-6-sol>`. Skills are copied into the workspace's `.agents/skills` in the `skill` condition; user rules and session history are off in both conditions. A skill counts as loaded when the event log shows a `skill://<name>` read. The visual judge receives page screenshots as PNG files in its workspace and opens them with the read tool.
+`--host omp` (and `--judge omp`) runs `omp -p --mode json --no-session --no-rules --no-lsp --auto-approve --model <--omp-model, default gpt-6-sol>`. `--judge-omp-model` sets the model of omp judge calls (default: `--omp-model`), so writers can run on one model while another judges; the model-fallback check compares each call with the model it requested. Skills are copied into the workspace's `.agents/skills` in the `skill` condition; user rules and session history are off in both conditions. A skill counts as loaded when the event log shows a `skill://<name>` read. The visual judge receives page screenshots as PNG files in its workspace and opens them with the read tool.

@@ -44,7 +44,7 @@ DIAGRAM_SELF_CHECK = DIAGRAM_SKILL / "scripts" / "self_check.py"
 FONT_HOSTS = {"fonts.googleapis.com", "fonts.gstatic.com"}
 RASTER_EXT = {".png", ".jpg", ".jpeg", ".webp"}
 SLOP_PROFILES = {"casual", "professional", "technical", "academic"}
-JUDGE_MODES = {"visual", "style"}
+JUDGE_MODES = {"visual", "style", "reader"}
 
 FACT_CATEGORIES = {"numbers", "negations", "certainty", "scope", "names", "urls", "code", "code_blocks",
                    "quotes", "citations"}
@@ -191,11 +191,13 @@ def _validate_extras(case: dict) -> list[str]:
             errs.append("deliverables must be a non-empty list of relative paths")
         elif len(set(deliverables)) != len(deliverables):
             errs.append("deliverables must not repeat a path")
+    if "style_ref" in case and not (isinstance(case["style_ref"], str) and case["style_ref"] in case.get("files", {})):
+        errs.append("style_ref must be the name of one of the case's files")
     if "judge" in case:
         judge = case["judge"]
         if not isinstance(judge, dict) or judge.get("mode") not in JUDGE_MODES:
-            errs.append("judge must be an object with mode 'visual' or 'style'")
-        elif judge["mode"] == "style":
+            errs.append("judge must be an object with mode 'visual', 'style' or 'reader'")
+        elif judge["mode"] in ("style", "reader"):
             if "render" in judge:
                 errs.append("judge.render belongs to mode 'visual' only")
         elif not _rel_path_ok(judge.get("render")):
@@ -1018,6 +1020,10 @@ def grade_case(case: dict, output: str | None, reply: str, workspace: Path | Non
 
 STYLE_AXES = {"human": "reads as a skilled human professional (fewer AI tells)",
               "faithful": "more faithful to the inputs"}
+READER_AXES = {"fit": "reads like the required document (style reference or genre)",
+               "flow": "coherent, concise, one clear story in plain sentences",
+               "faithful": "more faithful to the inputs"}
+AXES_BY_MODE = {"style": STYLE_AXES, "reader": READER_AXES}
 JUDGE_CRITERIA = {"accuracy": "factual accuracy vs sources", "needs": "covers what the reader needs",
                   "tone": "professional tone", "diagrams": "diagram usefulness and design",
                   "layout": "layout and readability"}
@@ -1091,22 +1097,27 @@ def _judge_scores(judge: list[dict], conds: tuple[str, str] = ("skill", "baselin
     return out
 
 
+def _axis_counts(judge: list[dict], a: str, b: str, mode: str) -> dict:
+    """Verdict tally per question over the entries of one multi-question judge mode ('style' or 'reader'); empty
+    when no entry has that mode. An errored entry counts as an error on every question."""
+    axes = AXES_BY_MODE[mode]
+    entries = [j for j in judge if j.get("mode") == mode]
+    counts = {axis: {a: 0, b: 0, "tie": 0, "inconsistent": 0, "error": 0} for axis in axes}
+    for j in entries:
+        for axis in axes:
+            verdict = "error" if j["winner"] == "error" else j[axis]
+            counts[axis][verdict] = counts[axis].get(verdict, 0) + 1
+    return counts if entries else {}
+
+
 def _judge_counts(judge: list[dict], a: str, b: str) -> tuple[dict, dict]:
     """Verdict tally over a pairwise judge's entries for the pair (a, b), and the same per style question (empty
-    unless some entry is a style verdict). Style entries are never added to the overall tally."""
+    unless some entry is a style verdict). Style and reader entries are never added to the overall tally."""
     verdicts = {a: 0, b: 0, "tie": 0, "inconsistent": 0, "error": 0}
-    style = {axis: dict.fromkeys(verdicts, 0) for axis in STYLE_AXES}
     for j in judge:
-        if j.get("mode") == "style":  # two verdicts, counted per question
-            if j["winner"] == "error":
-                for axis in STYLE_AXES:
-                    style[axis]["error"] += 1
-                continue
-            for axis in STYLE_AXES:
-                style[axis][j[axis]] = style[axis].get(j[axis], 0) + 1
-            continue
-        verdicts[j["winner"]] = verdicts.get(j["winner"], 0) + 1
-    return verdicts, style if any(j.get("mode") == "style" for j in judge) else {}
+        if j.get("mode") not in AXES_BY_MODE:
+            verdicts[j["winner"]] = verdicts.get(j["winner"], 0) + 1
+    return verdicts, _axis_counts(judge, a, b, "style")
 
 
 def _triple(r: dict) -> tuple:
@@ -1215,15 +1226,17 @@ def summarize(runs: list[dict], judge: list[dict]) -> dict:
                 failing[key] = failing.get(key, 0) + 1
     default = [j for j in judge if _pair_of(j) == DEFAULT_JUDGE_PAIR]
     verdicts, style = _judge_counts(default, "skill", "baseline")
+    reader = _axis_counts(default, "skill", "baseline", "reader")
     judge_pairs = {}
     for pair in sorted({_pair_of(j) for j in judge} - {DEFAULT_JUDGE_PAIR}):
         a, b = pair.split(":", 1)  # condition names never contain ':'
         entries = [j for j in judge if _pair_of(j) == pair]
         pair_verdicts, pair_style = _judge_counts(entries, a, b)
         judge_pairs[pair] = {"a": a, "b": b, "verdicts": pair_verdicts, "style": pair_style,
-                             "scores": _judge_scores(entries, (a, b))}
+                             "reader": _axis_counts(entries, a, b, "reader"), "scores": _judge_scores(entries, (a, b))}
     return {"by": by, "failing_checks": dict(sorted(failing.items())), "judge": verdicts,
-            "judge_scores": _judge_scores(default), "judge_style": style, "judge_pairs": judge_pairs}
+            "judge_scores": _judge_scores(default), "judge_style": style, "judge_reader": reader,
+            "judge_pairs": judge_pairs}
 
 
 def _pct(x):
@@ -1297,17 +1310,28 @@ def _judge_pair_lines(pair: str, info: dict, entries: list[dict]) -> list[str]:
     lines = ["", f"## Blind judge: {a} vs {b}", "",
              f"Preferred {a}: {v[a]}; {b}: {v[b]}; tie: {v['tie']}; inconsistent across swapped order: "
              f"{v['inconsistent']}; judge error (no verdict): {v.get('error', 0)}."]
-    if info["style"]:
-        lines += ["", f"| question | {a} | {b} | tie | inconsistent | error |", "|---|---:|---:|---:|---:|---:|"]
-        for axis, label in STYLE_AXES.items():
-            c = info["style"][axis]
-            lines.append(f"| {label} | {c[a]} | {c[b]} | {c['tie']} | {c['inconsistent']} | {c.get('error', 0)} |")
-    lines += ["", "| case | host | rep | judge | winner / reads human | faithful | reason |",
-              "|---|---|---:|---|---|---|---|"]
-    for r in entries:
+    for axes, counts in ((STYLE_AXES, info["style"]), (READER_AXES, info["reader"])):
+        if counts:
+            lines += ["", f"| question | {a} | {b} | tie | inconsistent | error |", "|---|---:|---:|---:|---:|---:|"]
+            for axis, label in axes.items():
+                c = counts[axis]
+                lines.append(f"| {label} | {c[a]} | {c[b]} | {c['tie']} | {c['inconsistent']} | {c.get('error', 0)} |")
+    plain = [r for r in entries if r.get("mode") != "reader"]
+    if plain:
+        lines += ["", "| case | host | rep | judge | winner / reads human | faithful | reason |",
+                  "|---|---|---:|---|---|---|---|"]
+    for r in plain:
         reason = (r.get("reason") or "").replace("|", "/").replace("\n", " ")[:160]
         lines.append(f"| {r['case']} | {r['host']} | {r.get('rep', 1)} | {r['judge']} | "
                      f"{r.get('human', r['winner'])} | {r.get('faithful', '-')} | {reason} |")
+    if len(plain) < len(entries):
+        lines += ["", "| case | host | rep | judge | fit | flow | faithful | reason |", "|---|---|---:|---|---|---|---|---|"]
+        for r in entries:
+            if r.get("mode") == "reader":
+                reason = (r.get("reason") or "").replace("|", "/").replace("\n", " ")[:160]
+                lines.append(f"| {r['case']} | {r['host']} | {r.get('rep', 1)} | {r['judge']} | "
+                             f"{r.get('fit', 'error')} | {r.get('flow', 'error')} | {r.get('faithful', 'error')} | "
+                             f"{reason} |")
     return lines
 
 
@@ -1380,8 +1404,9 @@ def render_report(results: dict) -> str:
         lines += ["", "## Failed checks by type", "", "| condition:check | failures |", "|---|---:|"]
         lines += [f"| {k} | {v} |" for k, v in summary["failing_checks"].items()]
     default_judge = [r for r in results["judge"] if _pair_of(r) == DEFAULT_JUDGE_PAIR]
-    pairwise = [r for r in default_judge if r.get("mode") != "style"]
+    pairwise = [r for r in default_judge if r.get("mode") not in AXES_BY_MODE]
     styled = [r for r in default_judge if r.get("mode") == "style"]
+    readers = [r for r in default_judge if r.get("mode") == "reader"]
     if pairwise:
         j = summary["judge"]
         lines += ["", "## Blind pairwise judge", "",
@@ -1417,6 +1442,24 @@ def render_report(results: dict) -> str:
             reason = (r.get("reason") or "").replace("|", "/").replace("\n", " ")[:160]
             lines.append(f"| {r['case']} | {r['host']} | {r.get('rep', 1)} | {r['judge']} | "
                          f"{r.get('human', 'error')} | {r.get('faithful', 'error')} | {reason} |")
+    if readers:
+        lines += ["", "## Blind reader judge", "",
+                  "Three separate questions, each decided over both presentation orders, with gap markers removed "
+                  "from both texts first. Fit: which reads like the document that was asked for, in the style of the "
+                  "case's style reference or the genre and reader it names. Flow: which is coherent, concise and "
+                  "tells one clear story in plain sentences, without stacked caveats, untranslated shorthand or "
+                  "formulaic sentences. Faithful: which invents nothing and drops nothing the reader needs. A "
+                  "response can win one and lose the others.", "",
+                  "| question | with skills | baseline | tie | inconsistent | error |", "|---|---:|---:|---:|---:|---:|"]
+        for axis, label in READER_AXES.items():
+            c = summary["judge_reader"][axis]
+            lines.append(f"| {label} | {c['skill']} | {c['baseline']} | {c['tie']} | {c['inconsistent']} | "
+                         f"{c.get('error', 0)} |")
+        lines += ["", "| case | host | rep | judge | fit | flow | faithful | reason |", "|---|---|---:|---|---|---|---|---|"]
+        for r in readers:
+            reason = (r.get("reason") or "").replace("|", "/").replace("\n", " ")[:160]
+            lines.append(f"| {r['case']} | {r['host']} | {r.get('rep', 1)} | {r['judge']} | {r.get('fit', 'error')} | "
+                         f"{r.get('flow', 'error')} | {r.get('faithful', 'error')} | {reason} |")
     for pair, info in (summary.get("judge_pairs") or {}).items():
         lines += _judge_pair_lines(pair, info, [r for r in results["judge"] if _pair_of(r) == pair])
     lines += ["", "## Limits", "",

@@ -425,7 +425,7 @@ def make_workspace(case: dict, host: str, condition: str) -> Path:
 
 
 def host_command(host: str, prompt: str, ws: Path, reply_file: Path, args, read_only=False,
-                 images: list[Path] | None = None) -> list[str]:
+                 images: list[Path] | None = None, omp_model: str | None = None) -> list[str]:
     """Command line for one host. With images on Codex the prompt is not on the command line: execute() sends it
     on stdin, because the image flag takes a list of values and would swallow a trailing positional prompt."""
     if host == "codex":
@@ -442,7 +442,7 @@ def host_command(host: str, prompt: str, ws: Path, reply_file: Path, args, read_
         # Rules and sessions off so the user's own rules and history cannot reach either condition; the overlay turns
         # off the advisor, memory and user-level skills (only diagram-design is re-added, for every condition).
         cmd = ["omp", "-p", "--mode", "json", "--no-session", "--no-rules", "--no-lsp", "--auto-approve",
-               "--config", str(omp_isolation_config()), "--model", args.omp_model]
+               "--config", str(omp_isolation_config()), "--model", omp_model or args.omp_model]
         if args.omp_thinking:
             cmd += ["--thinking", args.omp_thinking]
         if read_only:
@@ -555,10 +555,10 @@ def isolation_problems(host: str, condition: str, case: dict | None, log: str) -
 
 
 def execute(host: str, prompt: str, ws: Path, out_dir: Path, args, read_only=False, timeout: int | None = None,
-            images: list[Path] | None = None) -> dict:
+            images: list[Path] | None = None, omp_model: str | None = None) -> dict:
     timeout = timeout or args.timeout
     reply_file = (out_dir / "reply.md").resolve()  # hosts run with the workspace as cwd
-    cmd = host_command(host, prompt, ws, reply_file, args, read_only, images)
+    cmd = host_command(host, prompt, ws, reply_file, args, read_only, images, omp_model)
     stdin_text = prompt if host == "codex" and images else None
     start = time.monotonic()
     error = None
@@ -579,7 +579,7 @@ def execute(host: str, prompt: str, ws: Path, out_dir: Path, args, read_only=Fal
     if host == "omp" and error is None:
         # omp silently switches to the user's fallback chain when the requested model is out of quota; such a run
         # measures another model, so it is an error, not a result
-        wanted = args.omp_model.split("/")[-1].split(":")[0]
+        wanted = (omp_model or args.omp_model).split("/")[-1].split(":")[0]
         other = sorted({m for m in re.findall(r'"model":\s*"([^"]+)"', log) if m.split("/")[-1].split(":")[0] != wanted})
         if other:
             error = f"model fallback: {', '.join(other)}"
@@ -761,6 +761,43 @@ Give two to four short reasons for each question. Then end with exactly these tw
 VERDICT HUMAN: <A|B|TIE>
 VERDICT FAITHFUL: <A|B|TIE>"""
 
+READER_JUDGE_PROMPT = """You are judging two responses to the same writing task. You do not know how either was produced.
+
+Task given to the writer:
+<task>
+{prompt}
+</task>
+
+Input the writer had{source_note}:
+{files}
+
+{style_note}
+
+Response A (contents of {output}):
+<a>
+{a}
+</a>
+
+Response B (contents of {output}):
+<b>
+{b}
+</b>
+
+Bracketed gap markers were removed from both responses before you see them. Do not reward or penalise either response for a sentence that reads as if something was removed, and do not guess what was there.
+
+Imagine the person who will actually read this document. Answer three separate questions. A response can win one and lose another; decide each on its own.
+
+Question 1, FIT: which response reads like the document that was asked for, in the style of the reference above (or, when none is given, the genre, house style and reader the task names)? Judge format, register, length for this kind of document, how it opens and closes, who seems to be speaking, and what a reader of this genre would expect to find. Do not judge facts here.
+
+Question 2, FLOW: which response is the better piece of writing for that reader: coherent, concise, and telling one clear story in plain sentences? Reward one clear line of argument, each paragraph moving the story on, the reader's own terms instead of the writer's, and the right register. Penalise these tells: a caveat or "does not establish" clause on many sentences; "X, not Y" contrasts; internal shorthand, raw timestamps, ticket numbers or codes left untranslated for the reader; numbers piled up beyond what the point needs; arithmetic worked out inside sentences; template headings or tables where prose would carry the story; uniform formulaic sentences of one shape; no visible author where this genre expects one. A shorter response that tells the story is better than a longer one that lists everything. Length is not a virtue.
+
+Question 3, FAITHFUL: which response is more faithful to the input? Nothing is invented (figures, quotes, reasons, outcomes, experiences, motives); nothing the reader needs to understand or act is dropped or softened. Leaving out a detail the reader does not need is fine and is not unfaithful. Do not judge style here.
+
+Give two to four short reasons for each question. Then end with exactly these three lines, each with one of A, B or TIE:
+VERDICT FIT: <A|B|TIE>
+VERDICT FLOW: <A|B|TIE>
+VERDICT FAITHFUL: <A|B|TIE>"""
+
 VISUAL_JUDGE_PROMPT = """You are judging two project reports written for the same task from the same folder of documents. You do not know how either was produced.
 
 Task given to the writer:
@@ -815,19 +852,28 @@ def source_block(case: dict) -> tuple[str, str]:
     return "\n".join(parts), (f"{truncated} of {len(parts)} files truncated" if truncated else "complete")
 
 
+JUDGE_AXES = {"style": ("human", "faithful"), "reader": ("fit", "flow", "faithful")}
+
+
 def judge_mode(case: dict, args) -> str:
-    """'style' when --judge-mode style is given or the case asks for it, 'visual' for a visual case, else 'text'."""
-    if getattr(args, "judge_mode", None) == "style":
-        return "style"
+    """'style' or 'reader' when --judge-mode forces it or the case asks for it, 'visual' for a visual case, else
+    'text'."""
+    if getattr(args, "judge_mode", None) in JUDGE_AXES:
+        return args.judge_mode
     return case.get("judge", {}).get("mode") or "text"
+
+
+def judge_omp_model(args) -> str:
+    """Model of omp judge calls: --judge-omp-model, else the model omp writers run on."""
+    return getattr(args, "judge_omp_model", None) or args.omp_model
 
 
 def judge_once(case, a_text, b_text, judge_host, run_dir, tag, args, shots=None, shot_note="") -> tuple:
     """One judging call. Returns (verdict, reply, extra). For text and visual judging verdict is A, B, TIE or ERROR
-    and extra holds the visual scores {"A": {criterion: int}, "B": ...}. For style judging verdict is STYLE (ERROR
-    when either answer is missing) and extra is the two verdicts {"human": "A", "faithful": "TIE"}; a_text and
-    b_text must already have their gap markers stripped. shots is {"A": [png...], "B": [png...]} for a visual
-    case whose pages rendered, else None."""
+    and extra holds the visual scores {"A": {criterion: int}, "B": ...}. For style and reader judging verdict is
+    STYLE or READER (ERROR when any answer is missing) and extra holds one verdict per question, e.g. {"human": "A",
+    "faithful": "TIE"}; a_text and b_text must already have their gap markers stripped. shots is {"A": [png...],
+    "B": [png...]} for a visual case whose pages rendered, else None."""
     if judge_host in QUOTA_HIT:
         return "ERROR", "", {}
     mode = judge_mode(case, args)
@@ -862,10 +908,19 @@ def judge_once(case, a_text, b_text, judge_host, run_dir, tag, args, shots=None,
         prompt = VISUAL_JUDGE_PROMPT.format(
             prompt=case["prompt"], files=files, source_note=source_note, output=case["output"], a=a_clip, b=b_clip,
             a_note=a_cut, b_note=b_cut, shots=shot_text)
-    elif mode == "style":
+    elif mode in JUDGE_AXES:
         files, source_note = source_block(case)
-        prompt = STYLE_JUDGE_PROMPT.format(prompt=case["prompt"], files=files, output=case["output"], a=a_text,
-                                           b=b_text, source_note="" if source_note == "complete" else f" ({source_note})")
+        fields = dict(prompt=case["prompt"], files=files, output=case["output"], a=a_text, b=b_text,
+                      source_note="" if source_note == "complete" else f" ({source_note})")
+        if mode == "style":
+            prompt = STYLE_JUDGE_PROMPT.format(**fields)
+        else:
+            ref = case.get("style_ref")
+            note = (f"The style the document must match is the one in the input file {ref} (shown above): judge the "
+                    "responses against how that example or guide writes." if ref else
+                    "No style reference was given: the style to match is the genre, house style and reader the task "
+                    "names.")
+            prompt = READER_JUDGE_PROMPT.format(style_note=note, **fields)
     else:
         files = "\n".join(f"<file name=\"{n}\">\n{t}\n</file>" for n, t in grade.source_texts(case).items())
         prompt = JUDGE_PROMPT.format(prompt=case["prompt"], files=files, output=case["output"], a=a_text, b=b_text)
@@ -875,24 +930,26 @@ def judge_once(case, a_text, b_text, judge_host, run_dir, tag, args, shots=None,
         if images and judge_host in ("claude", "omp"):
             for image in images:
                 shutil.copyfile(image, ws / image.name)
+        extra_args = {"omp_model": judge_omp_model(args)} if judge_host == "omp" else {}
         result = execute(judge_host, prompt, ws, out_dir, args, read_only=True,
-                         images=images if judge_host == "codex" else None)
+                         images=images if judge_host == "codex" else None, **extra_args)
     finally:
         shutil.rmtree(ws, ignore_errors=True)
     if result["error"]:
         return "ERROR", "", {}
     reply = (out_dir / "reply.md").read_text(encoding="utf-8", errors="replace")
-    if mode == "style":
-        verdicts = parse_style_verdicts(reply)
-        return ("STYLE" if len(verdicts) == 2 else "ERROR"), reply, verdicts
+    if mode in JUDGE_AXES:
+        axes = JUDGE_AXES[mode]
+        verdicts = parse_style_verdicts(reply, axes)
+        return (mode.upper() if len(verdicts) == len(axes) else "ERROR"), reply, verdicts
     m = re.findall(r"VERDICT:\s*(A|B|TIE)", reply)
     return (m[-1] if m else "ERROR"), reply, (parse_scores(reply) if visual else {})
 
 
-def parse_style_verdicts(reply: str) -> dict[str, str]:
-    """Last 'VERDICT HUMAN: A' and 'VERDICT FAITHFUL: B' lines; an axis without a valid verdict is left out."""
+def parse_style_verdicts(reply: str, axes=JUDGE_AXES["style"]) -> dict[str, str]:
+    """Last 'VERDICT HUMAN: A' (and so on per axis) line; an axis without a valid verdict is left out."""
     out = {}
-    for axis in ("human", "faithful"):
+    for axis in axes:
         found = re.findall(rf"VERDICT\s+{axis}\s*:\s*\**\s*(A|B|TIE)\b", reply, re.I)
         if found:
             out[axis] = found[-1].upper()
@@ -953,7 +1010,7 @@ def judge_pair(case, host, rep, run_dir, args, pair: tuple[str, str] = DEFAULT_P
         return None
     mode = judge_mode(case, args)
     visual = mode == "visual"
-    if mode == "style":
+    if mode in JUDGE_AXES:
         texts = {cond: grade.strip_markers(t) for cond, t in texts.items()}
     shots, render_note = None, None
     tail = f"{host}" + (f"__r{rep}" if args.repeat > 1 else "") + ("" if pair == DEFAULT_PAIR else f"__{x}-vs-{y}")
@@ -980,15 +1037,16 @@ def judge_pair(case, host, rep, run_dir, args, pair: tuple[str, str] = DEFAULT_P
     first = random.Random(seed).choice([x, y])
     second = y if first == x else x
     picks, collected, last_reply = [], {x: [], y: []}, ""
-    style_picks = {"human": [], "faithful": []}
+    axes = JUDGE_AXES.get(mode, ())
+    axis_picks = {axis: [] for axis in axes}
     for tag, (a, b) in {"order1": (first, second), "order2": (second, first)}.items():
         verdict, reply, extra = judge_once(
             case, texts[a], texts[b], args.judge, run_dir, f"{tail}__{tag}", args,
             shots={"A": shots[a], "B": shots[b]} if shots else None, shot_note=render_note or "")
         last_reply = reply
-        if mode == "style":
-            for axis in style_picks:
-                style_picks[axis].append({"A": a, "B": b, "TIE": "tie"}.get(extra.get(axis), "error"))
+        if axes:
+            for axis in axes:
+                axis_picks[axis].append({"A": a, "B": b, "TIE": "tie"}.get(extra.get(axis), "error"))
             continue
         picks.append({"A": a, "B": b, "TIE": "tie"}.get(verdict, "error"))
         for side, cond in (("A", a), ("B", b)):
@@ -996,12 +1054,12 @@ def judge_pair(case, host, rep, run_dir, args, pair: tuple[str, str] = DEFAULT_P
                 collected[cond].append(extra[side])
     reason = " ".join(l.strip() for l in last_reply.splitlines()
                       if l.strip() and not l.startswith(("VERDICT", "SCORES")))
-    if mode == "style":
-        human, faithful = (combine_picks(style_picks[axis]) for axis in ("human", "faithful"))
-        entry = {"case": case["id"], "host": host, "rep": rep, **pair_field, "judge": args.judge, "mode": "style",
-                 "winner": "error" if "error" in (human, faithful) else "style", "human": human,
-                 "faithful": faithful, "picks": style_picks, "reason": reason[:400]}
-        print(f"[judge] {case['id']} {host} r{rep}: human={human} faithful={faithful}", flush=True)
+    if axes:
+        combined = {axis: combine_picks(axis_picks[axis]) for axis in axes}
+        entry = {"case": case["id"], "host": host, "rep": rep, **pair_field, "judge": args.judge, "mode": mode,
+                 "winner": "error" if "error" in combined.values() else mode, **combined, "picks": axis_picks,
+                 "reason": reason[:400]}
+        print(f"[judge] {case['id']} {host} r{rep}: " + " ".join(f"{k}={v}" for k, v in combined.items()), flush=True)
         return entry
     winner = combine_picks(picks)
     entry = {"case": case["id"], "host": host, "rep": rep, **pair_field, "judge": args.judge, "winner": winner,
@@ -1048,9 +1106,12 @@ def main(argv=None) -> int:
                         "skill:baseline")
     p.add_argument("--omp-model", default="gpt-6-sol", help="model for the omp host (omp --model)")
     p.add_argument("--omp-thinking", help="omp --thinking level, e.g. medium")
-    p.add_argument("--judge-mode", choices=["auto", "style"], default="auto",
+    p.add_argument("--judge-omp-model", help="model for omp judge calls (default: --omp-model), so omp writers on "
+                                              "one model can be judged by another")
+    p.add_argument("--judge-mode", choices=["auto", "style", "reader"], default="auto",
                    help="style: judge every case on two separate questions (reads human, faithful to inputs) with "
-                        "gap markers stripped; auto: each case's own judge mode")
+                        "gap markers stripped; reader: three questions (fit to the required document, flow, "
+                        "faithful); auto: each case's own judge mode")
     p.add_argument("--codex-model")
     p.add_argument("--codex-effort", help="Codex model_reasoning_effort, e.g. medium")
     p.add_argument("--claude-model")

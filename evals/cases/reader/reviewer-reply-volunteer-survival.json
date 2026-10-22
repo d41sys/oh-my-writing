@@ -1,0 +1,65 @@
+{
+  "id": "reader/reviewer-reply-volunteer-survival",
+  "skill": "independent-review",
+  "description": "Reply to reviewers: six comments, four acted on, one corrected, one declined. The output should read like the author's earlier accepted response: point by point, short, courteous without grovelling, each reply saying what changed and where, the declined request answered plainly with the reason, no defensive hedging, no internal file names or dead ends.",
+  "prompt": "Write the response letter to the reviewers from reviews.md and my notes in notes.md. Same tone and layout as my old one, old-response.md: short, point by point, no grovelling. Save it to out/response.md.",
+  "files": {
+    "reviews.md": "Journal of Community Environmental Studies -- manuscript JCES-2025-0417\n\"Why volunteers leave river clean-ups: a survival analysis of 2,140 volunteers\"\nDecision: major revision. Response letter, max 1,000 words, point by point.\n\nREVIEWER 1\n1.1  The survey of motivations has a low response rate. How do the 616 responders differ from the other 1,524? The conclusions about motivation may reflect who answered.\n1.2  Gender is not in the model. Please add it or explain.\n1.3  Table 2, row 4: \"median tenure 5.1 months\" in the text but 5.3 in the table.\n\nREVIEWER 2\n2.1  A volunteer who moves away or ages out is censored, but leaving for another reason is a competing event. A Fine-Gray model is more appropriate than the Cox model used.\n2.2  The abstract says bad weather \"caused\" earlier exit. A hazard ratio in observational data does not show cause.\n2.3  Please collect new data from the volunteers who left, to ask them why.\n",
+    "notes.md": "my notes on the revision. Comments 1.1-2.3. Co-author Beatriz agreed on all except as marked. Max 1,000 words but short is better.\n1.1: did it. New Table S3: responders vs non-responders. Responders older (median 41 vs 34), more often weekend volunteers. Added a sentence in Limitations saying motivation results speak for responders. Motivation is not in the survival model anyway, only in section 5.\n1.2: added gender. 4% unrecorded -> dropped from this model (n=2,054, was 2,140). HR for female 0.97 (0.88-1.07), nothing, other HRs unchanged in 2nd decimal.\n1.3: typo, the table was right (5.3). Fixed text. \n2.1: ran Fine-Gray, new appendix A4. Weather HR 1.34 (Cox) -> 1.31 (Fine-Gray), same conclusion. Main text keeps Cox because readers know it; one sentence pointing to A4. Good point honestly.\n2.2: agree. changed \"caused\" -> \"was associated with\" in abstract, results, discussion (3 places).\n2.3: can't. Data are from 2019-2023 programme records; the volunteers who left are not contactable under the programme's consent terms (consent only covers the records). Say so politely; list as future work.\nDead end (not for the letter): tried a site-level frailty term, never converged, dropped it before submission anyway.\nTone: look at old-response.md, that was accepted without a second round.\n",
+    "old-response.md": "Response to reviewers -- manuscript JCES-2024-0091\n\nWe thank both reviewers. Changes are marked in the revised manuscript.\n\nReviewer 1, comment 1 (sample size for the soil-test comparison). The reviewer is right that 12 plots is small. We now report the confidence interval for every difference in Table 3 and say in the abstract that the result applies to these 12 plots. We did not add plots; the field season is over.\n\nReviewer 1, comment 2 (rainfall units). Corrected to millimetres throughout.\n\nReviewer 2, comment 1 (a different model). We ran the mixed model the reviewer suggested. The treatment effect is 0.41 against 0.43 in the original, and the interval still excludes zero. The full output is in Appendix B; the main text keeps the original model, which readers in this field expect.\n\nReviewer 2, comment 2 (wording of the conclusion). We agree and replaced \"demonstrates\" with \"is consistent with\" in the abstract and discussion.\n\nReviewer 2, comment 3 (a second site). We have no data from a second site, and cannot collect any before the deadline. We now name this as the main limitation in the final paragraph.\n"
+  },
+  "output": "out/response.md",
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "urls",
+        "citations"
+      ],
+      "sources": [
+        "reviews.md",
+        "notes.md"
+      ],
+      "allow": [
+        "JCES-2025-0417",
+        "5.1",
+        "1,000",
+        "29%"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)Fine[- ]Gray",
+      "note": "the competing-risks reply"
+    },
+    {
+      "type": "regex",
+      "pattern": "1\\.31",
+      "note": "its result"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)table S3",
+      "note": "where the responder comparison went"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)(?:cannot|can't|could not|unable|not (?:possible|feasible|permitted|covered)|do not have|don't have|no consent)[^.\\n]{0,160}(?:new data|contact|consent|survey|volunteers who left|collect)|future work",
+      "note": "the declined request is declined"
+    },
+    {
+      "type": "word_count",
+      "min": 113,
+      "max": 263
+    },
+    {
+      "type": "slop_density",
+      "max": 7
+    }
+  ],
+  "judge": {
+    "mode": "reader"
+  },
+  "style_ref": "old-response.md"
+}

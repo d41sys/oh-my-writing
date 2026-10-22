@@ -112,6 +112,12 @@ Words that announce, introduce or comment on content instead of delivering it.
 - Fine when: once, and the text says what was expected and how the result differs.
 - Fix: delete the adverb. Keep the fact; if the expectation matters, state it.
 
+### Defended text and inline working (`caveat-stack`, `inline-arithmetic`)
+- Looks like: a document where definitions, figures and diagrams each carry their own disclaimer ("Equation 2 explains the idea; it does not reproduce the experiment.", "This is an accounting view, not a physical model.", "These results do not establish that the setting is optimal."), or a sentence that shows its subtraction ("a saving of 120 (1,450 - 1,330)").
+- Cost: the text reads as written to a reviewer who might object, not to a reader who needs the point; working in a sentence makes the reader redo the calculation.
+- Fine when: the limit changes what the reader should conclude or do; that one stays, once, at the claim. A worked example in a tutorial shows its working on purpose.
+- Fix: keep the limits the decision depends on, in one place; cut the rest. Give the result in the sentence and move the working to a table or appendix.
+
 ## 3. Contrast and reveal templates
 
 Sentence shapes that stage a point by denying something nobody said.

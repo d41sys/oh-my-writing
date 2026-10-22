@@ -543,6 +543,8 @@ def scan(text: str, profile: str) -> dict:
         findings.extend(_rhythm(masked, text, locate))
     if "format" in allowed:
         findings.extend(_format(masked, text, locate, profile, words))
+    if "framing" in allowed:
+        findings.extend(_stance(masked, text, locate))
 
     findings.sort(key=lambda f: (f["line"], f["col"], f["family"]))
 
@@ -660,6 +662,42 @@ def _rhythm(masked: str, text: str, locate) -> list:
     return out
 
 
+# A sentence that disclaims what something shows. One is often right; many in one document read as a writer
+# defending every line instead of telling the reader what happened.
+DISCLAIMER_RE = re.compile(
+    r"\b(?:does|do|did|would|will|cannot|can ?not|could not)(?: not)? (?:yet )?"
+    r"(?:establish|show|prove|demonstrate|imply|isolate|settle|specify|guarantee|reflect|reproduce|resolve)\b"
+    r"|\b(?:is|are|was|were) not (?:a|an|itself|themselves|evidence|equivalent|assumed|established|"
+    r"demonstrated|yet (?:demonstrated|established|shown))\b"
+    r"|,\s*not (?:a|an|the)\b|\brather than\b", re.I)
+# Spaces around the operator: "(2022-23)" and "(pp. 4-9)" are ranges, not working.
+INLINE_ARITHMETIC_RE = re.compile(r"\(\s*\d[\d,.]*\s+[-\u2212+\u00d7x*/]\s+\d[\d,.]*\s*\)")
+CAVEAT_MIN = 4  # disclaiming sentences before the document-level pattern is listed
+CAVEAT_SHARE = 0.08  # ... and their share of prose sentences
+
+
+def _stance(masked: str, text: str, locate) -> list:
+    out = []
+    sents = [span for b in prose_blocks(masked) for span in _sentences(masked[b[0]:b[1]], b[0])]
+    caveats = [(s, e) for s, e in sents if DISCLAIMER_RE.search(masked[s:e])]
+    if sents and len(caveats) >= CAVEAT_MIN and len(caveats) / len(sents) >= CAVEAT_SHARE:
+        note = (f"{len(caveats)} of {len(sents)} sentences disclaim what something shows ('does not establish', "
+                "'X, not Y', 'rather than'). Keep a limit where the reader's decision depends on it, once; "
+                "drop the ones that defend the text instead of informing the reader.")
+        for s, e in caveats:
+            line, col = locate(s)
+            out.append({"line": line, "col": col, "family": "framing", "pattern": "caveat-stack",
+                        "text": snippet(text[s:e]), "consider": note, "strength": "weak"})
+    for b_start, b_end in prose_blocks(masked):
+        for m in INLINE_ARITHMETIC_RE.finditer(masked, b_start, b_end):
+            line, col = locate(m.start())
+            out.append({"line": line, "col": col, "family": "framing", "pattern": "inline-arithmetic",
+                        "text": snippet(text[m.start():m.end()]),
+                        "consider": "Working shown inside a sentence. Give the result; put the working in a table "
+                                    "or appendix if a reader needs to check it.", "strength": "weak"})
+    return out
+
+
 def _format(masked: str, text: str, locate, profile: str, words: int) -> list:
     out = []
 
@@ -675,8 +713,8 @@ def _format(masked: str, text: str, locate, profile: str, words: int) -> list:
             line_start = masked.rfind("\n", 0, m.start()) + 1
             line_end = masked.find("\n", m.start())
             line_text = masked[line_start: line_end if line_end != -1 else len(masked)]
-            if LIST_TERM_DASH_RE.match(line_text):
-                continue
+            if LIST_TERM_DASH_RE.match(line_text) or line_text.lstrip().startswith("|"):
+                continue  # a bold term's dash, or a table cell ("—" for an empty value)
             dashes.append(m)
         density = len(dashes) * 1000 / words if words else 0.0
         if len(dashes) >= min_count and density >= min_density:

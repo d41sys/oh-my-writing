@@ -713,3 +713,23 @@ def test_template_field_labels_and_words_after_a_colon_are_not_new_names(tmp_pat
     names = added_items(report, "names")
     assert not {"VERDICT", "Reviewer-Model", "Return", "Keep"} & names
     assert "Marisol Okafor" in names  # a new person mid-sentence is still flagged
+
+
+def test_stacked_disclaimers_are_listed_but_a_single_limit_is_not(tmp_path):
+    defended = ("The pilot cut wait times by a fifth. This does not establish a cause. The survey is a snapshot, "
+                "not a trend. Staffing changed too, so the result does not isolate the new rota. The cost figure "
+                "is an estimate rather than an invoice. The model is an illustration, not a forecast. "
+                "We ran it for six weeks. Nurses liked it. ")
+    found = patterns(scan_json(write(tmp_path, "a.md", defended), "--profile", "professional"))
+    assert "caveat-stack" in found
+    plain = ("The pilot cut wait times by a fifth over six weeks. Staffing also changed in week three, so part of "
+             "the drop may come from that. Nurses asked to keep the new rota, and we will run it through winter.")
+    assert "caveat-stack" not in patterns(scan_json(write(tmp_path, "b.md", plain), "--profile", "professional"))
+
+
+def test_inline_working_is_listed_and_table_placeholders_are_not_dashes(tmp_path):
+    text = ("Errors fell by 335 units (5,535 - 5,200) in the second half.\n\n"
+            "| Period | Before | After |\n|---|---|---|\n| H1 | 12 | \u2014 |\n| H2 | 10 | \u2014 |\n| H3 | 9 | \u2014 |\n")
+    found = patterns(scan_json(write(tmp_path, "c.md", text), "--profile", "academic"))
+    assert "inline-arithmetic" in found
+    assert "em-dash-density" not in found

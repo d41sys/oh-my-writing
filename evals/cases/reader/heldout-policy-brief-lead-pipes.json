@@ -1,0 +1,67 @@
+{
+  "id": "reader/heldout-policy-brief-lead-pipes",
+  "skill": "evidence-grounded-writing",
+  "description": "Held out. Policy brief for non-expert councillors from a dense technical extract with a sampling limitation, a grant deadline and three options. The output should follow the house sample: recommendation first, then what is known, what is not known and what each option costs, a few everyday-sized figures, the decision and its deadline named, no bulleted caveat lists, no lab or method detail.",
+  "prompt": "Policy brief for Ferrow's councillors (they're not engineers) from report-extract.md, in the Meridian house style in house-style.md, which has a sample brief. Save it to out/brief.md.",
+  "files": {
+    "report-extract.md": "Ferrow Water Review 2025 -- extracts for the brief (Technical Report TR-9, Ferrow Borough, drafted by Orla Beck, consulting engineer)\n\n3.1 Service line inventory (SLI): 6,400 service connections. Lead: 1,870 (29%). Unknown material: 940 (15%). Copper/plastic: 3,590 (56%).\n3.2 Unknowns: 60 of the 940 inspected by excavation (cost 310 each); 14 were lead (23%). If the rate holds across all unknowns, ~220 more lead lines.\n4.1 First-draw tap sampling, 220 homes with known lead lines (not random; chosen by the inventory list). 11 homes (5%) above the 10 ug/L action level; median 3.9 ug/L; max 41. After 2 min flushing: median 1.2, 1 home still above.\n4.3 Note: sampling covered lead-line homes only. Homes with unknown lines have not been sampled. We cannot say what fraction of the 940 would exceed.\n5.1 Replacement cost: 6,200 per line, lead lines only = 11.6M (1,870 x 6,200). Inspecting all remaining unknowns by excavation: 880 x 310 = 273k. \n5.2 State Water Infrastructure Fund (SWIF) will cover 60% of eligible replacement costs if the Borough commits by 31 March; commits are binding for 5 years. Without the grant: Borough share 100%.\n5.3 Pace: contractor capacity 250 lines/yr -> 7.5 yrs for known lead lines. \n6   Options: A flush advice + free filter jugs to 1,870 lead homes (cost 148k; 79 per household); B A + commit to replace lead lines with SWIF grant, inspecting the unknowns over 3 yrs; C wait for state rule (new rule 2027 may mandate replacement but grant 60% may be gone).\n6.4 Report's recommendation: B. Reasoning: grant deadline; inspection results decide the true size.\nAppendix: lab method LC-MS, detection limit 0.2; 12 samples reran, differences <6%.\nSampling at 6 months showed no seasonal effect.\nCost per household in Option B after grant: 4.6M over 7.5 yrs? -> Borough share = 40% x 11.6M = 4.64M.\n",
+    "house-style.md": "MERIDIAN CIVIC INSTITUTE -- house style for briefs (one page)\nReaders: councillors and residents, who are not engineers. Open with what we recommend and why in two sentences. Say what we know, what we do not know, and what each choice costs, in that order. Numbers: use the few that carry the point and say what they mean in everyday terms. Name the decision and its deadline. No jargon without a plain-English gloss. Plain sentences, no bullet lists of caveats.\n\nSAMPLE BRIEF (shortened) -- \"Fix the Marlow Road culvert this year\"\nWe recommend that the council replace the Marlow Road culvert before the autumn rains, because the cheapest alternative is to pay for the same job twice.\n\nThe culvert has already failed once. A camera survey found that a third of its length has collapsed, and the road above it was closed for nine days last winter. We know the cost of replacement, 640,000, and that the state will pay half if the council commits by the end of June. We do not know whether the pipe beyond the collapse is sound; the survey could not reach it.\n\nThere are two choices. Replacing now costs the council 320,000 after the grant, and the work takes six weeks. Waiting a year avoids the spending for now but loses the grant, so the same repair would cost the council the full 640,000, and the road could close again in the meantime.\n\nThe decision for councillors is whether to commit by the end of June. If they do, the survey of the far pipe should be done first, so that the contract covers what is actually there.\n"
+  },
+  "output": "out/brief.md",
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "urls",
+        "citations"
+      ],
+      "sources": [
+        "report-extract.md"
+      ],
+      "allow": [
+        "11.6 million",
+        "148000",
+        "2027",
+        "273000",
+        "4.6 million",
+        "4.64 million",
+        "5 years",
+        "880"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "1,?870",
+      "note": "lead lines"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)31 march|march 31",
+      "note": "grant deadline"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b940\\b|unknown (?:material|pipes?|lines?)|material[^.\\n]{0,20}unknown",
+      "note": "the unknowns are named"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)60\\s?%|sixty per ?cent|\\bfour (?:in|out of) ten\\b|40\\s?%",
+      "note": "grant share"
+    },
+    {
+      "type": "word_count",
+      "min": 110,
+      "max": 256
+    },
+    {
+      "type": "slop_density",
+      "max": 7
+    }
+  ],
+  "judge": {
+    "mode": "reader"
+  },
+  "style_ref": "house-style.md"
+}

@@ -1,0 +1,64 @@
+{
+  "id": "reader/heldout-cv-entries-clinical-writer",
+  "skill": "career-documents",
+  "description": "Held out. A CV summary and two project entries for a named role, chosen from five candidate projects, from the candidate's rambling notes. The output should follow the CV sample: a summary of at most three sentences in the candidate's voice, two entries chosen for relevance with an action and a result each, no irrelevant projects, no claim of the standard the candidate has not worked with.",
+  "prompt": "Write the CV summary and the two best project entries for the Tolliver clinical documentation writer role, from lucia-projects.md. Format like cv-sample.md. Save it to out/cv-snippets.md.",
+  "files": {
+    "lucia-projects.md": "lucia-projects.md -- all the stuff I did that might count. Applying: Clinical Documentation Writer, Tolliver Medical Devices (infusion pumps).\n\nA. Infusion pump quick guides, Ward Group 4 (2022–23). Old guide = 14 pages, nobody read it, agency nurses kept asking. I rewrote as 2-page laminated, with photos of the real pump screens. Agency nurse onboarding on the pump went from 3 h to 1.5 h (asked the ward educator, Rosalind, she timed 10 inductions before/after). Used on 6 wards. I did the writing + layout; nursing educators reviewed.\nB. Pump alarm label test (2023). I ran a small usability test of the alarm-symbol stickers with 12 nurses (think-aloud, 25 min each). 3 labels confused people (the 'occlusion' one worst: 7 of 12 misread). Changed 3 labels, retest with 6 nurses: 0 misreads. Reported to the hospital's medical-devices committee.\nC. Christmas rota spreadsheet for the ward (2021). 60 staff, swaps. Everyone loved it. Not relevant?\nD. 6-week agile project course (2024, evening). Certificate.\nE. Translated 8 patient leaflets to Portuguese (2023), volunteer.\nBackground: RN 9 yrs (adult ICU 2016-2025, ICU = intensive care). Now on secondment 80% in the education team. No IEC 62366 (usability standard) experience; no regulated-document system (e.g. Veeva) experience; I know the pump's workflows from the bedside.\nRole ad wants: write instructions for use (IFU), run usability tests with clinicians, work with engineers. Desirable: IEC 62366, document control.\nOutput: 1 summary (3 sentences max) and the TWO best entries. Format like cv-sample.md. Don't pad.\n",
+    "cv-sample.md": "**Summary**\nSoftware tester with six years in banking apps, now moving into accessibility work. I write test plans that engineers read to the end, and I have trained 20 colleagues to check screens with a screen reader.\n\n**Accessibility audit of the mobile app, Hartwell Bank (2023)**\n- Found that the balance screen could not be read aloud, and wrote the three-line fix that the developers adopted.\n- Re-tested the 14 most-used screens afterwards; all 14 now pass.\n\n**Screen-reader training, Hartwell Bank (2022–23)**\n- Ran six one-hour sessions for 20 testers, using a short checklist I wrote.\n- Eleven of them now apply it to their own releases without being asked.\n"
+  },
+  "output": "out/cv-snippets.md",
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "urls",
+        "citations"
+      ],
+      "sources": [
+        "lucia-projects.md"
+      ],
+      "allow": [
+        "2022–23",
+        "2022-23",
+        "2022",
+        "2023",
+        "9 years"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)alarm",
+      "note": "the usability test entry is chosen"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b1\\.5\\b|90 minutes|an hour and a half",
+      "note": "result of guide rewrite"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b(?:12|twelve)\\s+nurses",
+      "note": "usability test"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)(?:\\b3 hours?|three hours?|\\b3 h\\b)[^.\\n]{0,40}(?:1\\.5|90 min|an hour and a half)",
+      "note": "before/after kept together"
+    },
+    {
+      "type": "word_count",
+      "min": 66,
+      "max": 154
+    },
+    {
+      "type": "slop_density",
+      "max": 7
+    }
+  ],
+  "judge": {
+    "mode": "reader"
+  },
+  "style_ref": "cv-sample.md"
+}

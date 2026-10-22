@@ -114,7 +114,7 @@ def test_judge_block_validation():
         return grade.validate_case(case)
     assert errs({"mode": "style"}) == []
     assert any("render" in e for e in errs({"mode": "style", "render": "out/x.html"}))
-    assert any("'visual' or 'style'" in e for e in errs({"mode": "loud"}))
+    assert any("'visual', 'style' or 'reader'" in e for e in errs({"mode": "loud"}))
     assert errs({"mode": "visual", "render": "out/x.html"}, deliverables=["out/email.md", "out/x.html"]) == []
 
 

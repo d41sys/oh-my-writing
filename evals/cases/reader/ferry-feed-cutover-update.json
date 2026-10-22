@@ -1,0 +1,63 @@
+{
+  "id": "reader/ferry-feed-cutover-update",
+  "skill": "report-writing",
+  "description": "Internal status update to a manager from engineer's notes with codes, a dead end and side figures. The output should read like the sample update: a short email, one clear status line first, what's done, what is not yet certain (two items that are only verbal), and the exact decision or help needed with a date, with no code names the manager does not use and no status-report boilerplate.",
+  "prompt": "Update for Ayesha on where the timetable feed cutover stands, from notes.md. Same shape as my last update to her (last-update.md). Save it to out/update.md.",
+  "files": {
+    "notes.md": "for Ayesha -- timetable feed cutover status. Tomasz's notes, 21 Oct.\nTT feed v1 -> v2. Cutover 04 Nov 05:00 (= D-0). Consumers: Journey Planner app, Harbour Displays (HD) at 9 terminals, partner site FerryFinder.\nContract tests: v2 passes 11/12. CT-07 (stop times past midnight) fails for NG-41 and NG-42 (the 2 overnight Orkney sailings). Fix = PR 612, in review, Mei approving, merge expected D-5 (30 Oct).\nShadow run (v1 vs v2 side by side), 9 days, 2,610 sailing records: 14 diffs, ALL explained by CT-07. So otherwise identical.\nHD firmware: 6 of 9 terminals done. Left: Skerrow, Pale Quay, Ness. Need a site visit; contractor Dagmar booked for 31 Oct (D-4) -- by phone only, no confirmation email yet. If she can't, those 3 keep v1 firmware and show stale times after the cutover (they can't read v2).\nFerryFinder: said on a call they'd switch on 03 Nov. Verbal. Nothing in writing.\nLoad test 40 req/s: p95 210 ms vs 180 ms on v1. Fine, SLA is 500.\nRollback: flag FEED_V=1, 15 min to roll back; rehearsal planned for 22 Oct.\nDead end: spent a day trying to convert times via IANA tz instead of the fix above, no.\nCloud bill +9 EUR / month for v2 -- ignore.\nDECISION for Ayesha: go / no-go on Thu 30 Oct, once the PR is in and Dagmar confirmed. Also need her OK for overnight standby on 04 Nov, 2 people 04:00-08:00 (overtime ~ 480 EUR).\nDon't want to scare her; it's on track but 2 things not in writing.\n",
+    "last-update.md": "Hi Ayesha,\n\nThe invoice archive move is on track for 12 December, with one thing I'd like your help on.\n\nWhat's done: all 14 years of invoices are copied, and the finance team has spot-checked 300 of them against the old system without a mismatch. The new search is faster than the old one, which people noticed on day one.\n\nWhat's left: the auditors' read-only login. Their IT said \"next week\" twice, and I have nothing in writing from them. Without it I can't prove to the auditors that the archive is complete, and I'd rather not switch off the old system until I can.\n\nCould you ask Leila at the auditors to send me the login date by Friday? If it arrives, we keep 12 December. If not, I'd move to 19 December and tell finance on Monday.\n\nThanks,\nTomasz\n"
+  },
+  "output": "out/update.md",
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "urls",
+        "citations"
+      ],
+      "sources": [
+        "notes.md"
+      ],
+      "allow": [
+        "11",
+        "12",
+        "15 min",
+        "5 days"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b4 nov|nov(?:ember)? 4\\b|04 nov",
+      "note": "cutover date"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b(?:3|three)\\b\\s+(?:\\w+\\s+)?(?:terminals?|displays?|sites?)|Skerrow",
+      "note": "three terminals not yet updated"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)30 oct|oct(?:ober)? 30|\\bthursday\\b|\\bthu\\b",
+      "note": "the go/no-go date"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)overnight|past midnight|after midnight|\\bNG-4[12]\\b",
+      "note": "the failing case is named in plain terms"
+    },
+    {
+      "type": "word_count",
+      "min": 85,
+      "max": 197
+    },
+    {
+      "type": "slop_density",
+      "max": 7
+    }
+  ],
+  "judge": {
+    "mode": "reader"
+  },
+  "style_ref": "last-update.md"
+}

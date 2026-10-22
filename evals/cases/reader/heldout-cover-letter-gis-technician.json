@@ -1,0 +1,62 @@
+{
+  "id": "reader/heldout-cover-letter-gis-technician",
+  "skill": "career-documents",
+  "description": "Held out. Cover letter for a job from a terse CV and a job ad. The output should follow the letter the user liked: one page, a direct opening, one concrete story that answers the ad's improvement question, the PostGIS and council-experience gaps stated plainly in one place, no CV recitation, no stock enthusiasm.",
+  "prompt": "Cover letter for the Ashgrove GIS technician job from my cv.md and job-ad.md. letter-i-liked.md is a friend's letter that got her an interview; I want that kind of letter. Save it to out/cover-letter.md.",
+  "files": {
+    "cv.md": "NOOR HADDAD  | Ashby, noor.haddad@example.org | 07700 900123\nEXPERIENCE\nLand surveyor, Pellam & Rowe Surveyors, 2019- now (6 yrs). Topographic + boundary surveys, mostly housing and drainage. Trimble total station + GNSS. ~140 jobs/yr. \n - 2022: built QGIS tool that merges field points + OS basemap, cut CAD drawing time ~40% (from 5 h to 3 h per plot). Used by all 4 surveyors.\n - 2023: led drainage survey of Millbrook estate (310 manholes) for water co.; found 22 mis-recorded cover levels.\nSurvey assistant, Fenwick Land Services, 2017-2019.\nEDUCATION  BSc Geography, Univ of Brannock, 2017 (2:1). Dissertation: flood-extent mapping from drone imagery.\nSKILLS QGIS (daily), SQL (SQLite/SpatiaLite), Python (pandas, geopandas), AutoCAD, 2-day PostGIS course (Mar 2025). Full driving licence. No council experience.\nOTHER Volunteer for Ashby Flood Group (maps of flood-prone lanes, 2023-)\n",
+    "job-ad.md": "Ashgrove Borough Council -- GIS Technician (Planning & Environment), grade 6, 37 hrs\nClosing date 21 Nov. Interview w/c 1 Dec.\nYou will maintain the council's planning constraints layers (conservation areas, flood zones, tree preservation orders), answer data requests from planning officers, and produce maps for committee papers. \nEssential: experience with QGIS or similar; working knowledge of PostGIS and SQL; accuracy with spatial data; ability to explain maps to non-specialists.\nDesirable: local government experience; Python scripting; knowledge of planning use classes.\nIn your application please tell us about a time you improved a data process. Max 1 page.\n",
+    "letter-i-liked.md": "Dear Ms Okoro,\n\nI am applying for the Records Officer post at Linwood Library Service. For the last five years I have run the stock records for a school group of eleven libraries, which is much the same job on a smaller scale.\n\nThe part I am proudest of is the weekly loan reports. They used to be assembled by hand from eleven spreadsheets and took a day. I replaced them with a short script and a shared template, and the same report now takes twenty minutes. The librarians read it more often because it arrives on Monday morning rather than on Wednesday.\n\nI have not worked in a public library, and I know the rules about borrower privacy are stricter there than in a school. I have read the service's data policy and would welcome training on it in my first month.\n\nI would be glad to talk about the post. The records for eleven libraries were messy when I took them on, and I enjoy making them tidy.\n\nYours sincerely,\nMarek Lund\n"
+  },
+  "output": "out/cover-letter.md",
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "urls",
+        "citations"
+      ],
+      "sources": [
+        "cv.md",
+        "job-ad.md"
+      ],
+      "allow": [
+        "1 page"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)Ashgrove",
+      "note": "the employer"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b(?:six|6)\\s+years?\\b|since 2019",
+      "note": "experience"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b(?:5|five)\\s*h(?:ours?)?\\b[^.\\n]{0,50}\\b(?:3|three)\\b|40\\s?%|forty per ?cent",
+      "note": "the process improvement"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)postgis[^.\\n]{0,140}(?:course|learn|haven't|have not|not yet|new|limited|only|spatialite)|(?:course|spatialite|learn|haven't|have not|not yet)[^.\\n]{0,140}postgis",
+      "note": "the PostGIS gap is stated truthfully"
+    },
+    {
+      "type": "word_count",
+      "min": 104,
+      "max": 244
+    },
+    {
+      "type": "slop_density",
+      "max": 7
+    }
+  ],
+  "judge": {
+    "mode": "reader"
+  },
+  "style_ref": "letter-i-liked.md"
+}

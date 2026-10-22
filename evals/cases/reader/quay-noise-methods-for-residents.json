@@ -1,0 +1,68 @@
+{
+  "id": "reader/quay-noise-methods-for-residents",
+  "skill": "technical-docs",
+  "description": "A dense methods paragraph rewritten for non-specialist readers, with side details and results in the notes that do not belong in it. The output should read like the sample newsletter piece: a human title is optional, plain account of where, how long and how the ships were told apart from traffic, what was left out and why, jargon translated or dropped, no units lecture, no result figures that are not part of the method.",
+  "prompt": "Rewrite the methods paragraph in notes.md for the residents' newsletter; they are not scientists. Style like the piece in newsletter-sample.md. Save it to out/methods-lay.md.",
+  "files": {
+    "notes.md": "Rellick Quay Residents' Association newsletter -- need the methods part rewritten. I'm Sana (acoustic consultant). Output ~110 words, a paragraph.\nAudience: residents, not scientists. They care about: how long we measured, where, how we know it was the ships and not traffic, what we left out. No lecture on decibels.\n\nOriginal methods (report s2.1):\n\"Class 1 sound level meters (type MX-4) were deployed at five receiver positions (R1-R5) along the quay frontage at 1.5 m height for 28 consecutive days (14 Apr - 11 May). LAeq,15min and LAmax were logged. Ship-call events (n = 64) were identified from AIS records and cross-matched to the 15-minute intervals, with a +-10 min tolerance. Intervals with wind above 5 m/s or rain were excluded (rain affected 7 of 28 days at least partly). Night was defined as 23:00-07:00. Background road traffic was characterised from a 48 h calibration at R3 with the quay closed to ships (no calls 2-3 May).\"\n\nSide details (maybe not for this paragraph): meters calibrated before and after, drift 0.2 dB. Night LAeq at R2 = 52.4 dB vs WHO 45 dB guideline. 38 of 64 ship calls above. Quietest position R5 at 44 dB. Council paid 6,800 GBP. Report goes to council 5 Dec.\nEarlier idea: use residents' phone apps. Rejected (too variable). \nStyle sample: newsletter-sample.md -- a past piece residents liked.\n",
+    "newsletter-sample.md": "**How we counted the trucks**\n\nOver three weeks last spring we put small recorders on lamp posts at four points along Cannon Lane. Each recorder noted every vehicle that passed and whether it was a lorry, a van or a car, then stored a count for each hour. We chose lamp posts because they sit at the height of the first-floor windows many of you look out of.\n\nTo be sure the counts were right, we also stood at the junction with a clicker for two evenings and compared numbers. The recorders matched our clicks within five per cent. We left out the Saturday of the street fair, since it brought road closures and was not an ordinary day.\n"
+  },
+  "output": "out/methods-lay.md",
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "urls",
+        "citations"
+      ],
+      "sources": [
+        "notes.md"
+      ],
+      "allow": [
+        "15 min",
+        "10 min",
+        "23:00",
+        "07:00",
+        "48 h",
+        "1.5 m",
+        "5 m/s",
+        "11",
+        "2 day"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b28 days\\b|\\bfour weeks\\b|\\b4 weeks\\b",
+      "note": "how long"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b(?:five|5)\\s+(?:\\w+\\s+)?(?:places|spots|positions|locations|points|meters|sites|microphones)",
+      "note": "where"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b64\\b",
+      "note": "ship calls matched"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\brain\\b",
+      "note": "what was left out"
+    },
+    {
+      "type": "word_count",
+      "min": 71,
+      "max": 167
+    },
+    {
+      "type": "slop_density",
+      "max": 7
+    }
+  ],
+  "judge": {
+    "mode": "reader"
+  },
+  "style_ref": "newsletter-sample.md"
+}

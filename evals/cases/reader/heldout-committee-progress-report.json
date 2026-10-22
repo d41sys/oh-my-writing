@@ -1,0 +1,72 @@
+{
+  "id": "reader/heldout-committee-progress-report",
+  "skill": "report-writing",
+  "description": "Held out. Multi-section annual progress report for an academic committee from a raw lab log, a milestones table and the supervisor's email. The output should follow last year's report: per-chapter paragraphs, a short 'what slipped' section and a plan with the one decision the committee must make, written in the first person, with the DSA risk said straight, and without the log's internal codes, dates of every entry or every side figure.",
+  "prompt": "The annual progress report for my committee is due Friday. Write sections 2 to 4 (chapters, what slipped, plan) from lab-log.md and milestones.md, following Mabel's email (mabel-email.txt). Match how last-year.md reads. Save it to out/progress-report.md.",
+  "files": {
+    "lab-log.md": "ravi lab-log (2024-25), raw. RA = Ravi Anand. Thesis: redesigning rural bus routes, Calder Vale.\n\n2024-11-04  Ch2 lit review: journal R&R came back (reviewer 2 wants demand-responsive transport section) -> resubmit by 30 Jan\n2024-12-09  Ch2 resubmitted early?? no -- 20 Jan. fine.\n2025-01-14  Ch3 survey: ethics amendment EA-2231 needed for the extra parish questions, submitted. 5 wks wait. \n2025-02-18  EA-2231 approved. Survey live in 3 parishes: Ormsby, Thrale, Kirkby Dene. Target 600 responses.\n2025-03-10  Ormsby: bus operator strike 9 days, response collapsed. Dropped Ormsby from analysis? (talk to Mabel)\n2025-04-02  Survey closed. 412 responses total (Thrale 231, Kirkby Dene 181, Ormsby 0 usable). Response rate 18%.\n2025-04-15  Ch4 model v1 (exact MIP) -> 14 h per scenario, 40 scenarios needed = impossible. \n2025-05-06  Ch4 heuristic (route-merge local search) -> 11 min per scenario. Checked vs 9 hand-designed routes from operator: the heuristic matches/beats 8 of 9.\n2025-05-27  Result: -17% vehicle-km at the same coverage (97% of stops within 800 m of a service) -- IN THE MODEL only. Not run on the survey demand yet (needs ch3 coded).\n2025-06  tried GTFS from operator for ch4 stops, incomplete (missing 3 routes) -- dead end, used council stop list instead.\n2025-06-20  Ch5 pilot design: needs Calder Vale council data-sharing agreement (DSA); legal said \"Q3\"; not signed.\nTeaching 60 h this year (tutorials), ate ~7 wks.\nConference: presented ch3 prelim at TGS in July, nice feedback, not needed.\n",
+    "milestones.md": "MILESTONES (from last year's plan, Oct 2024)\nCh2 literature review + paper submitted ........ planned Dec 2024  | actual: submitted Dec? -> resubmitted 20 Jan 2025 (R&R)\nCh3 survey fieldwork done ...................... planned Feb 2025  | actual: closed 2 Apr 2025 (+5 wks, ethics)\nCh4 model working .............................. planned Jun 2025  | actual: heuristic working May 2025; calibration on survey demand outstanding\nCh5 field pilot ................................ planned Jan-Mar 2026 | at risk: needs DSA\nThesis submission .............................. planned Jul 2026  | proposed: Sep 2026\n",
+    "mabel-email.txt": "From: Mabel Tshabalala\nTo: Ravi\nSubject: annual report\n\nRavi, committee meets 21 Nov, report due 14 Nov. Same shape as last year please (see last-year.md): short, one paragraph-ish per chapter, then what slipped and a plan. Be straight about the pilot; I would rather the committee hear the DSA problem from you. I need the decision on Ch5 vs a smaller option by December. Don't send them the lab log, they won't read it. M.\n",
+    "last-year.md": "## 2. Progress on the chapters\n\n**Chapter 1 (introduction).** Drafted and with my supervisor. It will be rewritten last, once the results are settled.\n\n**Chapter 2 (literature).** Finished, and the paper version is accepted for the journal's second round. The reviewers asked for a section on demand-responsive services, which sharpened the argument, and I now treat them as the main alternative to fixed routes.\n\n**Chapter 3 (the household survey).** The survey ran from March to May in two valleys and returned 238 questionnaires, a rate of 21%. Both valleys give the same picture: people who live more than a kilometre from a stop rarely use the bus. I presented the early results at the transport geography conference in July.\n\n**Chapter 4 (the route model).** Working, and in better shape than I feared in the spring. The first version was exact but took half a day for a single scenario, so I switched to a faster search that takes minutes. On nine routes drawn by hand by the bus operator it matched or beat the planners on most. I have not yet tested it on the survey's demand, which is the next step.\n\n## 3. What slipped\n\nThe survey ended five weeks behind plan because the ethics office needed an amendment for the extra questions. I used the wait to start the route model, so the delay cost me nothing downstream. I lost another seven weeks to teaching.\n\n## 4. Plan to submission\n\nBy March I will finish the model and test it on the survey's demand. Chapter 5 is the pilot with the council. If the data agreement is not signed by February, I will replace it with a desk study of two existing routes, and I will ask the committee to confirm that choice in November.\n"
+  },
+  "output": "out/progress-report.md",
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "urls",
+        "citations"
+      ],
+      "sources": [
+        "lab-log.md",
+        "milestones.md",
+        "mabel-email.txt"
+      ],
+      "allow": [
+        "5 week",
+        "EA-2231",
+        "21 Nov",
+        "14 Nov",
+        "30 Jan",
+        "20 Jan",
+        "2025",
+        "2026",
+        "2024"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "\\b412\\b",
+      "note": "survey returns"
+    },
+    {
+      "type": "regex",
+      "pattern": "17\\s?%",
+      "note": "model result"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)data[- ]sharing|\\bDSA\\b|council[^.\\n]{0,40}agreement|agreement[^.\\n]{0,40}council",
+      "note": "the pilot risk is stated"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\bsep(?:t|tember)?\\b[^.\\n]{0,12}2026|2026[^.\\n]{0,12}\\bsep",
+      "note": "proposed submission date"
+    },
+    {
+      "type": "word_count",
+      "min": 177,
+      "max": 413
+    },
+    {
+      "type": "slop_density",
+      "max": 7
+    }
+  ],
+  "judge": {
+    "mode": "reader"
+  },
+  "style_ref": "last-year.md"
+}

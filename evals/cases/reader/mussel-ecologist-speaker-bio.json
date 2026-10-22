@@ -1,0 +1,56 @@
+{
+  "id": "reader/mussel-ecologist-speaker-bio",
+  "skill": "structured-drafting",
+  "description": "Short third-person speaker bio (70-word cap) from a CV dump. The output should read like the programme's other bios: a person, what they do and why it is interesting, one or two chosen facts rather than a CV, a light human touch, no title-and-award list.",
+  "prompt": "Bio for the Riverlands Forum programme from cv-notes.md, third person, 70 words max. Match the other speakers' bios in programme-sample.md. Save it to out/bio.md.",
+  "files": {
+    "cv-notes.md": "cv-notes.md -- need a speaker bio for the Riverlands Forum programme. Third person, max 70 words, like the other speakers. Talk title: \"Counting what hides\".\n\nDr Ilse Brandvold. Freshwater mussel ecologist. Lowmark Fisheries Institute, senior researcher since 2019 (group of 5).\nPhD 2014, Univ. of Tarn -- host fish of the freshwater pearl mussel (thesis: 'Who carries the larvae?'). Postdoc 2014-2017 at the Cold Rivers Station.\n31 papers, h-index 14. 3 grants as PI (largest 410k EUR).\nLed Mussel Return 2018-2023: put 8,000 juvenile pearl mussels into 6 rivers; 62% alive after 2 years (monitored by hand, 1,100 hours of snorkelling). Pearl mussel can live 100+ years but is critically endangered.\nTeaches 4 courses (stream ecology, field methods...). Supervised 7 MSc students.\nBefore science: wastewater lab technician 2005-2008. Hobbies: kayaking, two kids, bad at chess.\nTalks: 2023 Riverlands Forum, panel; 2024 keynote Lowland Waters Day.\nNewsletter: \"Mussel Notes\", 1,400 subscribers.\nAwards: 2022 Tarn Early-Career Prize.\nDon't want the bio to sound like a CV.\n",
+    "programme-sample.md": "**Tomas Wyke** is a soil scientist at the Penrose Agricultural College, where he studies why some fields recover from drought and others do not. For six years he has followed the same 40 farms across two counties, and he has learned more from their farmers than from his instruments. He writes a monthly column for the regional farming paper.\n\n**Agnes Duarte** designs community orchards. Her orchards in eleven towns feed schoolchildren and bees, and she is happiest when nobody remembers who planted them.\n"
+  },
+  "output": "out/bio.md",
+  "checks": [
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "urls",
+        "citations"
+      ],
+      "sources": [
+        "cv-notes.md"
+      ],
+      "allow": [
+        "100",
+        "410000 eur"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)Lowmark",
+      "note": "affiliation"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)pearl mussels?",
+      "note": "her subject"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)Mussel Return|8,?000",
+      "note": "the project"
+    },
+    {
+      "type": "word_count",
+      "min": 35,
+      "max": 70
+    },
+    {
+      "type": "slop_density",
+      "max": 7
+    }
+  ],
+  "judge": {
+    "mode": "reader"
+  },
+  "style_ref": "programme-sample.md"
+}
