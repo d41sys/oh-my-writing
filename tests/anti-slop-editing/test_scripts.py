@@ -735,3 +735,14 @@ def test_inline_working_is_listed_and_table_placeholders_are_not_dashes(tmp_path
     assert "em-dash-density" not in found
     ranges = "The survey (2019-2021) had 30 sites (10-20 participants each) in the second wave (2022-23).\n"
     assert "inline-arithmetic" not in patterns(scan_json(write(tmp_path, "d.md", ranges), "--profile", "academic"))
+
+
+def test_target_and_not_yet_shown_disclaimers_count_toward_a_stack(tmp_path):
+    text = ("The pilot aims for a tenth fewer missed buses. These are programme targets, not results of the pilot. "
+            "A lower fare has not yet been shown to raise use. The map is a sketch, not a survey. "
+            "The timing does not establish a cause. Riders said they liked it. We ran it not once but twice. "
+            "The council will decide in May.")
+    found = patterns(scan_json(write(tmp_path, "e.md", text), "--profile", "professional"))
+    assert "caveat-stack" in found
+    plain = "We ran the route not once but twice. Riders said they liked it, and the council will decide in May."
+    assert "caveat-stack" not in patterns(scan_json(write(tmp_path, "f.md", plain), "--profile", "professional"))
