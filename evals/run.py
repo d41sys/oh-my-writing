@@ -1162,8 +1162,9 @@ def main(argv=None) -> int:
                   "measure the bare model", file=sys.stderr)
     VARIANTS.clear()
     VARIANTS.update(exported)
+    # The omp host runs with user-level skills switched off (omp_isolation_config), so only other hosts can leak.
     dirty = contaminated([*(s for name in used for s in competitor_skill_names(specs[name])),
-                          *(s for v in exported.values() for s in v["skills"])])
+                          *(s for v in exported.values() for s in v["skills"])]) if set(args.host) - {"omp"} else []
     if dirty and not args.allow_contaminated:
         print("user-level skills would leak into the baseline:\n  " + "\n  ".join(dirty)
               + "\nremove them or pass --allow-contaminated", file=sys.stderr)
