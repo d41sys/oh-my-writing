@@ -746,3 +746,12 @@ def test_target_and_not_yet_shown_disclaimers_count_toward_a_stack(tmp_path):
     assert "caveat-stack" in found
     plain = "We ran the route not once but twice. Riders said they liked it, and the council will decide in May."
     assert "caveat-stack" not in patterns(scan_json(write(tmp_path, "f.md", plain), "--profile", "professional"))
+
+
+def test_a_long_document_cannot_hide_a_disclaimer_habit(tmp_path):
+    defended = " ".join(f"Result {i} does not establish a trend." for i in range(12))
+    plain = " ".join(f"Site {i} reported its readings on time and the team logged them." for i in range(200))
+    found = patterns(scan_json(write(tmp_path, "g.md", defended + " " + plain), "--profile", "professional"))
+    assert "caveat-stack" in found
+    few = " ".join(f"Result {i} does not establish a trend." for i in range(5))
+    assert "caveat-stack" not in patterns(scan_json(write(tmp_path, "h.md", few + " " + plain), "--profile", "professional"))

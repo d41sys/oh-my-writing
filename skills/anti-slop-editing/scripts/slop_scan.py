@@ -675,13 +675,14 @@ DISCLAIMER_RE = re.compile(
 INLINE_ARITHMETIC_RE = re.compile(r"\(\s*\d[\d,.]*\s+[-\u2212+\u00d7x*/]\s+\d[\d,.]*\s*\)")
 CAVEAT_MIN = 4  # disclaiming sentences before the document-level pattern is listed
 CAVEAT_SHARE = 0.08  # ... and their share of prose sentences
+CAVEAT_ABS = 12  # or this many in one document, however long: length must not hide a habit
 
 
 def _stance(masked: str, text: str, locate) -> list:
     out = []
     sents = [span for b in prose_blocks(masked) for span in _sentences(masked[b[0]:b[1]], b[0])]
     caveats = [(s, e) for s, e in sents if DISCLAIMER_RE.search(masked[s:e])]
-    if sents and len(caveats) >= CAVEAT_MIN and len(caveats) / len(sents) >= CAVEAT_SHARE:
+    if sents and len(caveats) >= CAVEAT_MIN and (len(caveats) / len(sents) >= CAVEAT_SHARE or len(caveats) >= CAVEAT_ABS):
         note = (f"{len(caveats)} of {len(sents)} sentences disclaim what something shows ('does not establish', "
                 "'X, not Y', 'rather than'). Keep a limit where the reader's decision depends on it, once; "
                 "drop the ones that defend the text instead of informing the reader.")
