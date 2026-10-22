@@ -733,3 +733,5 @@ def test_inline_working_is_listed_and_table_placeholders_are_not_dashes(tmp_path
     found = patterns(scan_json(write(tmp_path, "c.md", text), "--profile", "academic"))
     assert "inline-arithmetic" in found
     assert "em-dash-density" not in found
+    ranges = "The survey (2019-2021) had 30 sites (10-20 participants each) in the second wave (2022-23).\n"
+    assert "inline-arithmetic" not in patterns(scan_json(write(tmp_path, "d.md", ranges), "--profile", "academic"))

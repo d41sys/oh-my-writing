@@ -66,17 +66,22 @@ How to read this table:
 
 Added after real use showed correct but defensive, fact-dense text: a caveat on many sentences, internal shorthand copied verbatim, template sections instead of a story. Fourteen synthetic cases (`evals/cases/reader/`, 4 held out and never tuned on) give raw notes plus an example of the required document. A blind judge answers three questions in both orders: does it read like the required document (fit), is it coherent, concise and one story (flow), and is it faithful. Mechanical checks only guard facts and length.
 
-Judge W-L (ties and order-inconsistent picks left out). Writers on omp, judge gpt-6.1-sol.
+Judge W-L (ties and order-inconsistent picks left out). Writers on omp, judge gpt-6.1-sol. Rules v1 is `a46dfed`; rules v2 (`5203466`) adds the storyline and shorthand rules to post-writing and technical-docs; previous is `628a925`.
 
 | Writer model | Comparison | Cases | Fit | Flow | Faithful |
 |---|---|---|---|---|---|
-| gpt-6.1-sol | current vs previous skills | all 14, 2 repeats | **16-3** | **14-7** | 0-3 |
-| gpt-6.1-sol | current skills vs no skills | tuned 10, 2 repeats | 6-9 | 8-12 | 4-2 |
-| gpt-6.1-sol | current skills vs no skills | held-out 4, 2 repeats | 6-2 | 6-2 | 1-1 |
-| claude-opus-5-5 | current skills vs no skills | held-out 4, 1 repeat | 2-2 | 3-1 | 2-0 |
-| claude-fable-5-1 | current skills vs no skills | held-out 4, 1 repeat | 1-2 | 1-2 | 3-1 |
+| gpt-6.1-sol | rules v1 vs previous | all 14, 2 repeats | **16-3** | **14-7** | 0-3 |
+| gpt-6.1-sol | rules v1 vs no skills | tuned 10, 2 repeats | 6-9 | 8-12 | 4-2 |
+| gpt-6.1-sol | rules v1 vs no skills | held-out 4, 2 repeats | 6-2 | 6-2 | 1-1 |
+| gpt-6.1-sol | rules v2 vs no skills | 3 tuned, 2 repeats | 1-3 | 1-2 | 2-0 |
+| claude-opus-5-5 | rules v2 vs no skills | held-out 4, 1 repeat | 2-2 | 3-1 | 2-0 |
+| claude-fable-5-1 | rules v2 vs no skills | held-out 4, 1 repeat | 1-2 | 1-2 | 3-1 |
 
-The rule changes fixed the regression against earlier skills. Against no skills, style is at parity and faithfulness slightly ahead; the samples are too small to call either way. A later edit to post-writing and technical-docs, rerun on three tuned cases (2 repeats), did not change that: fit 1-3, flow 1-2. Every condition ran longer than the style reference in about 40% of runs. Judge reasons for no-skill wins: our output "ends like a measurement report", keeps more technical detail, and uses exact figures where the reader's house style uses everyday proportions.
+- **Against previous skills:** fit and flow improved clearly, while faithfulness went 0-3. That is the expected cost of moving from "keep every stated value" to "keep the values the point depends on".
+- **Fidelity regression on existing cases** (rules v2 vs previous, gpt-6.1-sol, 1 repeat): only 8 of 26 cases finished on gpt-6.1-sol before the provider quota ran out. The rest fell back to another model and were discarded. On those 8, both versions passed 7. A full check is still to do.
+- **Against no skills:** style is at parity and faithfulness slightly ahead. The samples are too small to call either way.
+- **Tuned-set runs:** in about half, the case's own skill did not load but neighbouring skills of ours did (structured-drafting, author-voice), so those losses still count against our rules.
+- **Judge reasons for no-skill wins:** our output "ends like a measurement report", keeps more technical detail, and uses exact figures where the house style uses everyday proportions. Every condition ran longer than the style reference in about 40% of runs.
 
 ## Limits
 

@@ -232,6 +232,10 @@ def test_judge_pair_between_skill_and_competitor(cache, tmp_path, monkeypatch):
                           ("skill", "competitor-humanizer"))["winner"] == "competitor-humanizer"
     # a side that never ran gives no verdict
     assert run.judge_pair(case, "omp", 1, tmp_path, args(), ("skill", "competitor-cover")) is None
+    # an errored side (isolation, model fallback) gives no verdict even though its text exists
+    meta = tmp_path / "runs" / run.slug_of(case, "omp", "baseline", 1, 1) / "meta.json"
+    meta.write_text(json.dumps({"error": "model fallback: other-model"}))
+    assert run.judge_pair(case, "omp", 1, tmp_path, args()) is None
 
 
 def test_style_judge_between_skill_and_competitor(cache, tmp_path, monkeypatch):

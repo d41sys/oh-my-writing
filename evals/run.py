@@ -1008,6 +1008,10 @@ def judge_pair(case, host, rep, run_dir, args, pair: tuple[str, str] = DEFAULT_P
     x, y = pair
     workspaces = {cond: run_dir / "runs" / slug_of(case, host, cond, rep, args.repeat) / "workspace"
                   for cond in pair}
+    for ws in workspaces.values():  # an errored run (isolation, model fallback) is not a fair side to judge
+        meta = ws.parent / "meta.json"
+        if meta.is_file() and json.loads(meta.read_text(encoding="utf-8")).get("error"):
+            return None
     texts = {cond: side_text(case, ws) for cond, ws in workspaces.items()}
     if any(t is None for t in texts.values()):
         return None
@@ -1165,9 +1169,11 @@ def main(argv=None) -> int:
                   "measure the bare model", file=sys.stderr)
     VARIANTS.clear()
     VARIANTS.update(exported)
-    # The omp host runs with user-level skills switched off (omp_isolation_config), so only other hosts can leak.
+    # The omp host runs with user-level skills switched off (omp_isolation_config), so only other hosts, as writer
+    # or as judge, can leak.
+    unisolated = (set(args.host) | ({args.judge} if args.judge else set())) - {"omp"}
     dirty = contaminated([*(s for name in used for s in competitor_skill_names(specs[name])),
-                          *(s for v in exported.values() for s in v["skills"])]) if set(args.host) - {"omp"} else []
+                          *(s for v in exported.values() for s in v["skills"])]) if unisolated else []
     if dirty and not args.allow_contaminated:
         print("user-level skills would leak into the baseline:\n  " + "\n  ".join(dirty)
               + "\nremove them or pass --allow-contaminated", file=sys.stderr)
