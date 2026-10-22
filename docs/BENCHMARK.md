@@ -82,6 +82,7 @@ Judge W-L (ties and order-inconsistent picks left out). Writers on omp, judge gp
 - **Against no skills:** style is at parity and faithfulness slightly ahead. The samples are too small to call either way.
 - **Tuned-set runs:** in about half, the case's own skill did not load but neighbouring skills of ours did (structured-drafting, author-voice), so those losses still count against our rules.
 - **Judge reasons for no-skill wins:** our output "ends like a measurement report", keeps more technical detail, and uses exact figures where the house style uses everyday proportions. Every condition ran longer than the style reference in about 40% of runs.
+- **Rules v3** (`6938abb`): the self-check lists (`eval.md`) were brought in line with the new rules after a real revision still added "targets, not results" sentences. Tested on 2 held-out cases, 2 repeats, gpt-6.1-sol. Against no skills: fit 3-0, flow 1-1, faithful 2-0. Against rules v2: fit 1-3, flow 1-3, faithful 1-0. Four pairs are too few to tell v3 from v2.
 
 ## Limits
 
