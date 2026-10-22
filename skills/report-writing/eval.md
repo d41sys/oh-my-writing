@@ -46,7 +46,7 @@ Answer each check pass or fail. Fix every failure before returning.
 
 ## Editing and hand-off
 
-30. In revise mode, are the author's claims, qualifiers, numbers and names preserved except where they were the defect, and is every change listed with its reason? A revision for the reader makes the text clearer, not longer or more qualified: did it add no clarification, caveat or distinction sentence that a reader would not have misread without it, and is it no longer than before unless the author asked for more?
+30. In revise mode, are the author's claims, qualifiers, numbers and the names of people and organisations preserved, and is every change listed with its reason? For a bare "revise" or "improve", were the reader's obstacles treated as the defect: optional template tables or sections moved or turned into prose, internal codes explained or kept only where the reader looks them up, defensive sentences and repeated points removed? A revision for the reader makes the text clearer, not longer or more qualified: did it add no clarification, caveat or distinction sentence that a reader would not have misread without it, and is it no longer than before unless the author asked for more?
 31. For non-English text, were structural checks applied and English word lists left unused?
 32. Did claim checks go to `evidence-grounded-writing` and the final pass to `anti-slop-editing` if available, or were the checks above applied directly?
 

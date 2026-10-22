@@ -24,7 +24,7 @@ The edited text must keep, exactly or with the same meaning:
 | Formatting the reader or destination relies on (heading levels, list order, numbered steps, tables, frontmatter) | Flattened to prose |
 | Voice-carrying detail: unusual specifics, mixed feelings, asides, dated references, first-person choices | Sanded off as "noise" |
 
-The user may authorize a change to any of these (a correction, a new figure, an updated name). Treat an explicit user correction as the intended change, not as an invention. A general request about style or voice never authorizes changing facts or protected regions.
+The user may authorize a change to any of these (a correction, a new figure, an updated name). Treat an explicit user correction as the intended change, not as an invention. A general request about style or voice never authorizes changing facts or protected regions. When a writing skill revises a document for its reader, moving a table to an appendix or replacing an internal code with what it means is a listed layout change, not a loss, as long as every fact in it survives somewhere in the document.
 
 ## Two-way check (added and lost)
 
