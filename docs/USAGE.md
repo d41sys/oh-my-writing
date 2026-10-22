@@ -134,7 +134,7 @@ python3 $S/project-report/scripts/inventory.py --out work/ docs/       # invento
 4. **Give writing samples** whenever voice matters.
 5. **Answer the markers.** They are the agent telling you exactly what it does not know.
 6. **Point to what defines the document.** For a report you are assessed on, name the brief, plan or earlier report that says what the work is, and the template or rubric. The skill checks the draft's frame against them before editing sentences.
-7. **Watch reviewer agents.** A second model that reviews every turn (for example the omp advisor) tends to push for keeping every detail, matching the existing voice and stating every limit. That is useful for fact checks and works against concise, story-led prose. When revising for style, turn it off for that session (`advisor.enabled: false` in your omp settings) or tell the agent that the skill's voice and caveat rules take precedence.
+7. **Reviewer agents can pull against the skill.** A second model that reviews every turn (for example the omp advisor) may ask to keep the existing voice or to state every mismatch with a source; it also catches real errors. When its note conflicts with the skill's voice or caveat rules, tell the agent the skill wins. In omp the advisor is set by `advisor: enabled:` in `~/.omp/agent/config.yml`; to run one session without it, pass an overlay file holding `{"advisor": {"enabled": false}}` with `--config <file>`.
 
 ## Troubleshooting
 
