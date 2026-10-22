@@ -669,7 +669,8 @@ DISCLAIMER_RE = re.compile(
     r"(?:establish|show|prove|demonstrate|imply|isolate|settle|specify|guarantee|reflect|reproduce|resolve)\b"
     r"|\b(?:is|are|was|were) not (?:a|an|itself|themselves|evidence|equivalent|assumed|established|"
     r"demonstrated|yet (?:demonstrated|established|shown))\b"
-    r"|,\s*not (?:a|an|the)\b|\brather than\b", re.I)
+    r"|\b(?:has|have|had) not (?:yet )?been (?:demonstrated|shown|established|proven|achieved|tested)\b"
+    r"|,\s*not (?:a|an|the|results?|evidence|measured|achieved|actual)\b|\brather than\b", re.I)
 # Spaces around the operator: "(2022-23)" and "(pp. 4-9)" are ranges, not working.
 INLINE_ARITHMETIC_RE = re.compile(r"\(\s*\d[\d,.]*\s+[-\u2212+\u00d7x*/]\s+\d[\d,.]*\s*\)")
 CAVEAT_MIN = 4  # disclaiming sentences before the document-level pattern is listed

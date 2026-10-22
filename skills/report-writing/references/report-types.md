@@ -27,7 +27,8 @@ Voice is a dial set by the genre and the reader. Warm does not mean exclamatory 
 | Type | Register | Density | Notes |
 |---|---|---|---|
 | Decision memo | Cool, direct, active | High | Recommendation in the first lines (when the notes leave the choice open, that it is open and where the evidence points); opinionated but fair to the options it rejected |
-| Research report | Cool, data-led | High | Findings before background; every number with a baseline |
+| Research report | Cool, data-led | High | Findings before background; each comparison with its baseline |
+| Project or progress report (committee, funder, supervisor) | Plain, first person where the programme allows, narrative | Moderate | The problem, what the author did and why, what happened, what comes next; internal codes and task numbers translated or kept to a table; template sections only where the programme requires them |
 | Competitive report | Cool, fair | High | Honest about the client's weak spots; no brochure language about rivals |
 | Executive summary | Plain, compact | Highest | Standalone; no method; no new claims |
 | Status report | Terse, factual | Low prose, high signal | Change since last report first |

@@ -23,7 +23,7 @@ Answer each check pass or fail. Fix every failure before returning.
 
 12. Does every comparison name or imply the same baseline, metric, conditions and time, or state the differences?
 13. Does every percentage change say its base, and is it clear whether the change is relative or in percentage points?
-14. Does each important figure carry its unit, denominator and period, or is the missing item stated plainly (or the figure left out of the reader's text) with the question in the reply? Does every figure the material states (a duration beside its endpoints, a position in a schedule) survive shortening?
+14. Does each important figure carry its unit, denominator and period, or is the missing item stated plainly (or the figure left out of the reader's text) with the question in the reply? When editing or shortening an existing text, does every figure it states (a duration beside its endpoints, a position in a schedule) survive? When drafting a new document from material, are the figures chosen for the point, with none changed?
 15. Did you recompute the arithmetic (changes, sums, ratios) rather than trusting the text?
 16. Is each number that appears more than once identical everywhere, or is the difference named?
 17. Is rounding free of changes to meaning, and is precision no finer than the measurement?
