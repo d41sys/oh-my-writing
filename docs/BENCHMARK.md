@@ -78,7 +78,7 @@ Judge W-L (ties and order-inconsistent picks left out). Writers on omp, judge gp
 | claude-fable-5-1 | rules v2 vs no skills | held-out 4, 1 repeat | 1-2 | 1-2 | 3-1 |
 
 - **Against previous skills:** fit and flow improved clearly, while faithfulness went 0-3. That is the expected cost of moving from "keep every stated value" to "keep the values the point depends on".
-- **Fidelity regression on existing cases** (rules v2 vs previous, gpt-6.1-sol, 1 repeat): only 8 of 26 cases finished on gpt-6.1-sol before the provider quota ran out. The rest fell back to another model and were discarded. On those 8, both versions passed 7. A full check is still to do.
+- **Fidelity regression on existing cases** (rules v2 against previous, gpt-6.1-sol, 1 repeat, all 26 report-writing, structured-drafting, evidence-grounded-writing, career-documents and style cases): both passed 20 of 26. No `preserves` check failed on either side, and invented facts were level at 2 each. The two runs that differ swap one wording check each way.
 - **Against no skills:** style is at parity and faithfulness slightly ahead. The samples are too small to call either way.
 - **Tuned-set runs:** in about half, the case's own skill did not load but neighbouring skills of ours did (structured-drafting, author-voice), so those losses still count against our rules.
 - **Judge reasons for no-skill wins:** our output "ends like a measurement report", keeps more technical detail, and uses exact figures where the house style uses everyday proportions. Every condition ran longer than the style reference in about 40% of runs.
