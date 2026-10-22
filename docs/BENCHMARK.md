@@ -62,6 +62,22 @@ How to read this table:
 | Which sounds more like a person | 14 | 7 | 3 |
 | Which stays more faithful to the material | 18 | 2 | 4 |
 
+## Reader track
+
+Added after real use showed correct but defensive, fact-dense text: a caveat on many sentences, internal shorthand copied verbatim, template sections instead of a story. Fourteen synthetic cases (`evals/cases/reader/`, 4 held out and never tuned on) give raw notes plus an example of the required document. A blind judge answers three questions in both orders: does it read like the required document (fit), is it coherent, concise and one story (flow), and is it faithful. Mechanical checks only guard facts and length.
+
+Judge W-L (ties and order-inconsistent picks left out). Writers on omp, judge gpt-6.1-sol.
+
+| Writer model | Comparison | Cases | Fit | Flow | Faithful |
+|---|---|---|---|---|---|
+| gpt-6.1-sol | current vs previous skills | all 14, 2 repeats | **16-3** | **14-7** | 0-3 |
+| gpt-6.1-sol | current skills vs no skills | tuned 10, 2 repeats | 6-9 | 8-12 | 4-2 |
+| gpt-6.1-sol | current skills vs no skills | held-out 4, 2 repeats | 6-2 | 6-2 | 1-1 |
+| claude-opus-5-5 | current skills vs no skills | held-out 4, 1 repeat | 2-2 | 3-1 | 2-0 |
+| claude-fable-5-1 | current skills vs no skills | held-out 4, 1 repeat | 1-2 | 1-2 | 3-1 |
+
+The rule changes fixed the regression against earlier skills. Against no skills, style is at parity and faithfulness slightly ahead; the samples are too small to call either way. A later edit to post-writing and technical-docs, rerun on three tuned cases (2 repeats), did not change that: fit 1-3, flow 1-2. Every condition ran longer than the style reference in about 40% of runs. Judge reasons for no-skill wins: our output "ends like a measurement report", keeps more technical detail, and uses exact figures where the reader's house style uses everyday proportions.
+
 ## Limits
 
 - **The checks and the skills were written by the same team.** Some checks were corrected after reading outputs. Each fix was justified in the check's note and applied to every condition. The fixes still lean toward the outputs we read most, which were ours. Treat the judge columns as the less biased signal.
