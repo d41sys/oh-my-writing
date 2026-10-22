@@ -548,7 +548,10 @@ def isolation_problems(host: str, condition: str, case: dict | None, log: str) -
     problems = []
     if re.search(r'"type":\s*"advisor', log):
         problems.append("advisor events in log")
-    opened = set(re.findall(r"skill://([A-Za-z0-9_.-]+)", log)) - allowed_skills(condition, case)
+    # Streamed tool arguments leave cut-off names in the log ("skill://career-" before "skill://career-documents"),
+    # so a name that only starts another name in the log is a fragment, not a skill.
+    named = set(re.findall(r"skill://([A-Za-z0-9_.-]+)", log))
+    opened = {n for n in named if not any(o != n and o.startswith(n) for o in named)} - allowed_skills(condition, case)
     if opened:
         problems.append("skills outside the condition: " + ", ".join(sorted(opened)))
     return problems

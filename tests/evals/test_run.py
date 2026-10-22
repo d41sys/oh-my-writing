@@ -185,6 +185,9 @@ def test_omp_run_that_reached_outside_its_condition_is_rejected():
     assert leaked == ["skills outside the condition: anti-slop-editing"]
     advised = run.isolation_problems("omp", "skill", None, '{"type":"advisor_yielded"}')
     assert advised == ["advisor events in log"]
+    streamed = '{"delta":"{\\"path\\": \\"skill://career-"} {"args":{"path":"skill://career-documents"}}'
+    assert run.isolation_problems("omp", "skill", None, streamed) == []
+    assert run.isolation_problems("omp", "baseline", None, streamed) == ["skills outside the condition: career-documents"]
 
 
 def test_omp_command_carries_the_isolation_overlay():
