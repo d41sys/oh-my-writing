@@ -148,14 +148,23 @@ def test_grouped_bars_keep_each_method_look_across_panels_and_start_at_zero():
         {"categories": ["w1", "w2"], "series": {"Base": [5, 4], "Ours": [3, 2]}},
         {"categories": ["w1", "w2"], "series": {"Ours": [9, 8], "Base": [7, 6]}},
     ]
-    fig, warnings = ps.grouped_bars(panels, highlight="Ours")
+    fig, warnings = ps.grouped_bars(panels, highlight="Ours", hatch=True)
     looks = []
     for ax in fig.axes:
         looks.append({c.get_label(): (c.patches[0].get_facecolor(), c.patches[0].get_hatch()) for c in ax.containers})
         assert ax.get_ylim()[0] == 0
     assert looks[0]["Ours"] == looks[1]["Ours"] and looks[0]["Base"] == looks[1]["Base"]
-    assert looks[0]["Ours"][1] == "///" and looks[0]["Base"][1] != "///"  # a cue besides colour
+    assert looks[0]["Ours"][1] == "///" and looks[0]["Base"][1] not in (None, "///")  # greyscale-safe cue
     assert warnings == []
+
+
+def test_grouped_bars_default_to_the_plain_soft_look():
+    import matplotlib.colors as mc
+    fig, _ = ps.grouped_bars([{"categories": ["w"], "series": {"Base": [1], "Ours": [2]}}], highlight="Ours")
+    bars = {c.get_label(): c.patches[0] for c in fig.axes[0].containers}
+    assert all(b.get_hatch() is None for b in bars.values())
+    assert mc.to_hex(bars["Ours"].get_facecolor()) == ps.HIGHLIGHT_COLOR
+    assert mc.to_hex(bars["Base"].get_facecolor()) == ps.DEEP[0]
 
 
 def test_grouped_bars_with_negative_values_draw_a_zero_line_instead_of_warning():

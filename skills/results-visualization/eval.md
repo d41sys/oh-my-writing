@@ -21,7 +21,7 @@ Run these on every finished figure. A failed check is fixed or, where it is a ju
 
 10. When the author gave a template, fonts, colours, markers and layout match it, and every deliberate change is listed.
 11. Each method keeps the same colour, marker and line style in every panel and figure.
-12. Methods can be told apart without colour (marker or line style differs).
+12. On line charts, methods can be told apart without colour (marker or line style differs). Bar charts that may be printed in greyscale use hatches.
 13. Text is readable at the printed size: tick labels at least about 7 pt at final width.
 14. Axis titles are words with units, not variable names; method names match the text.
 15. Panel letters match the caption.

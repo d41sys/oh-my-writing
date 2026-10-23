@@ -3,7 +3,7 @@ name: results-visualization
 description: "Turns experiment and measurement results into publication-ready charts in one consistent paper style: method comparisons over rounds, clients or a parameter, cost or time breakdowns, confusion matrices, and per-group distributions such as samples per class on each client. Reads the numbers from result files, keeps each method's colour and marker the same across panels and figures, flags axes that exaggerate small gaps, and writes a caption that states the finding. Matches the author's own plotting template when one is given. Use when asked to plot, chart or visualise results, make figures for a paper, thesis, report or slides, redo figures in a house style, compare methods in a figure, or draw confusion matrices or data-distribution plots. Not for architecture or flow diagrams, dashboards, or decorative graphics."
 license: MIT
 metadata:
-  version: "1.2"
+  version: "1.3"
   skill-author: d41sys
 ---
 
@@ -45,7 +45,7 @@ For boxes-and-arrows diagrams use a diagram skill. For the table-or-figure decis
    - units in axis labels match the data (a variable holding minutes must not be labelled seconds);
    - an axis cut to a narrow band, such as 0.997 to 1.000, is stated in the caption, because it makes tiny gaps look large;
    - bars start at zero;
-   - colour is not the only cue: markers or line styles also separate the methods;
+   - colour is not the only cue on line charts (markers or line styles also separate the methods); bars that may be printed in greyscale get hatches;
    - every warning the script prints is fixed or stated in the caption.
 6. **Write the caption and the sentence in the text.** The caption says what is plotted and what to notice, plus the setting the reader needs to read it: dataset, number of runs and what a band means when those are known. Facts you do not have go into the hand-over as `[ASK AUTHOR: …]`, not into the caption as an apology. The sentence in the body states the finding with the numbers that support it, and claims no more than the figure shows.
 7. **Hand over.** Give the figure paths, the script or spec path, the data source of every series, and the checks still open.

@@ -41,7 +41,10 @@ PRESETS = {
 }
 MARKERS = ["s", "o", "^", "v", "P", "X", "<", ">"]
 LINESTYLES = ["-", "--", "-.", ":"]
-HIGHLIGHT_COLOR = "#ff9f0e"  # orange: the proposed method stands out against the baseline palette
+# The soft "deep" palette (seaborn's default) used by the author's notebook; no seaborn dependency needed.
+DEEP = ["#4c72b0", "#dd8452", "#55a868", "#c44e52", "#8172b3", "#937860", "#da8bc3", "#8c8c8c", "#ccb974", "#64b5cd"]
+HIGHLIGHT_COLOR = "#ffa500"  # plain orange: the proposed method stands out against the soft baselines
+BUBBLE_ALPHA = 0.7  # tab10 at 70% on white, the template's pastel bubbles
 HIGHLIGHT_MARKER = "D"
 CONFUSION_CMAP = "PuRd"
 ZOOM_SHARE = 0.02  # a y-range narrower than this share of its top value makes small gaps look large
@@ -63,8 +66,9 @@ def apply_style(preset: str = "paper-double", tex: bool | None = None) -> dict:
     matplotlib.use("Agg")
     plt.rcParams.update({
         "text.usetex": use_tex,
-        "font.family": "serif",
-        "font.serif": ["Computer Modern Roman", "CMU Serif", "STIXGeneral", "DejaVu Serif"],
+        # Computer Modern Sans for words (LaTeX \sffamily); tick numbers stay in Computer Modern maths digits
+        "font.family": "sans-serif",
+        "font.sans-serif": ["Computer Modern Sans Serif", "CMU Sans Serif", "DejaVu Sans"],
         "mathtext.fontset": "cm",
         "font.size": p["tick"],
         "axes.labelsize": p["label"],
@@ -146,8 +150,7 @@ def figsize(panels: int = 1, aspect: float = 0.42) -> tuple[float, float]:
 def series_styles(names: list[str], highlight: str | None = None) -> dict[str, dict]:
     """One fixed look per method, so a method looks the same in every panel and every figure of a paper.
     The highlighted method (usually the proposed one) gets orange diamonds and is drawn on top."""
-    cmap = plt.get_cmap("tab10")
-    palette = [cmap(i) for i in (0, 2, 3, 4, 5, 6, 7, 8, 9)]  # tab10 without its orange
+    palette = [c for k, c in enumerate(DEEP) if k != 1]  # deep without its orange, which is the highlight's
     styles, k = {}, 0
     for name in names:
         if name == highlight:
@@ -218,7 +221,7 @@ def method_lines(panels: list[dict], highlight: str | None = None, legend: str =
 def stacked_bars(panels: list[dict], legend: str = "best"):
     """Bars per category; a panel with several parts stacks them (a cost or time breakdown).
     Each panel: {"title", "categories", "parts": {name: values}, "xlabel", "ylabel"}."""
-    cmap = plt.get_cmap("tab10")
+    palette = DEEP
     fig, axes = plt.subplots(1, len(panels), figsize=figsize(len(panels)), squeeze=False)
     warnings = []
     for i, (ax, panel) in enumerate(zip(axes[0], panels)):
@@ -231,7 +234,8 @@ def stacked_bars(panels: list[dict], legend: str = "best"):
                 raise ValueError(f"panel {i + 1}, {name}: {len(vals)} values for {len(cats)} categories")
             if (vals < 0).any():
                 warnings.append(f"panel {i + 1}, {name}: negative values cannot stack; use grouped bars")
-            ax.bar(x, vals, width=0.6, bottom=bottom, label=plain(name), color=cmap(k), edgecolor="white",
+            ax.bar(x, vals, width=0.6, bottom=bottom, label=plain(name), color=palette[k % len(palette)],
+                   edgecolor="white",
                    linewidth=0.6)
             bottom += vals
         ax.set_xticks(x, [plain(c) for c in cats])
@@ -250,22 +254,26 @@ def stacked_bars(panels: list[dict], legend: str = "best"):
     return fig, warnings
 
 
-HATCHES = ["", "..", "xx", "\\\\", "++", "oo"]
+HATCHES = ["..", "xx", "\\\\", "++", "oo", "--"]
 
 
-def grouped_bars(panels: list[dict], highlight: str | None = None, value_labels: bool = False):
+def grouped_bars(panels: list[dict], highlight: str | None = None, value_labels: bool = False,
+                 hatch: bool = False):
     """Methods side by side within each category (window, dataset, setting), one panel per metric.
     Each panel: {"title", "categories" (or "x"), "series": {method: values}, "xlabel", "ylabel"}.
-    A method keeps its colour and hatch in every panel; the highlighted method is orange with diagonal hatch.
+    A method keeps its colour in every panel; the highlighted method is orange. hatch=True adds a pattern per
+    method (diagonal for the highlighted one) for figures that may be printed in greyscale.
     One legend serves the whole figure."""
     names = list(dict.fromkeys(n for p in panels for n in p["series"]))
     styles = series_styles(names, highlight)
-    hatch, k = {}, 0
+    patterns, k = {}, 0
     for name in names:
-        if name == highlight:
-            hatch[name] = "///"
+        if not hatch:
+            patterns[name] = None
+        elif name == highlight:
+            patterns[name] = "///"
         else:
-            hatch[name], k = HATCHES[k % len(HATCHES)], k + 1
+            patterns[name], k = HATCHES[k % len(HATCHES)], k + 1
     fig, axes = plt.subplots(1, len(panels), figsize=figsize(len(panels)), squeeze=False)
     warnings = []
     for i, (ax, panel) in enumerate(zip(axes[0], panels)):
@@ -278,7 +286,8 @@ def grouped_bars(panels: list[dict], highlight: str | None = None, value_labels:
             if len(vals) != len(cats):
                 raise ValueError(f"panel {i + 1}, {name}: {len(vals)} values for {len(cats)} categories")
             bars = ax.bar(x + (j - (len(present) - 1) / 2) * width, vals, width=width, label=plain(name),
-                          color=styles[name]["color"], hatch=hatch[name], edgecolor="black", linewidth=0.6,
+                          color=styles[name]["color"], hatch=patterns[name],
+                          edgecolor="black" if hatch else "white", linewidth=0.6,
                           zorder=3)
             if value_labels:
                 # three or more bars per group leave no room for horizontal labels; turn them upright
@@ -364,7 +373,7 @@ def bubble_matrix(rows: list[str], cols: list, counts, xlabel: str, ylabel: str,
     w = PRESETS[_STATE["preset"]]["width"]
     fig, ax = plt.subplots(figsize=(w, max(w * 0.45, 2.0)))
     for j, name in enumerate(rows):
-        ax.scatter(range(len(cols)), [j] * len(cols), s=counts[j] * scale, color=cmap(j), alpha=0.7,
+        ax.scatter(range(len(cols)), [j] * len(cols), s=counts[j] * scale, color=cmap(j), alpha=BUBBLE_ALPHA,
                    edgecolors="black", linewidths=0.5)
     ax.set_xticks(range(len(cols)), [plain(str(c)) for c in cols])
     ax.set_yticks(range(len(rows)), [plain(r) for r in rows])
@@ -448,7 +457,7 @@ def render(spec: dict, out: str | Path, root: Path | None = None) -> tuple[list[
         fig, warnings = stacked_bars(spec["panels"])
     elif kind == "grouped_bars":
         fig, warnings = grouped_bars([_resolve_panel(p, root) for p in spec["panels"]], spec.get("highlight"),
-                                     spec.get("value_labels", False))
+                                     spec.get("value_labels", False), spec.get("hatch", False))
     elif kind == "confusion":
         fig, warnings = confusion_grid(spec["matrices"], spec.get("color_by", "row-share"))
     elif kind == "bubbles":
