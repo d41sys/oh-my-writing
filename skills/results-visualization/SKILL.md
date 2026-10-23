@@ -3,7 +3,7 @@ name: results-visualization
 description: "Turns experiment and measurement results into publication-ready charts in one consistent paper style: method comparisons over rounds, clients or a parameter, cost or time breakdowns, confusion matrices, and per-group distributions such as samples per class on each client. Reads the numbers from result files, keeps each method's colour and marker the same across panels and figures, flags axes that exaggerate small gaps, and writes a caption that states the finding. Matches the author's own plotting template when one is given. Use when asked to plot, chart or visualise results, make figures for a paper, thesis, report or slides, redo figures in a house style, compare methods in a figure, or draw confusion matrices or data-distribution plots. Not for architecture or flow diagrams, dashboards, or decorative graphics."
 license: MIT
 metadata:
-  version: "1.1"
+  version: "1.2"
   skill-author: d41sys
 ---
 
@@ -31,6 +31,7 @@ For boxes-and-arrows diagrams use a diagram skill. For the table-or-figure decis
    - Otherwise use the bundled style in [scripts/plotstyle.py](scripts/plotstyle.py), described in [references/house-style.md](references/house-style.md).
 3. **Choose the chart from the question.** Use [references/chart-choice.md](references/chart-choice.md). The common ones:
    - trend of several methods over rounds, clients or a parameter: line panels, one panel per setting (IID and non-IID, dataset A and B);
+   - several methods compared at a few fixed settings (windows, datasets), often one panel per metric such as error and cost: grouped bars;
    - parts that add to a total (encryption, aggregation, decryption time): stacked bars;
    - per-class errors: confusion matrices, one per dataset, side by side;
    - how much data each group holds (samples per class per client): bubble matrix with a size key.
@@ -68,7 +69,7 @@ For boxes-and-arrows diagrams use a diagram skill. For the table-or-figure decis
 
 ## Resources
 
-- [scripts/plotstyle.py](scripts/plotstyle.py): house style, method encodings, line, stacked-bar, confusion and bubble helpers, honest-axis warnings, JSON spec rendering.
+- [scripts/plotstyle.py](scripts/plotstyle.py): house style, method encodings, line, grouped-bar, stacked-bar, confusion and bubble helpers, honest-axis warnings, JSON spec rendering.
 - [references/house-style.md](references/house-style.md): the style rules the script applies, and the presets for column, page and slide.
 - [references/chart-choice.md](references/chart-choice.md): which chart answers which question, and the traps of each.
 - [references/spec-format.md](references/spec-format.md): JSON spec format for rendering without writing Python.

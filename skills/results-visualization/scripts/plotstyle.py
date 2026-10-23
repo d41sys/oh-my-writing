@@ -20,6 +20,7 @@ import argparse
 import csv
 import json
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -28,6 +29,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 from matplotlib.font_manager import FontProperties  # noqa: E402
+from matplotlib.ticker import FuncFormatter  # noqa: E402
 import numpy as np  # noqa: E402
 
 PRESETS = {
@@ -84,8 +86,33 @@ def apply_style(preset: str = "paper-double", tex: bool | None = None) -> dict:
         "savefig.bbox": "tight",
         "savefig.dpi": 300,
     })
-    _STATE.update(preset=preset, tex=use_tex)
+    # Computer Modern has no euro glyph; textcomp's fallback draws a broken one, so use eurosym when installed
+    euro = r"\euro{}" if use_tex and _has_tex_package("eurosym") else r"\texteuro{}"
+    if use_tex:
+        plt.rcParams["text.latex.preamble"] = r"\usepackage{textcomp}" + (
+            r"\usepackage{eurosym}" if euro == r"\euro{}" else "")
+    _STATE.update(preset=preset, tex=use_tex, euro=euro)
     return dict(p, tex=use_tex)
+
+
+def _has_tex_package(name: str) -> bool:
+    kpse = shutil.which("kpsewhich")
+    if not kpse:
+        return False
+    found = subprocess.run([kpse, f"{name}.sty"], capture_output=True, text=True)
+    return bool(found.stdout.strip())
+
+
+TEX_ESCAPES = {"%": r"\%", "&": r"\&", "#": r"\#", "_": r"\_", "°": r"\textdegree{}"}
+
+
+def _tex_escape(text: str) -> str:
+    """Escape LaTeX specials outside $...$ only, so math such as $\\rho_1$ keeps its subscript."""
+    parts = text.split("$")
+    escapes = dict(TEX_ESCAPES, **{"€": _STATE.get("euro", r"\texteuro{}")})
+    for k in range(0, len(parts), 2):  # even parts are outside math
+        parts[k] = "".join(escapes.get(ch, ch) for ch in parts[k])
+    return "$".join(parts)
 
 
 def bold(text: str) -> str:
@@ -93,16 +120,21 @@ def bold(text: str) -> str:
     if not text:
         return text
     if _STATE["tex"]:
-        safe = text.replace("%", r"\%").replace("&", r"\&").replace("#", r"\#").replace("_", r"\_")
-        return r"\textbf{" + safe + "}"
+        return r"\textbf{" + _tex_escape(text) + "}"
     return text
 
 
 def plain(text: str) -> str:
     """Tick and legend text, escaped for LaTeX when it is on."""
     if _STATE["tex"] and text:
-        return text.replace("%", r"\%").replace("&", r"\&").replace("#", r"\#").replace("_", r"\_")
+        return _tex_escape(text)
     return text
+
+
+def _thousands(ax) -> None:
+    """Thousands separators on the value axis once values reach 1,000, matching the value labels."""
+    if max(abs(v) for v in ax.get_ylim()) >= 1000:
+        ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:,.0f}"))
 
 
 def figsize(panels: int = 1, aspect: float = 0.42) -> tuple[float, float]:
@@ -211,9 +243,67 @@ def stacked_bars(panels: list[dict], legend: str = "best"):
         if panel.get("title"):
             ax.set_title(bold(_letter(i, panel["title"]) if len(panels) > 1 else panel["title"]))
         ax.legend(loc=legend)
+        _thousands(ax)
         if ax.get_ylim()[0] != 0:
             warnings.append(f"panel {i + 1}: bars must start at zero")
     fig.tight_layout()
+    return fig, warnings
+
+
+HATCHES = ["", "..", "xx", "\\\\", "++", "oo"]
+
+
+def grouped_bars(panels: list[dict], highlight: str | None = None, value_labels: bool = False):
+    """Methods side by side within each category (window, dataset, setting), one panel per metric.
+    Each panel: {"title", "categories" (or "x"), "series": {method: values}, "xlabel", "ylabel"}.
+    A method keeps its colour and hatch in every panel; the highlighted method is orange with diagonal hatch.
+    One legend serves the whole figure."""
+    names = list(dict.fromkeys(n for p in panels for n in p["series"]))
+    styles = series_styles(names, highlight)
+    hatch, k = {}, 0
+    for name in names:
+        if name == highlight:
+            hatch[name] = "///"
+        else:
+            hatch[name], k = HATCHES[k % len(HATCHES)], k + 1
+    fig, axes = plt.subplots(1, len(panels), figsize=figsize(len(panels)), squeeze=False)
+    warnings = []
+    for i, (ax, panel) in enumerate(zip(axes[0], panels)):
+        cats = [str(c) for c in panel.get("categories", panel.get("x", []))]
+        present = [n for n in names if n in panel["series"]]
+        width = 0.8 / max(len(present), 1)
+        x = np.arange(len(cats))
+        for j, name in enumerate(present):
+            vals = np.asarray(panel["series"][name], dtype=float)
+            if len(vals) != len(cats):
+                raise ValueError(f"panel {i + 1}, {name}: {len(vals)} values for {len(cats)} categories")
+            bars = ax.bar(x + (j - (len(present) - 1) / 2) * width, vals, width=width, label=plain(name),
+                          color=styles[name]["color"], hatch=hatch[name], edgecolor="black", linewidth=0.6,
+                          zorder=3)
+            if value_labels:
+                # three or more bars per group leave no room for horizontal labels; turn them upright
+                ax.bar_label(bars, labels=[f"{v:,.0f}" if abs(v) >= 100 else f"{v:,.3g}" for v in vals],
+                             padding=2, rotation=90 if len(present) > 2 else 0,
+                             fontsize=max(PRESETS[_STATE["preset"]]["tick"] - 1.5, 6))
+        if value_labels:
+            lo, hi = ax.get_ylim()
+            ax.set_ylim(lo, hi + (hi - lo) * (0.18 if len(present) > 2 else 0.08))
+        _thousands(ax)
+        ax.set_xticks(x, [plain(c) for c in cats])
+        ax.set_xlabel(bold(panel.get("xlabel", "")))
+        ax.set_ylabel(bold(panel.get("ylabel", "")))
+        ax.grid(True, axis="y", linestyle="--", linewidth=0.5)
+        ax.grid(False, axis="x")
+        ax.set_axisbelow(True)
+        if any(v < 0 for n in present for v in panel["series"][n]):
+            ax.axhline(0, color="black", linewidth=0.8, zorder=4)
+        elif ax.get_ylim()[0] != 0:
+            warnings.append(f"panel {i + 1}: bars must start at zero")
+        if panel.get("title"):
+            ax.set_title(bold(_letter(i, panel["title"]) if len(panels) > 1 else panel["title"]), pad=8)
+    handles, labels = axes[0][0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc="upper center", ncol=len(labels), frameon=False, bbox_to_anchor=(0.5, 1.0))
+    fig.tight_layout(rect=(0, 0, 1, 0.9))
     return fig, warnings
 
 
@@ -356,12 +446,15 @@ def render(spec: dict, out: str | Path, root: Path | None = None) -> tuple[list[
         fig, warnings = method_lines([_resolve_panel(p, root) for p in spec["panels"]], spec.get("highlight"))
     elif kind == "stacked_bars":
         fig, warnings = stacked_bars(spec["panels"])
+    elif kind == "grouped_bars":
+        fig, warnings = grouped_bars([_resolve_panel(p, root) for p in spec["panels"]], spec.get("highlight"),
+                                     spec.get("value_labels", False))
     elif kind == "confusion":
         fig, warnings = confusion_grid(spec["matrices"], spec.get("color_by", "row-share"))
     elif kind == "bubbles":
         fig, warnings = bubble_matrix(spec["rows"], spec["cols"], spec["counts"], spec["xlabel"], spec["ylabel"])
     else:
-        raise ValueError(f"unknown type {kind!r}: lines, stacked_bars, confusion or bubbles")
+        raise ValueError(f"unknown type {kind!r}: lines, grouped_bars, stacked_bars, confusion or bubbles")
     return save(fig, out), warnings
 
 

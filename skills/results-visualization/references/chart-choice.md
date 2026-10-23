@@ -6,7 +6,8 @@ Start from the sentence the figure supports, then pick the chart. If no chart ma
 |---|---|---|---|
 | Which method is best as rounds, clients or a parameter change? | Line panels, one per setting | `method_lines` | Zoomed y-range exaggerates tiny gaps. Too many methods make the lines tangle; keep at most six and move the rest to a table. |
 | What makes up the total cost or time, and how does it change with a setting? | Stacked bars | `stacked_bars` | Only the bottom part can be read against the axis. If one part is the point, put it at the bottom or plot it alone. Negative parts cannot stack. |
-| Which single number is bigger, across a few settings? | Bars, or a table | `stacked_bars` with one part | A bar chart of three numbers adds little; a table may be clearer. |
+| Which method wins at each of a few settings, and do two metrics agree? | Grouped bars, one panel per metric | `grouped_bars` | Value labels on three or more bars per group turn upright; if the table beside the figure already lists every value, leave the labels off. |
+| Which single number is bigger, across a few settings? | Bars, or a table | `grouped_bars` with one series | A bar chart of three numbers adds little; a table may be clearer. |
 | Which classes does the classifier confuse? | Confusion matrix per dataset | `confusion_grid` | Raw-count shading hides errors in small classes; shade by share of the true class and write counts in cells. Label order must match on both axes. |
 | How is the data spread across clients, sites or groups? | Bubble matrix, or stacked bars per group | `bubble_matrix` | Area cannot be read as a number without a size key. Zero cells draw nothing; say so. |
 | How do values vary across runs? | Mean line with a band, or box plots | `method_lines` plus `ax.fill_between` | Say what the band is (standard deviation, 95% interval, min–max) and how many runs. |

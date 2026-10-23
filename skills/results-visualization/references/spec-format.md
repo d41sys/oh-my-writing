@@ -29,6 +29,23 @@ Paths to CSV files are relative to the spec file.
 
 A panel takes inline `x` and `series`, or a `csv` file with `x` naming a column and `series` listing columns. With more than one panel, the letters (a), (b) are added to the titles.
 
+## Grouped bars
+
+```json
+{
+  "type": "grouped_bars",
+  "highlight": "Proposed",
+  "value_labels": false,
+  "panels": [
+    {"title": "Error", "ylabel": "MAE (kWh/h)", "csv": "error.csv", "x": "window", "series": ["Baseline", "Proposed"]},
+    {"title": "Cost", "ylabel": "Cost (k€)", "categories": ["W1", "W2"],
+     "series": {"Baseline": [2.9, 1.4], "Proposed": [2.5, 1.5]}}
+  ]
+}
+```
+
+Methods sit side by side in each category. A panel takes `categories` and `series` inline, or a `csv` with `x` naming the category column.
+
 ## Stacked bars
 
 ```json

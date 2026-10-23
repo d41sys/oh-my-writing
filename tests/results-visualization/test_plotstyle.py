@@ -141,3 +141,34 @@ def test_cli_names_a_missing_csv_column(tmp_path, capsys):
     code = ps.main(["render", str(tmp_path / "spec.json"), "--out", str(tmp_path / "fig"), "--no-tex"])
     assert code == 2
     assert "no column ['B']" in capsys.readouterr().err
+
+
+def test_grouped_bars_keep_each_method_look_across_panels_and_start_at_zero():
+    panels = [
+        {"categories": ["w1", "w2"], "series": {"Base": [5, 4], "Ours": [3, 2]}},
+        {"categories": ["w1", "w2"], "series": {"Ours": [9, 8], "Base": [7, 6]}},
+    ]
+    fig, warnings = ps.grouped_bars(panels, highlight="Ours")
+    looks = []
+    for ax in fig.axes:
+        looks.append({c.get_label(): (c.patches[0].get_facecolor(), c.patches[0].get_hatch()) for c in ax.containers})
+        assert ax.get_ylim()[0] == 0
+    assert looks[0]["Ours"] == looks[1]["Ours"] and looks[0]["Base"] == looks[1]["Base"]
+    assert looks[0]["Ours"][1] == "///" and looks[0]["Base"][1] != "///"  # a cue besides colour
+    assert warnings == []
+
+
+def test_grouped_bars_with_negative_values_draw_a_zero_line_instead_of_warning():
+    fig, warnings = ps.grouped_bars([{"categories": ["a", "b"], "series": {"delta": [-3, 2]}}])
+    assert warnings == []
+    assert any(l.get_ydata()[0] == 0 for l in fig.axes[0].get_lines())
+
+
+def test_tex_escaping_leaves_math_alone():
+    ps.apply_style("paper-double", tex=True)
+    try:
+        out = ps.plain(r"cost_total (50% of k€) at $\rho_1$")
+        assert r"cost\_total" in out and r"50\%" in out and r"$\rho_1$" in out
+        assert "€" not in out
+    finally:
+        ps.apply_style("paper-double", tex=False)
