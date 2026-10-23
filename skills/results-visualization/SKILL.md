@@ -3,7 +3,7 @@ name: results-visualization
 description: "Turns experiment and measurement results into publication-ready charts in one consistent paper style: method comparisons over rounds, clients or a parameter, cost or time breakdowns, confusion matrices, and per-group distributions such as samples per class on each client. Reads the numbers from result files, keeps each method's colour and marker the same across panels and figures, flags axes that exaggerate small gaps, and writes a caption that states the finding. Matches the author's own plotting template when one is given. Use when asked to plot, chart or visualise results, make figures for a paper, thesis, report or slides, redo figures in a house style, compare methods in a figure, or draw confusion matrices or data-distribution plots. Not for architecture or flow diagrams, dashboards, or decorative graphics."
 license: MIT
 metadata:
-  version: "1.0"
+  version: "1.1"
   skill-author: d41sys
 ---
 
@@ -36,6 +36,7 @@ For boxes-and-arrows diagrams use a diagram skill. For the table-or-figure decis
    - how much data each group holds (samples per class per client): bubble matrix with a size key.
 4. **Build it as a script.**
    - Write a short, rerunnable script or JSON spec next to the figure. Without an author template, build on `plotstyle.py`: render a JSON spec, or import it and call `apply_style`, `series_styles` and the chart helpers. Do not restyle by hand, so every figure gets the same look and the same warnings. The JSON format is in [references/spec-format.md](references/spec-format.md); `plotstyle.py` needs matplotlib and numpy (`uv run --with matplotlib --with numpy python …`).
+   - When the figure lives in another project, copy `plotstyle.py` next to the figure script and import it from there. The figure must rebuild on a machine without this skill installed.
    - Give each method one colour, marker and line style and reuse that mapping in every panel and figure. The proposed method stands out; baselines stay quieter.
    - Size the figure for where it lands: a single paper column, the full page width, or a slide. Text must be readable at that printed size, not only on screen.
    - Save a vector PDF for the document and a 300-dpi PNG for review.
