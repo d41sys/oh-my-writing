@@ -4,6 +4,8 @@ Load when: choosing, building, captioning, or auditing a table, chart, or diagra
 
 A visual earns its place when it shows a relationship, distribution, or contrast that prose conveys less clearly. If it does not answer a specific question the reader has, use a sentence. A report must remain complete if every figure is removed; the key numbers are always also in the text or a table.
 
+To build a chart from result data in a consistent paper style, with the plotting script and honest-axis checks, use the `results-visualization` skill when it is installed.
+
 ## 1. Pick by the relationship shown
 
 | The reader's question | Use | Notes |

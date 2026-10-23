@@ -1,6 +1,6 @@
 # Install Oh My Writing v2.1 (replaces the academic-writing install)
 
-Oh My Writing v2 is the ten skills in `skills/`. They replace the old single `academic-writing` skill as your everyday writing setup. Claude Code, Codex and omp all load them from the same two folders.
+Oh My Writing v2 is the eleven skills in `skills/`. They replace the old single `academic-writing` skill as your everyday writing setup. Claude Code, Codex and omp all load them from the same two folders.
 
 Time: about 1 minute with npx, about 5 minutes by hand.
 
@@ -14,7 +14,7 @@ Needs Node 18 or newer and git.
 npx github:d41sys/academic-writing-skill
 ```
 
-Copies the ten skills to `~/.oh-my-writing/skills/` and links them into `~/.agents/skills` (Codex, omp) and `~/.claude/skills` (Claude Code, omp). The old `academic-writing` skill, its link and `~/.claude/commands/academic-writing.md` are moved to `~/.oh-my-writing/backup/<timestamp>/`, not deleted. If published to npm later, `npx oh-my-writing` does the same.
+Copies the eleven skills to `~/.oh-my-writing/skills/` and links them into `~/.agents/skills` (Codex, omp) and `~/.claude/skills` (Claude Code, omp). The old `academic-writing` skill, its link and `~/.claude/commands/academic-writing.md` are moved to `~/.oh-my-writing/backup/<timestamp>/`, not deleted. If published to npm later, `npx oh-my-writing` does the same.
 
 Flags (add them after the command, for example `npx github:d41sys/academic-writing-skill install --dry-run`):
 
@@ -61,7 +61,7 @@ git clone https://github.com/d41sys/academic-writing-skill.git ~/oh-my-writing
 git -C ~/oh-my-writing checkout v2.2.0
 ```
 
-### 3. Link the ten skills
+### 3. Link the eleven skills
 
 ```bash
 mkdir -p ~/.agents/skills ~/.claude/skills
@@ -94,7 +94,7 @@ Without it, `project-report` falls back to Mermaid diagrams.
 ### 5. Check it works
 
 ```bash
-ls -l ~/.agents/skills ~/.claude/skills | grep oh-my-writing   # ten links in each
+ls -l ~/.agents/skills ~/.claude/skills | grep oh-my-writing   # eleven links in each
 ```
 
 Then, in a new session of Claude Code, Codex or omp, ask: `Make this paragraph sound less like AI, keep every fact` and paste a paragraph. The reply should come from `anti-slop-editing`. In omp, the skill read shows as `skill://anti-slop-editing`.
@@ -113,6 +113,7 @@ Then, in a new session of Claude Code, Codex or omp, ask: `Make this paragraph s
 | Docs | README, tutorial, PR description, changelog, ADR | technical-docs |
 | Career | résumé, cover letter, statement of purpose, cold email | career-documents |
 | Folder to report | "make a project report from these documents" | project-report |
+| Result charts | "plot these results for the paper", "make the confusion matrices" | results-visualization |
 
 The skills never invent facts. Anything missing from your material comes back as `[ASK AUTHOR: …]` or `[VERIFY: …]`. Answer those, or remove them, before you send the text.
 

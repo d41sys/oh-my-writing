@@ -1,6 +1,6 @@
 # Oh My Writing
 
-Writing skills for AI agents that draft and edit **without AI slop, invented facts, or a flattened author voice**. Ten [Agent Skills](https://agentskills.io/specification) for Claude Code, Codex and omp: anti-slop editing, author voice, drafting from notes, evidence checks, independent review, posts, reports, technical docs, career documents, and project reports with designed diagrams.
+Writing skills for AI agents that draft and edit **without AI slop, invented facts, or a flattened author voice**. Eleven [Agent Skills](https://agentskills.io/specification) for Claude Code, Codex and omp: anti-slop editing, author voice, drafting from notes, evidence checks, independent review, posts, reports, technical docs, career documents, project reports with designed diagrams, and result charts for papers.
 
 ```bash
 npx github:d41sys/academic-writing-skill
@@ -24,6 +24,7 @@ The installer links the skills for every host and backs up the old `academic-wri
 | `technical-docs` | Tutorials, how-to guides, reference, explanation, READMEs, PR descriptions, changelogs |
 | `career-documents` | Truthful résumés, CVs, cover letters, statements of purpose, profiles and outreach |
 | `project-report` | Turn a folder of project documents into a sourced, professional project report with designed diagrams, as one print-ready HTML file plus a Markdown copy that reads on its own |
+| `results-visualization` | Plot experiment results as paper-ready charts in one consistent style, read from the result files |
 
 Ask in plain words, for example "edit this so it doesn't read like AI, keep every fact" or "make a project report from these documents". The matching skill loads on its own. Anything missing from your material comes back as `[ASK AUTHOR: …]` or `[VERIFY: …]`, never as a guess.
 

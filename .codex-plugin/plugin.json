@@ -19,7 +19,7 @@
   "interface": {
     "displayName": "Oh My Writing",
     "shortDescription": "Draft, edit, and review writing without AI slop",
-    "longDescription": "Ten writing skills: anti-slop editing with meaning preservation, author voice profiles from real samples, structured drafting from material, evidence-grounded claims, independent review, and genre skills for posts, reports, technical documentation, career documents, and project reports with diagrams.",
+    "longDescription": "Eleven writing skills: anti-slop editing with meaning preservation, author voice profiles from real samples, structured drafting from material, evidence-grounded claims, independent review, and genre skills for posts, reports, technical documentation, career documents, and project reports with diagrams.",
     "developerName": "d41sys",
     "category": "Productivity",
     "capabilities": [

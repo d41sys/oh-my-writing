@@ -1,6 +1,6 @@
 # Using Oh My Writing
 
-Ten skills that load on their own when your request matches them. You do not name a skill or run a command. Ask in plain words, and give the agent your material: notes, files, drafts, samples. This guide covers what to ask, what you get back, and how to combine skills.
+Eleven skills that load on their own when your request matches them. You do not name a skill or run a command. Ask in plain words, and give the agent your material: notes, files, drafts, samples. This guide covers what to ask, what you get back, and how to combine skills.
 
 - [How the skills behave](#how-the-skills-behave)
 - [Skill by skill](#skill-by-skill)
@@ -102,6 +102,14 @@ Every skill follows four rules:
 - **Rule:** conflicting figures across files stay visible, and superseded versions are flagged.
 - **Diagrams** use [diagram-design](https://github.com/cathrynlavery/diagram-design) when it is installed, otherwise Mermaid. Install it with `npx github:d41sys/academic-writing-skill install --with-diagram-design`.
 
+### results-visualization: charts of your results
+
+- **Ask:** "plot these results for the paper", "two panels, IID and non-IID", "confusion matrices for the three datasets", "redo this figure in the style of my notebook".
+- **Give:** the result files (CSV, JSON, logs) or the results table, and your plotting notebook or earlier figures if you want that look.
+- **You get:** PDF and PNG figures, the script or JSON spec that rebuilds them, a caption and the one-sentence finding for the text.
+- **Rule:** numbers come from the result files. A zoomed axis, unit mismatch or unreadable bubble size is fixed or stated in the caption.
+- **Needs** matplotlib and numpy. With [uv](https://docs.astral.sh/uv/): `uv run --with matplotlib --with numpy python …`. LaTeX text is used when `latex` is installed.
+
 ## Combining skills
 
 The agent often loads more than one skill. You can also ask for a combination directly:
@@ -112,10 +120,11 @@ The agent often loads more than one skill. You can also ask for a combination di
 | A report you can defend | "write the memo, then fact-check it against the data" | report-writing + evidence-grounded-writing |
 | Draft, then a second opinion | "draft it, then review it as an outside reader" | structured-drafting + independent-review |
 | De-AI an essay without losing claims | "make this sound human, don't change any claim" | anti-slop-editing + evidence-grounded-writing |
+| Results section with figures | "write the results section and plot the comparison" | results-visualization + evidence-grounded-writing |
 
 ## The helper scripts
 
-The skills run these scripts themselves. You can also run them directly. They use only the Python 3 standard library.
+The skills run these scripts themselves. You can also run them directly. They use only the Python 3 standard library, except `plotstyle.py`, which needs matplotlib and numpy.
 
 ```bash
 S=~/.oh-my-writing/skills   # or wherever the skills are installed
@@ -124,6 +133,7 @@ python3 $S/anti-slop-editing/scripts/fact_diff.py before.md after.md   # what ch
 python3 $S/author-voice/scripts/voice_stats.py sample1.md sample2.md sample3.md
 python3 $S/evidence-grounded-writing/scripts/claim_ledger.py report.md  # sentences that need evidence
 python3 $S/project-report/scripts/inventory.py --out work/ docs/       # inventory a document folder
+uv run --with matplotlib --with numpy python $S/results-visualization/scripts/plotstyle.py render spec.json --out figures/fig1
 ```
 
 ## Getting good results

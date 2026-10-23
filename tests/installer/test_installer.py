@@ -55,11 +55,7 @@ def make_old_install(home):
     return old
 
 
-def test_ten_skills_found():
-    assert len(SKILLS) == 10
-
-
-def test_fresh_install_creates_ten_links_per_host(home):
+def test_fresh_install_links_every_skill_per_host(home):
     r = run(home, "install", "--yes")
     assert r.returncode == 0, r.stderr
     store = home / ".oh-my-writing" / "skills"
@@ -88,10 +84,10 @@ def test_store_copy_excludes_junk(home):
 
 def test_hosts_flag_limits_dirs(home):
     assert run(home, "install", "--yes", "--hosts", "claude").returncode == 0
-    assert len(list((home / ".claude" / "skills").iterdir())) == 10
+    assert len(list((home / ".claude" / "skills").iterdir())) == len(SKILLS)
     assert not (home / ".agents").exists()
     assert run(home, "install", "--yes", "--hosts=codex").returncode == 0
-    assert len(list((home / ".agents" / "skills").iterdir())) == 10
+    assert len(list((home / ".agents" / "skills").iterdir())) == len(SKILLS)
 
 
 def test_copy_mode_makes_real_folders(home):
@@ -258,7 +254,7 @@ def test_with_diagram_design_without_git_warns_not_fails(home, tmp_path):
     assert r.returncode == 0, r.stderr
     assert "git not found" in r.stdout
     assert not (home / ".agents" / "skills" / "diagram-design").exists()
-    assert len(list((home / ".agents" / "skills").iterdir())) == 10
+    assert len(list((home / ".agents" / "skills").iterdir())) == len(SKILLS)
 
 
 def test_unknown_flag_is_usage_error(home):

@@ -7,7 +7,7 @@ On realistic writing tasks, an agent with these skills passed **89%** of tuned r
 ## Setup
 
 - **Host and model:** omp with gpt-6-sol. Judges also use gpt-6-sol. Results directory `v-final2-omp`.
-- **Cases:** 59 tasks across all ten skills, each run 3 times (177 runs per condition). Each case has:
+- **Cases:** 59 tasks across the ten writing skills, each run 3 times (177 runs per condition). Each case has:
   - a prompt and material files: notes, transcripts, drafts, and real document folders with docx, xlsx, pptx, pdf, eml and csv files;
   - mechanical checks.
 - **Checks** grade what matters for trust:

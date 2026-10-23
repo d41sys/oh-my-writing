@@ -1,0 +1,4 @@
+interface:
+  display_name: "Results Visualization"
+  short_description: "Publication-ready result charts in one consistent paper style, read from the result files."
+  default_prompt: "Use $results-visualization to plot these results as a two-panel figure for the paper."
