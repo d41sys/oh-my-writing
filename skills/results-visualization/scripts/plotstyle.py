@@ -27,6 +27,7 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
+from matplotlib.font_manager import FontProperties  # noqa: E402
 import numpy as np  # noqa: E402
 
 PRESETS = {
@@ -166,10 +167,15 @@ def method_lines(panels: list[dict], highlight: str | None = None, legend: str =
         if panel.get("title"):
             ax.set_title(bold(_letter(i, panel["title"]) if len(panels) > 1 else panel["title"]), pad=8)
         ax.set_xlim(*(panel.get("xlim") or (min(x), max(x))))
+        values = [v for n in names if n in panel["series"] for v in panel["series"][n]]
         if panel.get("ylim"):
             ax.set_ylim(*panel["ylim"])
+        elif 0 <= min(values) and max(values) <= 1 < ax.get_ylim()[1]:
+            # a share (accuracy, F1) cannot exceed 1; stop the axis there and let markers at 1.0 draw whole
+            ax.set_ylim(top=1.0)
+            for line in ax.get_lines():
+                line.set_clip_on(False)
         ax.legend(loc=legend)
-        values = [v for n in names if n in panel["series"] for v in panel["series"][n]]
         w = zoom_warning(values, ax.get_ylim(), f"panel {i + 1}")
         if w:
             warnings.append(w)
@@ -282,7 +288,8 @@ def bubble_matrix(rows: list[str], cols: list, counts, xlabel: str, ylabel: str,
                for v in keys]
     # legend rows are spaced in font-size units; leave room for the largest key bubble's diameter
     diameter_pt = float(np.sqrt(max(keys) * scale))
-    spacing = max(1.4, 0.75 * diameter_pt / plt.rcParams["legend.fontsize"])
+    legend_pt = FontProperties(size=plt.rcParams["legend.fontsize"]).get_size_in_points()
+    spacing = max(1.4, 0.75 * diameter_pt / legend_pt)
     ax.legend(handles, [plain(f"{v:,.0f}") for v in keys], title=plain("count"), loc="upper left",
               bbox_to_anchor=(1.01, 1.0), labelspacing=spacing, borderpad=0.9, handletextpad=1.5,
               frameon=False)
@@ -366,6 +373,7 @@ def main(argv=None) -> int:
     r.add_argument("--out", required=True, help="output path without extension")
     r.add_argument("--preset", default="paper-double", choices=sorted(PRESETS))
     r.add_argument("--no-tex", action="store_true", help="skip LaTeX text even when it is installed")
+    r.add_argument("--strict", action="store_true", help="exit 1 when there are checks to fix or state")
     args = ap.parse_args(argv)
     spec_path = Path(args.spec)
     spec = json.loads(spec_path.read_text(encoding="utf-8"))
@@ -379,7 +387,7 @@ def main(argv=None) -> int:
         print(f"wrote {p}")
     for w in warnings:
         print(f"check: {w}")
-    return 1 if warnings else 0
+    return 1 if warnings and args.strict else 0
 
 
 if __name__ == "__main__":

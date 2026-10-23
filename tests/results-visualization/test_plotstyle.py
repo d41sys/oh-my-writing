@@ -92,14 +92,46 @@ def test_bubble_area_is_proportional_to_count_and_has_a_size_key():
     assert any("zero" in w for w in warnings)
 
 
-def test_cli_reads_series_from_csv_and_reports_warnings(tmp_path, capsys):
+def _narrow_spec(tmp_path):
+    spec = {"type": "lines", "panels": [{"x": [1, 2], "series": {"A": [0.998, 0.999]}}]}
+    (tmp_path / "spec.json").write_text(json.dumps(spec), encoding="utf-8")
+    return ["render", str(tmp_path / "spec.json"), "--out", str(tmp_path / "fig"), "--no-tex"]
+
+
+def test_cli_writes_files_and_succeeds_with_checks_unless_strict(tmp_path, capsys):
+    argv = _narrow_spec(tmp_path)
+    assert ps.main(argv) == 0
+    assert "check:" in capsys.readouterr().out
+    assert (tmp_path / "fig.pdf").stat().st_size > 0 and (tmp_path / "fig.png").stat().st_size > 0
+    assert ps.main([*argv, "--strict"]) == 1
+
+
+def test_cli_reads_series_from_csv(tmp_path):
     (tmp_path / "r.csv").write_text("n,A,Ours\n10,0.5,0.7\n20,0.6,0.9\n", encoding="utf-8")
     spec = {"type": "lines", "highlight": "Ours",
             "panels": [{"title": "t", "csv": "r.csv", "x": "n", "series": ["A", "Ours"], "ylim": [0, 1]}]}
     (tmp_path / "spec.json").write_text(json.dumps(spec), encoding="utf-8")
-    code = ps.main(["render", str(tmp_path / "spec.json"), "--out", str(tmp_path / "fig"), "--no-tex"])
-    assert code == 0
-    assert (tmp_path / "fig.pdf").stat().st_size > 0 and (tmp_path / "fig.png").stat().st_size > 0
+    assert ps.main(["render", str(tmp_path / "spec.json"), "--out", str(tmp_path / "fig"), "--no-tex", "--strict"]) == 0
+    fig, _ = ps.method_lines([ps._resolve_panel(spec["panels"][0], tmp_path)], highlight="Ours")
+    plotted = {l.get_label(): list(l.get_ydata()) for l in fig.axes[0].get_lines()}
+    assert plotted == {"A": [0.5, 0.6], "Ours": [0.7, 0.9]}
+
+
+def test_share_axis_stops_at_one_and_keeps_markers_whole():
+    fig, _ = ps.method_lines([{"x": [1, 2, 3], "series": {"A": [0.90, 0.95, 1.0]}}])
+    ax = fig.axes[0]
+    assert ax.get_ylim()[1] == 1.0
+    assert not ax.get_lines()[0].get_clip_on()
+    # a metric that is not a share keeps its autoscaled headroom
+    fig, _ = ps.method_lines([{"x": [1, 2], "series": {"loss": [0.5, 1.4]}}])
+    assert fig.axes[0].get_ylim()[1] > 1.4
+
+
+def test_bubble_key_works_without_apply_style():
+    import matplotlib
+    matplotlib.rcParams.update(matplotlib.rcParamsDefault)  # legend.fontsize is the string "medium" here
+    fig, _ = ps.bubble_matrix(["a"], [0, 1], [[5, 50]], "x", "y")
+    assert fig.axes[0].get_legend() is not None
 
 
 def test_cli_names_a_missing_csv_column(tmp_path, capsys):

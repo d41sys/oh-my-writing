@@ -6,7 +6,7 @@ Render a figure without writing Python:
 uv run --with matplotlib --with numpy python scripts/plotstyle.py render spec.json --out figures/accuracy
 ```
 
-The command writes `figures/accuracy.pdf` and `figures/accuracy.png` and prints each warning as `check: …`. The exit code is 0 when there are no warnings, 1 when warnings were printed, and 2 when the spec is wrong. `--preset` picks the size (`paper-single`, `paper-double`, `notebook`, `slide`). `--no-tex` skips LaTeX text.
+The command writes `figures/accuracy.pdf` and `figures/accuracy.png` and prints each warning as `check: …`; fix it or state it in the caption. The exit code is 0 once the files are written, even with checks printed, and 2 when the spec is wrong. `--strict` exits 1 when checks were printed, for pipelines that must stop on them. `--preset` picks the size (`paper-single`, `paper-double`, `notebook`, `slide`). `--no-tex` skips LaTeX text.
 
 Paths to CSV files are relative to the spec file.
 
