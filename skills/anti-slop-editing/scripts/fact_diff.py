@@ -116,7 +116,9 @@ def _match_dates(lost: list, added: list, before_items: dict, after_items: dict)
 
 
 FIELD_LABEL_RE = re.compile(r"[A-Z]{3,}|[A-Z][a-z]+(?:-[A-Z][a-z]+)+")  # VERDICT, Reviewer-Model
-LIST_MARKER_RE = re.compile(r"^[ \t]*(?:\d+[.)]|[-*+])[ \t]+", re.M)
+# List markers and heading section numbers ("## 2.1 Method", "## 1. Summary") are layout, not figures; a heading that
+# starts with a bare number ("## 2024 results") keeps it.
+LIST_MARKER_RE = re.compile(r"^[ \t]*(?:#{1,6}[ \t]+(?:\d+(?:\.\d+)*[.)]|\d+(?:\.\d+)+)|\d+[.)]|[-*+])[ \t]+", re.M)
 # Markers this skill tells the editor to insert; their wording is a question, not a fact.
 MARKER_RE = re.compile(r"\[(?:ASK AUTHOR|VERIFY|CONFIRM|UNTESTED|CITATION NEEDED)\b[^\]\n]*\]", re.I)
 CURRENCY = {"$": "usd", "\u20ac": "eur", "\u00a3": "gbp", "\u00a5": "jpy"}
@@ -151,7 +153,9 @@ CERTAINTY = {"may", "might", "could", "must", "should", "shall", "would", "likel
              "always", "never", "guaranteed", "proves", "proven", "demonstrates"}
 SCOPE = {"all", "every", "each", "most", "some", "many", "few", "several", "only", "often", "usually", "sometimes",
          "rarely", "generally", "typically", "approximately", "roughly", "nearly", "almost", "entire"}
-SCOPE_PHRASE_RE = re.compile(r"\b(?:no more than|no fewer than|more than|less than|fewer than|at least|at most|up to)\b", re.I)
+# "more than ever", "less than ideal": comparison idioms, not a bound on a quantity.
+SCOPE_PHRASE_RE = re.compile(r"\b(?:no more than|no fewer than|more than|less than|fewer than|at least|at most|up to)\b"
+                             r"(?!\s+(?:ever|enough|anything|anyone|anybody|ideal|perfect|stellar)\b)", re.I)
 CONTRACTION_BASES = {"can't": "can", "won't": "will", "shan't": "shall"}
 TOKEN_RE = re.compile(r"[A-Za-z]+(?:['\u2019][A-Za-z]+)?")
 

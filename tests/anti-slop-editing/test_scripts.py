@@ -442,6 +442,25 @@ def test_changed_scope_word_is_caught(tmp_path):
     assert lost_items(report, "scope") == {"only"} and added_items(report, "scope") == {"all"}
 
 
+def test_section_numbers_in_headings_are_not_figures(tmp_path):
+    before = write(tmp_path, "b.md", "Revenue was 120 in March.\n")
+    for heading in ("## 1. Summary", "### 2.1 Method", "# 3) Risks", "## 1.2. Scope"):
+        proc, report = diff_json(before, write(tmp_path, "a.md", f"{heading}\n\nRevenue was 120 in March.\n"))
+        assert proc.returncode == 0 and not added_items(report, "numbers"), (heading, report["categories"]["numbers"])
+    _, report = diff_json(before, write(tmp_path, "a.md", "## 2024 results\n\nRevenue was 120 in March.\n"))
+    assert added_items(report, "numbers") == {"2024"}  # a year in a heading is still a figure
+
+
+def test_comparison_idioms_are_not_scope_claims(tmp_path):
+    for old, new in [("Clean water matters more than ever to the town.", "Clean water matters to the town."),
+                     ("The results were less than ideal.", "The results were poor.")]:
+        proc, report = diff_json(write(tmp_path, "b.md", old + "\n"), write(tmp_path, "a.md", new + "\n"))
+        assert not lost_items(report, "scope"), (old, report["categories"]["scope"])
+    _, report = diff_json(write(tmp_path, "b.md", "It failed more than twice.\n"),
+                          write(tmp_path, "a.md", "It failed twice.\n"))
+    assert lost_items(report, "scope") == {"more than"}  # a bound on a count is still scope
+
+
 def test_lost_name_url_code_and_quote_are_caught(tmp_path):
     cases = [
         ("Acme Corp reported", "The company reported", "names", "Acme Corp"),
