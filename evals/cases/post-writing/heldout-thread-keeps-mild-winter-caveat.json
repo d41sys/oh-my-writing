@@ -125,5 +125,52 @@
       "max": 420,
       "note": "more than one post, shorter than the source"
     }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "1/ Marrowby Bee Club fitted battery timers to the feeders on 12 hives, and more of those colonies lived through winter. What we saw, and how far to trust it: https://example.org/marrowby/feeder-timers\n\n2/ Before this, feeding meant a volunteer visiting every site every few days with syrup. This year the timers released it on a fixed schedule, 6 October to 24 November, at 3 apiary sites. A timer costs 14 pounds.\n\n3/ We counted on 15 March. Alive: 11 of the 12 timer-fed colonies. The winter before, hand-fed on the same sites: 9 of 12.\n\n4/ What did not change is the workload. The timers did not reduce the number of site visits, since we inspect every hive for disease every two weeks anyway.\n\n5/ So did the schedule help? We think so, but we can't be sure. This winter was milder than the last one, and the mild weather may explain some or all of that gap.\n\n6/ Also keep the sample in mind: one winter, 12 colonies in each group. A difference of two colonies is small.\n\n7/ Thinking of timers for your own hives? Count your colonies in March and compare with last year before deciding.\n",
+      "reply": "Saved a 7-post thread to out/thread.md with the canonical link in post 1 and no hashtags. Kept every figure and unit, the unchanged site visits, the mild-winter caveat and the one-winter, 12-colony limit."
+    },
+    {
+      "name": "trap-timers-proven-hedge-dropped",
+      "expect": "fail",
+      "fails": [
+        "regex",
+        "not_regex"
+      ],
+      "output": "1/ Marrowby Bee Club fitted battery timers to the feeders on 12 hives, and more of those colonies lived through winter. What we saw, and how far to trust it: https://example.org/marrowby/feeder-timers\n\n2/ Before this, feeding meant a volunteer visiting every site every few days with syrup. This year the timers released it on a fixed schedule, 6 October to 24 November, at 3 apiary sites. A timer costs 14 pounds.\n\n3/ We counted on 15 March. Alive: 11 of the 12 timer-fed colonies. The winter before, hand-fed on the same sites: 9 of 12.\n\n4/ What did not change is the workload. The timers did not reduce the number of site visits, since we inspect every hive for disease every two weeks anyway.\n\n5/ The result: timers saved the colonies. 11 of 12 alive against 9 of 12 the winter before is proof the schedule works.\n\n7/ Thinking of timers for your own hives? Count your colonies in March and compare with last year before deciding.\n",
+      "reply": "Saved the thread to out/thread.md, 6 posts."
+    },
+    {
+      "name": "trap-invents-visit-saving",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts",
+        "regex"
+      ],
+      "output": "1/ Marrowby Bee Club fitted battery timers to the feeders on 12 hives, and more of those colonies lived through winter. What we saw, and how far to trust it: https://example.org/marrowby/feeder-timers\n\n2/ Before this, feeding meant a volunteer visiting every site every few days with syrup. This year the timers released it on a fixed schedule, 6 October to 24 November, at 3 apiary sites. A timer costs 14 pounds.\n\n3/ We counted on 15 March. Alive: 11 of the 12 timer-fed colonies. The winter before, hand-fed on the same sites: 9 of 12.\n\n4/ Bonus: timers cut our trips to the apiaries by about 30%, so volunteers got their weekends back.\n\n5/ So did the schedule help? We think so, but we can't be sure. This winter was milder than the last one, and the mild weather may explain some or all of that gap.\n\n6/ Also keep the sample in mind: one winter, 12 colonies in each group. A difference of two colonies is small.\n\n7/ Thinking of timers for your own hives? Count your colonies in March and compare with last year before deciding.\n",
+      "reply": "Saved the thread to out/thread.md, 7 posts."
+    },
+    {
+      "name": "trap-hashtags-and-bait",
+      "expect": "fail",
+      "fails": [
+        "not_regex",
+        "not_contains"
+      ],
+      "output": "1/ Marrowby Bee Club fitted battery timers to the feeders on 12 hives, and more of those colonies lived through winter. What we saw, and how far to trust it: https://example.org/marrowby/feeder-timers\n\n#beekeeping #feedertimers\n\n2/ Before this, feeding meant a volunteer visiting every site every few days with syrup. This year the timers released it on a fixed schedule, 6 October to 24 November, at 3 apiary sites. A timer costs 14 pounds.\n\n3/ We counted on 15 March. Alive: 11 of the 12 timer-fed colonies. The winter before, hand-fed on the same sites: 9 of 12.\n\n4/ What did not change is the workload. The timers did not reduce the number of site visits, since we inspect every hive for disease every two weeks anyway.\n\n5/ So did the schedule help? We think so, but we can't be sure. This winter was milder than the last one, and the mild weather may explain some or all of that gap.\n\n6/ Also keep the sample in mind: one winter, 12 colonies in each group. A difference of two colonies is small.\n\n7/ Thinking of timers for your own hives? Count your colonies in March and compare with last year before deciding. Repost if you keep bees, and follow me for more hive data.\n",
+      "reply": "Saved the thread to out/thread.md, 7 posts."
+    },
+    {
+      "name": "trap-figures-vague",
+      "expect": "fail",
+      "fails": [
+        "preserves"
+      ],
+      "output": "1/ Marrowby Bee Club fitted battery timers to the feeders on 12 hives, and more of those colonies lived through winter. What we saw, and how far to trust it: https://example.org/marrowby/feeder-timers\n\n2/ Before this, feeding meant a volunteer visiting every site every few days with syrup. This year the timers released it on a fixed schedule, 6 October to 24 November, at 3 apiary sites. A timer costs 14 pounds.\n\n3/ We counted on 15 March. Alive: most of the timer-fed colonies. The winter before, hand-fed on the same sites: fewer.\n\n4/ What did not change is the workload. The timers did not reduce the number of site visits, since we inspect every hive for disease every two weeks anyway.\n\n5/ So did the schedule help? We think so, but we can't be sure. This winter was milder than the last one, and the mild weather may explain some or all of that gap.\n\n6/ Also keep the sample in mind: one winter, 12 colonies in each group. A difference of two colonies is small.\n\n7/ Thinking of timers for your own hives? Count your colonies in March and compare with last year before deciding.\n",
+      "reply": "Saved the thread to out/thread.md, 7 posts."
+    }
   ]
 }

@@ -91,5 +91,55 @@
       "pattern": "(?i)\\b(as requested|as you asked|per your (request|instructions?)|based on (the|your) (script|code|source)|\\[source:)",
       "note": "process narration and source tags do not belong in a README the team will read; the user only asked for a README"
     }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "# csvtrim\n\ncsvtrim strips spaces around every field of a CSV file and drops rows that are empty. It uses only the Python standard library and was tested with Python 3.11.\n\n## Usage\n\n```sh\npython csvtrim.py --input sample.csv\n```\n\nThe input must be a UTF-8, comma-separated file. The cleaned CSV goes to standard output, so you can read it in the terminal or redirect it. For the `sample.csv` in this folder you get:\n\n```\nid,name,qty\n1,Linh,4\n2,Minh,7\n3,An,2\n```\n\n## Options\n\n| Option | Meaning |\n|---|---|\n| `-i`, `--input` | CSV file to read. Required. |\n| `-o`, `--output` | File to write. Default is standard output. |\n| `-v`, `--verbose` | Print row counts to standard error. |\n\nWith `--verbose`, the sample file prints `kept 4 rows, dropped 2 blank rows` on standard error. That stream is separate from the CSV, so redirecting the output does not mix the two.\n\n## Writing to a file\n\n```sh\npython csvtrim.py -i sample.csv -o clean.csv\n```\n\nDo not give `--output` the same path as the input. csvtrim opens the output file for writing before it reads the input, so the input is truncated to empty and its rows are lost.\n\n## Errors\n\nIf csvtrim cannot read the input file, it prints a message to standard error and exits with code 1. A normal run exits with code 0.\n",
+      "reply": "Saved the README to out/README.md. It documents the three flags the parser defines, says which output goes to standard output and which to standard error, gives exit code 1 for an unreadable input, and warns not to point --output at the input file. It says nothing about install, license or hosting because the script gives none.",
+      "files": {}
+    },
+    {
+      "name": "trap-invented-install-license-flag",
+      "expect": "fail",
+      "fails": [
+        "not_regex",
+        "not_contains"
+      ],
+      "output": "# csvtrim\n\ncsvtrim strips spaces around every field of a CSV file and drops rows that are empty. It uses only the Python standard library and was tested with Python 3.11.\n\n## Usage\n\n```sh\npython csvtrim.py --input sample.csv\n```\n\nThe input must be a UTF-8, comma-separated file. The cleaned CSV goes to standard output, so you can read it in the terminal or redirect it. For the `sample.csv` in this folder you get:\n\n```\nid,name,qty\n1,Linh,4\n2,Minh,7\n3,An,2\n```\n\n## Options\n\n| Option | Meaning |\n|---|---|\n| `-i`, `--input` | CSV file to read. Required. |\n| `-o`, `--output` | File to write. Default is standard output. |\n| `-v`, `--verbose` | Print row counts to standard error. |\n\nWith `--verbose`, the sample file prints `kept 4 rows, dropped 2 blank rows` on standard error. That stream is separate from the CSV, so redirecting the output does not mix the two.\n\n## Writing to a file\n\n```sh\npython csvtrim.py -i sample.csv -o clean.csv\n```\n\nDo not give `--output` the same path as the input. csvtrim opens the output file for writing before it reads the input, so the input is truncated to empty and its rows are lost.\n\n## Install\n\n```sh\npip install csvtrim\n```\n\nThe script requires Python 3.11 or newer and is released under the MIT license. Use `--delimiter` to read tab-separated files.\n\n## Errors\n\nIf csvtrim cannot read the input file, it prints a message to standard error and exits with code 1. A normal run exits with code 0.\n",
+      "reply": "Saved the README to out/README.md.",
+      "files": {}
+    },
+    {
+      "name": "trap-no-overwrite-warning",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "# csvtrim\n\ncsvtrim strips spaces around every field of a CSV file and drops rows that are empty. It uses only the Python standard library and was tested with Python 3.11.\n\n## Usage\n\n```sh\npython csvtrim.py --input sample.csv\n```\n\nThe input must be a UTF-8, comma-separated file. The cleaned CSV goes to standard output, so you can read it in the terminal or redirect it. For the `sample.csv` in this folder you get:\n\n```\nid,name,qty\n1,Linh,4\n2,Minh,7\n3,An,2\n```\n\n## Options\n\n| Option | Meaning |\n|---|---|\n| `-i`, `--input` | CSV file to read. Required. |\n| `-o`, `--output` | File to write. Default is standard output. |\n| `-v`, `--verbose` | Print row counts to standard error. |\n\nWith `--verbose`, the sample file prints `kept 4 rows, dropped 2 blank rows` on standard error. That stream is separate from the CSV, so redirecting the output does not mix the two.\n\n## Writing to a file\n\n```sh\npython csvtrim.py -i sample.csv -o clean.csv\n```\n\nPass `--output` to write the result to a file instead of the terminal.\n\n## Errors\n\nIf csvtrim cannot read the input file, it prints a message to standard error and exits with code 1. A normal run exits with code 0.\n",
+      "reply": "Saved the README to out/README.md.",
+      "files": {}
+    },
+    {
+      "name": "trap-no-failing-exit-code",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "# csvtrim\n\ncsvtrim strips spaces around every field of a CSV file and drops rows that are empty. It uses only the Python standard library and was tested with Python 3.11.\n\n## Usage\n\n```sh\npython csvtrim.py --input sample.csv\n```\n\nThe input must be a UTF-8, comma-separated file. The cleaned CSV goes to standard output, so you can read it in the terminal or redirect it. For the `sample.csv` in this folder you get:\n\n```\nid,name,qty\n1,Linh,4\n2,Minh,7\n3,An,2\n```\n\n## Options\n\n| Option | Meaning |\n|---|---|\n| `-i`, `--input` | CSV file to read. Required. |\n| `-o`, `--output` | File to write. Default is standard output. |\n| `-v`, `--verbose` | Print row counts to standard error. |\n\nWith `--verbose`, the sample file prints `kept 4 rows, dropped 2 blank rows` on standard error. That stream is separate from the CSV, so redirecting the output does not mix the two.\n\n## Writing to a file\n\n```sh\npython csvtrim.py -i sample.csv -o clean.csv\n```\n\nDo not give `--output` the same path as the input. csvtrim opens the output file for writing before it reads the input, so the input is truncated to empty and its rows are lost.\n\n## Errors\n\nIf something goes wrong, csvtrim prints an error message.\n",
+      "reply": "Saved the README to out/README.md.",
+      "files": {}
+    },
+    {
+      "name": "trap-streams-not-stated",
+      "expect": "fail",
+      "fails": [
+        "contains_any"
+      ],
+      "output": "# csvtrim\n\ncsvtrim strips spaces around every field of a CSV file and drops rows that are empty. It uses only the Python standard library and was tested with Python 3.11.\n\n## Usage\n\n```sh\npython csvtrim.py --input sample.csv\n```\n\nThe input must be a UTF-8, comma-separated file. The cleaned CSV is shown. For the `sample.csv` in this folder you get:\n\n```\nid,name,qty\n1,Linh,4\n2,Minh,7\n3,An,2\n```\n\n## Options\n\n| Option | Meaning |\n|---|---|\n| `-i`, `--input` | CSV file to read. Required. |\n| `-o`, `--output` | File to write. Default is the terminal window. |\n| `-v`, `--verbose` | Print row counts to the console. |\n\nWith `--verbose`, csvtrim also prints the row counts.\n\n## Writing to a file\n\n```sh\npython csvtrim.py -i sample.csv -o clean.csv\n```\n\nDo not give `--output` the same path as the input. csvtrim opens the output file for writing before it reads the input, so the input is truncated to empty and its rows are lost.\n\n## Errors\n\nIf csvtrim cannot read the input file, it prints a message to the console and exits with code 1. A normal run exits with code 0.\n",
+      "reply": "Saved the README to out/README.md.",
+      "files": {}
+    }
   ]
 }

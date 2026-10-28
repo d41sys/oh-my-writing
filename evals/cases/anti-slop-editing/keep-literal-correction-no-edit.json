@@ -1,0 +1,83 @@
+{
+  "id": "anti-slop-editing/keep-literal-correction-no-edit",
+  "skill": "anti-slop-editing",
+  "description": "Depot follow-up built from the same forms used legitimately: a literal correction of a claim people really made ('read the memo as a layoff notice. It isn't one'), a time-sense 'While', and a concession whose both halves carry named figures. None is the template, so the right answer is no edit.",
+  "prompt": "Check memo.md for AI-sounding phrasing and fix whatever needs it. It's a follow-up going to the depot crews. Save the result to out/memo.md.",
+  "files": {
+    "memo.md": "Subject: Night schedule, follow-up\n\nSeveral of you read the 3 June memo as a layoff notice. It isn't one: no positions are being cut, and HR confirmed that in writing on 4 June.\n\nWhile the nightly sync ran, I counted the late arrivals at the north depot. Although the pilot results were encouraging (late arrivals fell from 31 to 12 a week), retention is still 71%, below the 80% target.\n"
+  },
+  "output": "out/memo.md",
+  "checks": [
+    {
+      "type": "similarity",
+      "source": "memo.md",
+      "min": 0.97
+    },
+    {
+      "type": "preserves",
+      "source": "memo.md",
+      "categories": [
+        "numbers",
+        "negations",
+        "scope"
+      ]
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "citations",
+        "urls"
+      ]
+    },
+    {
+      "type": "markers",
+      "min": 0,
+      "max": 0,
+      "target": "output"
+    },
+    {
+      "type": "contains_any",
+      "target": "reply",
+      "values": [
+        "no justified edit",
+        "no edit",
+        "no edits",
+        "no changes",
+        "no change",
+        "unchanged",
+        "left as is",
+        "left it as",
+        "nothing to change",
+        "nothing needed"
+      ]
+    },
+    {
+      "type": "contains",
+      "values": [
+        "It isn't one",
+        "While the nightly sync ran",
+        "retention is still 71%"
+      ],
+      "case_sensitive": true
+    }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "Subject: Night schedule, follow-up\n\nSeveral of you read the 3 June memo as a layoff notice. It isn't one: no positions are being cut, and HR confirmed that in writing on 4 June.\n\nWhile the nightly sync ran, I counted the late arrivals at the north depot. Although the pilot results were encouraging (late arrivals fell from 31 to 12 a week), retention is still 71%, below the 80% target.\n",
+      "reply": "No justified edit. \"It isn't one\" corrects a reading people really had, \"While the nightly sync ran\" is about time, and both halves of the pilot sentence carry figures. Left as is."
+    },
+    {
+      "name": "trap-flattens-correction-and-concession",
+      "expect": "fail",
+      "fails": [
+        "similarity",
+        "preserves"
+      ],
+      "output": "Subject: Night schedule, follow-up\n\nThe 3 June memo was not a layoff notice. HR confirmed in writing that no positions are being cut.\n\nThe pilot cut late arrivals, but retention is a challenge.\n",
+      "reply": "Tightened the correction and the concession."
+    }
+  ]
+}

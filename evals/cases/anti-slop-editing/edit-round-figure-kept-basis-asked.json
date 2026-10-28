@@ -1,0 +1,103 @@
+{
+  "id": "anti-slop-editing/edit-round-figure-kept-basis-asked",
+  "skill": "anti-slop-editing",
+  "description": "Blog post whose author supplies a round statistic ('nearly 70% of small bike shops') and a neat anecdote with no source. The era opener, staged reveal and chat closers go; the author's figure and anecdote are kept, nothing is attributed to an invented survey, and the reply asks the author for the basis of the 70% (marker in the reply, none in the published file).",
+  "prompt": "Take the machine-sounding bits out of post.md and save the edited post to out/post.md. It goes on the shop blog.",
+  "files": {
+    "post.md": "In today's fast-paced retail landscape, pricing is a hot topic. Here's the thing: nearly 70% of small bike shops still price used parts by hand. I think that is a mistake, and at Spoke & Chain we moved to a lookup sheet in March. A shop owner in Leeds once told me over coffee that he had not changed a price since 2019, and his margins showed it.\n\nWe hope this helps your shop, and let us know in the comments how you price!\n"
+  },
+  "output": "out/post.md",
+  "checks": [
+    {
+      "type": "preserves",
+      "source": "post.md",
+      "categories": [
+        "numbers",
+        "negations",
+        "certainty",
+        "scope",
+        "names"
+      ]
+    },
+    {
+      "type": "contains",
+      "values": [
+        "70%",
+        "Leeds",
+        "2019",
+        "coffee"
+      ],
+      "note": "the author's figure and anecdote stay; only the style wrapper goes"
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "citations",
+        "urls"
+      ]
+    },
+    {
+      "type": "slop_absent",
+      "patterns": [
+        "era-opener",
+        "staged-reveal",
+        "chat-closer",
+        "engagement-bait"
+      ]
+    },
+    {
+      "type": "markers",
+      "target": "both",
+      "min": 1,
+      "max": 4,
+      "note": "nothing in the text backs the 70%, so the basis is asked from the author"
+    },
+    {
+      "type": "regex",
+      "target": "both",
+      "pattern": "(?is)\\[(?:ASK AUTHOR|VERIFY)[^\\]]*(70|nearly|figure|statistic|percent|source|basis|where|survey|data)",
+      "note": "the flag must be about the round figure"
+    },
+    {
+      "type": "markers",
+      "min": 0,
+      "max": 0,
+      "target": "output"
+    },
+    {
+      "type": "not_regex",
+      "target": "output",
+      "pattern": "(?i)according to (?:a|an|the|our) (?:\\d{4} )?(?:trade )?(?:study|survey|report|analysis|poll|census|review)|(?:studies|surveys|research|polls|analysts|data) (?:show|shows|found|find|say|suggest)|(?:published|conducted|carried out) (?:by|in)",
+      "note": "the text names no survey or study; the edit must not attach one"
+    }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "Nearly 70% of small bike shops still price used parts by hand. I think that is a mistake, and at Spoke & Chain we moved to a lookup sheet in March. A shop owner in Leeds once told me over coffee that he had not changed a price since 2019, and his margins showed it.\n",
+      "reply": "Removed the \"In today's fast-paced\" opener, \"Here's the thing:\" and the two chatbot closers. Kept your \"nearly 70%\" figure and the Leeds story as written.\n\n[ASK AUTHOR: what is the basis for \"nearly 70% of small bike shops still price used parts by hand\" (a count, a survey, an estimate)? Nothing in the text backs it, so I left it as your claim.]"
+    },
+    {
+      "name": "trap-cuts-figure-as-decoration",
+      "expect": "fail",
+      "fails": [
+        "contains"
+      ],
+      "output": "I think pricing used parts by hand is a mistake, and at Spoke & Chain we moved to a lookup sheet in March.\n",
+      "reply": "Removed the filler, the statistic and the anecdote, which looked like decoration. [ASK AUTHOR: is there a figure for how many shops price by hand?]"
+    },
+    {
+      "name": "trap-adds-source",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts",
+        "not_regex",
+        "markers"
+      ],
+      "output": "Nearly 70% of small bike shops still price used parts by hand, according to a 2023 trade survey. I think that is a mistake, and at Spoke & Chain we moved to a lookup sheet in March. A shop owner in Leeds once told me over coffee that he had not changed a price since 2019, and his margins showed it.\n",
+      "reply": "Removed the opener, the staged reveal and the closers and gave the statistic its source."
+    }
+  ]
+}

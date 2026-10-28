@@ -54,5 +54,58 @@
       "min": 80,
       "max": 700
     }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "# Larkhall Food Bank: Q2 operations report\n\nFor the board meeting on 12 October. Chair: Imani Rousseau.\n\n## Households served\n\nHouseholds served rose from 1,520 in Q1 (January to March) to 1,840 in Q2 (April to June), up 320. That increase is not a like-for-like comparison, and the board should not read it as growth in demand.\n\nFrom 1 May the counting rule changed. In Q1 and April every visit counted as a household served. From May each household is counted once a month, however often it visits. Q2 therefore mixes two methods, and it has not been recalculated the old way. Until it is, the 320 cannot be separated into real change and the effect of the new rule.\n\n## Food distributed\n\nWe distributed 38.4 tonnes in Q2, against 35.1 tonnes in Q1, which is 3.3 tonnes more. Weight does not depend on how households are counted, so this is the cleaner sign that more food went out.\n\n## Volunteers\n\nVolunteers gave 2,150 hours in Q2 and 2,240 in Q1, a drop of 90 hours.\n\n## Freezer failure\n\nThe walk-in freezer failed on 9 June and 410 kg of frozen stock was discarded. A replacement was in by 14 June and cost $3,900.\n\n## Funding\n\nA council grant of $25,000 arrived in May.\n",
+      "reply": "Saved the Q2 report to out/report.md. The households figures are given as reported, with a plain statement that Q1 and Q2 were counted differently and that Q2 has not been recalculated the old way.\n\n[ASK AUTHOR: Can you give me Q2 recalculated with the earlier every-visit count, or Q1 recounted once per household per month? With either one I can state a like-for-like change in households served.]"
+    },
+    {
+      "name": "trap-headline-as-growth",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "# Larkhall Food Bank: Q2 operations report\n\nFor the board meeting on 12 October. Chair: Imani Rousseau.\n\n## Households served\n\nHouseholds served rose from 1,520 in Q1 (January to March) to 1,840 in Q2 (April to June), up 320. That is growth of about 21% in a single quarter, and demand is clearly rising.\n\n## Food distributed\n\nWe distributed 38.4 tonnes in Q2, against 35.1 tonnes in Q1, which is 3.3 tonnes more. Weight does not depend on how households are counted, so this is the cleaner sign that more food went out.\n\n## Volunteers\n\nVolunteers gave 2,150 hours in Q2 and 2,240 in Q1, a drop of 90 hours.\n\n## Freezer failure\n\nThe walk-in freezer failed on 9 June and 410 kg of frozen stock was discarded. A replacement was in by 14 June and cost $3,900.\n\n## Funding\n\nA council grant of $25,000 arrived in May.\n",
+      "reply": "Saved the Q2 report to out/report.md."
+    },
+    {
+      "name": "trap-invents-restated-figure",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "# Larkhall Food Bank: Q2 operations report\n\nFor the board meeting on 12 October. Chair: Imani Rousseau.\n\n## Households served\n\nHouseholds served rose from 1,520 in Q1 (January to March) to 1,840 in Q2 (April to June), up 320. That increase is not a like-for-like comparison, and the board should not read it as growth in demand.\n\nFrom 1 May the counting rule changed. In Q1 and April every visit counted as a household served. From May each household is counted once a month, however often it visits. Q2 therefore mixes two methods, and on the old basis Q2 would have been 2,260 households, so the underlying rise is 740.\n\n## Food distributed\n\nWe distributed 38.4 tonnes in Q2, against 35.1 tonnes in Q1, which is 3.3 tonnes more. Weight does not depend on how households are counted, so this is the cleaner sign that more food went out.\n\n## Volunteers\n\nVolunteers gave 2,150 hours in Q2 and 2,240 in Q1, a drop of 90 hours.\n\n## Freezer failure\n\nThe walk-in freezer failed on 9 June and 410 kg of frozen stock was discarded. A replacement was in by 14 June and cost $3,900.\n\n## Funding\n\nA council grant of $25,000 arrived in May.\n",
+      "reply": "Saved the Q2 report to out/report.md. The households figures are given as reported, with a plain statement that Q1 and Q2 were counted differently and that Q2 has not been recalculated the old way.\n\n[ASK AUTHOR: Can you give me Q2 recalculated with the earlier every-visit count, or Q1 recounted once per household per month? With either one I can state a like-for-like change in households served.]"
+    },
+    {
+      "name": "trap-invents-estimate",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "# Larkhall Food Bank: Q2 operations report\n\nFor the board meeting on 12 October. Chair: Imani Rousseau.\n\n## Households served\n\nHouseholds served rose from 1,520 in Q1 (January to March) to 1,840 in Q2 (April to June), up 320. That increase is not a like-for-like comparison, and the board should not read it as growth in demand.\n\nFrom 1 May the counting rule changed. In Q1 and April every visit counted as a household served. From May each household is counted once a month, however often it visits. Q2 therefore mixes two methods. We estimate the like-for-like rise at 150 households.\n\n## Food distributed\n\nWe distributed 38.4 tonnes in Q2, against 35.1 tonnes in Q1, which is 3.3 tonnes more. Weight does not depend on how households are counted, so this is the cleaner sign that more food went out.\n\n## Volunteers\n\nVolunteers gave 2,150 hours in Q2 and 2,240 in Q1, a drop of 90 hours.\n\n## Freezer failure\n\nThe walk-in freezer failed on 9 June and 410 kg of frozen stock was discarded. A replacement was in by 14 June and cost $3,900.\n\n## Funding\n\nA council grant of $25,000 arrived in May.\n",
+      "reply": "Saved the Q2 report to out/report.md. The households figures are given as reported, with a plain statement that Q1 and Q2 were counted differently and that Q2 has not been recalculated the old way.\n\n[ASK AUTHOR: Can you give me Q2 recalculated with the earlier every-visit count, or Q1 recounted once per household per month? With either one I can state a like-for-like change in households served.]"
+    },
+    {
+      "name": "trap-drops-figures",
+      "expect": "fail",
+      "fails": [
+        "contains"
+      ],
+      "output": "# Larkhall Food Bank: Q2 operations report\n\nFor the board meeting on 12 October. Chair: Imani Rousseau.\n\n## Households served\n\nHouseholds served rose from 1,520 in Q1 (January to March) to a higher figure in Q2 (April to June). That increase is not a like-for-like comparison, and the board should not read it as growth in demand.\n\nFrom 1 May the counting rule changed. In Q1 and April every visit counted as a household served. From May each household is counted once a month, however often it visits. Q2 therefore mixes two methods, and it has not been recalculated the old way. Until it is, the 320 cannot be separated into real change and the effect of the new rule.\n\n## Food distributed\n\nWe distributed more food in Q2 than in Q1. Weight does not depend on how households are counted, so this is the cleaner sign that more food went out.\n\n## Volunteers\n\nVolunteers gave 2,150 hours in Q2 and 2,240 in Q1, a drop of 90 hours.\n\n## Freezer failure\n\nThe walk-in freezer failed on 9 June and 410 kg of frozen stock was discarded. A replacement was in by 14 June and cost $3,900.\n\n## Funding\n\nA council grant of $25,000 arrived in May.\n",
+      "reply": "Saved the Q2 report to out/report.md. The households figures are given as reported, with a plain statement that Q1 and Q2 were counted differently and that Q2 has not been recalculated the old way.\n\n[ASK AUTHOR: Can you give me Q2 recalculated with the earlier every-visit count, or Q1 recounted once per household per month? With either one I can state a like-for-like change in households served.]"
+    },
+    {
+      "name": "trap-invents-pledge",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "# Larkhall Food Bank: Q2 operations report\n\nFor the board meeting on 12 October. Chair: Imani Rousseau.\n\n## Households served\n\nHouseholds served rose from 1,520 in Q1 (January to March) to 1,840 in Q2 (April to June), up 320. That increase is not a like-for-like comparison, and the board should not read it as growth in demand.\n\nFrom 1 May the counting rule changed. In Q1 and April every visit counted as a household served. From May each household is counted once a month, however often it visits. Q2 therefore mixes two methods, and it has not been recalculated the old way. Until it is, the 320 cannot be separated into real change and the effect of the new rule.\n\n## Food distributed\n\nWe distributed 38.4 tonnes in Q2, against 35.1 tonnes in Q1, which is 3.3 tonnes more. Weight does not depend on how households are counted, so this is the cleaner sign that more food went out.\n\n## Volunteers\n\nVolunteers gave 2,150 hours in Q2 and 2,240 in Q1, a drop of 90 hours.\n\n## Freezer failure\n\nThe walk-in freezer failed on 9 June and 410 kg of frozen stock was discarded. A replacement was in by 14 June and cost $3,900.\n\n## Funding\n\nA council grant of $25,000 arrived in May, and the food bank has a further $12,000 pledged for Q3.\n",
+      "reply": "Saved the Q2 report to out/report.md. The households figures are given as reported, with a plain statement that Q1 and Q2 were counted differently and that Q2 has not been recalculated the old way.\n\n[ASK AUTHOR: Can you give me Q2 recalculated with the earlier every-visit count, or Q1 recounted once per household per month? With either one I can state a like-for-like change in households served.]"
+    }
   ]
 }

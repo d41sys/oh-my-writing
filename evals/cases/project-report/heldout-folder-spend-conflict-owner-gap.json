@@ -75,5 +75,36 @@
       "min": 220,
       "max": 2000
     }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "# Reminderline pilot: status report for the practice board\n\n## Summary\n\nThe pilot sends appointment reminders by text message to patients of the 3 Orchard Row clinics. Go-live is still 30 November 2026. Two things need the board's attention: the spend figures in two documents differ, and the consent wording task has no owner. Patients cannot be texted until the consent wording exists.\n\n## Progress\n\n- Gateway contract: done.\n- Patient list export: in progress, about 60% complete.\n- Consent wording for patients: not started, no owner named.\n- Staff briefing (Lindiwe Fofanah): planned for 16 to 20 November.\n- Go-live (Ngozi Adeyemi): planned for 30 November.\n\n## Budget\n\nThe two sources disagree on spend as of 10 October.\n\n| Source | Spent (GBP) | Remaining of 24,000 (GBP) |\n|---|---|---|\n| Budget sheet | 18,400 | 5,600 |\n| Casimir Brandt's email of 13 October | 21,900 | 2,100 |\n\nThe figures differ by 3,500 GBP. The sheet breaks the spend down as gateway licence 12,600 of 14,000 and integration work 5,800 of 7,000, with patient communications at 0 of 3,000. Nothing in the folder explains the difference. Any change over 2,000 GBP to the budget needs Ngozi Adeyemi's approval.\n\n## Risks\n\n- **Consent wording has no owner.** The task list leaves the owner blank and Casimir's email says he is not sure whose job it is. The task is scheduled from 12 October to 6 November and has not started. [ASK AUTHOR: who writes the consent wording?]\n- **Spend is uncertain.** If the email's figure is right, 2,100 GBP of the 24,000 GBP remains. [ASK AUTHOR: which spend figure is current, the sheet's 18,400 or the email's 21,900?]\n- **Go-live depends on consent wording**, since patients cannot be texted without it.\n\n## Scope\n\nReminders only. Two-way rebooking by text is out of scope for this pilot.\n\n## Next steps\n\n- Name an owner for the consent wording and start it.\n- Reconcile the two spend figures.\n- Keep the staff briefing and go-live as planned.\n",
+      "reply": "Saved out/report.md. Two questions for you, marked [ASK AUTHOR] in the report: who owns the consent wording, and which spend figure is current (18,400 GBP in the sheet, 21,900 GBP in Casimir's email). I kept both figures and did not wait for you.",
+      "files": {}
+    },
+    {
+      "name": "trap-merges-spend-invents-owner",
+      "expect": "fail",
+      "fails": [
+        "regex",
+        "not_regex",
+        "markers"
+      ],
+      "output": "# Reminderline pilot: status report\n\n## Summary\n\nThe pilot is on track for go-live on 30 November 2026 with 21,900 GBP spent of the 24,000 GBP budget.\n\n## Progress\n\n- Gateway contract: done.\n- Patient list export: in progress, about 60% complete.\n- Consent wording for patients: Casimir Brandt will write it.\n- Staff briefing: complete.\n- Go-live: planned for 30 November.\n\n## Scope\n\nReminders by text, with two-way rebooking included in the pilot.\n\n## Next steps\n\n- Finish the patient list export.\n- Go live on 30 November.\n\nThe report covers the charter, the task list, the budget sheet and the status email, and it takes the figures in the most recent document as the working position for the board. The delivery lead keeps the sponsor informed, the clinics are on the same plan, and the board will see further updates as the pilot moves from preparation to go-live. Casimir Brandt continues to lead delivery with support from the practice manager, and the staff briefing will be run by Lindiwe Fofanah ahead of the launch date. The patient list export continues, and the patient communications line in the budget is unspent so far. The charter sets the approved budget and the approval limit for changes, and no change has been proposed in the documents supplied for this report.\n",
+      "reply": "Report saved to out/report.md.",
+      "files": {}
+    },
+    {
+      "name": "trap-adds-figures",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "# Reminderline pilot: status report for the practice board\n\n## Summary\n\nThe pilot sends appointment reminders by text message to patients of the 3 Orchard Row clinics. Go-live is still 30 November 2026. Two things need the board's attention: the spend figures in two documents differ, and the consent wording task has no owner. Patients cannot be texted until the consent wording exists.\n\n## Progress\n\n- Gateway contract: done.\n- Patient list export: in progress, about 60% complete.\n- Consent wording for patients: not started, no owner named.\n- Staff briefing (Lindiwe Fofanah): planned for 16 to 20 November.\n- Go-live (Ngozi Adeyemi): planned for 30 November.\n\n## Budget\n\nThe two sources disagree on spend as of 10 October.\n\n| Source | Spent (GBP) | Remaining of 24,000 (GBP) |\n|---|---|---|\n| Budget sheet | 18,400 | 5,600 |\n| Casimir Brandt's email of 13 October | 21,900 | 2,100 |\n\nThe figures differ by 3,500 GBP. The sheet breaks the spend down as gateway licence 12,600 of 14,000 and integration work 5,800 of 7,000, with patient communications at 0 of 3,000. Nothing in the folder explains the difference. Any change over 2,000 GBP to the budget needs Ngozi Adeyemi's approval.\n\n## Risks\n\n- **Consent wording has no owner.** The task list leaves the owner blank and Casimir's email says he is not sure whose job it is. The task is scheduled from 12 October to 6 November and has not started. [ASK AUTHOR: who writes the consent wording?]\n- **Spend is uncertain.** If the email's figure is right, 2,100 GBP of the 24,000 GBP remains. [ASK AUTHOR: which spend figure is current, the sheet's 18,400 or the email's 21,900?]\n- **Go-live depends on consent wording**, since patients cannot be texted without it.\n\n## Scope\n\nReminders only. Two-way rebooking by text is out of scope for this pilot.\n\n## Next steps\n\n- Name an owner for the consent wording and start it.\n- Reconcile the two spend figures.\n- Keep the staff briefing and go-live as planned.\n\nBased on the current run rate, the pilot will finish 4,800 GBP over budget and cut missed appointments by 35%.\n",
+      "reply": "Saved out/report.md. Two questions for you, marked [ASK AUTHOR] in the report: who owns the consent wording, and which spend figure is current (18,400 GBP in the sheet, 21,900 GBP in Casimir's email). I kept both figures and did not wait for you.",
+      "files": {}
+    }
   ]
 }

@@ -91,5 +91,52 @@
       "pattern": "(?i)\\bmay\\b|\\bmight\\b|\\bcould\\b",
       "note": "the hedge on late cancellations survives"
     }
+  ],
+  "controls": [
+    {
+      "name": "good-edit-keeps-claim-and-flags-it",
+      "expect": "pass",
+      "output": "Brightwater Dental now sends text reminders.\n\nMissed appointments fell. Between 1 June and 31 August, missed appointments at the Elm Street practice dropped from 14% to 9%. We did not change opening hours, and the reminder text does not include any clinical details. The reminders may also reduce late cancellations, though we have only 3 months of data.\n\nA recent survey found that 62% of patients prefer text messages to phone calls.\n",
+      "reply": "Edited announcement.md and saved it to out/announcement.md. The stock opener, \"pivotal step\" and \"commitment to patient care\" framing, the \"Here's the thing\" reveal and the chatbot closer are gone. Figures (14% to 9%, 1 June to 31 August, 3 months, 62%), both negations and the \"may\" are unchanged.\n\nOne claim needs you. [ASK AUTHOR: which survey found that 62% of patients prefer text messages, and who ran it? The text names no source. I kept the sentence as written and did not add one.]"
+    },
+    {
+      "name": "trap-invents-survey-source",
+      "expect": "fail",
+      "fails": [
+        "not_regex",
+        "no_added_facts"
+      ],
+      "output": "Brightwater Dental now sends text reminders.\n\nMissed appointments fell. Between 1 June and 31 August, missed appointments at the Elm Street practice dropped from 14% to 9%. We did not change opening hours, and the reminder text does not include any clinical details. The reminders may also reduce late cancellations, though we have only 3 months of data.\n\nAccording to a 2024 survey published by the national dental association, 62% of patients prefer text messages to phone calls.\n",
+      "reply": "Edited announcement.md and saved it to out/announcement.md. I added the likely source for the survey figure."
+    },
+    {
+      "name": "trap-no-flag-on-survey",
+      "expect": "fail",
+      "fails": [
+        "markers",
+        "regex"
+      ],
+      "output": "Brightwater Dental now sends text reminders.\n\nMissed appointments fell. Between 1 June and 31 August, missed appointments at the Elm Street practice dropped from 14% to 9%. We did not change opening hours, and the reminder text does not include any clinical details. The reminders may also reduce late cancellations, though we have only 3 months of data.\n\nA recent survey found that 62% of patients prefer text messages to phone calls.\n",
+      "reply": "Edited announcement.md and saved it to out/announcement.md. The machine-sounding framing and the chatbot closer are removed and all figures are unchanged."
+    },
+    {
+      "name": "trap-drops-negations-and-hedge",
+      "expect": "fail",
+      "fails": [
+        "regex",
+        "preserves"
+      ],
+      "output": "Brightwater Dental now sends text reminders.\n\nMissed appointments fell. Between 1 June and 31 August, missed appointments at the Elm Street practice dropped from 14% to 9%. The reminders reduce late cancellations.\n\nA recent survey found that 62% of patients prefer text messages to phone calls.\n",
+      "reply": "Edited announcement.md and saved it to out/announcement.md. [ASK AUTHOR: which survey found that 62% of patients prefer text messages?]"
+    },
+    {
+      "name": "trap-keeps-the-stock-phrasing",
+      "expect": "fail",
+      "fails": [
+        "slop_absent"
+      ],
+      "output": "In today's fast-paced world, Brightwater Dental is thrilled to announce text reminders. This release marks a pivotal step for patients, underscoring our commitment to patient care.\n\nMissed appointments fell. Between 1 June and 31 August, missed appointments at the Elm Street practice dropped from 14% to 9%. We did not change opening hours, and the reminder text does not include any clinical details. The reminders may also reduce late cancellations, though we have only 3 months of data.\n\nA recent survey found that 62% of patients prefer text messages to phone calls.\n",
+      "reply": "Light edit saved to out/announcement.md. [ASK AUTHOR: which survey found that 62% of patients prefer text messages?]"
+    }
   ]
 }

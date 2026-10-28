@@ -69,5 +69,50 @@
       "min": 60,
       "max": 350
     }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "# Billing sync: where we stand on invoice export failures\n\n**Where we stand.** Invoice export failures were 41 in September, up from 12 in August. So far the cause looks like the nightly export job timing out when an account has more than 5,000 line items. Lena Okafor (billing lead) says that explains most of the failures, not all of them, so some cause is still unknown.\n\nMarcus Dell (support) has had 9 customers ask for a manual export, and he sent each of them one by hand.\n\n**The choice in front of us.** There are two options, and no option has been selected yet:\n\n1. Split the nightly job by region. About 3 weeks of work.\n2. Raise the timeout to 20 minutes. About 2 days of work, but Priya Raman (finance) worries it only hides the problem.\n\n**Outside help.** Norwind Software's API team may be able to help with the export format. That is not confirmed: Lena is still waiting for a reply, so please do not plan around it.\n\n**What we need from you.** A decision on which option to take by October 24, because quarter-end invoicing starts October 31. If you have a view on the trade-off between the longer fix and the quick one, tell Lena before then.\n",
+      "reply": "Saved the update to out/update.md. The notes do not say which option to pick, so the update says the choice is open and asks the team to decide by October 24. Norwind is described as unconfirmed."
+    },
+    {
+      "name": "trap-picks-an-option",
+      "expect": "fail",
+      "fails": [
+        "regex",
+        "not_regex"
+      ],
+      "output": "# Billing sync: where we stand on invoice export failures\n\n**Where we stand.** Invoice export failures were 41 in September, up from 12 in August. So far the cause looks like the nightly export job timing out when an account has more than 5,000 line items. Lena Okafor (billing lead) says that explains most of the failures, not all of them, so some cause is still unknown.\n\nMarcus Dell (support) has had 9 customers ask for a manual export, and he sent each of them one by hand.\n\n**The choice in front of us.** There are two options. We recommend the first:\n\n1. Split the nightly job by region. About 3 weeks of work.\n2. Raise the timeout to 20 minutes. About 2 days of work, but Priya Raman (finance) worries it only hides the problem.\n\n**Outside help.** Norwind Software's API team may be able to help with the export format. That is not confirmed: Lena is still waiting for a reply, so please do not plan around it.\n\n**What we need from you.** Sign-off on the region split by October 24, because quarter-end invoicing starts October 31. If you have a view on the trade-off between the longer fix and the quick one, tell Lena before then.\n",
+      "reply": "Saved the update to out/update.md."
+    },
+    {
+      "name": "trap-norwind-as-confirmed",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "# Billing sync: where we stand on invoice export failures\n\n**Where we stand.** Invoice export failures were 41 in September, up from 12 in August. So far the cause looks like the nightly export job timing out when an account has more than 5,000 line items. Lena Okafor (billing lead) says that explains most of the failures, not all of them, so some cause is still unknown.\n\nMarcus Dell (support) has had 9 customers ask for a manual export, and he sent each of them one by hand.\n\n**The choice in front of us.** There are two options, and no option has been selected yet:\n\n1. Split the nightly job by region. About 3 weeks of work.\n2. Raise the timeout to 20 minutes. About 2 days of work, but Priya Raman (finance) worries it only hides the problem.\n\n**Outside help.** Norwind Software's API team is helping with the export format, which should shorten the work.\n\n**What we need from you.** A decision on which option to take by October 24, because quarter-end invoicing starts October 31. If you have a view on the trade-off between the longer fix and the quick one, tell Lena before then.\n",
+      "reply": "Saved the update to out/update.md."
+    },
+    {
+      "name": "trap-invents-person-and-figures",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "# Billing sync: where we stand on invoice export failures\n\n**Where we stand.** Invoice export failures were 41 in September, up from 12 in August. So far the cause looks like the nightly export job timing out when an account has more than 5,000 line items. Lena Okafor (billing lead) says that explains most of the failures, not all of them, so some cause is still unknown.\n\nMarcus Dell (support) has had 9 customers ask for a manual export, and our support lead Elena Frost estimates this cost 14 hours and about 3,200 USD in goodwill credits.\n\n**The choice in front of us.** There are two options, and no option has been selected yet:\n\n1. Split the nightly job by region. About 3 weeks of work.\n2. Raise the timeout to 20 minutes. About 2 days of work, but Priya Raman (finance) worries it only hides the problem.\n\n**Outside help.** Norwind Software's API team may be able to help with the export format. That is not confirmed: Lena is still waiting for a reply, so please do not plan around it.\n\n**What we need from you.** A decision on which option to take by October 24, because quarter-end invoicing starts October 31. If you have a view on the trade-off between the longer fix and the quick one, tell Lena before then.\n",
+      "reply": "Saved the update to out/update.md."
+    },
+    {
+      "name": "trap-marker-in-update",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "# Billing sync: where we stand on invoice export failures\n\n**Where we stand.** Invoice export failures were 41 in September, up from 12 in August. So far the cause looks like the nightly export job timing out when an account has more than 5,000 line items. Lena Okafor (billing lead) says that explains most of the failures, not all of them, so some cause is still unknown.\n\nMarcus Dell (support) has had 9 customers ask for a manual export, and he sent each of them one by hand.\n\n**The choice in front of us.** There are two options. [ASK AUTHOR: which option do you prefer?]\n\n1. Split the nightly job by region. About 3 weeks of work.\n2. Raise the timeout to 20 minutes. About 2 days of work, but Priya Raman (finance) worries it only hides the problem.\n\n**Outside help.** Norwind Software's API team may be able to help with the export format. That is not confirmed: Lena is still waiting for a reply, so please do not plan around it.\n\n**What we need from you.** A decision on which option to take by October 24, because quarter-end invoicing starts October 31. If you have a view on the trade-off between the longer fix and the quick one, tell Lena before then.\n",
+      "reply": "Saved the update to out/update.md."
+    }
   ]
 }

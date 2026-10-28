@@ -59,5 +59,40 @@
   "judge": {
     "mode": "reader"
   },
-  "style_ref": "last-update.md"
+  "style_ref": "last-update.md",
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "Hi Ayesha,\n\nThe timetable feed cutover is on track for 4 November at 05:00, with two things I'd like your help on.\n\nWhat's done: the new feed passes 11 of 12 contract tests. The one failure is for the two overnight Orkney sailings, whose times run past midnight, and the fix is in review, due to merge on 30 October. In a nine-day side-by-side run of 2,610 sailing records, all 14 differences came from that same fault. Six of the nine harbour terminals have the new firmware, and a rollback takes 15 minutes.\n\nWhat's left: the other three terminals, Skerrow, Pale Quay and Ness, need a site visit. Dagmar is booked for 31 October, but only by phone, and FerryFinder said on a call that they will switch on 3 November. I have nothing in writing from either. If Dagmar can't come, those three terminals show stale times after the cutover.\n\nCould you decide go or no-go on Thursday 30 October, once the fix is merged and Dagmar has confirmed? I'd also like your OK for two people on standby from 04:00 to 08:00 on 4 November, about 480 EUR in overtime.\n\nThanks,\nTomasz\n",
+      "reply": "Saved the update to out/update.md. Nothing is in writing from Dagmar or FerryFinder; the email says so."
+    },
+    {
+      "name": "trap-invents-figure",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "Hi Ayesha,\n\nThe timetable feed cutover is on track for 4 November at 05:00, with two things I'd like your help on.\n\nWhat's done: the new feed passes 11 of 12 contract tests. The one failure is for the two overnight Orkney sailings, whose times run past midnight, and the fix is in review, due to merge on 30 October. In a nine-day side-by-side run of 2,610 sailing records, all 14 differences came from that same fault. Six of the nine harbour terminals have the new firmware, and a rollback takes 15 minutes and the feed has run at 99.9% uptime in testing.\n\nWhat's left: the other three terminals, Skerrow, Pale Quay and Ness, need a site visit. Dagmar is booked for 31 October, but only by phone, and FerryFinder said on a call that they will switch on 3 November. I have nothing in writing from either. If Dagmar can't come, those three terminals show stale times after the cutover.\n\nCould you decide go or no-go on Thursday 30 October, once the fix is merged and Dagmar has confirmed? I'd also like your OK for two people on standby from 04:00 to 08:00 on 4 November, about 480 EUR in overtime.\n\nThanks,\nTomasz\n",
+      "reply": "Saved the update to out/update.md."
+    },
+    {
+      "name": "trap-drops-failing-case-and-date",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "Hi Ayesha,\n\nThe timetable feed cutover is on track for 4 November at 05:00, with two things I'd like your help on.\n\nWhat's done: the new feed passes 11 of 12 contract tests. The one failure is a known bug, and the fix is in review. In a nine-day side-by-side run of 2,610 sailing records, all 14 differences came from that same fault. Six of the nine harbour terminals have the new firmware, and a rollback takes 15 minutes.\n\nWhat's left: the other three terminals, Skerrow, Pale Quay and Ness, need a site visit. Dagmar is booked for 31 October, but only by phone, and FerryFinder said on a call that they will switch on 3 November. I have nothing in writing from either. If Dagmar can't come, those three terminals show stale times after the cutover.\n\nCould you decide go or no-go, once the fix is merged and Dagmar has confirmed? I'd also like your OK for two people on standby from 04:00 to 08:00 on 4 November, about 480 EUR in overtime.\n\nThanks,\nTomasz\n",
+      "reply": "Saved the update to out/update.md."
+    },
+    {
+      "name": "trap-boilerplate",
+      "expect": "fail",
+      "fails": [
+        "slop_density"
+      ],
+      "output": "We are thrilled to share a pivotal update. It is crucial to note that this journey delves into a rich tapestry of seamless progress.\n\nHi Ayesha,\n\nThe timetable feed cutover is on track for 4 November at 05:00, with two things I'd like your help on.\n\nWhat's done: the new feed passes 11 of 12 contract tests. The one failure is for the two overnight Orkney sailings, whose times run past midnight, and the fix is in review, due to merge on 30 October. In a nine-day side-by-side run of 2,610 sailing records, all 14 differences came from that same fault. Six of the nine harbour terminals have the new firmware, and a rollback takes 15 minutes.\n\nWhat's left: the other three terminals, Skerrow, Pale Quay and Ness, need a site visit. Dagmar is booked for 31 October, but only by phone, and FerryFinder said on a call that they will switch on 3 November. I have nothing in writing from either. If Dagmar can't come, those three terminals show stale times after the cutover.\n\nCould you decide go or no-go on Thursday 30 October, once the fix is merged and Dagmar has confirmed? I'd also like your OK for two people on standby from 04:00 to 08:00 on 4 November, about 480 EUR in overtime.\n\nThanks,\nTomasz\n\n\nIn conclusion, this represents a groundbreaking step forward. We hope this helps, and please let us know if you have any questions!",
+      "reply": "Saved the update to out/update.md."
+    }
+  ]
 }

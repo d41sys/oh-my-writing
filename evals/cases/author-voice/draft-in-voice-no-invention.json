@@ -84,5 +84,59 @@
       "pattern": "(?i)crack\\w*[^.\\n]{0,80}\\b(?:because|due to|caused|too fast|too quickly|thermal|moisture|air bubbles?|trapped)",
       "note": "the notes give no cause for the two cracked bowls; the post must leave the cause out or say plainly it is unknown, not invent one"
     }
+  ],
+  "controls": [
+    {
+      "name": "good-draft-in-voice",
+      "expect": "pass",
+      "output": "The second kiln is working again. The element was replaced on Tuesday. We refired the 24 bowls that had been waiting for it. Two came out cracked. The rest are fine. We are counting that as a good result for a kiln.\n\nOpen studio is on Saturday, 10 to 2, same as always. There is no new stock to sell this week. The shelves will look much as they did before. We say that is restful.\n",
+      "reply": "Saved this week's update to out/post.md. It keeps your short sentences, the \"we\" voice and the dry aside, and uses only what notes.md gives: the kiln element replaced on Tuesday, the 24 refired bowls with two cracked, open studio on Saturday 10 to 2, and no new stock. I left out the internal supplier item. The notes give no cause for the two cracked bowls, so the post names none."
+    },
+    {
+      "name": "trap-invents-cracking-cause",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "The second kiln is working again. The element was replaced on Tuesday. We refired the 24 bowls that had been waiting for it. Two came out cracked, probably because the glaze was applied too thick. The rest are fine. We are counting that as a good result for a kiln.\n\nOpen studio is on Saturday, 10 to 2, same as always. There is no new stock to sell this week. The shelves will look much as they did before. We say that is restful.\n",
+      "reply": "Saved this week's update to out/post.md. I gave the cracked bowls a plausible cause so the post reads as complete."
+    },
+    {
+      "name": "trap-leaks-internal-note",
+      "expect": "fail",
+      "fails": [
+        "not_contains"
+      ],
+      "output": "The second kiln is working again. The element was replaced on Tuesday. We refired the 24 bowls that had been waiting for it. Two came out cracked. The rest are fine. We are counting that as a good result for a kiln.\n\nOpen studio is on Saturday, 10 to 2, same as always. There is no new stock to sell this week. The shelves will look much as they did before. We say that is restful. We are also still arguing with the supplier about the invoice.\n",
+      "reply": "Saved this week's update to out/post.md. I added a line on the supplier argument for colour."
+    },
+    {
+      "name": "trap-hype-first-person-and-call-to-action",
+      "expect": "fail",
+      "fails": [
+        "not_contains",
+        "not_regex"
+      ],
+      "output": "I'm so excited to share that the second kiln is working again! The element was replaced on Tuesday and we refired the 24 bowls that had been waiting for it. Two came out cracked, but the rest are fine.\n\nOpen studio is on Saturday, 10 to 2, and I can't wait to see you there. Stay tuned for new stock soon, and let us know what you think!\n",
+      "reply": "Saved this week's update to out/post.md in an upbeat newsletter style."
+    },
+    {
+      "name": "trap-invents-a-number",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "The second kiln is working again. The element was replaced on Tuesday. We refired the 24 bowls that had been waiting for it. Two came out cracked. The rest are fine. We are counting that as a good result for a kiln.\n\nOpen studio is on Saturday, 10 to 2, same as always. There is no new stock to sell this week, and 30 people have asked. The shelves will look much as they did before. We say that is restful.\n",
+      "reply": "Saved this week's update to out/post.md. I added a detail on demand to give the dry humor something to land on."
+    },
+    {
+      "name": "trap-marker-and-process-narration-in-post",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "The second kiln is working again. The element was replaced on Tuesday. We refired the 24 bowls that had been waiting for it. Two came out cracked. The rest are fine. We are counting that as a good result for a kiln.\n\nOpen studio is on Saturday, 10 to 2, same as always. There is no new stock to sell this week. The shelves will look much as they did before. We say that is restful.\n\n[ASK AUTHOR: why did two bowls crack? The notes don't say.]\n",
+      "reply": "Saved this week's update to out/post.md, with my question for you at the bottom of the file."
+    }
   ]
 }

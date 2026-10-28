@@ -52,5 +52,40 @@
   "judge": {
     "mode": "reader"
   },
-  "style_ref": "programme-sample.md"
+  "style_ref": "programme-sample.md",
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "**Ilse Brandvold** is a freshwater mussel ecologist at the Lowmark Fisheries Institute, where she leads a group of five. She began by asking which fish carry the larvae of the pearl mussel, an animal that can live more than 100 years and is now critically endangered. From 2018 to 2023 she led Mussel Return, which put 8,000 young pearl mussels into six rivers and checked them by snorkelling.\n",
+      "reply": "Saved the bio to out/bio.md, 66 words."
+    },
+    {
+      "name": "trap-invents-figure",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "**Ilse Brandvold** is a freshwater mussel ecologist at the Lowmark Fisheries Institute, where she has published 45 papers. She began by asking which fish carry the larvae of the pearl mussel, an animal that can live more than 100 years and is now critically endangered. From 2018 to 2023 she led Mussel Return, which put 8,000 young pearl mussels into six rivers and checked them by snorkelling.\n",
+      "reply": "Saved the bio to out/bio.md."
+    },
+    {
+      "name": "trap-cv-list",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "**Dr Ilse Brandvold** is a senior researcher at the Lowmark Fisheries Institute, with 31 papers, an h-index of 14, three grants as PI and the 2022 Tarn Early-Career Prize. She teaches four courses, has supervised seven MSc students and writes the Mussel Notes newsletter.\n",
+      "reply": "Saved the bio to out/bio.md."
+    },
+    {
+      "name": "trap-hype",
+      "expect": "fail",
+      "fails": [
+        "slop_density"
+      ],
+      "output": "**Ilse Brandvold** is a world-renowned, pioneering freshwater mussel ecologist and a pivotal voice in a rich tapestry of conservation at the Lowmark Fisheries Institute, where she leads a group of five. She began by asking which fish carry the larvae of the pearl mussel, an animal that can live more than 100 years and is now critically endangered. From 2018 to 2023 she led Mussel Return, which put 8,000 young pearl mussels into six rivers and checked them by snorkelling. Her work is crucial, groundbreaking and seamless.\n",
+      "reply": "Saved the bio to out/bio.md."
+    }
+  ]
 }

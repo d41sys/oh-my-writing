@@ -46,5 +46,51 @@
         "copula-avoidance"
       ]
     }
+  ],
+  "controls": [
+    {
+      "name": "good-edit-protects-regions",
+      "expect": "pass",
+      "output": "# Retry budgets in Quill\n\nQuill's client wraps every call like this:\n\n```python\ndef fetch(url, retries=3):\n    for attempt in range(retries):\n        resp = session.get(url, timeout=5)\n        if resp.status_code != 503:\n            return resp\n    raise RuntimeError(\"retry budget exhausted\")\n```\n\nThe maintainers put it bluntly: \"Retries without a budget are a denial-of-service attack you run against yourself.\" Studies show that unbounded retries amplify outages (Nguyen and Okafor, 2021). A budget of 10% extra requests held error rates flat in our tests, using the config below.\n\n```yaml\nretry_budget:\n  ratio: 0.1\n  min_per_second: 10\n```\n",
+      "reply": "Edited post.md and saved it to out/post.md. I removed the era opener, the \"crucial role\" and \"backbone\" lines, the \"In conclusion\" ending and the chatbot sign-off, and dropped the \"Moreover\" connector. The Python block, the YAML block, the maintainers' quote and the Nguyen and Okafor citation are byte-identical; so are 3, 5, 503, 0.1, 10 and 10%."
+    },
+    {
+      "name": "trap-edits-code-and-yaml",
+      "expect": "fail",
+      "fails": [
+        "preserves",
+        "contains"
+      ],
+      "output": "# Retry budgets in Quill\n\nQuill's client wraps every call like this:\n\n```python\ndef fetch(url, retries=3):\n    for attempt in range(retries):\n        resp = session.get(url, timeout=5)\n        if resp.status_code != 503:\n            return resp\n    raise RuntimeError(\"retries exhausted\")\n```\n\nThe maintainers put it bluntly: \"Retries without a budget are a denial-of-service attack you run against yourself.\" Studies show that unbounded retries amplify outages (Nguyen and Okafor, 2021). A budget of 10% extra requests held error rates flat in our tests, using the config below.\n\n```yaml\nretry_budget:\n  ratio: 0.1\n  min_per_second: 5\n```\n",
+      "reply": "Edited post.md and saved it to out/post.md. I also tightened the error message and lowered the YAML floor to match the prose."
+    },
+    {
+      "name": "trap-paraphrases-quote-and-citation",
+      "expect": "fail",
+      "fails": [
+        "preserves",
+        "contains"
+      ],
+      "output": "# Retry budgets in Quill\n\nQuill's client wraps every call like this:\n\n```python\ndef fetch(url, retries=3):\n    for attempt in range(retries):\n        resp = session.get(url, timeout=5)\n        if resp.status_code != 503:\n            return resp\n    raise RuntimeError(\"retry budget exhausted\")\n```\n\nThe maintainers put it bluntly: that retrying without a budget amounts to attacking yourself. Studies show that unbounded retries amplify outages (Nguyen et al., 2021). A budget of 10% extra requests held error rates flat in our tests, using the config below.\n\n```yaml\nretry_budget:\n  ratio: 0.1\n  min_per_second: 10\n```\n",
+      "reply": "Edited post.md and saved it to out/post.md. I smoothed the quote and shortened the citation."
+    },
+    {
+      "name": "trap-keeps-the-filler",
+      "expect": "fail",
+      "fails": [
+        "slop_absent"
+      ],
+      "output": "# Retry budgets in Quill\n\nIn today's rapidly evolving landscape, retry logic plays a crucial role in building reliable systems. It serves as the backbone of every client, a testament to careful engineering.\n\nQuill's client wraps every call like this:\n\n```python\ndef fetch(url, retries=3):\n    for attempt in range(retries):\n        resp = session.get(url, timeout=5)\n        if resp.status_code != 503:\n            return resp\n    raise RuntimeError(\"retry budget exhausted\")\n```\n\nThe maintainers put it bluntly: \"Retries without a budget are a denial-of-service attack you run against yourself.\" Studies show that unbounded retries amplify outages (Nguyen and Okafor, 2021). A budget of 10% extra requests held error rates flat in our tests, using the config below.\n\n```yaml\nretry_budget:\n  ratio: 0.1\n  min_per_second: 10\n```\n\nIn conclusion, the future of reliable clients looks bright. I hope this helps!\n",
+      "reply": "Edited post.md and saved it to out/post.md. I left the intro and the ending because they frame the post."
+    },
+    {
+      "name": "trap-adds-a-citation-and-number",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "# Retry budgets in Quill\n\nQuill's client wraps every call like this:\n\n```python\ndef fetch(url, retries=3):\n    for attempt in range(retries):\n        resp = session.get(url, timeout=5)\n        if resp.status_code != 503:\n            return resp\n    raise RuntimeError(\"retry budget exhausted\")\n```\n\nThe maintainers put it bluntly: \"Retries without a budget are a denial-of-service attack you run against yourself.\" Studies show that unbounded retries amplify outages (Nguyen and Okafor, 2021). Follow-up work (Patel, 2023) found that a 15% cut in retry traffic helps, and a budget of 10% extra requests held error rates flat in our tests, using the config below.\n\n```yaml\nretry_budget:\n  ratio: 0.1\n  min_per_second: 10\n```\n",
+      "reply": "Edited post.md and saved it to out/post.md. I added supporting evidence for the budget claim."
+    }
   ]
 }

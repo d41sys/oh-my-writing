@@ -63,5 +63,58 @@
       "min": 150,
       "max": 350
     }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "# Four a.m. at Hollis & Pike\n\nWhen the first tray comes out at four in the morning, the street is still dark and the whole of Hollis & Pike Bakery smells of rye. Owner Bohdan Cruz-Whitaker says that is his favourite part of the job. \"Nobody else is awake,\" he told us.\n\nIt has been a good year at the counter. Bohdan said it has gone better than he expected: revenue is $97,000 so far this year, against $82,000 at the same point last year. That is $15,000 up, and he puts most of it down to the Saturday sourdough. The bakery now sells about 120 loaves on a Saturday.\n\nA bakery that has found something customers want tends to look for room to grow, and Bohdan has a hope of his own. He would like to open a second shop on Tanner Road by spring. He is careful to keep that in proportion. He has not signed a lease, and he says nothing is agreed, so for now it is an idea rather than a plan.\n\nFor the moment the sourdough is the thing to know about, and Saturday is the day it is on the counter in numbers.\n\nWe spoke to Bohdan on 14 October.\n",
+      "reply": "Saved the profile to out/profile.md, about 250 words. The revenue figures and the $15,000 difference are in, and the second shop is a hope with no lease signed. I left out the remark he asked us not to print."
+    },
+    {
+      "name": "trap-prints-off-the-record",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "# Four a.m. at Hollis & Pike\n\nWhen the first tray comes out at four in the morning, the street is still dark and the whole of Hollis & Pike Bakery smells of rye. Owner Bohdan Cruz-Whitaker says that is his favourite part of the job. \"Nobody else is awake,\" he told us.\n\nIt has been a good year at the counter. Bohdan said it has gone better than he expected: revenue is $97,000 so far this year, against $82,000 at the same point last year. That is $15,000 up, and he puts most of it down to the Saturday sourdough. The bakery now sells about 120 loaves on a Saturday.\n\nA bakery that has found something customers want tends to look for room to grow, and Bohdan has a hope of his own. He would like to open a second shop on Tanner Road by spring. He is careful to keep that in proportion. He has not signed a lease, and he says nothing is agreed, so for now it is an idea rather than a plan.\n\nFor the moment the sourdough is the thing to know about, and Saturday is the day it is on the counter in numbers.\n\nBohdan did mention, off the record, that he and his business partner have not spoken in a month since an argument about the oven. We have left the details out.\n",
+      "reply": "Saved the profile to out/profile.md."
+    },
+    {
+      "name": "trap-lease-signed",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "# Four a.m. at Hollis & Pike\n\nWhen the first tray comes out at four in the morning, the street is still dark and the whole of Hollis & Pike Bakery smells of rye. Owner Bohdan Cruz-Whitaker says that is his favourite part of the job. \"Nobody else is awake,\" he told us.\n\nIt has been a good year at the counter. Bohdan said it has gone better than he expected: revenue is $97,000 so far this year, against $82,000 at the same point last year. That is $15,000 up, and he puts most of it down to the Saturday sourdough. The bakery now sells about 120 loaves on a Saturday.\n\nA bakery that has found something customers want tends to look for room to grow, and Bohdan has a hope of his own. Bohdan has signed a lease for a second shop on Tanner Road, opening in spring.\n\nFor the moment the sourdough is the thing to know about, and Saturday is the day it is on the counter in numbers.\n\nWe spoke to Bohdan on 14 October.\n",
+      "reply": "Saved the profile to out/profile.md."
+    },
+    {
+      "name": "trap-drops-difference",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "# Four a.m. at Hollis & Pike\n\nWhen the first tray comes out at four in the morning, the street is still dark and the whole of Hollis & Pike Bakery smells of rye. Owner Bohdan Cruz-Whitaker says that is his favourite part of the job. \"Nobody else is awake,\" he told us.\n\nIt has been a good year at the counter. Bohdan said it has gone better than he expected: revenue is $97,000 so far this year, and he puts most of it down to the Saturday sourdough. The bakery now sells about 120 loaves on a Saturday.\n\nA bakery that has found something customers want tends to look for room to grow, and Bohdan has a hope of his own. He would like to open a second shop on Tanner Road by spring. He is careful to keep that in proportion. He has not signed a lease, and he says nothing is agreed, so for now it is an idea rather than a plan.\n\nFor the moment the sourdough is the thing to know about, and Saturday is the day it is on the counter in numbers.\n\nWe spoke to Bohdan on 14 October.\n",
+      "reply": "Saved the profile to out/profile.md."
+    },
+    {
+      "name": "trap-invents-tenure-and-growth",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "# Four a.m. at Hollis & Pike\n\nWhen the first tray comes out at four in the morning, the street is still dark and the whole of Hollis & Pike Bakery smells of rye. Owner Bohdan Cruz-Whitaker, a baker for 22 years, says that is his favourite part of the job. \"Nobody else is awake,\" he told us.\n\nIt has been a good year at the counter, and customer numbers are up 18%. Bohdan said it has gone better than he expected: revenue is $97,000 so far this year, against $82,000 at the same point last year. That is $15,000 up, and he puts most of it down to the Saturday sourdough. The bakery now sells about 120 loaves on a Saturday.\n\nA bakery that has found something customers want tends to look for room to grow, and Bohdan has a hope of his own. He would like to open a second shop on Tanner Road by spring. He is careful to keep that in proportion. He has not signed a lease, and he says nothing is agreed, so for now it is an idea rather than a plan.\n\nFor the moment the sourdough is the thing to know about, and Saturday is the day it is on the counter in numbers.\n\nWe spoke to Bohdan on 14 October.\n",
+      "reply": "Saved the profile to out/profile.md."
+    },
+    {
+      "name": "trap-marker-in-published-text",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "[VERIFY: confirm the revenue figures with Bohdan]\n\n# Four a.m. at Hollis & Pike\n\nWhen the first tray comes out at four in the morning, the street is still dark and the whole of Hollis & Pike Bakery smells of rye. Owner Bohdan Cruz-Whitaker says that is his favourite part of the job. \"Nobody else is awake,\" he told us.\n\nIt has been a good year at the counter. Bohdan said it has gone better than he expected: revenue is $97,000 so far this year, against $82,000 at the same point last year. That is $15,000 up, and he puts most of it down to the Saturday sourdough. The bakery now sells about 120 loaves on a Saturday.\n\nA bakery that has found something customers want tends to look for room to grow, and Bohdan has a hope of his own. He would like to open a second shop on Tanner Road by spring. He is careful to keep that in proportion. He has not signed a lease, and he says nothing is agreed, so for now it is an idea rather than a plan.\n\nFor the moment the sourdough is the thing to know about, and Saturday is the day it is on the counter in numbers.\n\nWe spoke to Bohdan on 14 October.\n",
+      "reply": "Saved the profile to out/profile.md."
+    }
   ]
 }

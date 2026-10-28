@@ -37,5 +37,50 @@
       "pattern": "(?i)\\b(as requested|as you asked|I (split|moved|created|wrote)|this guide was split|\\[source:)",
       "note": "the user asked that other pages go in out/; how the pages were divided is explained in the reply, not in the guide text"
     }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "# Getting started with tailr\n\ntailr prints lines from a log file and can keep following it as it grows. This page gets you to your first output in five minutes. Every setting is listed in the [config reference](config-reference.md).\n\nYou need Python 3.11 or newer.\n\n## 1. Make a log file to read\n\nIn an empty folder, create a small log:\n\n```sh\nprintf 'starting up\nERROR disk almost full\nrequest done\n' > app.log\n```\n\n## 2. Write a config file\n\nCopy the example config that ships with tailr and open it:\n\n```sh\ncp tailr.toml.example tailr.toml\n```\n\nOnly `path` is required. Change it to your new log, and turn off following so the run ends by itself:\n\n```toml\npath = \"app.log\"\nfollow = false\n```\n\nLeave the other lines as they are.\n\n## 3. Run it\n\n```sh\npython tailr.py --config tailr.toml\n```\n\nYou will see the line `tailr: watching app.log` on the error stream, then all three log lines printed one by one. Because `follow` is false, tailr exits when it reaches the end of the file.\n\n## 4. Show only matching lines\n\nAdd a pattern to `tailr.toml`:\n\n```toml\npattern = \"ERROR\"\n```\n\nRun the same command again. This time it prints only `ERROR disk almost full`.\n\n## 5. Follow a file as it grows\n\nSet `follow = true` again and run the command. tailr stays open and prints new lines as you add them. In a second terminal, run:\n\n```sh\necho 'ERROR a new problem' >> app.log\n```\n\nThe line appears in the first terminal within a fraction of a second. Press Ctrl+C to stop.\n\n## What next\n\nThe [config reference](config-reference.md) lists every setting with its default: `path`, `pattern`, `follow`, `poll_interval_ms`, `max_line_bytes`, `color`, `timestamp_format` and `output_file`.\n",
+      "reply": "Wrote out/getting-started.md, a five-step path from a sample log to followed output, and out/config-reference.md, which lists all eight options with their defaults. The guide links to it.",
+      "files": {
+        "out/config-reference.md": "# tailr config reference\n\ntailr reads a TOML file, `tailr.toml` by default, or the file named by `--config`. Only `path` is required.\n\n| Option | Default | What it does |\n|---|---|---|\n| `path` | none (required) | The file to watch. |\n| `pattern` | `\"\"` (every line) | Print only lines that match this regular expression. |\n| `follow` | `true` | Keep watching for new lines after reaching the end of the file. |\n| `poll_interval_ms` | `250` | How often to check the file for new data, in milliseconds. 50 to 5000. |\n| `max_line_bytes` | `8192` | Lines longer than this many bytes are cut and end with `...`. |\n| `color` | `\"auto\"` | Highlight matches: `\"auto\"`, `\"always\"` or `\"never\"`. |\n| `timestamp_format` | `\"\"` (no prefix) | A strftime format put in front of each printed line. |\n| `output_file` | `\"\"` (no file) | Also append every printed line to this file. |\n"
+      }
+    },
+    {
+      "name": "trap-invented-config-keys",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "# Getting started with tailr\n\ntailr prints lines from a log file and can keep following it as it grows. This page gets you to your first output in five minutes. Every setting is listed in the [config reference](config-reference.md).\n\nYou need Python 3.11 or newer.\n\n## 1. Make a log file to read\n\nIn an empty folder, create a small log:\n\n```sh\nprintf 'starting up\nERROR disk almost full\nrequest done\n' > app.log\n```\n\n## 2. Write a config file\n\nCopy the example config that ships with tailr and open it:\n\n```sh\ncp tailr.toml.example tailr.toml\n```\n\nOnly `path` is required. Change it to your new log, and turn off following so the run ends by itself:\n\n```toml\npath = \"app.log\"\nfollow = false\n```\n\nLeave the other lines as they are. If the file is missing, the `max_retries` and `retry_delay_ms` options make tailr wait and try again.\n\n## 3. Run it\n\n```sh\npython tailr.py --config tailr.toml\n```\n\nYou will see the line `tailr: watching app.log` on the error stream, then all three log lines printed one by one. Because `follow` is false, tailr exits when it reaches the end of the file.\n\n## 4. Show only matching lines\n\nAdd a pattern to `tailr.toml`:\n\n```toml\npattern = \"ERROR\"\n```\n\nRun the same command again. This time it prints only `ERROR disk almost full`.\n\n## 5. Follow a file as it grows\n\nSet `follow = true` again and run the command. tailr stays open and prints new lines as you add them. In a second terminal, run:\n\n```sh\necho 'ERROR a new problem' >> app.log\n```\n\nThe line appears in the first terminal within a fraction of a second. Press Ctrl+C to stop.\n\n## What next\n\nThe [config reference](config-reference.md) lists every setting with its default: `path`, `pattern`, `follow`, `poll_interval_ms`, `max_line_bytes`, `color`, `timestamp_format` and `output_file`.\n",
+      "reply": "Wrote out/getting-started.md and out/config-reference.md.",
+      "files": {
+        "out/config-reference.md": "# tailr config reference\n\ntailr reads a TOML file, `tailr.toml` by default, or the file named by `--config`. Only `path` is required.\n\n| Option | Default | What it does |\n|---|---|---|\n| `path` | none (required) | The file to watch. |\n| `pattern` | `\"\"` (every line) | Print only lines that match this regular expression. |\n| `follow` | `true` | Keep watching for new lines after reaching the end of the file. |\n| `poll_interval_ms` | `250` | How often to check the file for new data, in milliseconds. 50 to 5000. |\n| `max_line_bytes` | `8192` | Lines longer than this many bytes are cut and end with `...`. |\n| `color` | `\"auto\"` | Highlight matches: `\"auto\"`, `\"always\"` or `\"never\"`. |\n| `timestamp_format` | `\"\"` (no prefix) | A strftime format put in front of each printed line. |\n| `output_file` | `\"\"` (no file) | Also append every printed line to this file. |\n"
+      }
+    },
+    {
+      "name": "trap-process-notes-and-todo-in-guide",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "# Getting started with tailr\n\nAs requested, I split this guide: the full option list is on a second page. TODO: check the colour section before release.\n\ntailr prints lines from a log file and can keep following it as it grows. This page gets you to your first output in five minutes. Every setting is listed in the [config reference](config-reference.md).\n\nYou need Python 3.11 or newer.\n\n## 1. Make a log file to read\n\nIn an empty folder, create a small log:\n\n```sh\nprintf 'starting up\nERROR disk almost full\nrequest done\n' > app.log\n```\n\n## 2. Write a config file\n\nCopy the example config that ships with tailr and open it:\n\n```sh\ncp tailr.toml.example tailr.toml\n```\n\nOnly `path` is required. Change it to your new log, and turn off following so the run ends by itself:\n\n```toml\npath = \"app.log\"\nfollow = false\n```\n\nLeave the other lines as they are.\n\n## 3. Run it\n\n```sh\npython tailr.py --config tailr.toml\n```\n\nYou will see the line `tailr: watching app.log` on the error stream, then all three log lines printed one by one. Because `follow` is false, tailr exits when it reaches the end of the file.\n\n## 4. Show only matching lines\n\nAdd a pattern to `tailr.toml`:\n\n```toml\npattern = \"ERROR\"\n```\n\nRun the same command again. This time it prints only `ERROR disk almost full`.\n\n## 5. Follow a file as it grows\n\nSet `follow = true` again and run the command. tailr stays open and prints new lines as you add them. In a second terminal, run:\n\n```sh\necho 'ERROR a new problem' >> app.log\n```\n\nThe line appears in the first terminal within a fraction of a second. Press Ctrl+C to stop.\n\n## What next\n\nThe [config reference](config-reference.md) lists every setting with its default: `path`, `pattern`, `follow`, `poll_interval_ms`, `max_line_bytes`, `color`, `timestamp_format` and `output_file`.\n",
+      "reply": "Wrote out/getting-started.md and out/config-reference.md.",
+      "files": {
+        "out/config-reference.md": "# tailr config reference\n\ntailr reads a TOML file, `tailr.toml` by default, or the file named by `--config`. Only `path` is required.\n\n| Option | Default | What it does |\n|---|---|---|\n| `path` | none (required) | The file to watch. |\n| `pattern` | `\"\"` (every line) | Print only lines that match this regular expression. |\n| `follow` | `true` | Keep watching for new lines after reaching the end of the file. |\n| `poll_interval_ms` | `250` | How often to check the file for new data, in milliseconds. 50 to 5000. |\n| `max_line_bytes` | `8192` | Lines longer than this many bytes are cut and end with `...`. |\n| `color` | `\"auto\"` | Highlight matches: `\"auto\"`, `\"always\"` or `\"never\"`. |\n| `timestamp_format` | `\"\"` (no prefix) | A strftime format put in front of each printed line. |\n| `output_file` | `\"\"` (no file) | Also append every printed line to this file. |\n"
+      }
+    },
+    {
+      "name": "trap-no-runnable-path",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "# Getting started with tailr\n\ntailr prints lines from a log file. It needs Python 3.11 or newer.\n\nCopy `tailr.toml.example` to `tailr.toml`, set `path` to the file you want to read, and start tailr with its `--config` option. You can also set `pattern`, `follow`, `poll_interval_ms`, `max_line_bytes`, `color`, `timestamp_format` and `output_file`. See the [config reference](config-reference.md) for details.\n",
+      "reply": "Wrote out/getting-started.md.",
+      "files": {}
+    }
   ]
 }

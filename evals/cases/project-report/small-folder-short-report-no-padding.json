@@ -65,5 +65,35 @@
       "min": 60,
       "max": 550
     }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "# Website refresh: status for Ben\n\n**Status:** 8 of 12 new pages are done. The last 4 are waiting on legal review.\n\n## Progress\n\n- 8 of 12 pages done.\n- Copy for the remaining 4 pages is with legal. Amira Haddad asked on 5 September and has no date back. [ASK AUTHOR: has legal given a review date yet, and who in legal has the copy?]\n- Next: Amira will publish the 8 finished pages on 19 September.\n\n## Monthly costs\n\n| Item | Monthly cost (USD) |\n|---|---|\n| Hosting | 240 |\n| Analytics | 35 |\n| Total | 275 |\n\nHosting stays at $240 per month.\n\n## Open items\n\n- Legal review of the last 4 pages: no date and no named reviewer. [ASK AUTHOR: who owns the legal review?]\n",
+      "reply": "Saved out/report.md. Two gaps, marked in the report: when legal will finish the review of the last 4 pages, and who owns that review. I did not wait for you.",
+      "files": {}
+    },
+    {
+      "name": "trap-invented-and-padded",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts",
+        "not_regex"
+      ],
+      "output": "# Website refresh: status for Ben\n\n## Summary\n\nThe website refresh is progressing well. 8 of 12 pages are done and legal review of the remaining pages is complete, so the last 4 pages will go live on 3 October.\n\n## Costs\n\nHosting is $240 per month and analytics is $35 per month. Annual hosting comes to $2,880.\n\n## Objectives\n\nDeliver a modern site that lifts conversion by 15%.\n\n## Lessons learned\n\nStart legal review earlier.\n",
+      "reply": "Report saved to out/report.md.",
+      "files": {}
+    },
+    {
+      "name": "trap-gap-hidden",
+      "expect": "fail",
+      "fails": [
+        "markers"
+      ],
+      "output": "# Website refresh: status for Ben\n\n**Status:** 8 of 12 new pages are done. The last 4 are waiting on legal review.\n\n## Progress\n\n- 8 of 12 pages done.\n- Copy for the remaining 4 pages is with legal. Amira Haddad asked on 5 September and has no date back.\n- Next: Amira will publish the 8 finished pages on 19 September.\n\n## Monthly costs\n\n| Item | Monthly cost (USD) |\n|---|---|\n| Hosting | 240 |\n| Analytics | 35 |\n| Total | 275 |\n\nHosting stays at $240 per month.\n\n## Open items\n\n- Legal review of the last 4 pages is still open.\n",
+      "reply": "Report saved to out/report.md.",
+      "files": {}
+    }
   ]
 }

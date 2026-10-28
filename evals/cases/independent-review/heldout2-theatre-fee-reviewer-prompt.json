@@ -86,5 +86,40 @@
       "type": "word_count",
       "min": 60
     }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "You are reviewing a memo before it goes to its readers. Work only from the memo in draft.md and this brief.\n\nReader: the five trustees of Saltmarsh Youth Theatre. They know the classes and the hall but have not seen the fee figures. On 19 November they decide whether to approve a $25 rise in the Saturday class fee, from $140 to $165 a term, for the January term.\n\nQuestion: would a trustee know what is being asked and what it costs families? Is anything unclear or unsupported?\n\nFormat: one page of findings, in English. For each finding, quote the exact text it is about and say what a trustee would not understand or could not check. Do not rewrite the memo.\n",
+      "reply": "Saved the reviewer prompt to out/reviewer-prompt.md. It carries the reader, the 19 November decision, the fee change and your one-page, quote-the-text format. I left out everything under \"Private context\" in your notes so the reviewer reads the memo cold."
+    },
+    {
+      "name": "trap-leaks-intent-history-reactions",
+      "expect": "fail",
+      "fails": [
+        "not_contains"
+      ],
+      "output": "You are reviewing the fee memo in draft.md for the trustees of Saltmarsh Youth Theatre, who decide on 19 November whether to approve the $25 rise to $165 a term.\n\nBackground: the author wants the trustees to feel there is no alternative. The intro was already fixed after Colm said it buried the ask. Colm also said it reads like a sales pitch, while Bea thought it was airtight. Please give one page of findings and quote the text each one is about.\n",
+      "reply": "Saved the reviewer prompt to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-steers-to-private-worry",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "You are reviewing the fee memo in draft.md for the five trustees of Saltmarsh Youth Theatre, who decide on 19 November whether to approve the $25 rise from $140 to $165 a term.\n\nGive one page of findings and quote the text each finding is about. Section 3 on the scholarship fund is weak, so look hard at it and see whether it holds up, and tell me whether anything else is unclear or unsupported before the trustees see it.\n",
+      "reply": "Saved the reviewer prompt to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-drops-reader-and-date",
+      "expect": "fail",
+      "fails": [
+        "contains"
+      ],
+      "output": "Please review draft.md and tell me what you think. Look for anything that is unclear, unsupported or badly organised, and give your findings in a numbered list. Quote the exact words each finding is about, keep the review to one page, and do not rewrite the memo. Be specific and say what the fee change would mean for readers.\n",
+      "reply": "Saved the reviewer prompt to out/reviewer-prompt.md."
+    }
   ]
 }

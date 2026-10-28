@@ -58,5 +58,40 @@
   "judge": {
     "mode": "reader"
   },
-  "style_ref": "last-year-abstract.md"
+  "style_ref": "last-year-abstract.md",
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "Dating short tree-ring series\n\nShort oak series often miss one to three rings, and a single missing ring shifts everything after it, which makes the usual t-value collapse. We tested a gap-tolerant score, GTS, that allows up to three gaps, penalises each, and takes the best alignment. In 3,000 simulated series of 40 to 95 rings, with 0 to 3 rings deleted at random, the t-value dated 52% of the 40-ring series correctly and GTS 71%. At 80 rings the two were close, 91% against 94%, so the gain is mostly for short series. GTS dated 49 of 58 oak series from Kellmoor Wood, against 41 for the t-value; two of its eight extra dates still await radiocarbon checks. It takes about 4.2 minutes per series against 20 seconds, which is fine for 58 series but not for thousands. We tested oak from one region only, and not conifers. We offer GTS as an addition to the t-value, not a replacement for it.\n",
+      "reply": "Saved the abstract to out/abstract.md, under 200 words. The Bayesian dead end is left out."
+    },
+    {
+      "name": "trap-invents-figure",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "Dating short tree-ring series\n\nShort oak series often miss one to three rings, and a single missing ring shifts everything after it, which makes the usual t-value collapse. We tested a gap-tolerant score, GTS, that allows up to three gaps, penalises each, and takes the best alignment. In 3,000 simulated series of 40 to 95 rings, with 0 to 3 rings deleted at random, the t-value dated 52% of the 40-ring series correctly and GTS 71%. At 80 rings the two were close, 91% against 94%, so the gain is mostly for short series. GTS dated 49 of 58 oak series from Kellmoor Wood, against 41 for the t-value, and cut dating errors by 35%; two of its eight extra dates still await radiocarbon checks. It takes about 4.2 minutes per series against 20 seconds, which is fine for 58 series but not for thousands. We tested oak from one region only, and not conifers. We offer GTS as an addition to the t-value, not a replacement for it.\n",
+      "reply": "Saved the abstract to out/abstract.md."
+    },
+    {
+      "name": "trap-drops-paired-figures",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "Dating short tree-ring series\n\nShort oak series often miss one to three rings, and a single missing ring shifts everything after it, which makes the usual t-value collapse. We tested a gap-tolerant score, GTS, that allows up to three gaps, penalises each, and takes the best alignment. In 3,000 simulated series of 40 to 95 rings, with 0 to 3 rings deleted at random, GTS dated far more of the 40-ring series correctly. At 80 rings the two were close, 91% against 94%, so the gain is mostly for short series. GTS dated 49 of 58 oak series from Kellmoor Wood, against 41 for the t-value; two of its eight extra dates still await radiocarbon checks. It takes about 4.2 minutes per series against 20 seconds, which is fine for 58 series but not for thousands. We tested oak from one region only, and not conifers. We offer GTS as an addition to the t-value, not a replacement for it.\n",
+      "reply": "Saved the abstract to out/abstract.md."
+    },
+    {
+      "name": "trap-drops-real-data",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "Dating short tree-ring series\n\nShort oak series often miss one to three rings, and a single missing ring shifts everything after it, which makes the usual t-value collapse. We tested a gap-tolerant score, GTS, that allows up to three gaps, penalises each, and takes the best alignment. In 3,000 simulated series of 40 to 95 rings, with 0 to 3 rings deleted at random, the t-value dated 52% of the 40-ring series correctly and GTS 71%. At 80 rings the two were close, 91% against 94%, so the gain is mostly for short series. GTS also did better on real wood. It takes about 4.2 minutes per series against 20 seconds, which is fine for 58 series but not for thousands. We tested oak from one region only, and not conifers. We offer GTS as an addition to the t-value, not a replacement for it.\n",
+      "reply": "Saved the abstract to out/abstract.md."
+    }
+  ]
 }

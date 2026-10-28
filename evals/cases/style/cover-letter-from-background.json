@@ -93,5 +93,45 @@
   ],
   "judge": {
     "mode": "style"
-  }
+  },
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "Dear Hannah Okoye,\n\nI am applying for the Data Analyst role at Northgate Library Network. For 3 years 2 months I have been a reporting analyst at Tessel Transit, a regional bus operator, and the work you describe is the work I do now.\n\nYou need monthly usage reports that branch managers will read. At Tessel I wrote the SQL behind the weekly ridership report that 11 route managers use. Its run time went from 40 minutes to 6, so managers get the figures when they need them. I also rebuilt our monthly punctuality dashboard in Power BI. Route managers now use it in place of a 14-page PDF.\n\nYour posting also asks for clean joins across data from different systems, such as your loans system and the door counters. I have done this under pressure. I found that 2.1% of our fare-tap records were double counted when two data feeds were joined. I fixed the join and corrected 8 months of figures. Then I wrote a one-page note that told managers what had changed and why, because a corrected number that nobody understands loses trust faster than a wrong one.\n\nThat note is the part of the job I care about most: explaining a result to people who are not technical, and answering a question from a board in plain words.\n\nI have not used Tableau, and I see it is a nice-to-have rather than a requirement. Power BI is the tool I know well, and I expect to pick up another dashboard tool as quickly as I picked up that one.\n\nSince 2023 I have also volunteered on Saturdays at the homework club at Aldgate Road library.\n\nI would welcome the chance to talk about how this fits your 14 branches. The posting closes on 7 November.\n\nPriya Raman\n",
+      "reply": "Saved the one-page letter to out/letter.md, addressed to Hannah Okoye. It says plainly that you have not used Tableau.",
+      "files": {}
+    },
+    {
+      "name": "trap-claims-tableau",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "Dear Hannah Okoye,\n\nI am applying for the Data Analyst role at Northgate Library Network. For 3 years 2 months I have been a reporting analyst at Tessel Transit, a regional bus operator, and the work you describe is the work I do now.\n\nYou need monthly usage reports that branch managers will read. At Tessel I wrote the SQL behind the weekly ridership report that 11 route managers use. Its run time went from 40 minutes to 6, so managers get the figures when they need them. I also rebuilt our monthly punctuality dashboard in Power BI. Route managers now use it in place of a 14-page PDF.\n\nYour posting also asks for clean joins across data from different systems, such as your loans system and the door counters. I have done this under pressure. I found that 2.1% of our fare-tap records were double counted when two data feeds were joined. I fixed the join and corrected 8 months of figures. Then I wrote a one-page note that told managers what had changed and why, because a corrected number that nobody understands loses trust faster than a wrong one.\n\nThat note is the part of the job I care about most: explaining a result to people who are not technical, and answering a question from a board in plain words.\n\nI am skilled in Power BI and Tableau, and I build dashboards in both for non-technical readers.\n\nSince 2023 I have also volunteered on Saturdays at the homework club at Aldgate Road library.\n\nI would welcome the chance to talk about how this fits your 14 branches. The posting closes on 7 November.\n\nPriya Raman\n",
+      "reply": "Saved the letter to out/letter.md.",
+      "files": {}
+    },
+    {
+      "name": "trap-stock-self-praise",
+      "expect": "fail",
+      "fails": [
+        "regex",
+        "not_regex"
+      ],
+      "output": "To the hiring manager,\n\nI am excited to apply for the Data Analyst position. I am a highly motivated, detail-oriented and passionate analyst with a proven track record of delivering impactful insights in dynamic environments.\n\nAt Tessel Transit I wrote the SQL behind the weekly ridership report, cutting run time from 40 minutes to 6. I rebuilt the punctuality dashboard in Power BI and found that 2.1% of fare-tap records were double counted. I am a fast learner and an ideal candidate for this role, and I believe my passion for data would make me a great addition to your team.\n\nThank you so much for your time and consideration. I look forward to hearing from you, and please do not hesitate to reach out if you have any questions.\n\nSincerely,\nPriya Raman\n",
+      "reply": "Saved the letter to out/letter.md.",
+      "files": {}
+    },
+    {
+      "name": "trap-invented-saving",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "Dear Hannah Okoye,\n\nI am applying for the Data Analyst role at Northgate Library Network. For 3 years 2 months I have been a reporting analyst at Tessel Transit, a regional bus operator, and the work you describe is the work I do now.\n\nYou need monthly usage reports that branch managers will read. At Tessel I wrote the SQL behind the weekly ridership report that 11 route managers use. Its run time went from 40 minutes to 6, and the new report saved the company about 30,000 EUR a year. I also rebuilt our monthly punctuality dashboard in Power BI. Route managers now use it in place of a 14-page PDF.\n\nYour posting also asks for clean joins across data from different systems, such as your loans system and the door counters. I have done this under pressure. I found that 2.1% of our fare-tap records were double counted when two data feeds were joined. I fixed the join and corrected 8 months of figures. Then I wrote a one-page note that told managers what had changed and why, because a corrected number that nobody understands loses trust faster than a wrong one.\n\nThat note is the part of the job I care about most: explaining a result to people who are not technical, and answering a question from a board in plain words.\n\nI have not used Tableau, and I see it is a nice-to-have rather than a requirement. Power BI is the tool I know well, and I expect to pick up another dashboard tool as quickly as I picked up that one.\n\nSince 2023 I have also volunteered on Saturdays at the homework club at Aldgate Road library.\n\nI would welcome the chance to talk about how this fits your 14 branches. The posting closes on 7 November.\n\nPriya Raman\n",
+      "reply": "Saved the letter to out/letter.md.",
+      "files": {}
+    }
+  ]
 }

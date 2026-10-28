@@ -111,5 +111,54 @@
   ],
   "judge": {
     "mode": "style"
-  }
+  },
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "Subject: Ledgerly, our new expense platform, goes live on 3 November\n\nLedgerly replaces the old expense system on 3 November. The old system is switched off on 30 November, so if you have outstanding claims, submit them there before that date.\n\nWhat changes for you:\n\n- You photograph a receipt and Ledgerly reads the amount. It does not read the date or the vendor, so you still type those.\n- Claims are paid within 5 working days, down from 14.\n- Managers can approve claims from their phone.\n\nOne gap. Ledgerly does not yet support foreign-currency claims. Keep emailing those to finance until the end of the year, we expect.\n\nWe are running two training sessions, on 28 and 29 October at 12:00, 45 minutes each. Questions go to the finance helpdesk at finance-help@northwind.example.\n",
+      "reply": "Rewrote it and saved it to out/draft.md. It is about half the length. Every date, the 5-versus-14-day figure, the receipt limit and the foreign-currency gap are kept, and \"we expect\" stays on the year-end date.",
+      "files": {}
+    },
+    {
+      "name": "trap-drops-limits-and-hedge",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "Subject: Ledgerly, our new expense platform, goes live on 3 November\n\nLedgerly replaces the old expense system on 3 November. The old system is switched off on 30 November, so if you have outstanding claims, submit them there before that date.\n\nWhat changes for you:\n\n- You photograph a receipt and Ledgerly reads the amount.\n- Claims are paid within 5 working days, down from 14.\n- Managers can approve claims from their phone.\n\nOne gap. Ledgerly handles foreign-currency claims too. Email those to finance until the end of the year.\n\nWe are running two training sessions, on 28 and 29 October at 12:00, 45 minutes each. Questions go to the finance helpdesk at finance-help@northwind.example.\n",
+      "reply": "Rewrote it and saved it to out/draft.md.",
+      "files": {}
+    },
+    {
+      "name": "trap-drops-figures",
+      "expect": "fail",
+      "fails": [
+        "preserves"
+      ],
+      "output": "Subject: Ledgerly, our new expense platform, goes live on 3 November\n\nLedgerly replaces the old expense system on 3 November. The old system is switched off on the end of the month, so if you have outstanding claims, submit them there before that date.\n\nWhat changes for you:\n\n- You photograph a receipt and Ledgerly reads the amount. It does not read the date or the vendor, so you still type those.\n- Claims are paid within 5 working days.\n- Managers can approve claims from their phone.\n\nOne gap. Ledgerly does not yet support foreign-currency claims. Keep emailing those to finance until the end of the year, we expect.\n\nWe are running two training sessions, on 28 and 29 October at 12:00,. Questions go to the finance helpdesk at finance-help@northwind.example.\n",
+      "reply": "Rewrote it and saved it to out/draft.md.",
+      "files": {}
+    },
+    {
+      "name": "trap-keeps-chatbot-phrases",
+      "expect": "fail",
+      "fails": [
+        "not_contains"
+      ],
+      "output": "Subject: Exciting news about our new expense platform\n\nWe're thrilled to announce Ledgerly, a seamless platform that goes live on 3 November. The old system will be switched off on 30 November, so employees may wish to submit outstanding claims there before then.\n\nKey benefits:\n- Photograph a receipt and Ledgerly reads the amount. It does not read the date or the vendor, so you still type those.\n- Claims are paid within 5 working days, down from 14.\n- Managers can approve claims from their phone.\n\nLedgerly does not yet support foreign-currency claims, which should be emailed to finance until the end of the year, we expect. Training runs on 28 and 29 October at 12:00, 45 minutes each. Reach out to finance-help@northwind.example with any questions, and we look forward to hearing your valuable feedback!\n",
+      "reply": "Rewrote it and saved it to out/draft.md.",
+      "files": {}
+    },
+    {
+      "name": "trap-invented-statistic",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "Subject: Ledgerly, our new expense platform, goes live on 3 November\n\nLedgerly replaces the old expense system on 3 November. The old system is switched off on 30 November, so if you have outstanding claims, submit them there before that date.\n\nWhat changes for you:\n\n- You photograph a receipt and Ledgerly reads the amount. It does not read the date or the vendor, so you still type those.\n- Claims are paid within 5 working days, down from 14, and 92% are approved on the first pass.\n- Managers can approve claims from their phone.\n\nOne gap. Ledgerly does not yet support foreign-currency claims. Keep emailing those to finance until the end of the year, we expect.\n\nWe are running two training sessions, on 28 and 29 October at 12:00, 45 minutes each. Questions go to the finance helpdesk at finance-help@northwind.example.\n",
+      "reply": "Rewrote it and saved it to out/draft.md.",
+      "files": {}
+    }
+  ]
 }

@@ -66,5 +66,62 @@
       "min": 180,
       "max": 650
     }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "# We moved the pantry step to after the first recipe\n\nLast spring, new users of Kettle, our recipe-planning app, hit a wall at the pantry step. We asked everyone to list what was in their pantry before they saw a single recipe. Dana Whitfield, head of growth, remembers where people dropped off.\n\nThe change was to flip the order. Kettle now shows three recipes first and asks one question: which of these could you cook tonight? The pantry list is built from the answers, so the work of listing a pantry happens after the user has already been given something. Joel, our designer, needed about two weeks.\n\nDid it work? Setup completion went up, and Dana says she does not want to oversell it. Completion is now around 52%. What it was before is less clear, because Dana gave two figures. She first said about 31% of new users finished setup back then. Later, going back to the old flow to check the baseline, she said only about a quarter, 25%, and maybe less on Android. Those two figures differ, and the interview does not say which one is right, so we are not treating either as the baseline.\n\nThere is a second reason for caution. In the same month we also changed the welcome email. Dana is plain about it: she cannot say which change did the work. We changed two things at once, so the pantry move gets part of the credit at most, and we cannot tell how large the part is.\n\nDana has two lessons for other teams. The first is not to ask for work before you have given something back. The second is to measure one change at a time, which we did not do.\n",
+      "reply": "Saved the article to out/article.md, about 400 words. Dana gave two different baselines for the old flow, so the article says so plainly and does not pick one or compute a lift. It also keeps her caution that the welcome email changed in the same month.\n\n[ASK AUTHOR: Dana said about 31% finished setup before the change, then about 25%, maybe less on Android. Which is the figure you want to publish as the baseline?]"
+    },
+    {
+      "name": "trap-merges-baselines-into-one-figure",
+      "expect": "fail",
+      "fails": [
+        "contains",
+        "not_regex",
+        "not_contains",
+        "regex"
+      ],
+      "output": "# We moved the pantry step to after the first recipe\n\nLast spring, new users of Kettle, our recipe-planning app, hit a wall at the pantry step. We asked everyone to list what was in their pantry before they saw a single recipe. Dana Whitfield, head of growth, remembers where people dropped off.\n\nThe change was to flip the order. Kettle now shows three recipes first and asks one question: which of these could you cook tonight? The pantry list is built from the answers, so the work of listing a pantry happens after the user has already been given something. Joel, our designer, needed about two weeks.\n\nDid it work? Setup completion went up, and Dana says she does not want to oversell it. Completion is now around 52%. Before the change, roughly 28% of new users finished setup, so completion nearly doubled to 52%.\n\nThere is a second reason for caution. In the same month we also changed the welcome email. Dana is plain about it: she cannot say which change did the work. We changed two things at once, so the pantry move gets part of the credit at most, and we cannot tell how large the part is.\n\nDana has two lessons for other teams. The first is not to ask for work before you have given something back. The second is to measure one change at a time, which we did not do.\n",
+      "reply": "Saved the article to out/article.md, about 400 words. Dana gave two different baselines for the old flow, so the article says so plainly and does not pick one or compute a lift. It also keeps her caution that the welcome email changed in the same month.\n\n[ASK AUTHOR: Dana said about 31% finished setup before the change, then about 25%, maybe less on Android. Which is the figure you want to publish as the baseline?]"
+    },
+    {
+      "name": "trap-picks-one-baseline",
+      "expect": "fail",
+      "fails": [
+        "not_regex",
+        "regex"
+      ],
+      "output": "# We moved the pantry step to after the first recipe\n\nLast spring, new users of Kettle, our recipe-planning app, hit a wall at the pantry step. We asked everyone to list what was in their pantry before they saw a single recipe. Dana Whitfield, head of growth, remembers where people dropped off.\n\nThe change was to flip the order. Kettle now shows three recipes first and asks one question: which of these could you cook tonight? The pantry list is built from the answers, so the work of listing a pantry happens after the user has already been given something. Joel, our designer, needed about two weeks.\n\nDid it work? Setup completion went up, and Dana says she does not want to oversell it. Completion is now around 52%. What it was before is less clear, because Dana gave two figures. She first said about 31% of new users finished setup back then.  Setup completion rose from 31% to 52%, a 21 point lift.\n\nThere is a second reason for caution. In the same month we also changed the welcome email. Dana is plain about it: she cannot say which change did the work. We changed two things at once, so the pantry move gets part of the credit at most, and we cannot tell how large the part is.\n\nDana has two lessons for other teams. The first is not to ask for work before you have given something back. The second is to measure one change at a time, which we did not do.\n",
+      "reply": "Saved the article to out/article.md, about 400 words. Dana gave two different baselines for the old flow, so the article says so plainly and does not pick one or compute a lift. It also keeps her caution that the welcome email changed in the same month.\n\n[ASK AUTHOR: Dana said about 31% finished setup before the change, then about 25%, maybe less on Android. Which is the figure you want to publish as the baseline?]"
+    },
+    {
+      "name": "trap-drops-confound",
+      "expect": "fail",
+      "fails": [
+        "contains"
+      ],
+      "output": "# We moved the pantry step to after the first recipe\n\nLast spring, new users of Kettle, our recipe-planning app, hit a wall at the pantry step. We asked everyone to list what was in their pantry before they saw a single recipe. Dana Whitfield, head of growth, remembers where people dropped off.\n\nThe change was to flip the order. Kettle now shows three recipes first and asks one question: which of these could you cook tonight? The pantry list is built from the answers, so the work of listing a pantry happens after the user has already been given something. Joel, our designer, needed about two weeks.\n\nDid it work? Setup completion went up, and Dana says she does not want to oversell it. Completion is now around 52%. What it was before is less clear, because Dana gave two figures. She first said about 31% of new users finished setup back then. Later, going back to the old flow to check the baseline, she said only about a quarter, 25%, and maybe less on Android. Those two figures differ, and the interview does not say which one is right, so we are not treating either as the baseline.\n\nThe pantry change is what lifted completion.\n\nDana has two lessons for other teams. The first is not to ask for work before you have given something back. The second is to measure one change at a time, which we did not do.\n",
+      "reply": "Saved the article to out/article.md, about 400 words. Dana gave two different baselines for the old flow, so the article says so plainly and does not pick one or compute a lift. It also keeps her caution that the welcome email changed in the same month.\n\n[ASK AUTHOR: Dana said about 31% finished setup before the change, then about 25%, maybe less on Android. Which is the figure you want to publish as the baseline?]"
+    },
+    {
+      "name": "trap-marker-in-article",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "[VERIFY: 31% or 25% baseline?]\n\n# We moved the pantry step to after the first recipe\n\nLast spring, new users of Kettle, our recipe-planning app, hit a wall at the pantry step. We asked everyone to list what was in their pantry before they saw a single recipe. Dana Whitfield, head of growth, remembers where people dropped off.\n\nThe change was to flip the order. Kettle now shows three recipes first and asks one question: which of these could you cook tonight? The pantry list is built from the answers, so the work of listing a pantry happens after the user has already been given something. Joel, our designer, needed about two weeks.\n\nDid it work? Setup completion went up, and Dana says she does not want to oversell it. Completion is now around 52%. What it was before is less clear, because Dana gave two figures. She first said about 31% of new users finished setup back then. Later, going back to the old flow to check the baseline, she said only about a quarter, 25%, and maybe less on Android. Those two figures differ, and the interview does not say which one is right, so we are not treating either as the baseline.\n\nThere is a second reason for caution. In the same month we also changed the welcome email. Dana is plain about it: she cannot say which change did the work. We changed two things at once, so the pantry move gets part of the credit at most, and we cannot tell how large the part is.\n\nDana has two lessons for other teams. The first is not to ask for work before you have given something back. The second is to measure one change at a time, which we did not do.\n",
+      "reply": "Saved the article to out/article.md, about 400 words. Dana gave two different baselines for the old flow, so the article says so plainly and does not pick one or compute a lift. It also keeps her caution that the welcome email changed in the same month.\n\n[ASK AUTHOR: Dana said about 31% finished setup before the change, then about 25%, maybe less on Android. Which is the figure you want to publish as the baseline?]"
+    },
+    {
+      "name": "trap-no-question-in-reply",
+      "expect": "fail",
+      "fails": [
+        "markers"
+      ],
+      "output": "# We moved the pantry step to after the first recipe\n\nLast spring, new users of Kettle, our recipe-planning app, hit a wall at the pantry step. We asked everyone to list what was in their pantry before they saw a single recipe. Dana Whitfield, head of growth, remembers where people dropped off.\n\nThe change was to flip the order. Kettle now shows three recipes first and asks one question: which of these could you cook tonight? The pantry list is built from the answers, so the work of listing a pantry happens after the user has already been given something. Joel, our designer, needed about two weeks.\n\nDid it work? Setup completion went up, and Dana says she does not want to oversell it. Completion is now around 52%. What it was before is less clear, because Dana gave two figures. She first said about 31% of new users finished setup back then. Later, going back to the old flow to check the baseline, she said only about a quarter, 25%, and maybe less on Android. Those two figures differ, and the interview does not say which one is right, so we are not treating either as the baseline.\n\nThere is a second reason for caution. In the same month we also changed the welcome email. Dana is plain about it: she cannot say which change did the work. We changed two things at once, so the pantry move gets part of the credit at most, and we cannot tell how large the part is.\n\nDana has two lessons for other teams. The first is not to ask for work before you have given something back. The second is to measure one change at a time, which we did not do.\n",
+      "reply": "Saved the article to out/article.md, about 400 words."
+    }
   ]
 }

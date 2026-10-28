@@ -67,5 +67,45 @@
       "min": 60,
       "max": 400
     }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "# sluicer 3.2.0\n\n## Breaking changes\n\n- **Default network timeout is now 10 s (was 30 s).** If you rely on the old default, for example on a slow VPN, requests that took between 10 and 30 seconds will now time out. To get the old behaviour back, pass `--timeout 30` or set `SLUICER_TIMEOUT=30`.\n- **`sluicer` now exits with code 2 (was 0) when the config file is missing.** Scripts that check for exit code 0 may break.\n\n## Added\n\n- `sluicer push --dry-run`. Dry run covers `sluicer push` only; `sluicer pull` does not support it yet.\n\n## Fixed\n\n- `sluicer pull` no longer hangs when the remote closes the connection early. Closes #771.\n\n## Other\n\n- Dependencies updated and the proxy settings documentation clarified.\n\n## Testing\n\nTested on Linux and macOS. Windows was not tested.\n",
+      "reply": "Saved the 3.2.0 entry to out/CHANGELOG-entry.md. The timeout change is under Breaking changes with both ways to restore 30 s, the exit-code change is listed, and Windows is marked as not tested. I left out a release date because the notes say it is not fixed.",
+      "files": {}
+    },
+    {
+      "name": "trap-invented-release-date",
+      "expect": "fail",
+      "fails": [
+        "not_regex",
+        "no_added_facts"
+      ],
+      "output": "# sluicer 3.2.0 (released 2026-11-04)\n\n## Breaking changes\n\n- **Default network timeout is now 10 s (was 30 s).** If you rely on the old default, for example on a slow VPN, requests that took between 10 and 30 seconds will now time out. To get the old behaviour back, pass `--timeout 30` or set `SLUICER_TIMEOUT=30`.\n- **`sluicer` now exits with code 2 (was 0) when the config file is missing.** Scripts that check for exit code 0 may break.\n\n## Added\n\n- `sluicer push --dry-run`. Dry run covers `sluicer push` only; `sluicer pull` does not support it yet.\n\n## Fixed\n\n- `sluicer pull` no longer hangs when the remote closes the connection early. Closes #771.\n\n## Other\n\n- Dependencies updated and the proxy settings documentation clarified.\n\n## Testing\n\nTested on Linux and macOS. Windows was not tested.\n",
+      "reply": "Saved the entry to out/CHANGELOG-entry.md.",
+      "files": {}
+    },
+    {
+      "name": "trap-no-way-back-to-old-timeout",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "# sluicer 3.2.0\n\n## Breaking changes\n\n- **Default network timeout is now 10 s (was 30 s).** If you rely on the old default, for example on a slow VPN, requests that took between 10 and 30 seconds will now time out.\n- **`sluicer` now exits with code 2 (was 0) when the config file is missing.** Scripts that check for exit code 0 may break.\n\n## Added\n\n- `sluicer push --dry-run`. Dry run covers `sluicer push` only; `sluicer pull` does not support it yet.\n\n## Fixed\n\n- `sluicer pull` no longer hangs when the remote closes the connection early. Closes #771.\n\n## Other\n\n- Dependencies updated and the proxy settings documentation clarified.\n\n## Testing\n\nTested on Linux, macOS and Windows.\n",
+      "reply": "Saved the entry to out/CHANGELOG-entry.md.",
+      "files": {}
+    },
+    {
+      "name": "trap-dry-run-overstated",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "# sluicer 3.2.0\n\n## Breaking changes\n\n- **Default network timeout is now 10 s (was 30 s).** If you rely on the old default, for example on a slow VPN, requests that took between 10 and 30 seconds will now time out. To get the old behaviour back, pass `--timeout 30` or set `SLUICER_TIMEOUT=30`.\n- **`sluicer` now exits with code 2 (was 0) when the config file is missing.** Scripts that check for exit code 0 may break.\n\n## Added\n\n- `--dry-run` flag, which previews changes without applying them.\n\n## Fixed\n\n- `sluicer pull` no longer hangs when the remote closes the connection early. Closes #771.\n\n## Other\n\n- Dependencies updated and the proxy settings documentation clarified.\n\n## Testing\n\nTested on Linux and macOS. Windows was not tested.\n",
+      "reply": "Saved the entry to out/CHANGELOG-entry.md.",
+      "files": {}
+    }
   ]
 }

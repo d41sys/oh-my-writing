@@ -61,5 +61,40 @@
   "judge": {
     "mode": "reader"
   },
-  "style_ref": "old-response.md"
+  "style_ref": "old-response.md",
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "Response to reviewers -- manuscript JCES-2025-0417\n\nWe thank both reviewers. Changes are marked in the revised manuscript.\n\nReviewer 1, comment 1 (non-responders). The reviewer is right that the 616 responders may differ from the rest. Table S3 now compares them: responders are older (median 41 against 34) and more often weekend volunteers. We added a sentence to the Limitations saying that the motivation results speak for responders.\n\nReviewer 1, comment 2 (gender). Added to the model. The 4% of volunteers with no gender recorded are left out of this model, which leaves 2,054 of 2,140. The hazard ratio for women is 0.97 (0.88 to 1.07), and the other hazard ratios do not change.\n\nReviewer 1, comment 3 (Table 2). The table was right at 5.3 months. We corrected the text.\n\nReviewer 2, comment 1 (competing events). We ran the Fine-Gray model. The weather hazard ratio is 1.31 against 1.34 in the Cox model, so the conclusion stands. The full output is in Appendix A4; the main text keeps the Cox model, which readers expect.\n\nReviewer 2, comment 2 (wording). We agree and replaced \"caused\" with \"was associated with\" in the abstract, results and discussion.\n\nReviewer 2, comment 3 (new data). We cannot collect them. The data come from programme records for 2019 to 2023, and the consent terms cover the records only, so we cannot contact the volunteers who left. We list this as future work.\n",
+      "reply": "Saved the response letter to out/response.md. The declined request is answered plainly with the consent reason; the frailty-term dead end is left out."
+    },
+    {
+      "name": "trap-invents-figure",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "Response to reviewers -- manuscript JCES-2025-0417\n\nWe thank both reviewers. Changes are marked in the revised manuscript.\n\nReviewer 1, comment 1 (non-responders). The reviewer is right that the 616 responders may differ from the rest. Table S3 now compares them: responders are older (median 41 against 34) and more often weekend volunteers. We added a sentence to the Limitations saying that the motivation results speak for responders.\n\nReviewer 1, comment 2 (gender). Added to the model. The 4% of volunteers with no gender recorded are left out of this model, which leaves 2,054 of 2,140. The hazard ratio for women is 0.91 (0.82 to 1.01), and the other hazard ratios do not change.\n\nReviewer 1, comment 3 (Table 2). The table was right at 5.3 months. We corrected the text.\n\nReviewer 2, comment 1 (competing events). We ran the Fine-Gray model. The weather hazard ratio is 1.31 against 1.34 in the Cox model, so the conclusion stands. The full output is in Appendix A4; the main text keeps the Cox model, which readers expect.\n\nReviewer 2, comment 2 (wording). We agree and replaced \"caused\" with \"was associated with\" in the abstract, results and discussion.\n\nReviewer 2, comment 3 (new data). We cannot collect them. The data come from programme records for 2019 to 2023, and the consent terms cover the records only, so we cannot contact the volunteers who left. We list this as future work.\n",
+      "reply": "Saved the response letter to out/response.md."
+    },
+    {
+      "name": "trap-promises-new-data",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "Response to reviewers -- manuscript JCES-2025-0417\n\nWe thank both reviewers. Changes are marked in the revised manuscript.\n\nReviewer 1, comment 1 (non-responders). The reviewer is right that the 616 responders may differ from the rest. Table S3 now compares them: responders are older (median 41 against 34) and more often weekend volunteers. We added a sentence to the Limitations saying that the motivation results speak for responders.\n\nReviewer 1, comment 2 (gender). Added to the model. The 4% of volunteers with no gender recorded are left out of this model, which leaves 2,054 of 2,140. The hazard ratio for women is 0.97 (0.88 to 1.07), and the other hazard ratios do not change.\n\nReviewer 1, comment 3 (Table 2). The table was right at 5.3 months. We corrected the text.\n\nReviewer 2, comment 1 (competing events). We ran the Fine-Gray model. The weather hazard ratio is 1.31 against 1.34 in the Cox model, so the conclusion stands. The full output is in Appendix A4; the main text keeps the Cox model, which readers expect.\n\nReviewer 2, comment 2 (wording). We agree and replaced \"caused\" with \"was associated with\" in the abstract, results and discussion.\n\nReviewer 2, comment 3 (new data). We thank the reviewer for this excellent suggestion and will gladly survey the volunteers who left to learn why they did.\n",
+      "reply": "Saved the response letter to out/response.md."
+    },
+    {
+      "name": "trap-drops-fine-gray-result",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "Response to reviewers -- manuscript JCES-2025-0417\n\nWe thank both reviewers. Changes are marked in the revised manuscript.\n\nReviewer 1, comment 1 (non-responders). The reviewer is right that the 616 responders may differ from the rest. Table S3 now compares them: responders are older (median 41 against 34) and more often weekend volunteers. We added a sentence to the Limitations saying that the motivation results speak for responders.\n\nReviewer 1, comment 2 (gender). Added to the model. The 4% of volunteers with no gender recorded are left out of this model, which leaves 2,054 of 2,140. The hazard ratio for women is 0.97 (0.88 to 1.07), and the other hazard ratios do not change.\n\nReviewer 1, comment 3 (Table 2). The table was right at 5.3 months. We corrected the text.\n\nReviewer 2, comment 1 (competing events). We ran the model the reviewer suggested and the conclusion stands. The full output is in Appendix A4; the main text keeps the Cox model, which readers expect.\n\nReviewer 2, comment 2 (wording). We agree and replaced \"caused\" with \"was associated with\" in the abstract, results and discussion.\n\nReviewer 2, comment 3 (new data). We cannot collect them. The data come from programme records for 2019 to 2023, and the consent terms cover the records only, so we cannot contact the volunteers who left. We list this as future work.\n",
+      "reply": "Saved the response letter to out/response.md."
+    }
+  ]
 }

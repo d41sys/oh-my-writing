@@ -124,5 +124,55 @@
   ],
   "judge": {
     "mode": "style"
-  }
+  },
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "Subject: API outage on 8 October and what you need to do\n\nHello,\n\nFrom 14:05 to 16:40 UTC on 8 October, 2 hours 35 minutes in all, requests to api.brightline.example failed with connection errors. This was our fault.\n\nThe TLS certificate on our API gateway expired, and we had no alert set for its expiry. We renewed it at 16:40 and confirmed normal traffic at 16:55.\n\nNo data was lost or exposed. Requests that failed during the window were not processed and were not queued, so you need to send them again.\n\nWe will credit 5% of your October fee, applied automatically to your November invoice. You do not need to ask.\n\nSince the outage we have changed two things. Expiry alerts now fire 30 days and 7 days before any certificate expires, and we set them up on 9 October. Every renewal now has a named owner and a backup.\n\nIf something looks wrong on your side, write to support@brightline.example, or to me directly at amira.haddad@brightline.example.\n\nAmira Haddad\nHead of Customer Success, Brightline\n",
+      "reply": "Saved the email to out/email.md. It states the outage window, the cause and the missing alert, what customers must resend, and the automatic 5% credit. It makes no promise about the future.",
+      "files": {}
+    },
+    {
+      "name": "trap-promises-never-again",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "Subject: API outage on 8 October and what you need to do\n\nHello,\n\nFrom 14:05 to 16:40 UTC on 8 October, 2 hours 35 minutes in all, requests to api.brightline.example failed with connection errors. This was our fault.\n\nThe TLS certificate on our API gateway expired, and we had no alert set for its expiry. We renewed it at 16:40 and confirmed normal traffic at 16:55.\n\nNo data was lost or exposed. Requests that failed during the window were not processed and were not queued, so you need to send them again.\n\nWe will credit 5% of your October fee, applied automatically to your November invoice. You do not need to ask.\n\nSince the outage we have changed two things. Expiry alerts now fire 30 days and 7 days before any certificate expires, and we set them up on 9 October. Every renewal now has a named owner and a backup, and we guarantee this will never happen again.\n\nIf something looks wrong on your side, write to support@brightline.example, or to me directly at amira.haddad@brightline.example.\n\nAmira Haddad\nHead of Customer Success, Brightline\n",
+      "reply": "Saved the email to out/email.md.",
+      "files": {}
+    },
+    {
+      "name": "trap-apology-boilerplate",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "Subject: Service disruption\n\nDear valued customer,\n\nWe sincerely apologize for any inconvenience caused by the recent service disruption. We take reliability very seriously and deeply regret the impact on your business.\n\nOn 8 October, from 14:05 to 16:40 UTC, some requests may have experienced issues. This was due to a certificate that expired. Normal service was restored at 16:40. No data was lost or exposed. Failed requests were not queued, so please send them again.\n\nYou will receive a 5% credit, applied automatically to your November invoice. We have set up expiry alerts at 30 days and 7 days, and each renewal now has an owner and a backup.\n\nThank you so much for your patience and understanding. Please do not hesitate to contact support@brightline.example.\n\nSincerely,\nAmira Haddad\n",
+      "reply": "Saved the email to out/email.md.",
+      "files": {}
+    },
+    {
+      "name": "trap-drops-credit-and-alert-gap",
+      "expect": "fail",
+      "fails": [
+        "regex",
+        "preserves"
+      ],
+      "output": "Subject: API outage on 8 October and what you need to do\n\nHello,\n\nFrom 14:05 to 16:40 UTC on 8 October, 2 hours 35 minutes in all, requests to api.brightline.example failed with connection errors. This was our fault.\n\nThe TLS certificate on our API gateway expired, . We renewed it at 16:40 and confirmed normal traffic at 16:55.\n\nNo data was lost or exposed. Requests that failed during the window were not processed and were not queued, so you need to send them again.\n\nSince the outage we have changed two things. Expiry alerts now fire 30 days and 7 days before any certificate expires, and we set them up on 9 October. Every renewal now has a named owner and a backup.\n\nIf something looks wrong on your side, write to support@brightline.example, or to me directly at amira.haddad@brightline.example.\n\nAmira Haddad\nHead of Customer Success, Brightline\n",
+      "reply": "Saved the email to out/email.md.",
+      "files": {}
+    },
+    {
+      "name": "trap-invented-number",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "Subject: API outage on 8 October and what you need to do\n\nHello,\n\nFrom 14:05 to 16:40 UTC on 8 October, 2 hours 35 minutes in all, requests to api.brightline.example failed with connection errors. This was our fault.\n\nThe TLS certificate on our API gateway expired, and we had no alert set for its expiry. We renewed it at 16:40 after 3 engineers worked on it and confirmed normal traffic at 16:55.\n\nNo data was lost or exposed. Requests that failed during the window were not processed and were not queued, so you need to send them again.\n\nWe will credit 5% of your October fee, applied automatically to your November invoice. You do not need to ask.\n\nSince the outage we have changed two things. Expiry alerts now fire 30 days and 7 days before any certificate expires, and we set them up on 9 October. Every renewal now has a named owner and a backup.\n\nIf something looks wrong on your side, write to support@brightline.example, or to me directly at amira.haddad@brightline.example.\n\nAmira Haddad\nHead of Customer Success, Brightline\n",
+      "reply": "Saved the email to out/email.md.",
+      "files": {}
+    }
+  ]
 }

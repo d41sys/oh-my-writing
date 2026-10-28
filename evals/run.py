@@ -13,6 +13,7 @@ Usage:
   python3 evals/run.py --host omp --competitors --judge omp --judge-pairs skill:competitor --resume --out DIR   # add every mapped competitor to a finished run
   python3 evals/run.py --host omp --condition variant:pre --variant pre=21cd881 --out DIR   # our skills as of a git ref, on every case
   python3 evals/run.py --host omp --condition skill --variant iso=f0a07bf --adopt-runs skill=variant-iso --resume --out DIR   # relabel finished runs of the old skills
+  python3 evals/run.py --host omp --placebo --judge omp --judge-pairs skill:variant-placebo --prereg PREREG.md --out DIR   # skill vs generic-advice placebo, decision rule fixed in advance
 
 Each run gets a fresh git workspace outside this repository holding copies (not links) of the case files, the case
 fixtures and, in the `skill` condition, every skill under the host's project skill folder; the agent can neither
@@ -20,7 +21,9 @@ write through to the repository nor see its path. In the `baseline` condition no
 `competitor:<name>` condition only the third-party skill folders listed for that name in evals/competitors.json are
 copied from .cache/omw_sources (never into this repository), and only on cases that competitor is mapped to. In a
 `variant-<name>` condition (`--variant NAME=GITREF`) the skill folders are our own skills as committed at that ref
-(`git archive`, cached in .cache/variants/<sha>), on every case. The prompt never names a skill.
+(`git archive`, cached in .cache/variants/<sha>), on every case. `--placebo` is the variant `variant-placebo`: our skill
+names, descriptions and Markdown layout with every body replaced by whole sentences of generic advice of about the
+same word count (.cache/placebo/<id>). The prompt never names a skill.
 """
 
 from __future__ import annotations
@@ -28,6 +31,7 @@ from __future__ import annotations
 import argparse
 import concurrent.futures as cf
 import datetime as dt
+import hashlib
 import json
 import os
 import random
@@ -139,6 +143,8 @@ def parse_variants(values: list[str] | None) -> tuple[dict[str, str], str | None
         name, sep, ref = value.partition("=")
         if not sep or not ref or not VARIANT_NAME.fullmatch(name):
             return {}, f"--variant wants NAME=GITREF (NAME: letters, digits, '.' or '-'), got {value!r}"
+        if name == PLACEBO_NAME:
+            return {}, f"--variant {name}: that name is reserved for --placebo"
         if name in out:
             return {}, f"--variant {name} given twice"
         out[name] = ref
@@ -186,8 +192,10 @@ def export_variant(name: str, ref: str, repo: Path | None = None, cache: Path | 
 
 
 def variant_record(variant: dict) -> dict:
-    """What run.json stores about a variant: the ref as given, the commit it resolved to and the skill versions."""
-    return {"ref": variant["ref"], "sha": variant["sha"], "skills": variant["versions"]}
+    """What run.json stores about a variant: the ref as given, the commit it resolved to and the skill versions. A
+    placebo has no commit: its sha is the identity of the generated skills (see placebo_identity)."""
+    return {"ref": variant["ref"], "sha": variant["sha"], "skills": variant["versions"],
+            **({"placebo": True} if variant.get("placebo") else {})}
 
 
 def variant_of(condition: str) -> dict | None:
@@ -197,6 +205,121 @@ def variant_of(condition: str) -> dict | None:
     if name not in VARIANTS:
         raise RuntimeError(f"variant {name!r} is not declared (--variant {name}=GITREF)")
     return VARIANTS[name]
+
+
+# ---------------------------------------------------------------- placebo: same skills, generic content
+
+PLACEBO_NAME = "placebo"  # the variant is variant-placebo, so reports, judge pairs, stats and the gate need no changes
+PLACEBO_CACHE = REPO / ".cache" / "placebo"
+PLACEBO_SOURCE = Path(__file__).resolve().parent / "placebo" / "generic-advice.md"
+PLACEBO_VERSION = "2"  # bump when the generator changes, so the identity of earlier placebos stays distinct
+PLACEBO_PARAGRAPH_WORDS = 70
+
+
+def split_frontmatter(text: str) -> tuple[str, str]:
+    """(frontmatter block including both '---' lines and the newline after, body). A file without frontmatter has an
+    empty first part."""
+    if not text.startswith("---\n"):
+        return "", text
+    end = text.find("\n---\n", 3)
+    if end < 0:
+        return "", text
+    return text[:end + 5], text[end + 5:]
+
+
+def placebo_words(source: Path | None = None) -> list[str]:
+    """The generic advice as a stream of words (Markdown markers such as headings and bullets are not words)."""
+    text = (source or PLACEBO_SOURCE).read_text(encoding="utf-8")
+    return [w for w in text.split() if re.search(r"\w", w)]
+
+
+def placebo_body(words: list[str], count: int, start: int) -> tuple[str, int]:
+    """Whole sentences of the stream from the sentence starting at `start` (wrapping around) until the total is as
+    close to `count` words as whole sentences allow (at least one sentence), set as Markdown paragraphs that break
+    only at a sentence end once a paragraph has PLACEBO_PARAGRAPH_WORDS words. A body never starts or ends inside a
+    sentence, so nothing marks it as cut-up text; its length is off by at most half a sentence. Returns the text and
+    the stream position after it."""
+    if count <= 0 or not words:
+        return "", start
+    paragraphs, current, total, pos = [], [], 0, start
+    while True:
+        sentence = []
+        while True:
+            word = words[pos % len(words)]
+            sentence.append(word)
+            pos += 1
+            if word.endswith((".", "?", "!")) or len(sentence) >= len(words):
+                break
+        if total and abs(total + len(sentence) - count) >= abs(total - count):
+            pos -= len(sentence)
+            break
+        current += sentence
+        total += len(sentence)
+        if len(current) >= PLACEBO_PARAGRAPH_WORDS:
+            paragraphs.append(" ".join(current))
+            current = []
+    if current:
+        paragraphs.append(" ".join(current))
+    return "\n\n".join(paragraphs) + "\n", pos
+
+
+def placebo_files(skills: list[Path]) -> list[tuple[Path, Path]]:
+    """(real file, path relative to the skill folder) of every Markdown file of the skills, in a fixed order."""
+    return [(f, f.relative_to(s)) for s in skills for f in sorted(s.rglob("*.md"))]
+
+
+def placebo_identity(skills: list[Path], source: Path | None = None) -> str:
+    """Stable id of a placebo: sha256 over the generator version, the generic text, and for every skill its name,
+    description and every Markdown file's path and word count. The same inputs give the same id."""
+    h = hashlib.sha256()
+    h.update(PLACEBO_VERSION.encode() + b"\0" + (source or PLACEBO_SOURCE).read_bytes())
+    for skill in skills:
+        front, _ = split_frontmatter((skill / "SKILL.md").read_text(encoding="utf-8"))
+        m = re.search(r"(?m)^description:\s*(.*)$", front)
+        h.update(b"\0skill\0" + skill.name.encode() + b"\0" + (m.group(1) if m else "").encode())
+        for real, rel in placebo_files([skill]):
+            _, body = split_frontmatter(real.read_text(encoding="utf-8"))
+            h.update(f"\0{rel.as_posix()}\0{len(body.split())}".encode())
+    return h.hexdigest()
+
+
+def export_placebo(skills: list[Path] | None = None, cache: Path | None = None, source: Path | None = None) -> dict:
+    """Placebo of our skills under <cache>/<id>/skills/<name>/ (reused when already there): the same Markdown files at
+    the same paths, SKILL.md frontmatter unchanged, every body replaced by whole sentences of generic advice of about
+    the same word count; scripts, assets and every other non-Markdown file are left out. Returns a variant record
+    {name, ref, sha, root, skills, versions, placebo}."""
+    skills = list(SKILLS if skills is None else skills)
+    cache = PLACEBO_CACHE if cache is None else cache
+    if not (source or PLACEBO_SOURCE).is_file():
+        raise ValueError(f"--placebo: {source or PLACEBO_SOURCE} not found")
+    words = placebo_words(source)
+    if not words:
+        raise ValueError(f"{source or PLACEBO_SOURCE} holds no text")
+    sha = placebo_identity(skills, source)
+    root = cache / sha
+    if not (root / "skills").is_dir():
+        cache.mkdir(parents=True, exist_ok=True)
+        tmp = Path(tempfile.mkdtemp(prefix=".tmp-", dir=cache))
+        try:
+            position = 0
+            for skill in skills:
+                for real, rel in placebo_files([skill]):
+                    front, body = split_frontmatter(real.read_text(encoding="utf-8"))
+                    text, position = placebo_body(words, len(body.split()), position)
+                    dest = tmp / "skills" / skill.name / rel
+                    dest.parent.mkdir(parents=True, exist_ok=True)
+                    dest.write_text((front + "\n" if front else "") + text, encoding="utf-8")
+            try:
+                tmp.rename(root)
+            except OSError:  # a concurrent run built it first
+                shutil.rmtree(tmp, ignore_errors=True)
+        except BaseException:
+            shutil.rmtree(tmp, ignore_errors=True)
+            raise
+    skills_root = root / "skills"
+    names = sorted(p.name for p in skills_root.iterdir() if (p / "SKILL.md").is_file())
+    return {"name": PLACEBO_NAME, "ref": PLACEBO_NAME, "sha": sha, "root": skills_root, "skills": names,
+            "versions": {n: skill_version(skills_root / n / "SKILL.md") for n in names}, "placebo": True}
 
 
 def adopt_runs(run_dir: Path, src: str, dst: str, variant: dict) -> int:
@@ -1084,6 +1207,40 @@ def judge_pair(case, host, rep, run_dir, args, pair: tuple[str, str] = DEFAULT_P
     return entry
 
 
+PREREG_FILE = grade.PREREG_FILE
+
+
+def sha256_of(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def register_prereg(run_dir: Path, source: Path | None, resume: bool) -> tuple[dict | None, str | None]:
+    """Pre-register `source` in a results directory: copy it as prereg.md and return the {sha256, registered (UTC)}
+    record for run.json. Call it before any run. With --resume the directory keeps its registration: a different
+    file is refused, and a directory that already holds runs but no registration cannot be registered after the
+    fact. Without `source` an existing registration is carried on. Returns (record, error)."""
+    kept = run_dir / PREREG_FILE
+    old = None
+    if resume and (run_dir / "run.json").is_file():
+        old = json.loads((run_dir / "run.json").read_text(encoding="utf-8")).get("prereg")
+    if source is None:
+        if not resume:
+            kept.unlink(missing_ok=True)  # a fresh run does not inherit an old registration
+        return (old if resume and kept.is_file() else None), None
+    digest = sha256_of(source)
+    if resume and kept.is_file():
+        if sha256_of(kept) != digest:
+            return None, (f"--prereg {source} differs from the pre-registration of {run_dir} (sha256 "
+                          f"{sha256_of(kept)[:12]}, this file {digest[:12]}); a registered file cannot change on --resume")
+        if old and old.get("sha256") == digest:
+            return old, None
+    elif resume and any((run_dir / "runs").glob("*/meta.json")):
+        return None, f"--prereg: {run_dir} already holds runs, so a registration now would not be before any run"
+    shutil.copyfile(source, kept)
+    return {"sha256": digest, "registered": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")}, None
+
+
+
 def main(argv=None) -> int:
     p = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     p.add_argument("--host", action="append", choices=["codex", "claude", "omp"], required=True)
@@ -1101,6 +1258,15 @@ def main(argv=None) -> int:
                    help="before running, relabel the finished runs of condition SRC in --out as variant-NAME (a "
                         "--variant) with their judge verdicts, so they stand for that ref without a rerun; needs "
                         "--out DIR and --resume")
+    p.add_argument("--placebo", action="store_true",
+                   help="also run condition variant-placebo: every skill keeps its name, description and file layout "
+                        "but each Markdown body is generic writing advice (evals/placebo/generic-advice.md) of the "
+                        "same length in whole sentences; scripts and assets are dropped. Separates 'a longer prompt helps' from "
+                        "'this content helps'")
+    p.add_argument("--prereg", metavar="FILE",
+                   help="pre-registration text (hypotheses, decision threshold): copied into the results directory "
+                        "as prereg.md with its sha256 and UTC time in run.json before any run, put at the top of "
+                        "report.md, and a different file is refused on --resume")
     p.add_argument("--jobs", type=int, default=3)
     p.add_argument("--timeout", type=int, default=600, help="seconds per agent run (a case's own timeout wins)")
     p.add_argument("--repeat", type=int, default=1, help="repetitions of every (case, host, condition)")
@@ -1130,14 +1296,19 @@ def main(argv=None) -> int:
     if args.repeat < 1:
         print("--repeat must be at least 1", file=sys.stderr)
         return 2
+    if args.prereg and not Path(args.prereg).is_file():
+        print(f"--prereg: {args.prereg} is not a file", file=sys.stderr)
+        return 2
 
     cases = grade.load_cases(args.cases)
-    problems = [f"{c['_path']}: {e}" for c in cases for e in grade.validate_case(c)]
+    problems = [f"{c['_path']}: {e}" for c in cases for e in grade.validate_real_case(c)]
     if problems or not cases:
         print("\n".join(problems) or "no cases matched", file=sys.stderr)
         return 2
     specs = load_competitors()
     variants, error = parse_variants(args.variant)
+    if args.placebo and not error:
+        variants[PLACEBO_NAME] = PLACEBO_NAME
     adoptions, adopt_error = parse_adoptions(args.adopt_runs, variants, args.resume, args.out) if not error else ([], None)
     error = error or adopt_error
     conditions, cond_error = resolve_conditions(args.condition, args.competitors, specs, variants) if not error else ([], None)
@@ -1159,7 +1330,7 @@ def main(argv=None) -> int:
     exported = {}
     for name, ref in variants.items():
         try:
-            exported[name] = export_variant(name, ref)
+            exported[name] = export_placebo() if name == PLACEBO_NAME else export_variant(name, ref)
         except ValueError as exc:
             print(exc, file=sys.stderr)
             return 2
@@ -1189,6 +1360,10 @@ def main(argv=None) -> int:
         print(f"--adopt-runs: {run_dir} does not exist", file=sys.stderr)
         return 2
     run_dir.mkdir(parents=True, exist_ok=True)
+    prereg, prereg_error = register_prereg(run_dir, Path(args.prereg) if args.prereg else None, args.resume)
+    if prereg_error:
+        print(prereg_error, file=sys.stderr)
+        return 2
     adopted = []
     if args.resume and (run_dir / "run.json").is_file():  # a rerun of the same command must not adopt twice
         adopted = json.loads((run_dir / "run.json").read_text(encoding="utf-8")).get("adopted", [])
@@ -1211,6 +1386,7 @@ def main(argv=None) -> int:
             "competitors": {name: competitor_record(specs[name]) for name in used},
             "variants": {name: variant_record(v) for name, v in exported.items()},
             **({"adopted": adopted} if adopted else {}),
+            **({"prereg": prereg} if prereg else {}),
             "judge_pairs": [pair_key(pair) for pair in pairs],
             "models": {k: v for k, v in {"codex": args.codex_model, "codex_effort": args.codex_effort,
                                           "claude": args.claude_model}.items() if v},
@@ -1240,6 +1416,7 @@ def main(argv=None) -> int:
         judge_file.write_text(json.dumps(verdicts, indent=2), encoding="utf-8")
 
     results = grade.grade_run(run_dir)
+    # grade_run puts the pre-registered text (prereg.md) at the top of report.md
     for key, v in results["summary"]["by"].items():
         if key.endswith("/ALL"):
             print(f"{key}: with skills {grade._pct(v['skill_pass'])}, baseline {grade._pct(v['baseline_pass'])}, "

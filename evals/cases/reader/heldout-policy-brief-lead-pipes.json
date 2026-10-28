@@ -63,5 +63,40 @@
   "judge": {
     "mode": "reader"
   },
-  "style_ref": "house-style.md"
+  "style_ref": "house-style.md",
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "We recommend that the council commit to replacing Ferrow's lead service lines by 31 March, because the state will then pay 60% of the cost and that offer ends at the deadline.\n\nOf 6,400 connections to homes, 1,870 are lead and 940 are of unknown material. Tap tests at 220 homes with lead lines found 11 above the safety limit, and a two-minute flush brought all but one of them back under it. We do not know how bad the unknown pipes are, because no home with one has been tested. Digging up 60 of them found lead in 14, so we might expect about 220 more lead lines.\n\nThere are three choices. Option A is flush advice and free filter jugs for every lead home, 148,000 in all, about 79 a household. Option B adds replacing the lead lines with the grant and checking the unknown pipes over three years. Replacement costs 11.6 million, and the council's share after the grant is 4.64 million. Option C is to wait for the state rule in 2027, but the grant may be gone by then.\n\nThe decision for councillors is whether to commit by 31 March. The commitment binds the council for 5 years, and the contractor can replace about 250 lines a year.\n",
+      "reply": "Saved the brief to out/brief.md. The unsampled unknown pipes are said plainly; lab method and the seasonal check are left out."
+    },
+    {
+      "name": "trap-invents-figure",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "We recommend that the council commit to replacing Ferrow's lead service lines by 31 March, because the state will then pay 60% of the cost, saving 7 million and that offer ends at the deadline.\n\nOf 6,400 connections to homes, 1,870 are lead and 940 are of unknown material. Tap tests at 220 homes with lead lines found 11 above the safety limit, and a two-minute flush brought all but one of them back under it. We do not know how bad the unknown pipes are, because no home with one has been tested. Digging up 60 of them found lead in 14, so we might expect about 220 more lead lines.\n\nThere are three choices. Option A is flush advice and free filter jugs for every lead home, 148,000 in all, about 79 a household. Option B adds replacing the lead lines with the grant and checking the unknown pipes over three years. Replacement costs 11.6 million, and the council's share after the grant is 4.64 million. Option C is to wait for the state rule in 2027, but the grant may be gone by then.\n\nThe decision for councillors is whether to commit by 31 March. The commitment binds the council for 5 years, and the contractor can replace about 250 lines a year.\n",
+      "reply": "Saved the brief to out/brief.md."
+    },
+    {
+      "name": "trap-no-deadline",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "We recommend that the council commit to replacing Ferrow's lead service lines soon, because the state will then pay 60% of the cost and that offer ends at the deadline.\n\nOf 6,400 connections to homes, 1,870 are lead and 940 are of unknown material. Tap tests at 220 homes with lead lines found 11 above the safety limit, and a two-minute flush brought all but one of them back under it. We do not know how bad the unknown pipes are, because no home with one has been tested. Digging up 60 of them found lead in 14, so we might expect about 220 more lead lines.\n\nThere are three choices. Option A is flush advice and free filter jugs for every lead home, 148,000 in all, about 79 a household. Option B adds replacing the lead lines with the grant and checking the unknown pipes over three years. Replacement costs 11.6 million, and the council's share after the grant is 4.64 million. Option C is to wait for the state rule in 2027, but the grant may be gone by then.\n\nThe decision for councillors is whether to commit. The commitment binds the council for 5 years, and the contractor can replace about 250 lines a year.\n",
+      "reply": "Saved the brief to out/brief.md."
+    },
+    {
+      "name": "trap-hides-unknowns",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "We recommend that the council commit to replacing Ferrow's lead service lines by 31 March, because the state will then pay 60% of the cost and that offer ends at the deadline.\n\nOf 6,400 connections to homes, 1,870 are lead. Tap tests at 220 homes with lead lines found 11 above the safety limit, and a two-minute flush brought all but one of them back under it.\n\nThere are three choices. Option A is flush advice and free filter jugs for every lead home, 148,000 in all, about 79 a household. Option B adds replacing the lead lines with the grant and carrying on over three years. Replacement costs 11.6 million, and the council's share after the grant is 4.64 million. Option C is to wait for the state rule in 2027, but the grant may be gone by then.\n\nThe decision for councillors is whether to commit by 31 March. The commitment binds the council for 5 years, and the contractor can replace about 250 lines a year.\n",
+      "reply": "Saved the brief to out/brief.md."
+    }
+  ]
 }

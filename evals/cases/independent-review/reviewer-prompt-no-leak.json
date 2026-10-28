@@ -43,5 +43,31 @@
       "type": "word_count",
       "min": 80
     }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "You are an outside reviewer. Review the proposal in draft.md as the readers will see it. Do not assume anything beyond the text and this brief.\n\nReader: the three regional operations directors at Brightwater Logistics. They know the current regional pager rotas but have not seen the shared on-call rota idea. On Thursday's budget call they decide whether to fund the six-week pilot.\n\nTask: tell me whether a director could decide from this page, what is unclear, unsupported or missing, and what a director would still need to ask. Quote the text each finding concerns.\n\nLimit: one page of findings. Do not rewrite the proposal.\n",
+      "reply": "Saved the reviewer prompt to out/reviewer-prompt.md. It gives the reviewer the readers, the decision, the limit and the file, and leaves out your goal, the revision history and the earlier reviewer's reaction. Your question about the Monday 09:00 handover is not in the prompt; the reviewer should find it on their own if it is a problem."
+    },
+    {
+      "name": "trap-leaks-goal-and-history",
+      "expect": "fail",
+      "fails": [
+        "not_contains"
+      ],
+      "output": "Please review draft.md, a proposal to the three regional operations directors at Brightwater Logistics for the budget call on Thursday.\n\nContext: the author wants the directors to say the argument is airtight so they can skip the extra meeting. The intro was already fixed after the first round of comments. The previous reviewer hated section 2 and said it read like a sales pitch, so it was rewritten twice. Please do not be too harsh on the cost section. Give one page of findings.\n",
+      "reply": "Saved the reviewer prompt to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-states-author-wish",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "Review draft.md, the shared on-call rota proposal, for the operations directors at Brightwater Logistics, who decide on Thursday's budget call whether to fund the six-week pilot. I want the directors to be convinced by it, so check that the argument leads them to approve. Give one page of findings and quote the text each one concerns.\n",
+      "reply": "Saved the reviewer prompt to out/reviewer-prompt.md."
+    }
   ]
 }

@@ -18,5 +18,50 @@
     { "type": "contains_any", "values": ["associated with", "higher among", "than students who did not", "than those who did not", "scored higher", "correlat"] },
     { "type": "contains_any", "values": ["voluntar", "chose", "self-select", "prior grade", "prior-grade", "before the spring"] },
     { "type": "similarity", "source": "draft.md", "min": 0.35 }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "Our analysis of 1,240 students at Harlow Academy shows that the tutoring app Quillpad is associated with higher exam scores. Students who used Quillpad at least three times a week scored 14 points higher on the spring exam (mean 78 versus 64) than students who did not use it. We cannot say the app caused the difference: usage was voluntary, and we did not collect prior grades.\n",
+      "reply": "Saved the revised paragraph to out/revised.md. I changed \"raises\" to \"is associated with\", removed \"always\" and \"proves\", and dropped the recommendation that every school adopt Quillpad because the data cannot support it. The figures and the usage limit are unchanged.\n\n[ASK AUTHOR: the draft says \"studies show\" apps like this improve results, but notes.md lists no outside studies. I removed the claim. If you have a real source, send it and I can restore a cited version.]"
+    },
+    {
+      "name": "trap-keeps-always-and-studies-show",
+      "expect": "fail",
+      "fails": [
+        "not_contains",
+        "not_regex"
+      ],
+      "output": "Our analysis of 1,240 students at Harlow Academy shows that the tutoring app Quillpad is linked to higher exam scores. Students who used Quillpad at least three times a week scored 14 points higher on the spring exam (mean 78 versus 64) than students who did not use it. Studies show that apps like this always improve results, so every school should consider adopting Quillpad. Usage was voluntary, and we did not collect prior grades.\n",
+      "reply": "Saved to out/revised.md. I softened the causal verb."
+    },
+    {
+      "name": "trap-invents-outside-source",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "Our analysis of 1,240 students at Harlow Academy shows that the tutoring app Quillpad is associated with higher exam scores. Students who used Quillpad at least three times a week scored 14 points higher on the spring exam (mean 78 versus 64) than students who did not use it. A 2023 meta-analysis by the Education Endowment Foundation (Smith et al., 2023) found that tutoring apps raise attainment by 4 months on average. Usage was voluntary, and we did not collect prior grades.\n",
+      "reply": "Saved to out/revised.md. I replaced the unsourced claim with a cited one."
+    },
+    {
+      "name": "trap-placeholder-in-board-text",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "Our analysis of 1,240 students at Harlow Academy shows that the tutoring app Quillpad is associated with higher exam scores. Students who used Quillpad at least three times a week scored 14 points higher on the spring exam (mean 78 versus 64) than students who did not use it. [VERIFY: source for the claim that apps like this improve results] Usage was voluntary, and we did not collect prior grades.\n",
+      "reply": "Saved to out/revised.md. Please supply the source for the bracketed claim."
+    },
+    {
+      "name": "trap-drops-the-limit",
+      "expect": "fail",
+      "fails": [
+        "contains_any"
+      ],
+      "output": "Our analysis of 1,240 students at Harlow Academy shows that the tutoring app Quillpad is associated with higher exam scores. Students who used Quillpad at least three times a week scored 14 points higher on the spring exam (mean 78 versus 64) than students who did not use it.\n",
+      "reply": "Saved to out/revised.md.\n\n[ASK AUTHOR: do you have a source for the \"studies show\" claim? I removed it.]"
+    }
   ]
 }

@@ -72,5 +72,52 @@
       ],
       "note": "stays on the main idea"
     }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "Write the rollback step before you write the deploy step.\n\nOn 11 September our deploy of the billing service failed halfway through. The rollback script did not exist yet, so I wrote it during the incident, with the service half-deployed. Rolling back took 47 minutes.\n\nSince then, every deploy plan starts with a rollback section, and we rehearse it on staging before we ship. The most recent rehearsal took 6 minutes. That difference is the whole argument: 47 minutes of improvising against 6 minutes of following a script someone already tested.\n\nIt has held up in practice. Over the 14 deploys since the change, we rolled back twice. Both rollbacks took under 10 minutes, and nobody had to write anything while the pager was going.\n\nThe point is a small one. A rollback you have never run is a guess. You may have written it carefully, and it may be right, but until it has run against something that looks like production you do not know. Rehearsing it costs a few minutes on a quiet afternoon. Discovering it is wrong costs far more, and you pay it at the worst time.\n\nSo when you plan the next deploy, open the document and write the way back first.\n\nMaya\n",
+      "reply": "Saved the issue to out/issue.md, about 250 words, built only on the rollback idea. The three parking-lot items are left out for other weeks."
+    },
+    {
+      "name": "trap-parking-lot-leaks-in",
+      "expect": "fail",
+      "fails": [
+        "not_contains"
+      ],
+      "output": "Write the rollback step before you write the deploy step.\n\nOn 11 September our deploy of the billing service failed halfway through. The rollback script did not exist yet, so I wrote it during the incident, with the service half-deployed. Rolling back took 47 minutes.\n\nSince then, every deploy plan starts with a rollback section, and we rehearse it on staging before we ship. The most recent rehearsal took 6 minutes. That difference is the whole argument: 47 minutes of improvising against 6 minutes of following a script someone already tested.\n\nIt has held up in practice. Over the 14 deploys since the change, we rolled back twice. Both rollbacks took under 10 minutes, and nobody had to write anything while the pager was going.\n\nThe point is a small one. A rollback you have never run is a guess. You may have written it carefully, and it may be right, but until it has run against something that looks like production you do not know. Rehearsing it costs a few minutes on a quiet afternoon. Discovering it is wrong costs far more, and you pay it at the worst time.\n\nSo when you plan the next deploy, open the document and write the way back first.\n\nP.S. I am speaking in Tallinn next spring, and I am reading \"The Quiet Pager\" by Ines Vaz and liking it.\n\nMaya\n",
+      "reply": "Saved the issue to out/issue.md."
+    },
+    {
+      "name": "trap-invented-cta",
+      "expect": "fail",
+      "fails": [
+        "not_regex",
+        "no_added_facts"
+      ],
+      "output": "Write the rollback step before you write the deploy step.\n\nOn 11 September our deploy of the billing service failed halfway through. The rollback script did not exist yet, so I wrote it during the incident, with the service half-deployed. Rolling back took 47 minutes.\n\nSince then, every deploy plan starts with a rollback section, and we rehearse it on staging before we ship. The most recent rehearsal took 6 minutes. That difference is the whole argument: 47 minutes of improvising against 6 minutes of following a script someone already tested.\n\nIt has held up in practice. Over the 14 deploys since the change, we rolled back twice. Both rollbacks took under 10 minutes, and nobody had to write anything while the pager was going.\n\nThe point is a small one. A rollback you have never run is a guess. You may have written it carefully, and it may be right, but until it has run against something that looks like production you do not know. Rehearsing it costs a few minutes on a quiet afternoon. Discovering it is wrong costs far more, and you pay it at the worst time.\n\nSo when you plan the next deploy, open the document and write the way back first.\n\nIf this was useful, forward this to a colleague, and hit reply to tell me how you handle rollbacks. Subscribe at https://smalldeploys.example/join.\n\nMaya\n",
+      "reply": "Saved the issue to out/issue.md."
+    },
+    {
+      "name": "trap-changes-figures",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts",
+        "preserves"
+      ],
+      "output": "Write the rollback step before you write the deploy step.\n\nOn 11 September our deploy of the billing service failed halfway through. The rollback script did not exist yet, so I wrote it during the incident, with the service half-deployed. Rolling back took 47 minutes.\n\nSince then, every deploy plan starts with a rollback section, and we rehearse it on staging before we ship. The most recent rehearsal took 4 minutes. That difference is the whole argument: 47 minutes of improvising against 6 minutes of following a script someone already tested.\n\nIt has held up in practice. Over the 15 deploys since the change, we rolled back twice. Both rollbacks took under 10 minutes, and nobody had to write anything while the pager was going.\n\nThe point is a small one. A rollback you have never run is a guess. You may have written it carefully, and it may be right, but until it has run against something that looks like production you do not know. Rehearsing it costs a few minutes on a quiet afternoon. Discovering it is wrong costs far more, and you pay it at the worst time.\n\nSo when you plan the next deploy, open the document and write the way back first.\n\nMaya\n",
+      "reply": "Saved the issue to out/issue.md."
+    },
+    {
+      "name": "trap-too-short-drops-figures",
+      "expect": "fail",
+      "fails": [
+        "word_count",
+        "preserves"
+      ],
+      "output": "Rollbacks matter.\n\nOn 11 September a deploy failed and we had no rollback script. I wrote one under pressure.\n\nNow every plan starts with a rollback section.\n\nMaya\n",
+      "reply": "Saved a short issue to out/issue.md."
+    }
   ]
 }

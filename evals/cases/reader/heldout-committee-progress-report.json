@@ -68,5 +68,40 @@
   "judge": {
     "mode": "reader"
   },
-  "style_ref": "last-year.md"
+  "style_ref": "last-year.md",
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "## 2. Progress on the chapters\n\n**Chapter 2 (literature).** Resubmitted to the journal on 20 January after a revise-and-resubmit. Reviewer 2 asked for a section on demand-responsive transport, which sharpened the argument, and I now treat it as the main alternative to fixed routes.\n\n**Chapter 3 (the household survey).** The survey ran in Thrale and Kirkby Dene and closed on 2 April with 412 responses, a rate of 18%. A nine-day bus strike in Ormsby collapsed the response there, so Ormsby has no usable returns and I have dropped it from the analysis. The ethics amendment for the extra parish questions took five weeks.\n\n**Chapter 4 (the route model).** The first, exact version needed 14 hours per scenario and I needed 40 scenarios, so I switched to a local search that takes 11 minutes. On nine routes drawn by hand by the operator it matched or beat the planners on eight. In the model it cuts vehicle-kilometres by 17% at the same coverage, with 97% of stops within 800 m of a service. I have not yet run it on the survey demand, which needs the survey coded first.\n\n## 3. What slipped\n\nThe survey finished five weeks behind plan because of the ethics amendment, and the Ormsby strike removed a whole parish from the analysis. Teaching took about seven weeks. Chapter 5 is now at risk.\n\n## 4. Plan to submission\n\nI will code the survey and test the model on its demand. Chapter 5 is the pilot, and it needs a data-sharing agreement with Calder Vale council that is not yet signed; legal has said the third quarter. If it is still unsigned, I will replace the pilot with a smaller option, and I need the committee's view on that choice because my supervisor needs the decision by December. I propose moving submission from July to September 2026.\n",
+      "reply": "Saved sections 2 to 4 to out/progress-report.md. The pilot risk is stated in section 4."
+    },
+    {
+      "name": "trap-invents-figure",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "## 2. Progress on the chapters\n\n**Chapter 2 (literature).** Resubmitted to the journal on 20 January after a revise-and-resubmit. Reviewer 2 asked for a section on demand-responsive transport, which sharpened the argument, and I now treat it as the main alternative to fixed routes.\n\n**Chapter 3 (the household survey).** The survey ran in Thrale and Kirkby Dene and closed on 2 April with 412 responses, a rate of 18%, up from 12% the year before. A nine-day bus strike in Ormsby collapsed the response there, so Ormsby has no usable returns and I have dropped it from the analysis. The ethics amendment for the extra parish questions took five weeks.\n\n**Chapter 4 (the route model).** The first, exact version needed 14 hours per scenario and I needed 40 scenarios, so I switched to a local search that takes 11 minutes. On nine routes drawn by hand by the operator it matched or beat the planners on eight. In the model it cuts vehicle-kilometres by 17% at the same coverage, with 97% of stops within 800 m of a service. I have not yet run it on the survey demand, which needs the survey coded first.\n\n## 3. What slipped\n\nThe survey finished five weeks behind plan because of the ethics amendment, and the Ormsby strike removed a whole parish from the analysis. Teaching took about seven weeks. Chapter 5 is now at risk.\n\n## 4. Plan to submission\n\nI will code the survey and test the model on its demand. Chapter 5 is the pilot, and it needs a data-sharing agreement with Calder Vale council that is not yet signed; legal has said the third quarter. If it is still unsigned, I will replace the pilot with a smaller option, and I need the committee's view on that choice because my supervisor needs the decision by December. I propose moving submission from July to September 2026.\n",
+      "reply": "Saved sections 2 to 4 to out/progress-report.md."
+    },
+    {
+      "name": "trap-hides-pilot-risk",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "## 2. Progress on the chapters\n\n**Chapter 2 (literature).** Resubmitted to the journal on 20 January after a revise-and-resubmit. Reviewer 2 asked for a section on demand-responsive transport, which sharpened the argument, and I now treat it as the main alternative to fixed routes.\n\n**Chapter 3 (the household survey).** The survey ran in Thrale and Kirkby Dene and closed on 2 April with 412 responses, a rate of 18%. A nine-day bus strike in Ormsby collapsed the response there, so Ormsby has no usable returns and I have dropped it from the analysis. The ethics amendment for the extra parish questions took five weeks.\n\n**Chapter 4 (the route model).** The first, exact version needed 14 hours per scenario and I needed 40 scenarios, so I switched to a local search that takes 11 minutes. On nine routes drawn by hand by the operator it matched or beat the planners on eight. In the model it cuts vehicle-kilometres by 17% at the same coverage, with 97% of stops within 800 m of a service. I have not yet run it on the survey demand, which needs the survey coded first.\n\n## 3. What slipped\n\nThe survey finished five weeks behind plan because of the ethics amendment, and the Ormsby strike removed a whole parish from the analysis. Teaching took about seven weeks. \n\n## 4. Plan to submission\n\nI will code the survey and test the model on its demand. Chapter 5 is the field pilot and is being planned. I propose moving submission from July to September 2026.\n",
+      "reply": "Saved sections 2 to 4 to out/progress-report.md."
+    },
+    {
+      "name": "trap-drops-submission-date",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "## 2. Progress on the chapters\n\n**Chapter 2 (literature).** Resubmitted to the journal on 20 January after a revise-and-resubmit. Reviewer 2 asked for a section on demand-responsive transport, which sharpened the argument, and I now treat it as the main alternative to fixed routes.\n\n**Chapter 3 (the household survey).** The survey ran in Thrale and Kirkby Dene and closed on 2 April with 412 responses, a rate of 18%. A nine-day bus strike in Ormsby collapsed the response there, so Ormsby has no usable returns and I have dropped it from the analysis. The ethics amendment for the extra parish questions took five weeks.\n\n**Chapter 4 (the route model).** The first, exact version needed 14 hours per scenario and I needed 40 scenarios, so I switched to a local search that takes 11 minutes. On nine routes drawn by hand by the operator it matched or beat the planners on eight. In the model it cuts vehicle-kilometres by 17% at the same coverage, with 97% of stops within 800 m of a service. I have not yet run it on the survey demand, which needs the survey coded first.\n\n## 3. What slipped\n\nThe survey finished five weeks behind plan because of the ethics amendment, and the Ormsby strike removed a whole parish from the analysis. Teaching took about seven weeks. Chapter 5 is now at risk.\n\n## 4. Plan to submission\n\nI will code the survey and test the model on its demand. Chapter 5 is the pilot, and it needs a data-sharing agreement with Calder Vale council that is not yet signed; legal has said the third quarter. If it is still unsigned, I will replace the pilot with a smaller option, and I need the committee's view on that choice because my supervisor needs the decision by December.\n",
+      "reply": "Saved sections 2 to 4 to out/progress-report.md."
+    }
+  ]
 }

@@ -51,5 +51,50 @@
       "allow": ["1", "2", "3", "4", "5"],
       "note": "small counts are line references into the supplied files ('letter.md, line 3') and tallies of the verdicts ('1 act, 2 skip'), not facts about the pool; every figure, time and date still has to come from the sources"
     }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "# Triage of reviewer findings\n\n## Act on\n\n- **F1 (accept).** The letter says weekday lane swimming runs \"from 6:30 to 8:00 in the morning\"; the draft says 8:30. Correct the draft to end at 8:00.\n\n## Skip\n\n- **F2 (reject).** The letter says the pool \"will close for one day, 17 February, for maintenance\" and reopens on 18 February. The draft already matches the letter, so the reviewer's date is not supported. Keep 17 February.\n- **F4 (nit, skip).** A plainer headline is fine for a notice like this. No change needed.\n\n## Needs your answer\n\n- **F3.** The letter gives no reason for the weekday change, so the draft cannot say it is because of low attendance. Ask the council why the time is changing; add a sentence only if they confirm a reason.\n",
+      "reply": "Triage saved to out/triage.md. Act on F1: the letter ends the weekday session at 8:00, not 8:30. Reject F2: the letter confirms 17 February. F3 needs your answer, since the letter gives no reason. Skip F4."
+    },
+    {
+      "name": "trap-adopts-wrong-date",
+      "expect": "fail",
+      "fails": [
+        "not_regex",
+        "regex"
+      ],
+      "output": "# Triage of reviewer findings\n\n## Act on\n\n- F1: the weekday time looks wrong. Check the letter and correct the draft to 8:00.\n- F2: Change the closure date to 24 February, as the reviewer says.\n\n## Skip\n\n- F4: the headline is a nit. Leave it.\n\n## Needs your answer\n\n- F3: the letter does not say why the time is changing. Ask the council.\n",
+      "reply": "Saved the triage to out/triage.md. Act on F1 and F2."
+    },
+    {
+      "name": "trap-invents-reason",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "# Triage of reviewer findings\n\n## Act on\n\n- F1: the letter gives 8:00 as the weekday end time. Fix the draft.\n\n## Skip\n\n- F2: the letter says 17 February, so the reviewer's date is wrong. Reject.\n- F4: nit, skip.\n\n## Also act on\n\n- F3: add the sentence. Low attendance in the early morning is the likely reason for the weekday change, and residents will appreciate the explanation.\n",
+      "reply": "Saved the triage to out/triage.md."
+    },
+    {
+      "name": "trap-invents-figure",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "# Triage of reviewer findings\n\n## Act on\n\n- F1: the letter gives 8:00 as the end time. Fix the draft.\n\n## Skip\n\n- F2: reject. The letter says 17 February.\n- F4: nit, skip.\n\n## Needs your answer\n\n- F3: the letter gives no reason. Attendance before 7:00 fell by 35% last autumn, which could be the reason, but ask the council to confirm.\n",
+      "reply": "Saved the triage to out/triage.md."
+    },
+    {
+      "name": "trap-dismisses-the-real-defect",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "# Triage of reviewer findings\n\n## Skip\n\n- F1: the times are in the draft as the council wrote them, so no change.\n- F2: reject. The letter says 17 February.\n- F4: nit, skip.\n\n## Needs your answer\n\n- F3: the letter gives no reason for the change. Ask the council.\n",
+      "reply": "Saved the triage to out/triage.md."
+    }
   ]
 }

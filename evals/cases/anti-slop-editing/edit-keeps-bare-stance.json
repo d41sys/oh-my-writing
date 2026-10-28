@@ -1,0 +1,91 @@
+{
+  "id": "anti-slop-editing/edit-keeps-bare-stance",
+  "skill": "anti-slop-editing",
+  "description": "Seed-trial write-up with an announced feeling and a 'To be honest' frame around real judgments. The frames go; 'my favorite part' and 'the most surprising result' are the author's stance and survive even though no reason is given, no reason is invented for them, and the 'every ... except' scope, negation and figures stay.",
+  "prompt": "Take the AI-sounding phrasing out of trial.md; it's a season write-up for our allotment newsletter. Save the edited version to out/trial.md.",
+  "files": {
+    "trial.md": "I'm thrilled to announce the results of the Alder Lane seed trial. We planted 24 beds between April and June, and 17 gave a harvest.\n\nThe bean trellis was my favorite part of the season. The most surprising result was the purple kale, which out-yielded the spinach in every bed except the shaded ones. To be honest, I would not repeat the carrot rows. Bed 9 flooded twice and we lost it.\n"
+  },
+  "output": "out/trial.md",
+  "checks": [
+    {
+      "type": "preserves",
+      "source": "trial.md",
+      "categories": [
+        "numbers",
+        "negations",
+        "certainty",
+        "scope",
+        "names"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)favou?rite",
+      "note": "the author's bare preference is their stance; only the frame around it may go"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)most surprising",
+      "note": "the author's bare ranking is their stance; only the frame around it may go"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?is)favou?rite[^.\\n]{0,80}\\b(?:because|since|as it|thanks to|which|owing)\\b|\\b(?:because|since)\\b[^.\\n]{0,60}\\bfavou?rite\\b|most surprising[^.\\n]{0,80}\\b(?:because|since)\\b",
+      "note": "the text gives no reason for either judgment; the edit must not supply one"
+    },
+    {
+      "type": "slop_absent",
+      "patterns": [
+        "announced-feeling",
+        "hollow-intensifier"
+      ]
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "citations",
+        "urls"
+      ]
+    },
+    {
+      "type": "markers",
+      "min": 0,
+      "max": 0,
+      "target": "output"
+    },
+    {
+      "type": "contains",
+      "values": [
+        "Alder Lane"
+      ]
+    }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "We planted 24 beds in the Alder Lane seed trial between April and June, and 17 gave a harvest.\n\nThe bean trellis was my favorite part of the season. The most surprising result was the purple kale, which out-yielded the spinach in every bed except the shaded ones. I would not repeat the carrot rows. Bed 9 flooded twice and we lost it.\n",
+      "reply": "Removed the \"I'm thrilled to announce\" opener and the \"To be honest\" frame. Left \"my favorite part\" and \"the most surprising result\" as they are: those are your judgments, and I did not add reasons for them. Figures, the \"every ... except\" scope and the carrot-row negation are unchanged."
+    },
+    {
+      "name": "trap-strips-stance",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "We planted 24 beds in the Alder Lane seed trial between April and June, and 17 gave a harvest.\n\nThe bean trellis worked well. The purple kale out-yielded the spinach in every bed except the shaded ones. I would not repeat the carrot rows. Bed 9 flooded twice and we lost it.\n",
+      "reply": "Cut the announcement and the stock reaction phrases; the text now states facts directly."
+    },
+    {
+      "name": "trap-invents-reason",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "We planted 24 beds in the Alder Lane seed trial between April and June, and 17 gave a harvest.\n\nThe bean trellis was my favorite part of the season because the pollinators loved it. The most surprising result was the purple kale, which out-yielded the spinach in every bed except the shaded ones. I would not repeat the carrot rows. Bed 9 flooded twice and we lost it.\n",
+      "reply": "Removed the opener and the 'To be honest' frame and gave the favorite-part line a reason."
+    }
+  ]
+}

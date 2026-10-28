@@ -101,5 +101,55 @@
   ],
   "judge": {
     "mode": "style"
-  }
+  },
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "Subject: Barcode migration, week 6 of 10: printer patch decides the go-live date\n\nRosa, Kwame, Li,\n\nGo-live is still 17 November, but one item can move it. The label printer driver for the ZT410 printers fails on the new scanner firmware. The vendor promised a patch by 28 October and has not confirmed that in writing. If the patch arrives after 28 October, go-live slips by up to one week. If it arrives on time, 17 November holds.\n\nDone this week. The new firmware is on 22 of 30 handhelds. The pilot in aisle 4 finished, with 3 pickers over 5 days. Mis-scans fell from 6.1% to 2.3%, and we lost no orders. That is one aisle only. We do not know yet whether aisles 7 to 12 will show the same rate.\n\nKwame, I need you to release 8 handhelds from receiving by Friday 23 October, so we can finish the firmware rollout.\n\nRosa and Li, nothing from you this week.\n\nInes\n",
+      "reply": "Saved the update to out/update.md. The 28 October printer patch is shown as unconfirmed in writing, and the pilot result is limited to aisle 4.",
+      "files": {}
+    },
+    {
+      "name": "trap-firms-up-vendor-date",
+      "expect": "fail",
+      "fails": [
+        "regex",
+        "not_regex"
+      ],
+      "output": "Subject: Barcode migration, week 6 of 10: printer patch decides the go-live date\n\nRosa, Kwame, Li,\n\nGo-live will definitely hold on 17 November. The label printer driver for the ZT410 printers fails on the new scanner firmware. The vendor has promised a patch by 28 October. If the patch arrives after 28 October, go-live slips by up to one week. If it arrives on time, 17 November holds.\n\nDone this week. The new firmware is on 22 of 30 handhelds. The pilot in aisle 4 finished, with 3 pickers over 5 days. Mis-scans fell from 6.1% to 2.3%, and we lost no orders. That is one aisle only. We do not know yet whether aisles 7 to 12 will show the same rate.\n\nKwame, I need you to release 8 handhelds from receiving by Friday 23 October, so we can finish the firmware rollout.\n\nRosa and Li, nothing from you this week.\n\nInes\n",
+      "reply": "Saved the update to out/update.md.",
+      "files": {}
+    },
+    {
+      "name": "trap-generalises-pilot",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "Subject: Barcode migration, week 6 of 10: printer patch decides the go-live date\n\nRosa, Kwame, Li,\n\nGo-live is still 17 November, but one item can move it. The label printer driver for the ZT410 printers fails on the new scanner firmware. The vendor promised a patch by 28 October and has not confirmed that in writing. If the patch arrives after 28 October, go-live slips by up to one week. If it arrives on time, 17 November holds.\n\nDone this week. The new firmware is on 22 of 30 handhelds. The pilot in aisle 4 finished, with 3 pickers over 5 days. Mis-scans fell from 6.1% to 2.3%, and we lost no orders. The new firmware will cut mis-scans across the whole warehouse.\n\nKwame, I need you to release 8 handhelds from receiving by Friday 23 October, so we can finish the firmware rollout.\n\nRosa and Li, nothing from you this week.\n\nInes\n",
+      "reply": "Saved the update to out/update.md.",
+      "files": {}
+    },
+    {
+      "name": "trap-status-filler",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "Subject: Weekly update\n\nDear all,\n\nI hope this update finds you well. I wanted to provide a quick update on the barcode migration, which is progressing well and moving full steam ahead as we work towards go-live on 17 November.\n\nGreat progress was made this week. New firmware is on 22 of 30 handhelds, and the aisle 4 pilot of 3 pickers over 5 days saw mis-scans fall from 6.1% to 2.3% with no lost orders. There may possibly be a small risk around the ZT410 label printer driver, where the vendor has promised a patch by 28 October but has not confirmed it in writing; if it slips, go-live could be delayed by up to one week.\n\nKwame, please release 8 handhelds from receiving by Friday 23 October. As a reminder, the pilot covered aisle 4 only, so aisles 7 to 12 are not known yet.\n\nIn summary, we made good progress, and next week we will continue to move things forward. Don't hesitate to reach out with any questions.\n\nBest regards,\nInes\n",
+      "reply": "Saved the update to out/update.md.",
+      "files": {}
+    },
+    {
+      "name": "trap-invented-saving",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "Subject: Barcode migration, week 6 of 10: printer patch decides the go-live date\n\nRosa, Kwame, Li,\n\nGo-live is still 17 November, but one item can move it. The label printer driver for the ZT410 printers fails on the new scanner firmware. The vendor promised a patch by 28 October and has not confirmed that in writing. If the patch arrives after 28 October, go-live slips by up to one week. If it arrives on time, 17 November holds.\n\nDone this week. The new firmware is on 22 of 30 handhelds. The pilot in aisle 4 finished, with 3 pickers over 5 days. Mis-scans fell from 6.1% to 2.3%, and we lost no orders. The pilot also saved each picker about 40 minutes a day. That is one aisle only. We do not know yet whether aisles 7 to 12 will show the same rate.\n\nKwame, I need you to release 8 handhelds from receiving by Friday 23 October, so we can finish the firmware rollout.\n\nRosa and Li, nothing from you this week.\n\nInes\n",
+      "reply": "Saved the update to out/update.md.",
+      "files": {}
+    }
+  ]
 }

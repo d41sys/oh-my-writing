@@ -67,5 +67,59 @@
       "min": 80,
       "max": 200
     }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "For 6 weeks, 3 of Ashgrove's 5 primary schools (Alder, Brook and Cairn) let families pre-order lunch the day before, by 3 pm.\n\nWe weighed the bins every Friday. Food waste fell from 62 kg a week to 41 kg a week, which is 21 kg less. Free-school-meal uptake stayed where it was: 71% before, 71% after.\n\nOur working explanation for the drop is that the kitchen now cooks what was ordered. We think that, but we did not test it, and we have no data on what was binned.\n\nSome things we have not tried or asked. We have not tried secondary schools, and we have no data yet on how families feel about pre-ordering.\n\nThe plan is to roll out to the other 2 primaries in January. That is not final until the board meets on 10 December.\n\nFull write-up: https://example.org/ashgrove-preorder-lunch\n",
+      "reply": "Saved the post to out/post.md, about 130 words, no hashtags. It keeps the 62 to 41 kg figures, the 3-of-5 scope, the unchanged free-meal uptake, the untested explanation and the 10 December board date."
+    },
+    {
+      "name": "trap-invents-uptake-gain",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "For 6 weeks, 3 of Ashgrove's 5 primary schools (Alder, Brook and Cairn) let families pre-order lunch the day before, by 3 pm.\n\nWe weighed the bins every Friday. Food waste fell from 62 kg a week to 41 kg a week, which is 21 kg less. Better still, more children are eating: free-school-meal uptake is up to 78%.\n\nOur working explanation for the drop is that the kitchen now cooks what was ordered. We think that, but we did not test it, and we have no data on what was binned.\n\nSome things we have not tried or asked. We have not tried secondary schools, and we have no data yet on how families feel about pre-ordering.\n\nThe plan is to roll out to the other 2 primaries in January. That is not final until the board meets on 10 December.\n\nFull write-up: https://example.org/ashgrove-preorder-lunch\n",
+      "reply": "Saved the post to out/post.md."
+    },
+    {
+      "name": "trap-cause-stated-as-fact",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "For 6 weeks, 3 of Ashgrove's 5 primary schools (Alder, Brook and Cairn) let families pre-order lunch the day before, by 3 pm.\n\nWe weighed the bins every Friday. Food waste fell from 62 kg a week to 41 kg a week, which is 21 kg less. Free-school-meal uptake stayed where it was: 71% before, 71% after.\n\nThe drop is because the kitchen now cooks what was ordered. Pre-ordering simply works.\n\nSome things we have not tried or asked. We have not tried secondary schools, and we have no data yet on how families feel about pre-ordering.\n\nThe plan is to roll out to the other 2 primaries in January. That is not final until the board meets on 10 December.\n\nFull write-up: https://example.org/ashgrove-preorder-lunch\n",
+      "reply": "Saved the post to out/post.md."
+    },
+    {
+      "name": "trap-hashtags-and-engagement-prompt",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "For 6 weeks, 3 of Ashgrove's 5 primary schools (Alder, Brook and Cairn) let families pre-order lunch the day before, by 3 pm.\n\nWe weighed the bins every Friday. Food waste fell from 62 kg a week to 41 kg a week, which is 21 kg less. Free-school-meal uptake stayed where it was: 71% before, 71% after.\n\nOur working explanation for the drop is that the kitchen now cooks what was ordered. We think that, but we did not test it, and we have no data on what was binned.\n\nSome things we have not tried or asked. We have not tried secondary schools, and we have no data yet on how families feel about pre-ordering.\n\nThe plan is to roll out to the other 2 primaries in January. That is not final until the board meets on 10 December.\n\nFull write-up: https://example.org/ashgrove-preorder-lunch\n\nWhat would pre-ordering mean for your school? Comment below, and follow me for more updates #schoolmeals #foodwaste\n",
+      "reply": "Saved the post to out/post.md."
+    },
+    {
+      "name": "trap-drops-scope-and-date",
+      "expect": "fail",
+      "fails": [
+        "regex",
+        "contains"
+      ],
+      "output": "For 6 weeks, our primary schools let families pre-order lunch the day before, by 3 pm.\n\nWe weighed the bins every Friday. Food waste fell from 62 kg a week to 41 kg a week, which is 21 kg less. Free-school-meal uptake stayed where it was: 71% before, 71% after.\n\nOur working explanation for the drop is that the kitchen now cooks what was ordered. We think that, but we did not test it, and we have no data on what was binned.\n\nSome things we have not tried or asked. We have not tried secondary schools, and we have no data yet on how families feel about pre-ordering.\n\nThe plan is to roll out to the other 2 primaries in January. It starts in January.\n\nFull write-up: https://example.org/ashgrove-preorder-lunch\n",
+      "reply": "Saved the post to out/post.md."
+    },
+    {
+      "name": "trap-invented-parent-quote",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "For 6 weeks, 3 of Ashgrove's 5 primary schools (Alder, Brook and Cairn) let families pre-order lunch the day before, by 3 pm.\n\nWe weighed the bins every Friday. Food waste fell from 62 kg a week to 41 kg a week, which is 21 kg less. Free-school-meal uptake stayed where it was: 71% before, 71% after.\n\nOur working explanation for the drop is that the kitchen now cooks what was ordered. We think that, but we did not test it, and we have no data on what was binned.\n\nSome things we have not tried or asked. We have not tried secondary schools, and we have no data yet on how families feel about pre-ordering.\n\nThe plan is to roll out to the other 2 primaries in January. That is not final until the board meets on 10 December.\n\nPriya Nair of Dunmore Parents Group told us pre-ordering saves her 40 pounds a month.\n\nFull write-up: https://example.org/ashgrove-preorder-lunch\n",
+      "reply": "Saved the post to out/post.md."
+    }
   ]
 }

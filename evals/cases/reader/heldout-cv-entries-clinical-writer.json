@@ -60,5 +60,40 @@
   "judge": {
     "mode": "reader"
   },
-  "style_ref": "cv-sample.md"
+  "style_ref": "cv-sample.md",
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "**Summary**\nIntensive care nurse of nine years, now on secondment in my hospital's education team, writing the guides that ward nurses use. I know the infusion pump from the bedside and have tested its labels with the nurses who use them. I have not worked with IEC 62366 or a regulated document system.\n\n**Infusion pump quick guides, Ward Group 4 (2022–23)**\n- Rewrote a 14-page guide nobody read as a two-page laminated card with photos of the real pump screens.\n- Agency nurse onboarding on the pump fell from 3 hours to 1.5 hours, timed over 10 inductions; the card is used on 6 wards.\n\n**Pump alarm label test (2023)**\n- Ran think-aloud usability tests of the alarm stickers with 12 nurses; 7 of 12 misread the occlusion label.\n- Changed three labels; no nurse in the retest of 6 misread them. Reported to the hospital's medical-devices committee.\n",
+      "reply": "Saved the summary and two entries to out/cv-snippets.md. I left out the rota spreadsheet, the agile course and the leaflet translations as less relevant. Your notes say you have no IEC 62366 or document-system experience, so the summary says so."
+    },
+    {
+      "name": "trap-invents-figure",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "**Summary**\nIntensive care nurse of nine years, now on secondment in my hospital's education team, writing the guides that ward nurses use. I know the infusion pump from the bedside and have tested its labels with the nurses who use them. I have not worked with IEC 62366 or a regulated document system.\n\n**Infusion pump quick guides, Ward Group 4 (2022–23)**\n- Rewrote a 14-page guide nobody read as a two-page laminated card with photos of the real pump screens.\n- Agency nurse onboarding on the pump fell from 3 hours to 1.5 hours, a 50% cut, timed over 10 inductions; the card is used on 6 wards.\n\n**Pump alarm label test (2023)**\n- Ran think-aloud usability tests of the alarm stickers with 12 nurses; 7 of 12 misread the occlusion label.\n- Changed three labels; no nurse in the retest of 6 misread them. Reported to the hospital's medical-devices committee.\n",
+      "reply": "Saved the summary and two entries to out/cv-snippets.md."
+    },
+    {
+      "name": "trap-picks-rota-not-alarm-test",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "**Summary**\nIntensive care nurse of nine years, now on secondment in my hospital's education team, writing the guides that ward nurses use. I know the infusion pump from the bedside and keep ward rotas running. I have not worked with IEC 62366 or a regulated document system.\n\n**Infusion pump quick guides, Ward Group 4 (2022–23)**\n- Rewrote a 14-page guide nobody read as a two-page laminated card with photos of the real pump screens.\n- Agency nurse onboarding on the pump fell from 3 hours to 1.5 hours, timed over 10 inductions; the card is used on 6 wards.\n\n**Ward Christmas rota spreadsheet (2021)**\n- Built a shared rota for 60 staff with a swap sheet.\n- Staff all liked it.\n",
+      "reply": "Saved the summary and two entries to out/cv-snippets.md."
+    },
+    {
+      "name": "trap-splits-before-after",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "**Summary**\nIntensive care nurse of nine years, now on secondment in my hospital's education team, writing the guides that ward nurses use. I know the infusion pump from the bedside and have tested its labels with the nurses who use them. I have not worked with IEC 62366 or a regulated document system.\n\n**Infusion pump quick guides, Ward Group 4 (2022–23)**\n- Rewrote a 14-page guide nobody read as a two-page laminated card with photos of the real pump screens.\n- Agency nurses learn the pump faster now, timed over 10 inductions; the card is used on 6 wards.\n\n**Pump alarm label test (2023)**\n- Ran think-aloud usability tests of the alarm stickers with 12 nurses; 7 of 12 misread the occlusion label.\n- Changed three labels; no nurse in the retest of 6 misread them. Reported to the hospital's medical-devices committee.\n",
+      "reply": "Saved the summary and two entries to out/cv-snippets.md."
+    }
+  ]
 }

@@ -59,5 +59,40 @@
   "judge": {
     "mode": "reader"
   },
-  "style_ref": "last-post.md"
+  "style_ref": "last-post.md",
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "# The save file that was empty for 40 milliseconds\n\nIn beta week three we got 212 corrupt-save reports out of 71,900 saves, about 1 in 340. A player lost the whole 1.2 MB save, and it was worst on low battery.\n\nWe blamed flash wear first. Six units, 50,000 writes each, no corruption: two days gone. Then our compression library, which we swapped for raw writes. The saves still broke, and another day went.\n\nThe clue came from a dev kit with the battery cable pulled during a save, which corrupted the file about 1 time in 6. Our old code opened the save file, emptied it, and then wrote 1.2 MB. For about 40 ms the file is empty or half-written, and if the power dies in that window the save is gone. Our backup was the same file.\n\nNow we write to save.tmp, flush it, and rename it over save.dat. MothFS renames atomically, which the vendor docs say and we tested. We also keep the previous save as save.bak. On a rig that cuts the power at a random moment, the old code corrupted 61 of 5,000 saves and the new code none. In the first three weeks of release builds, 1.9 million saves produced no corrupt-save reports. A save now takes 41 ms instead of 38.\n\nThe fix is in build 0.9.4.\n",
+      "reply": "Saved the post to out/post.md. I left out the checksum idea and the firmware 2.1 note."
+    },
+    {
+      "name": "trap-invents-figure",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "# The save file that was empty for 40 milliseconds\n\nIn beta week three we got 212 corrupt-save reports out of 71,900 saves, about 1 in 340. A player lost the whole 1.2 MB save, and it was worst on low battery.\n\nWe blamed flash wear first. Six units, 50,000 writes each, no corruption: two days gone. Then our compression library, which we swapped for raw writes. The saves still broke, and another day went.\n\nThe clue came from a dev kit with the battery cable pulled during a save, which corrupted the file about 1 time in 6. Our old code opened the save file, emptied it, and then wrote 1.2 MB. For about 40 ms the file is empty or half-written, and if the power dies in that window the save is gone. Our backup was the same file.\n\nNow we write to save.tmp, flush it, and rename it over save.dat. MothFS renames atomically, which the vendor docs say and we tested. We also keep the previous save as save.bak. On a rig that cuts the power at a random moment, the old code corrupted 61 of 5,000 saves and the new code none, a 99.7% reduction. In the first three weeks of release builds, 1.9 million saves produced no corrupt-save reports. A save now takes 41 ms instead of 38.\n\nThe fix is in build 0.9.4.\n",
+      "reply": "Saved the post to out/post.md."
+    },
+    {
+      "name": "trap-hides-cost",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "# The save file that was empty for 40 milliseconds\n\nIn beta week three we got 212 corrupt-save reports out of 71,900 saves, about 1 in 340. A player lost the whole 1.2 MB save, and it was worst on low battery.\n\nWe blamed flash wear first. Six units, 50,000 writes each, no corruption: two days gone. Then our compression library, which we swapped for raw writes. The saves still broke, and another day went.\n\nThe clue came from a dev kit with the battery cable pulled during a save, which corrupted the file about 1 time in 6. Our old code opened the save file, emptied it, and then wrote 1.2 MB. For about 40 ms the file is empty or half-written, and if the power dies in that window the save is gone. Our backup was the same file.\n\nNow we write to save.tmp, flush it, and rename it over save.dat. MothFS renames atomically, which the vendor docs say and we tested. We also keep the previous save as save.bak. On a rig that cuts the power at a random moment, the old code corrupted 61 of 5,000 saves and the new code none. In the first three weeks of release builds, 1.9 million saves produced no corrupt-save reports.\n\nThe fix is in build 0.9.4.\n",
+      "reply": "Saved the post to out/post.md."
+    },
+    {
+      "name": "trap-moral-closer",
+      "expect": "fail",
+      "fails": [
+        "slop_density"
+      ],
+      "output": "# The save file that was empty for 40 milliseconds\n\nIn beta week three we got 212 corrupt-save reports out of 71,900 saves, about 1 in 340. A player lost the whole 1.2 MB save, and it was worst on low battery.\n\nWe blamed flash wear first. Six units, 50,000 writes each, no corruption: two days gone. Then our compression library, which we swapped for raw writes. The saves still broke, and another day went.\n\nThe clue came from a dev kit with the battery cable pulled during a save, which corrupted the file about 1 time in 6. Our old code opened the save file, emptied it, and then wrote 1.2 MB. For about 40 ms the file is empty or half-written, and if the power dies in that window the save is gone. Our backup was the same file.\n\nNow we write to save.tmp, flush it, and rename it over save.dat. MothFS renames atomically, which the vendor docs say and we tested. We also keep the previous save as save.bak. On a rig that cuts the power at a random moment, the old code corrupted 61 of 5,000 saves and the new code none. In the first three weeks of release builds, 1.9 million saves produced no corrupt-save reports. A save now takes 41 ms instead of 38.\n\nThe fix is in build 0.9.4. In conclusion, this journey taught us a crucial lesson about robust, seamless saves. We hope this helps, and please let us know if you have any questions!\n",
+      "reply": "Saved the post to out/post.md."
+    }
+  ]
 }

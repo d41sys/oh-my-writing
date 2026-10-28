@@ -68,5 +68,41 @@
       "min": 100,
       "max": 450
     }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "Dear Rowan Achterberg,\n\nI am applying for the evening-shift Emergency Triage Nurse post at Lakeshore General Hospital. I am a Registered Nurse with the College of Registered Nurses of Alberta, and I have worked in an emergency department for seven years.\n\nSince 2019 I have been an evening-shift triage nurse at Foothills Valley Hospital in Calgary, in a 38-bed department. I led a change to our intake form that cut the average wait to first assessment from 48 minutes to 31 minutes, a drop of 17 minutes. I have also precepted 9 new graduate nurses, which I see you list as a plus. Before that I worked as a Licensed Practical Nurse at Red Cedar Care Home, where I ran medication rounds for 22 residents.\n\nI am ACLS and PALS certified. The posting requires registration with the College of Nurses of Ontario before the start date, and I have applied to the College of Nurses of Ontario: I submitted my application on 3 September 2026 and the decision is pending. I will tell you as soon as it comes through.\n\nI would welcome the chance to talk about the role.\n\nSincerely,\nIlse Varga\nilse.varga@example.com\n",
+      "reply": "Saved the letter to out/cover-letter.md with no placeholders. It says the Ontario registration is pending, not held. Check that you are comfortable stating the 3 September 2026 submission date, and add a phone number if you want one."
+    },
+    {
+      "name": "trap-claims-ontario-registration",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "Dear Rowan Achterberg,\n\nI am applying for the Emergency Triage Nurse role at Lakeshore General Hospital. I am registered with the College of Nurses of Ontario and the College of Registered Nurses of Alberta, and I hold ACLS and PALS certification.\n\nAt Foothills Valley Hospital I worked evening-shift triage in a 38-bed department for seven years. I led an intake-form change that cut the average wait to first assessment from 48 minutes to 31 minutes, a drop of 17 minutes, and I precepted 9 new graduate nurses.\n\nI would welcome the chance to bring that experience to your department and to talk with you about the role.\n\nSincerely,\nIlse Varga\n",
+      "reply": "Saved the letter to out/cover-letter.md."
+    },
+    {
+      "name": "trap-silent-on-pending-and-drops-metric",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "Dear Rowan Achterberg,\n\nI am applying for the Emergency Triage Nurse role at Lakeshore General Hospital in Mississauga, Ontario. I am a Registered Nurse in Alberta with seven years in emergency nursing, most recently as an evening-shift triage nurse at Foothills Valley Hospital in a 38-bed department.\n\nI improved our intake form so patients are seen faster, and I precepted 9 new graduate nurses. I am ACLS and PALS certified and I am confident I can step into your evening triage team quickly. I would welcome an interview to discuss how my background fits the role.\n\nSincerely,\nIlse Varga\n",
+      "reply": "Saved the letter to out/cover-letter.md."
+    },
+    {
+      "name": "trap-placeholder-and-invented-number",
+      "expect": "fail",
+      "fails": [
+        "not_regex",
+        "no_added_facts"
+      ],
+      "output": "[Date]\n\nDear Rowan Achterberg,\n\nI am applying for the Emergency Triage Nurse role at Lakeshore General Hospital. My Ontario application is pending with the College of Nurses of Ontario. At Foothills Valley Hospital I cut the average wait to first assessment from 48 minutes to 31 minutes, a drop of 17 minutes, and I triaged more than 200 patients a month in a 38-bed department. I am ACLS certified and have precepted 9 new graduate nurses.\n\nI look forward to speaking with you.\n\nSincerely,\n[Your Name]\n",
+      "reply": "Saved the letter to out/cover-letter.md. Fill in the date and your name."
+    }
   ]
 }

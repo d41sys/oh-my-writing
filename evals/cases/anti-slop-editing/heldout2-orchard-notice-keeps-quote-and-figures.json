@@ -75,5 +75,50 @@
       "target": "output",
       "note": "a notice for volunteers is published as it stands; any question goes in the reply"
     }
+  ],
+  "controls": [
+    {
+      "name": "good-edit-keeps-quote",
+      "expect": "pass",
+      "output": "The Pennywhistle Lane Community Orchard autumn planting day is on Saturday 7 November.\n\nVolunteers planted 340 saplings in 6 hours last year, up from 215 saplings in 9 hours in 2025, which is 125 more trees in 3 fewer hours. Spades and gloves are supplied, but boots are not, and we will not be able to offer parking on the lane. Rain may move the day to Sunday 8 November, though we will only decide by 7 pm on Friday.\n\n\"I'm thrilled, honestly. I only came for the cake, and I planted forty trees,\" said volunteer Marguerite Oduya.\n",
+      "reply": "Edited notice.md and saved it to out/notice.md. The era opener, \"thrilled to announce\", \"pivotal moment\", the \"Here's the thing\" and \"The best part?\" reveals and the chatbot closer are gone. Every figure, both negations, the hedge on rain and Marguerite Oduya's quote are unchanged; the stock word inside her quote is hers."
+    },
+    {
+      "name": "trap-rewrites-the-quote",
+      "expect": "fail",
+      "fails": [
+        "contains"
+      ],
+      "output": "The Pennywhistle Lane Community Orchard autumn planting day is on Saturday 7 November.\n\nVolunteers planted 340 saplings in 6 hours last year, up from 215 saplings in 9 hours in 2025, which is 125 more trees in 3 fewer hours. Spades and gloves are supplied, but boots are not, and we will not be able to offer parking on the lane. Rain may move the day to Sunday 8 November, though we will only decide by 7 pm on Friday.\n\nVolunteer Marguerite Oduya said she only came for the cake and planted forty trees.\n",
+      "reply": "Edited notice.md and saved it to out/notice.md. I also removed \"thrilled\" from the volunteer's quote because it is a stock word."
+    },
+    {
+      "name": "trap-drops-the-comparison",
+      "expect": "fail",
+      "fails": [
+        "preserves",
+        "regex"
+      ],
+      "output": "The Pennywhistle Lane Community Orchard autumn planting day is on Saturday 7 November.\n\nVolunteers planted many saplings last year, a big improvement on 2025. Spades and gloves are supplied, but boots are not, and we will not be able to offer parking on the lane. Rain may move the day to Sunday 8 November, though we will only decide by 7 pm on Friday.\n\n\"I'm thrilled, honestly. I only came for the cake, and I planted forty trees,\" said volunteer Marguerite Oduya.\n",
+      "reply": "Edited notice.md and saved it to out/notice.md. I simplified the comparison so it reads less like a list of numbers."
+    },
+    {
+      "name": "trap-drops-boots-and-parking",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "The Pennywhistle Lane Community Orchard autumn planting day is on Saturday 7 November.\n\nVolunteers planted 340 saplings in 6 hours last year, up from 215 saplings in 9 hours in 2025, which is 125 more trees in 3 fewer hours. Spades and gloves are supplied. Rain may move the day to Sunday 8 November, though we will only decide by 7 pm on Friday.\n\n\"I'm thrilled, honestly. I only came for the cake, and I planted forty trees,\" said volunteer Marguerite Oduya.\n",
+      "reply": "Edited notice.md and saved it to out/notice.md. I cut the logistics sentence down to what is supplied."
+    },
+    {
+      "name": "trap-keeps-the-framing",
+      "expect": "fail",
+      "fails": [
+        "slop_absent"
+      ],
+      "output": "In today's fast-paced world, finding time for nature matters more than ever. We are thrilled to announce the Pennywhistle Lane Community Orchard autumn planting day on Saturday 7 November. This event marks a pivotal moment for our neighbourhood, underscoring our commitment to green space.\n\nVolunteers planted 340 saplings in 6 hours last year, up from 215 saplings in 9 hours in 2025, which is 125 more trees in 3 fewer hours. Spades and gloves are supplied, but boots are not, and we will not be able to offer parking on the lane. Rain may move the day to Sunday 8 November, though we will only decide by 7 pm on Friday.\n\n\"I'm thrilled, honestly. I only came for the cake, and I planted forty trees,\" said volunteer Marguerite Oduya.\n",
+      "reply": "Edited notice.md and saved it to out/notice.md. I removed the chatbot closer and the reveals and kept the opening, which sets the scene."
+    }
   ]
 }

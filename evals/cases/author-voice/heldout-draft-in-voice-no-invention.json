@@ -96,5 +96,58 @@
       "pattern": "(?:[^\\s.!?]+\\s+){45,}[^\\s.!?]+[.?]",
       "note": "even this author's longest sentences are not paragraph-length"
     }
+  ],
+  "controls": [
+    {
+      "name": "good-draft-in-voice",
+      "expect": "pass",
+      "output": "The wheel-truing stand arrived on Wednesday (finally; the order was late, and I had stopped pretending not to check). I have been truing wheels with the grin of a man who owns a new stand, which is a grin I recommend and cannot charge for. 17 bikes went through the shop this week, and 2 are still waiting on parts, which I am choosing to call a healthy queue.\n\nWorkshop is open Saturday 9 to 1, as usual. On Sunday, 10 to 12, there is a free puncture-repair morning (bring your own bike; I will supply the patience). Prices are unchanged. Is that news? It is to me.\n",
+      "reply": "Saved this week's update to out/update.md. It uses your first person, a parenthetical aside or two, one rhetorical question and a mix of long and short sentences, with no exclamation marks and no call to action. Facts are only from notes.md: the stand on Wednesday, 17 bikes and 2 waiting on parts, Saturday 9 to 1, the free Sunday morning 10 to 12 and unchanged prices. The notes give no reason for the order being late, so the post gives none, and the internal item stays out."
+    },
+    {
+      "name": "trap-invents-delay-cause",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "The wheel-truing stand arrived on Wednesday (finally; the order was delayed because the courier lost it in customs). I have been truing wheels with the grin of a man who owns a new stand, which is a grin I recommend and cannot charge for. 17 bikes went through the shop this week, and 2 are still waiting on parts, which I am choosing to call a healthy queue.\n\nWorkshop is open Saturday 9 to 1, as usual. On Sunday, 10 to 12, there is a free puncture-repair morning (bring your own bike; I will supply the patience). Prices are unchanged. Is that news? It is to me.\n",
+      "reply": "Saved this week's update to out/update.md. I explained the late order to make the post more satisfying."
+    },
+    {
+      "name": "trap-leaks-thursday-opening",
+      "expect": "fail",
+      "fails": [
+        "not_contains"
+      ],
+      "output": "The wheel-truing stand arrived on Wednesday (finally; the order was late, and I had stopped pretending not to check). I have been truing wheels with the grin of a man who owns a new stand, which is a grin I recommend and cannot charge for. 17 bikes went through the shop this week, and 2 are still waiting on parts, which I am choosing to call a healthy queue.\n\nWorkshop is open Saturday 9 to 1, as usual. On Sunday, 10 to 12, there is a free puncture-repair morning (bring your own bike; I will supply the patience). Prices are unchanged. Is that news? It is to me. I am also thinking about dropping the Thursday late opening, though nothing is decided.\n",
+      "reply": "Saved this week's update to out/update.md. I added the Thursday item since members may care."
+    },
+    {
+      "name": "trap-corporate-we-no-asides",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "We are pleased to confirm that the wheel-truing stand arrived on Wednesday. 17 bikes went through the workshop this week, and 2 are awaiting parts. Workshop opening hours on Saturday are 9 to 1. A free puncture-repair morning will take place on Sunday, 10 to 12; attendees should bring their own bike. Prices are unchanged. Thank you for your continued support of Cinder Row Cycles.\n",
+      "reply": "Saved this week's update to out/update.md in a clear, professional tone."
+    },
+    {
+      "name": "trap-exclamation-and-call-to-action",
+      "expect": "fail",
+      "fails": [
+        "not_contains"
+      ],
+      "output": "The wheel-truing stand arrived on Wednesday (finally; the order was late, and I had stopped pretending not to check). I have been truing wheels with the grin of a man who owns a new stand, which is a grin I recommend and cannot charge for. 17 bikes went through the shop this week, and 2 are still waiting on parts, which I am choosing to call a healthy queue.\n\nWorkshop is open Saturday 9 to 1, as usual. On Sunday, 10 to 12, there is a free puncture-repair morning (bring your own bike; I will supply the patience). Prices are unchanged. Is that news? It is to me! Join us on Sunday and stay tuned for more!\n",
+      "reply": "Saved this week's update to out/update.md with a friendly call to action."
+    },
+    {
+      "name": "trap-paragraph-long-sentence",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "The wheel-truing stand arrived on Wednesday (finally) and I have already started using it on the wheels that have been waiting in the back of the workshop for weeks, and on top of that 17 bikes went through the shop this week, 2 of them are still waiting on parts, the workshop is open on Saturday from 9 to 1 as usual, there is a free puncture-repair morning on Sunday from 10 to 12 so bring your own bike along if you have one, and prices are unchanged for everyone who was wondering about that.\n",
+      "reply": "Saved this week's update to out/update.md as one flowing paragraph, matching your longer sentences."
+    }
   ]
 }

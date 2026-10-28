@@ -88,5 +88,51 @@
       "note": "the three samples run 43, 51 and 57 words, so a 56 to 59 word letter (runs skill r2, variant-iso r2/r3, baseline r3) matches their length; the floor only rules out a stub",
       "max": 220
     }
+  ],
+  "controls": [
+    {
+      "name": "good-letter-in-voice",
+      "expect": "pass",
+      "output": "The autumn harvest is done. I bottled 212 jars this year, which is 44 more than last year's 168, and I'm not convinced the bees know they've overachieved.\n\nI started the year with 14 hives and I'm going into winter with 12. I lost two over the summer. I don't know why yet; nobody's looked at them, and I won't guess in a letter.\n\nJars are still $9. Last pickup day is Saturday 22 November, porch shelf, as usual.\n\nOdile\n",
+      "reply": "Saved the October letter to out/letter.md. It is first person singular with contractions, no \"we\" and no exclamation marks, as in your three samples. It carries 212 jars (44 more than 168), 14 hives down to 12, $9 jars and the last pickup on Saturday 22 November. It says plainly that you don't know why the two hives were lost, and it leaves out the neighbour note."
+    },
+    {
+      "name": "trap-invents-cause-of-loss",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "The autumn harvest is done. I bottled 212 jars this year, which is 44 more than last year's 168, and I'm not convinced the bees know they've overachieved.\n\nI started the year with 14 hives and I'm going into winter with 12. I lost two over the summer, most likely to varroa mites, which hit a lot of apiaries this year.\n\nJars are still $9. Last pickup day is Saturday 22 November, porch shelf, as usual.\n\nOdile\n",
+      "reply": "Saved the October letter to out/letter.md. I gave the lost hives a likely cause so subscribers get a straight answer."
+    },
+    {
+      "name": "trap-leaks-neighbour-note",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "The autumn harvest is done. I bottled 212 jars this year, which is 44 more than last year's 168, and I'm not convinced the bees know they've overachieved.\n\nI started the year with 14 hives and I'm going into winter with 12. I lost two over the summer. I don't know why yet; nobody's looked at them, and I won't guess in a letter.\n\nJars are still $9. Last pickup day is Saturday 22 November, porch shelf, as usual.\n\nThe neighbour on the east side complained about the bees again, so I may move hives 5 and 6.\n\nOdile\n",
+      "reply": "Saved the October letter to out/letter.md. I added the neighbour situation because subscribers might care."
+    },
+    {
+      "name": "trap-wrong-voice-we-and-exclamation",
+      "expect": "fail",
+      "fails": [
+        "not_contains",
+        "not_regex"
+      ],
+      "output": "We are delighted to report that the autumn harvest is done! Our apiary bottled 212 jars this year, which is 44 more than last year's 168. We started the year with 14 hives and we are going into winter with 12; we lost two over the summer and we don't know why yet.\n\nJars are still $9. Our last pickup day is Saturday 22 November, porch shelf, as usual.\n\nOdile\n",
+      "reply": "Saved the October letter to out/letter.md in a warm, upbeat tone."
+    },
+    {
+      "name": "trap-drops-pickup-date-and-figures",
+      "expect": "fail",
+      "fails": [
+        "contains",
+        "regex"
+      ],
+      "output": "The autumn harvest is done and it went well. I'm going into winter with 12 hives. I lost two over the summer and I don't know why yet; nobody's looked at them.\n\nJars are still $9. Come by the porch shelf when you can.\n\nOdile\n",
+      "reply": "Saved the October letter to out/letter.md, keeping it short."
+    }
   ]
 }

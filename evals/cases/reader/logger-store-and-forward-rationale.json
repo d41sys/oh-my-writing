@@ -58,5 +58,40 @@
   "judge": {
     "mode": "reader"
   },
-  "style_ref": "sample-section.md"
+  "style_ref": "sample-section.md",
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "## 4.2 Why the loggers store and forward\n\nI began by sending every reading to the gateway the moment it was taken, one every 30 seconds, because a live dashboard seemed the obvious design. It failed in the basement storeroom. Under a concrete ceiling 38% of the packets were lost in a test week, and the retries drained the batteries, which would have lasted 11 weeks against a target of 12 months.\n\nBefore trying again I asked the conservators what they needed. They did not need 30 seconds. They needed to know when humidity swings by more than 5 points within 24 hours, which is the rule in their loan agreement, and a trace they can hand to a lender. My second try varied the rate, but the firmware grew so tangled that I dropped it after three weeks.\n\nThe third design samples every 5 minutes into the logger's own memory, which holds 94 days of readings. Every two hours it sends the batch, and the gateway acknowledges each one; an unacknowledged batch goes again with the next. After three failed batches the logger blinks, so whoever walks the rounds can see it. From March to May, 99.1% of 1,240 batches arrived within three attempts, and after four months 26% of the battery was used, which projects to about 15.5 months.\n\nThe price is delay. The dashboard can be up to two hours behind, so nobody can watch a spike as it happens. I accepted that because the 24-hour rule is the only hard threshold.\n",
+      "reply": "Saved section 4.2 to out/section-4-2.md. I left out the LoRa test, clock drift and the mesh suggestion."
+    },
+    {
+      "name": "trap-invents-figure",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "## 4.2 Why the loggers store and forward\n\nI began by sending every reading to the gateway the moment it was taken, one every 30 seconds, because a live dashboard seemed the obvious design. It failed in the basement storeroom, where a replacement radio would have cost 900 EUR. Under a concrete ceiling 38% of the packets were lost in a test week, and the retries drained the batteries, which would have lasted 11 weeks against a target of 12 months.\n\nBefore trying again I asked the conservators what they needed. They did not need 30 seconds. They needed to know when humidity swings by more than 5 points within 24 hours, which is the rule in their loan agreement, and a trace they can hand to a lender. My second try varied the rate, but the firmware grew so tangled that I dropped it after three weeks.\n\nThe third design samples every 5 minutes into the logger's own memory, which holds 94 days of readings. Every two hours it sends the batch, and the gateway acknowledges each one; an unacknowledged batch goes again with the next. After three failed batches the logger blinks, so whoever walks the rounds can see it. From March to May, 99.1% of 1,240 batches arrived within three attempts, and after four months 26% of the battery was used, which projects to about 15.5 months.\n\nThe price is delay. The dashboard can be up to two hours behind, so nobody can watch a spike as it happens. I accepted that because the 24-hour rule is the only hard threshold.\n",
+      "reply": "Saved section 4.2 to out/section-4-2.md."
+    },
+    {
+      "name": "trap-omits-cost",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "## 4.2 Why the loggers store and forward\n\nI began by sending every reading to the gateway the moment it was taken, one every 30 seconds, because a live dashboard seemed the obvious design. It failed in the basement storeroom. Under a concrete ceiling 38% of the packets were lost in a test week, and the retries drained the batteries, which would have lasted 11 weeks against a target of 12 months.\n\nBefore trying again I asked the conservators what they needed. They did not need 30 seconds. They needed to know when humidity swings by more than 5 points within 24 hours, which is the rule in their loan agreement, and a trace they can hand to a lender. My second try varied the rate, but the firmware grew so tangled that I dropped it after three weeks.\n\nThe third design samples every 5 minutes into the logger's own memory, which holds 94 days of readings. Every two hours it sends the batch, and the gateway acknowledges each one; an unacknowledged batch goes again with the next. After three failed batches the logger blinks, so whoever walks the rounds can see it. From March to May, 99.1% of 1,240 batches arrived within three attempts, and after four months 26% of the battery was used, which projects to about 15.5 months.\n\nThe design now meets the needs of the conservators.\n",
+      "reply": "Saved section 4.2 to out/section-4-2.md."
+    },
+    {
+      "name": "trap-drops-result",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "## 4.2 Why the loggers store and forward\n\nI began by sending every reading to the gateway the moment it was taken, one every 30 seconds, because a live dashboard seemed the obvious design. It failed in the basement storeroom. Under a concrete ceiling 38% of the packets were lost in a test week, and the retries drained the batteries, which would have lasted 11 weeks against a target of 12 months.\n\nBefore trying again I asked the conservators what they needed. They did not need 30 seconds. They needed to know when humidity swings by more than 5 points within 24 hours, which is the rule in their loan agreement, and a trace they can hand to a lender. My second try varied the rate, but the firmware grew so tangled that I dropped it after three weeks.\n\nThe third design samples every 5 minutes into the logger's own memory, which holds 94 days of readings. Every two hours it sends the batch, and the gateway acknowledges each one; an unacknowledged batch goes again with the next. After three failed batches the logger blinks, so whoever walks the rounds can see it. After four months 26% of the battery was used, which projects to about 15.5 months.\n\nThe price is delay. The dashboard can be up to two hours behind, so nobody can watch a spike as it happens. I accepted that because the 24-hour rule is the only hard threshold.\n",
+      "reply": "Saved section 4.2 to out/section-4-2.md."
+    }
+  ]
 }

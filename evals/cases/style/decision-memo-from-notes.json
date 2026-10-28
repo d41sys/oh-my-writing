@@ -151,5 +151,45 @@
   ],
   "judge": {
     "mode": "style"
-  }
+  },
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "# Helpdesk renewal: decision needed by 31 October\n\nElena,\n\nYou need to decide by 31 October whether we renew Relay for another year from 1 December or move to Quillbox, because Relay needs notice by then. I recommend we move to Quillbox from 1 November and sign the phone add-on at the same time.\n\nThe numbers. We have 14 agents. Relay costs 38 EUR per agent per month, 6,384 EUR a year. Quillbox costs 29 EUR per agent per month, 4,872 EUR a year, billed annually. Quillbox has no built-in phone, and 11% of our contacts arrive by phone, so we would add a cloud phone service from another provider at 6 EUR per agent per month, 1,008 EUR a year. That add-on is billed monthly, so we can drop it. Quillbox plus phone comes to 5,880 EUR a year, 504 EUR less than Relay.\n\nYear one is a different story. Starting Quillbox on 1 November means one month of overlap with Relay, which costs 532 EUR. That makes year one 28 EUR worse than staying. Every year after that is 504 EUR better. The saving is small. I still lean toward moving, because Relay is the higher price and the phone add-on can be cancelled monthly if it fails.\n\nWhat we know about the move. A test import of 6 months of tickets, 9,200 in all, took 2 days. 40 tickets landed in the wrong thread and I fixed them by hand. Quillbox says a full migration takes about 3 weeks. We have not tested that. Relay has not offered a discount; I asked on 9 October.\n\nThe main risk is the phone desk. I asked 6 of the 14 agents. The 3 on the phone desk are worried about the phone add-on, and the other 3 do not mind the move.\n\nIf you agree, I will give Relay notice before 31 October and start the Quillbox setup on 1 November. If you would rather stay, I will renew Relay from 1 December.\n\nTomas\n",
+      "reply": "Saved the memo to out/memo.md. It opens with the 31 October decision and the recommendation to move, and states the year-one cost and the phone gap.",
+      "files": {}
+    },
+    {
+      "name": "trap-invented-figures",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "# Helpdesk renewal: decision needed by 31 October\n\nElena,\n\nYou need to decide by 31 October whether we renew Relay for another year from 1 December or move to Quillbox, because Relay needs notice by then. I recommend we move to Quillbox from 1 November and sign the phone add-on at the same time.\n\nThe numbers. We have 14 agents. Relay costs 38 EUR per agent per month, 6,384 EUR a year. Quillbox costs 29 EUR per agent per month, 4,872 EUR a year, billed annually. Quillbox has no built-in phone, and 11% of our contacts arrive by phone, so we would add a cloud phone service from another provider at 6 EUR per agent per month, 1,008 EUR a year. That add-on is billed monthly, so we can drop it. Quillbox plus phone comes to 5,880 EUR a year, 504 EUR less than Relay.\n\nYear one is a different story. Starting Quillbox on 1 November means one month of overlap with Relay, which costs 532 EUR. That makes year one 28 EUR worse than staying. Every year after that is 504 EUR better. Over three years that adds up to about 1,480 EUR, and Quillbox's support rating is 4.6 out of 5. I still lean toward moving, because Relay is the higher price and the phone add-on can be cancelled monthly if it fails.\n\nWhat we know about the move. A test import of 6 months of tickets, 9,200 in all, took 2 days. 40 tickets landed in the wrong thread and I fixed them by hand. Quillbox says a full migration takes about 3 weeks. We have not tested that. Relay has not offered a discount; I asked on 9 October.\n\nThe main risk is the phone desk. I asked 6 of the 14 agents. The 3 on the phone desk are worried about the phone add-on, and the other 3 do not mind the move.\n\nIf you agree, I will give Relay notice before 31 October and start the Quillbox setup on 1 November. If you would rather stay, I will renew Relay from 1 December.\n\nTomas\n",
+      "reply": "Saved the memo to out/memo.md.",
+      "files": {}
+    },
+    {
+      "name": "trap-drops-phone-gap",
+      "expect": "fail",
+      "fails": [
+        "preserves",
+        "facts_recalled"
+      ],
+      "output": "# Helpdesk renewal: decision needed by 31 October\n\nElena,\n\nYou need to decide by 31 October whether we renew Relay for another year from 1 December or move to Quillbox, because Relay needs notice by then. I recommend we move to Quillbox from 1 November and sign the phone add-on at the same time.\n\nThe numbers. We have 14 agents. Relay costs 38 EUR per agent per month, 6,384 EUR a year. Quillbox costs 29 EUR per agent per month, 4,872 EUR a year, billed annually. Quillbox is 1,512 EUR a year cheaper than Relay.\n\nYear one is a different story. Starting Quillbox on 1 November means one month of overlap with Relay, which costs 532 EUR. That makes year one 28 EUR worse than staying. Every year after that is 504 EUR better. The saving is small. I still lean toward moving, because Relay is the higher price and the phone add-on can be cancelled monthly if it fails.\n\nWhat we know about the move. A test import of 6 months of tickets, 9,200 in all, took 2 days. 40 tickets landed in the wrong thread and I fixed them by hand. Quillbox says a full migration takes about 3 weeks. We have not tested that. Relay has not offered a discount; I asked on 9 October.\n\nThe main risk is the phone desk. I asked 6 of the 14 agents. The 3 on the phone desk are worried about the phone add-on, and the other 3 do not mind the move.\n\nIf you agree, I will give Relay notice before 31 October and start the Quillbox setup on 1 November. If you would rather stay, I will renew Relay from 1 December.\n\nTomas\n",
+      "reply": "Saved the memo to out/memo.md.",
+      "files": {}
+    },
+    {
+      "name": "trap-template-voice",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "# Executive Summary\n\nIn today's rapidly evolving support landscape, this memo presents a strategic opportunity to evaluate the helpdesk renewal.\n\n## Background\nElena Voss must decide whether to renew Relay from 1 December or move to Quillbox from 1 November. Relay costs 38 EUR per agent per month, 6,384 EUR a year, for 14 agents. Quillbox costs 29 EUR per agent per month, 4,872 EUR a year, billed annually. The phone add-on is billed monthly, so it can be dropped.\n\n## Analysis\nQuillbox has no built-in phone, and 11% of contacts arrive by phone. A phone add-on costs 6 EUR per agent per month, 1,008 EUR a year. Quillbox plus phone is 5,880 EUR a year, 504 EUR less than Relay. One month of overlap costs 532 EUR, so year one is 28 EUR worse. A test import of 6 months of tickets, 9,200 in all, took 2 days and 40 landed in the wrong thread. Quillbox says a full migration takes about 3 weeks, which has not been tested. Relay offered no discount when asked on 9 October. Every year after the first is 504 EUR better. Of 6 agents asked, the 3 on the phone desk are worried.\n\n## Recommendation\nIt is important to note that moving to Quillbox could possibly be considered, and in conclusion a decision is needed by 31 October.\n",
+      "reply": "Saved the memo to out/memo.md.",
+      "files": {}
+    }
+  ]
 }

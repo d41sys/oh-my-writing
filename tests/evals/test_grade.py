@@ -29,7 +29,7 @@ def run_check(check, output, reply=""):
 
 @pytest.mark.parametrize("case", grade.load_cases(), ids=lambda c: c["id"])
 def test_every_case_file_is_valid(case):
-    assert grade.validate_case(case) == []
+    assert grade.validate_real_case(case) == []
 
 
 def test_validation_rejects_broken_cases():

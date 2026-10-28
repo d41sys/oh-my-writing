@@ -1,0 +1,85 @@
+{
+  "id": "anti-slop-editing/edit-punchline-keeps-every-except",
+  "skill": "anti-slop-editing",
+  "description": "Cutover review with a manufactured punchline ('every route. Except the refund route.') and a stranded auxiliary ('the replica didn't.'). Both get one plain sentence, but the claim keeps its scope: 'every ... except' stays and is not shrunk to 'we missed one route'; the negation, figures and heading survive.",
+  "prompt": "Smooth out review.md, it reads like a template. It's the cutover review for the engineering wiki. Save the edited version to out/review.md.",
+  "files": {
+    "review.md": "# Cutover review: Harbor billing\n\nOn 12 March we moved billing to the new cluster. We tested every route before cutover. Except the refund route. It went live untested and returned errors for 40 minutes.\n\nThe primary database came up cleanly; the replica didn't. Support handled 63 tickets that afternoon.\n"
+  },
+  "output": "out/review.md",
+  "checks": [
+    {
+      "type": "preserves",
+      "source": "review.md",
+      "categories": [
+        "numbers",
+        "negations",
+        "scope",
+        "names"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)\\bevery\\b[^.\\n]{0,80}\\bexcept\\b",
+      "note": "the original claims every route was tested with one exception; a smaller claim ('we missed one') changes the scope"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?m)(?:^|[.!?]\\s+)Except\\b",
+      "note": "the stranded 'Except ...' fragment is the manufactured punchline and must be folded in"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(?:did|didn.t|does|doesn.t|do|don.t|was|wasn.t)(?: not)?\\s*[.!]",
+      "note": "no stranded auxiliary ('the replica didn't.') may remain"
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "citations",
+        "urls"
+      ]
+    },
+    {
+      "type": "markers",
+      "min": 0,
+      "max": 0,
+      "target": "output"
+    },
+    {
+      "type": "contains",
+      "values": [
+        "Harbor billing",
+        "63 tickets"
+      ]
+    }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "# Cutover review: Harbor billing\n\nOn 12 March we moved billing to the new cluster. We tested every route before cutover except the refund route, which went live untested and returned errors for 40 minutes.\n\nThe primary database came up cleanly, but the replica did not come up. Support handled 63 tickets that afternoon.\n",
+      "reply": "Folded the \"Except the refund route.\" fragment into the sentence about testing and replaced \"the replica didn't\" with a full clause. The claim keeps its scope: every route was tested except the refund route. Figures and the heading are unchanged."
+    },
+    {
+      "name": "trap-shrinks-scope",
+      "expect": "fail",
+      "fails": [
+        "preserves",
+        "regex"
+      ],
+      "output": "# Cutover review: Harbor billing\n\nOn 12 March we moved billing to the new cluster. We missed testing the refund route, which went live untested and returned errors for 40 minutes.\n\nThe primary database came up cleanly, but the replica did not come up. Support handled 63 tickets that afternoon.\n",
+      "reply": "Replaced the staged \"every route. Except one\" beat with a direct statement of what was missed."
+    },
+    {
+      "name": "trap-leaves-punchline",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "# Cutover review: Harbor billing\n\nOn 12 March we moved billing to the new cluster. We tested every route before cutover. Except the refund route. It went live untested and returned errors for 40 minutes.\n\nThe primary database came up cleanly; the replica didn't. Support handled 63 tickets that afternoon.\n",
+      "reply": "Reviewed the text and made only light changes."
+    }
+  ]
+}

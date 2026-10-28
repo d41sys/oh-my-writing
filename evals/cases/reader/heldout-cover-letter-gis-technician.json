@@ -58,5 +58,40 @@
   "judge": {
     "mode": "reader"
   },
-  "style_ref": "letter-i-liked.md"
+  "style_ref": "letter-i-liked.md",
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "Dear Hiring Manager,\n\nI am applying for the GIS Technician post in Planning & Environment at Ashgrove Borough Council. For six years I have been a land surveyor at Pellam & Rowe Surveyors, where QGIS is the tool I open every morning.\n\nYou asked about a time I improved a data process. In 2022 our CAD drawings took about five hours a plot, because field points and the OS basemap had to be merged by hand. I built a QGIS tool that does the merge, and a drawing now takes about three hours, roughly 40% less. All four surveyors use it. I also map flood-prone lanes for the Ashby Flood Group as a volunteer.\n\nTwo gaps. I have no council experience, and my PostGIS is new: I have taken a two-day course and have so far worked in SQLite and SpatiaLite. I would welcome help with the council's databases in my first months.\n\nI would be glad to talk about the post.\n\nYours sincerely,\nNoor Haddad\n",
+      "reply": "Saved the letter to out/cover-letter.md. It is under one page."
+    },
+    {
+      "name": "trap-invents-figure",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "Dear Hiring Manager,\n\nI am applying for the GIS Technician post in Planning & Environment at Ashgrove Borough Council. For six years I have been a land surveyor at Pellam & Rowe Surveyors, where QGIS is the tool I open every morning.\n\nYou asked about a time I improved a data process. In 2022 our CAD drawings took about five hours a plot, because field points and the OS basemap had to be merged by hand. I built a QGIS tool that does the merge, and a drawing now takes about three hours, roughly 40% less. All four surveyors use it, and it has saved the firm 12,000 hours. I also map flood-prone lanes for the Ashby Flood Group as a volunteer.\n\nTwo gaps. I have no council experience, and my PostGIS is new: I have taken a two-day course and have so far worked in SQLite and SpatiaLite. I would welcome help with the council's databases in my first months.\n\nI would be glad to talk about the post.\n\nYours sincerely,\nNoor Haddad\n",
+      "reply": "Saved the letter to out/cover-letter.md."
+    },
+    {
+      "name": "trap-hides-postgis-gap",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "Dear Hiring Manager,\n\nI am applying for the GIS Technician post in Planning & Environment at Ashgrove Borough Council. For six years I have been a land surveyor at Pellam & Rowe Surveyors, where QGIS is the tool I open every morning.\n\nYou asked about a time I improved a data process. In 2022 our CAD drawings took about five hours a plot, because field points and the OS basemap had to be merged by hand. I built a QGIS tool that does the merge, and a drawing now takes about three hours, roughly 40% less. All four surveyors use it. I also map flood-prone lanes for the Ashby Flood Group as a volunteer.\n\nI am an experienced PostGIS user and am confident I can start on day one.\n\nI would be glad to talk about the post.\n\nYours sincerely,\nNoor Haddad\n",
+      "reply": "Saved the letter to out/cover-letter.md."
+    },
+    {
+      "name": "trap-stock-enthusiasm",
+      "expect": "fail",
+      "fails": [
+        "slop_density"
+      ],
+      "output": "Dear Hiring Manager,\n\nI am thrilled to apply for the GIS Technician post in Planning & Environment at Ashgrove Borough Council. For six years I have been a land surveyor at Pellam & Rowe Surveyors, where QGIS is the tool I open every morning.\n\nYou asked about a time I improved a data process. In 2022 our CAD drawings took about five hours a plot, because field points and the OS basemap had to be merged by hand. I built a QGIS tool that does the merge, and a drawing now takes about three hours, roughly 40% less. All four surveyors use it. I also map flood-prone lanes for the Ashby Flood Group as a volunteer.\n\nTwo gaps. I have no council experience, and my PostGIS is new: I have taken a two-day course and have so far worked in SQLite and SpatiaLite. I would welcome help with the council's databases in my first months.\n\nI am passionate about this pivotal role, and it would be crucial for me to delve into a rich tapestry of seamless data work. Thank you for your time and consideration.\n\nYours sincerely,\nNoor Haddad\n",
+      "reply": "Saved the letter to out/cover-letter.md."
+    }
+  ]
 }

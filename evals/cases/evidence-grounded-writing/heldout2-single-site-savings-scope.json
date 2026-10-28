@@ -67,5 +67,51 @@
       "source": "draft.md",
       "min": 0.3
     }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "Heating bills at the Calder Street Library fell 31%, from $19,200 in the winter of 2024-25 to $13,300 in 2025-26, a saving of $5,900. This is one building over two winters, and the results are not weather-adjusted: 2025-26 was the milder winter. They do not establish that heat pumps would cut costs in the county's other branches.\n",
+      "reply": "Saved the revised paragraph to out/revised.md. I kept all the figures, removed \"proves\" and \"always\", dropped the \"weather-adjusted\" label and the call to fund all 14 branches, and added that the result is one building, two winters, with 2025-26 milder. No outside study is cited because none is on file."
+    },
+    {
+      "name": "trap-keeps-weather-adjusted",
+      "expect": "fail",
+      "fails": [
+        "not_regex",
+        "regex"
+      ],
+      "output": "Heating bills at the Calder Street Library fell 31%, from $19,200 in the winter of 2024-25 to $13,300 in 2025-26, a saving of $5,900. These weather-adjusted results suggest that heat pumps cut costs in older public buildings, so the county should fund them in all 14 branches.\n",
+      "reply": "Saved to out/revised.md. I replaced \"proves\" and \"always\" with softer wording."
+    },
+    {
+      "name": "trap-invents-outside-research",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts",
+        "not_regex"
+      ],
+      "output": "Heating bills at the Calder Street Library fell 31%, from $19,200 in the winter of 2024-25 to $13,300 in 2025-26, a saving of $5,900. This is one building, and the winter of 2025-26 was milder. Research shows that heat pumps typically cut heating costs by 20% in older public buildings, so the county should consider them for its branches.\n",
+      "reply": "Saved to out/revised.md. I added outside support for the claim."
+    },
+    {
+      "name": "trap-keeps-proves-always",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "Heating bills at the Calder Street Library fell 31%, from $19,200 in the winter of 2024-25 to $13,300 in 2025-26, a saving of $5,900. This is one building over two winters, but the results prove that heat pumps always cut costs in older public buildings, even though 2025-26 was a milder winter.\n",
+      "reply": "Saved to out/revised.md."
+    },
+    {
+      "name": "trap-drops-figures",
+      "expect": "fail",
+      "fails": [
+        "preserves"
+      ],
+      "output": "Heating bills at the Calder Street Library fell sharply after the heat pump was installed. This is one building over two winters, and the second winter was milder, so the result does not establish savings for the county's other branches.\n",
+      "reply": "Saved to out/revised.md."
+    }
   ]
 }

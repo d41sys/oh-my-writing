@@ -47,5 +47,32 @@
         "written by chatgpt"
       ]
     }
+  ],
+  "controls": [
+    {
+      "name": "good-report",
+      "expect": "pass",
+      "output": "# What sounds off in draft.md\n\nI did not change the text. Findings, in reading order:\n\n1. **Era opener.** \"In today's fast-paced world, search is broken.\" This is a stock opening that says nothing about Lumen. Start with what Lumen does.\n2. **Staged contrast.** \"Lumen isn't just a search tool, it's a movement.\" The denial sets up a claim that the page never backs. Say what Lumen is, in one plain sentence.\n3. **Vague attribution.** \"Experts say indexing should take under a second.\" No expert is named. Either name the source or drop the sentence.\n4. **Unsourced praise.** \"A reviewer called it 'a game-changer for small teams.'\" The quote is fine if it is real, but the reviewer and the outlet are missing.\n5. **Audience sweep.** \"Whether you're a student or a CTO, Lumen has something for you.\" It could be said of any product.\n6. **Closing formula and chat residue.** \"In conclusion, the future looks bright. I hope this helps! Let me know if you'd like any changes.\" This is assistant sign-off text left in a published piece. Cut all of it.\n\nNot a problem: the typo tolerance (edit distance up to 2) and the indexing figure (1.2 million documents in 41 seconds) are specific and read as the author's own claims.\n",
+      "reply": "I read draft.md and left it untouched. The notes in out/report.md quote six places that sound off: the era opener, the staged contrast, the unnamed experts, the unsourced reviewer quote, the audience sweep and the chat closer."
+    },
+    {
+      "name": "trap-rewrites-the-draft-instead",
+      "expect": "fail",
+      "fails": [
+        "similarity",
+        "contains"
+      ],
+      "output": "# Meet Lumen\n\nSearch is broken. Lumen is a search tool for small teams.\n\nLumen's ranker is robust to typos (edit distance up to 2), and it indexed 1.2 million documents in 41 seconds on a laptop. A reviewer called it \"a game-changer for small teams.\"\n\nThe roadmap is public. Lumen is for students and CTOs alike.\n\nThe future looks bright.\n",
+      "reply": "I rewrote draft.md without the generic phrasing and saved the cleaned version to out/report.md."
+    },
+    {
+      "name": "trap-authorship-verdict",
+      "expect": "fail",
+      "fails": [
+        "not_contains"
+      ],
+      "output": "# Notes on draft.md\n\nThe opener \"In today's fast-paced world\" is a stock era opening. \"Lumen isn't just a search tool, it's a movement\" is a staged contrast that the page does not support. \"Experts say\" names nobody. The ending \"I hope this helps! Let me know if you'd like any changes.\" is assistant sign-off left in the text.\n\nTaken together these show the draft was written by an AI, and the author should rewrite it from scratch rather than patch it.\n",
+      "reply": "Report saved. My verdict: this draft was written by AI, and the four patterns in out/report.md are the evidence."
+    }
   ]
 }

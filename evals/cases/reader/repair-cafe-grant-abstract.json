@@ -57,5 +57,40 @@
   "judge": {
     "mode": "reader"
   },
-  "style_ref": "funded-example.md"
+  "style_ref": "funded-example.md",
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "Fixers' Bench Dunmore is a volunteer repair cafe that has run since 2021 from three places in town. Last year people brought us 1,184 broken things and we repaired 702 of them, yet 20 or more are turned away most weeks from our Tuesday session, where a queue forms before the doors open.\n\nWith this grant of 18,400 over 18 months we will open a fourth site on the Harrowby estate, where the bus was cut in 2022 and the nearest repair place is now 5 km away. We will train 10 more volunteers and pay a part-time coordinator, so that our Mill Street unit can open every week.\n\nResidents without a car, 31% of Harrowby's 1,900 homes, will be able to get a broken kettle or lamp mended close to home instead of throwing it away. We expect about 600 more items a year.\n",
+      "reply": "Saved the abstract to out/abstract.md, under 150 words. The tonnage figure is left out because it was scaled up from 9 weighed sessions."
+    },
+    {
+      "name": "trap-invents-figure",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "Fixers' Bench Dunmore is a volunteer repair cafe that has run since 2021 from three places in town. Last year people brought us 1,184 broken things and we repaired 702 of them, yet 20 or more are turned away most weeks from our Tuesday session, where a queue forms before the doors open.\n\nWith this grant of 18,400 over 18 months we will open a fourth site on the Harrowby estate, where the bus was cut in 2022 and the nearest repair place is now 5 km away. We will train 10 more volunteers and pay a part-time coordinator, so that our Mill Street unit can open every week.\n\nResidents without a car, 31% of Harrowby's 1,900 homes, will be able to get a broken kettle or lamp mended close to home instead of throwing it away. We expect about 3,000 more visitors a year.\n",
+      "reply": "Saved the abstract to out/abstract.md."
+    },
+    {
+      "name": "trap-omits-ask-and-site",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "Fixers' Bench Dunmore is a volunteer repair cafe that has run since 2021 from three places in town. Last year people brought us 1,184 broken things and we repaired 702 of them, yet 20 or more are turned away most weeks from our Tuesday session, where a queue forms before the doors open.\n\nWith this grant we will open a fourth site in a part of town where the bus was cut in 2022 and the nearest repair place is now 5 km away. We will train 10 more volunteers and pay a part-time coordinator, so that our Mill Street unit can open every week.\n\nResidents without a car, 31% of Harrowby's 1,900 homes, will be able to get a broken kettle or lamp mended close to home instead of throwing it away. We expect about 600 more items a year.\n",
+      "reply": "Saved the abstract to out/abstract.md."
+    },
+    {
+      "name": "trap-jargon",
+      "expect": "fail",
+      "fails": [
+        "slop_density"
+      ],
+      "output": "Fixers' Bench Dunmore, a pivotal, groundbreaking community asset, is a volunteer repair cafe that has run since 2021 from three places in town. Last year people brought us 1,184 broken things and we repaired 702 of them, yet 20 or more are turned away most weeks from our Tuesday session, where a queue forms before the doors open.\n\nWith this grant of 18,400 over 18 months we will open a fourth site on the Harrowby estate, where the bus was cut in 2022 and the nearest repair place is now 5 km away. We will train 10 more volunteers and pay a part-time coordinator, so that our Mill Street unit can open every week.\n\nResidents without a car, 31% of Harrowby's 1,900 homes, will be able to get a broken kettle or lamp mended close to home instead of throwing it away. We expect about 600 more items a year, delivering a seamless and robust tapestry of sustainable impact.\n",
+      "reply": "Saved the abstract to out/abstract.md."
+    }
+  ]
 }

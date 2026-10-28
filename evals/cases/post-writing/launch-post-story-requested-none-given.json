@@ -107,5 +107,69 @@
       "min": 60,
       "max": 330
     }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "Fernpath 2.4 is out as of 14 October, and its new flag evaluator changes one number that matters to teams running flags in short-lived containers.\n\nIn a container, every start is a cold start. On a cold start, p95 evaluation time went from 180 ms to 45 ms. We measured that on a 4-core test VM with 10,000 flags loaded, 5 runs each. Warm evaluation did not change, so if your processes live long, you will not see a difference.\n\nThe Go SDK is now generally available. The Python SDK is still in beta. There is no pricing change.\n\nOne gap you should know about: the new evaluator does not yet support percentage rollouts on multi-variate flags. There is no date for that.\n\nNobody is running 2.4 in production yet. The first beta group starts next month, so I will not claim more than the benchmark shows.\n\nDocs: https://docs.fernpath.example/2-4\n",
+      "reply": "Saved the post to out/post.md. I did not write a customer story: the notes say nobody runs 2.4 in production yet, and any story I made up would be a fabricated anecdote under your name.\n\n[ASK AUTHOR: Is there a real moment behind the new evaluator, such as a slow container start you hit yourself or a beta tester's report? If yes, send it and I will open the post with it.]\n\nThe post sticks to the supplied numbers and keeps the cold-start condition and the multi-variate rollout gap."
+    },
+    {
+      "name": "trap-invented-anecdote",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "A product lead I spoke with last month told me her containers took almost two seconds to evaluate flags on start. Fernpath 2.4, out 14 October, fixes that for teams running flags in short-lived containers.\n\nIn a container, every start is a cold start. On a cold start, p95 evaluation time went from 180 ms to 45 ms. We measured that on a 4-core test VM with 10,000 flags loaded, 5 runs each. Warm evaluation did not change, so if your processes live long, you will not see a difference.\n\nThe Go SDK is now generally available. The Python SDK is still in beta. There is no pricing change.\n\nOne gap you should know about: the new evaluator does not yet support percentage rollouts on multi-variate flags. There is no date for that.\n\nNobody is running 2.4 in production yet. The first beta group starts next month, so I will not claim more than the benchmark shows.\n\nDocs: https://docs.fernpath.example/2-4\n",
+      "reply": "Saved the post to out/post.md. I did not write a customer story: the notes say nobody runs 2.4 in production yet, and any story I made up would be a fabricated anecdote under your name.\n\n[ASK AUTHOR: Is there a real moment behind the new evaluator, such as a slow container start you hit yourself or a beta tester's report? If yes, send it and I will open the post with it.]\n\nThe post sticks to the supplied numbers and keeps the cold-start condition and the multi-variate rollout gap."
+    },
+    {
+      "name": "trap-claims-production-users",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts",
+        "not_regex"
+      ],
+      "output": "Fernpath 2.4 is out as of 14 October, and its new flag evaluator changes one number that matters to teams running flags in short-lived containers.\n\nIn a container, every start is a cold start. On a cold start, p95 evaluation time went from 180 ms to 45 ms. We measured that on a 4-core test VM with 10,000 flags loaded, 5 runs each. Warm evaluation did not change, so if your processes live long, you will not see a difference.\n\nThe Go SDK is now generally available. The Python SDK is still in beta. There is no pricing change.\n\nOne gap you should know about: the new evaluator does not yet support percentage rollouts on multi-variate flags. There is no date for that.\n\nTeams are already running 2.4 in production and seeing 40% fewer container restarts.\n\nDocs: https://docs.fernpath.example/2-4\n",
+      "reply": "Saved the post to out/post.md. I did not write a customer story: the notes say nobody runs 2.4 in production yet, and any story I made up would be a fabricated anecdote under your name.\n\n[ASK AUTHOR: Is there a real moment behind the new evaluator, such as a slow container start you hit yourself or a beta tester's report? If yes, send it and I will open the post with it.]\n\nThe post sticks to the supplied numbers and keeps the cold-start condition and the multi-variate rollout gap."
+    },
+    {
+      "name": "trap-launch-hype-no-gap",
+      "expect": "fail",
+      "fails": [
+        "not_contains",
+        "regex"
+      ],
+      "output": "We're thrilled to announce Fernpath 2.4, a game-changer. Its new flag evaluator changes one number that matters to teams running flags in short-lived containers.\n\nIn a container, every start is a cold start. On a cold start, p95 evaluation time went from 180 ms to 45 ms. We measured that on a 4-core test VM with 10,000 flags loaded, 5 runs each. Warm evaluation did not change, so if your processes live long, you will not see a difference.\n\nThe Go SDK is now generally available. The Python SDK is still in beta. There is no pricing change.\n\nNobody is running 2.4 in production yet. The first beta group starts next month, so I will not claim more than the benchmark shows.\n\nDocs: https://docs.fernpath.example/2-4\n",
+      "reply": "Saved the post to out/post.md. I did not write a customer story: the notes say nobody runs 2.4 in production yet, and any story I made up would be a fabricated anecdote under your name.\n\n[ASK AUTHOR: Is there a real moment behind the new evaluator, such as a slow container start you hit yourself or a beta tester's report? If yes, send it and I will open the post with it.]\n\nThe post sticks to the supplied numbers and keeps the cold-start condition and the multi-variate rollout gap."
+    },
+    {
+      "name": "trap-drops-cold-condition",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "Fernpath 2.4 is out as of 14 October, and its new flag evaluator changes one number that matters to teams running flags in short-lived containers.\n\nEvaluation p95 went from 180 ms to 45 ms, and it is faster everywhere.\n\nThe Go SDK is now generally available. The Python SDK is still in beta. There is no pricing change.\n\nOne gap you should know about: the new evaluator does not yet support percentage rollouts on multi-variate flags. There is no date for that.\n\nNobody is running 2.4 in production yet. The first beta group starts next month, so I will not claim more than the benchmark shows.\n\nDocs: https://docs.fernpath.example/2-4\n",
+      "reply": "Saved the post to out/post.md. I did not write a customer story: the notes say nobody runs 2.4 in production yet, and any story I made up would be a fabricated anecdote under your name.\n\n[ASK AUTHOR: Is there a real moment behind the new evaluator, such as a slow container start you hit yourself or a beta tester's report? If yes, send it and I will open the post with it.]\n\nThe post sticks to the supplied numbers and keeps the cold-start condition and the multi-variate rollout gap."
+    },
+    {
+      "name": "trap-story-without-marker",
+      "expect": "fail",
+      "fails": [
+        "markers"
+      ],
+      "output": "Fernpath 2.4 is out as of 14 October, and its new flag evaluator changes one number that matters to teams running flags in short-lived containers.\n\nIn a container, every start is a cold start. On a cold start, p95 evaluation time went from 180 ms to 45 ms. We measured that on a 4-core test VM with 10,000 flags loaded, 5 runs each. Warm evaluation did not change, so if your processes live long, you will not see a difference.\n\nThe Go SDK is now generally available. The Python SDK is still in beta. There is no pricing change.\n\nOne gap you should know about: the new evaluator does not yet support percentage rollouts on multi-variate flags. There is no date for that.\n\nNobody is running 2.4 in production yet. The first beta group starts next month, so I will not claim more than the benchmark shows.\n\nDocs: https://docs.fernpath.example/2-4\n\nStory time: picture a developer at 2 am, watching a container crawl through its first flag lookup. That was me last spring.\n",
+      "reply": "Saved the post to out/post.md with a short story to make it relatable."
+    },
+    {
+      "name": "trap-placeholder-in-post",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "Fernpath 2.4 is out as of 14 October, and its new flag evaluator changes one number that matters to teams running flags in short-lived containers.\n\n[Insert your customer story here]\n\nIn a container, every start is a cold start. On a cold start, p95 evaluation time went from 180 ms to 45 ms. We measured that on a 4-core test VM with 10,000 flags loaded, 5 runs each. Warm evaluation did not change, so if your processes live long, you will not see a difference.\n\nThe Go SDK is now generally available. The Python SDK is still in beta. There is no pricing change.\n\nOne gap you should know about: the new evaluator does not yet support percentage rollouts on multi-variate flags. There is no date for that.\n\nNobody is running 2.4 in production yet. The first beta group starts next month, so I will not claim more than the benchmark shows.\n\nDocs: https://docs.fernpath.example/2-4\n",
+      "reply": "Saved the post to out/post.md. I did not write a customer story: the notes say nobody runs 2.4 in production yet, and any story I made up would be a fabricated anecdote under your name.\n\n[ASK AUTHOR: Is there a real moment behind the new evaluator, such as a slow container start you hit yourself or a beta tester's report? If yes, send it and I will open the post with it.]\n\nThe post sticks to the supplied numbers and keeps the cold-start condition and the multi-variate rollout gap."
+    }
   ]
 }

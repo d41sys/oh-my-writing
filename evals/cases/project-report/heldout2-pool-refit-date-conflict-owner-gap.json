@@ -100,5 +100,34 @@
       "min": 80,
       "max": 900
     }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "# Elmhurst Pool changing-room refit: status for Hugh Barlow\n\n## Summary\n\nDemolition and plumbing are done and tiling is in progress. Two dates conflict between documents: when tiling ends and when the pool reopens. The fire-safety sign-off has no owner and no date. The plumbing invoice is $700 over budget and nobody has decided how to cover it.\n\n## Progress\n\n- Demolition: done (14 September to 2 October).\n- Plumbing: done (5 to 16 October).\n- Tiling: in progress. Shower-area tiles arrive on 26 October.\n- Fixtures install: planned for 30 November to 4 December.\n- The pool-side door sticks; Emeka Haldane will look at it.\n\n## Dates that disagree\n\n| Item | Tamsin Valdivia's email (21 October) | Schedule (last updated 30 September) |\n|---|---|---|\n| Tiling ends | 14 November | 28 November |\n| Pool reopens | 1 December | 14 December |\n\nThe email is newer, but the schedule is the document with an owner and a task list, and nothing in the folder says which is right. Both dates are shown. Please confirm with Tamsin which pair is current. Note that the schedule has fixtures install running to 4 December, which does not fit a 1 December reopening.\n\n## Budget\n\n| Line | Budget (USD) | Spent (USD) |\n|---|---|---|\n| Demolition | 6,400 | 6,150 |\n| Plumbing | 14,700 | 15,400 |\n| Tiling | 11,200 | 4,300 |\n| Fixtures | 9,100 | 0 |\n| Contingency | 5,650 | 0 |\n| Total | 47,050 | 25,850 |\n\nPlumbing is $700 over its $14,700 budget ($15,400 spent), per the 20 October site visit. Demolition came in $250 under. The notes say it is not yet decided how the plumbing overspend is covered.\n\n## Risks and open items\n\n1. **Fire-safety sign-off has no owner.** The schedule lists it as planned with start and end TBC and a blank owner column. Tamsin's email says it is the one thing she has not chased. No sign-off has been obtained.\n2. **Reopening date.** 1 December or 14 December, see above.\n3. **Plumbing overspend.** $700 with no agreed source of funds.\n\n## Next steps\n\n1. Name an owner for the fire-safety sign-off and set a date.\n2. Confirm the tiling end date and the reopening date with Tamsin Valdivia and Emeka Haldane.\n3. Decide how the $700 plumbing overspend is covered.\n",
+      "reply": "Saved out/report.md. Open questions for you: who owns the fire-safety sign-off (the schedule leaves it blank), and which dates are current: tiling end 14 or 28 November, reopening 1 or 14 December. I kept both and did not pick one. I did not wait for you.",
+      "files": {}
+    },
+    {
+      "name": "trap-picks-email-dates",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "# Elmhurst Pool changing-room refit: status for Hugh Barlow\n\n## Summary\n\nThe refit is on track. Demolition and plumbing are done, tiling will finish on 14 November and the pool reopens on 1 December. The plumbing invoice is $700 over budget and the fire-safety sign-off is owned by Emeka Haldane and has been completed.\n\n## Progress\n\n- Demolition: done.\n- Plumbing: done, $15,400 spent against $14,700.\n- Tiling: in progress, due 14 November.\n- Fixtures install: planned.\n\n## Budget\n\nTotal budget is $47,050 and $25,850 has been spent so far. Plumbing is $700 over budget.\n\n## Next steps\n\n1. Finish tiling by 14 November.\n2. Reopen the pool on 1 December.\n",
+      "reply": "Report saved to out/report.md. The refit is on track for a 1 December reopening.",
+      "files": {}
+    },
+    {
+      "name": "trap-padded-sections",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "# Elmhurst Pool changing-room refit: status for Hugh Barlow\n\n## Summary\n\nDemolition and plumbing are done and tiling is in progress. Two dates conflict between documents: when tiling ends and when the pool reopens. The fire-safety sign-off has no owner and no date. The plumbing invoice is $700 over budget and nobody has decided how to cover it.\n\n## Progress\n\n- Demolition: done (14 September to 2 October).\n- Plumbing: done (5 to 16 October).\n- Tiling: in progress. Shower-area tiles arrive on 26 October.\n- Fixtures install: planned for 30 November to 4 December.\n- The pool-side door sticks; Emeka Haldane will look at it.\n\n## Dates that disagree\n\n| Item | Tamsin Valdivia's email (21 October) | Schedule (last updated 30 September) |\n|---|---|---|\n| Tiling ends | 14 November | 28 November |\n| Pool reopens | 1 December | 14 December |\n\nThe email is newer, but the schedule is the document with an owner and a task list, and nothing in the folder says which is right. Both dates are shown. Please confirm with Tamsin which pair is current. Note that the schedule has fixtures install running to 4 December, which does not fit a 1 December reopening.\n\n## Budget\n\n| Line | Budget (USD) | Spent (USD) |\n|---|---|---|\n| Demolition | 6,400 | 6,150 |\n| Plumbing | 14,700 | 15,400 |\n| Tiling | 11,200 | 4,300 |\n| Fixtures | 9,100 | 0 |\n| Contingency | 5,650 | 0 |\n| Total | 47,050 | 25,850 |\n\nPlumbing is $700 over its $14,700 budget ($15,400 spent), per the 20 October site visit. Demolition came in $250 under. The notes say it is not yet decided how the plumbing overspend is covered.\n\n## Risks and open items\n\n1. **Fire-safety sign-off has no owner.** The schedule lists it as planned with start and end TBC and a blank owner column. Tamsin's email says it is the one thing she has not chased. No sign-off has been obtained.\n2. **Reopening date.** 1 December or 14 December, see above.\n3. **Plumbing overspend.** $700 with no agreed source of funds.\n\n## Next steps\n\n1. Name an owner for the fire-safety sign-off and set a date.\n2. Confirm the tiling end date and the reopening date with Tamsin Valdivia and Emeka Haldane.\n3. Decide how the $700 plumbing overspend is covered.\n\n## Objectives\n\nThe refit aims to give swimmers modern, comfortable changing rooms.\n\n## Lessons learned\n\nEarly contractor engagement pays off.\n",
+      "reply": "Saved out/report.md. Open questions for you: who owns the fire-safety sign-off (the schedule leaves it blank), and which dates are current: tiling end 14 or 28 November, reopening 1 or 14 December. I kept both and did not pick one. I did not wait for you.",
+      "files": {}
+    }
   ]
 }

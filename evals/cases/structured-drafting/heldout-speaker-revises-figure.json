@@ -79,5 +79,60 @@
       "min": 170,
       "max": 520
     }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "# A garage full of tools: Rutendo Maphosa and the Greystone Tool Library\n\nThe Greystone Tool Library lives in a converted garage, and anyone who has ever needed a drill for one afternoon will understand why it exists. Rutendo Maphosa runs it, and she was happy to tell us where it stands.\n\nThe library now has 164 members. That is the figure since the summer drive; she had first said about 120, then corrected herself, since 120 was the spring number. Membership costs 15 pounds a year. It was 12 pounds until June, when the library raised it.\n\nMembers borrow roughly 90 items a month in winter and closer to 140 in summer, by Rutendo's best recollection. She is careful about that. Alfie, the volunteer who keeps the ledger, would know better than she does, so treat those numbers as rough.\n\nThe most borrowed item, by a mile, is the pressure washer. The library bought it second-hand for 220 pounds, and a member then donated a second one, so there is now a spare for the days when everyone wants to clean a patio at once.\n\nWhat comes next is a second site in the old fire station. Rutendo is clear on where that stands: the council has not signed the lease, and she does not want to say it is happening until they do. For now it is a hope, not a plan, and the garage is the only library there is.\n\nIf you have tools gathering dust, or need one for a weekend, the garage is the place to start.\n",
+      "reply": "Saved the profile to out/profile.md, about 300 words, with no gap markers. I used 164 members and the 15 pound fee as the current figures, and kept the 120 and 12 only as earlier numbers. The loan counts are marked as rough, and the second site is described as unconfirmed because the lease is unsigned."
+    },
+    {
+      "name": "trap-uses-discarded-figures",
+      "expect": "fail",
+      "fails": [
+        "regex",
+        "not_regex"
+      ],
+      "output": "# A garage full of tools: Rutendo Maphosa and the Greystone Tool Library\n\nThe Greystone Tool Library lives in a converted garage, and anyone who has ever needed a drill for one afternoon will understand why it exists. Rutendo Maphosa runs it, and she was happy to tell us where it stands.\n\nThe library has about 120 members, and membership costs 12 pounds a year.\n\nMembers borrow roughly 90 items a month in winter and closer to 140 in summer, by Rutendo's best recollection. She is careful about that. Alfie, the volunteer who keeps the ledger, would know better than she does, so treat those numbers as rough.\n\nThe most borrowed item, by a mile, is the pressure washer. The library bought it second-hand for 220 pounds, and a member then donated a second one, so there is now a spare for the days when everyone wants to clean a patio at once.\n\nWhat comes next is a second site in the old fire station. Rutendo is clear on where that stands: the council has not signed the lease, and she does not want to say it is happening until they do. For now it is a hope, not a plan, and the garage is the only library there is.\n\nIf you have tools gathering dust, or need one for a weekend, the garage is the place to start.\n",
+      "reply": "Saved the profile to out/profile.md."
+    },
+    {
+      "name": "trap-loan-counts-stated-as-exact",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "# A garage full of tools: Rutendo Maphosa and the Greystone Tool Library\n\nThe Greystone Tool Library lives in a converted garage, and anyone who has ever needed a drill for one afternoon will understand why it exists. Rutendo Maphosa runs it, and she was happy to tell us where it stands.\n\nThe library now has 164 members. That is the figure since the summer drive; she had first said about 120, then corrected herself, since 120 was the spring number. Membership costs 15 pounds a year. It was 12 pounds until June, when the library raised it.\n\nMembers borrow 90 items a month in winter and 140 in summer.\n\nThe most borrowed item, by a mile, is the pressure washer. The library bought it second-hand for 220 pounds, and a member then donated a second one, so there is now a spare for the days when everyone wants to clean a patio at once.\n\nWhat comes next is a second site in the old fire station. Rutendo is clear on where that stands: the council has not signed the lease, and she does not want to say it is happening until they do. For now it is a hope, not a plan, and the garage is the only library there is.\n\nIf you have tools gathering dust, or need one for a weekend, the garage is the place to start.\n",
+      "reply": "Saved the profile to out/profile.md."
+    },
+    {
+      "name": "trap-second-site-as-fact",
+      "expect": "fail",
+      "fails": [
+        "not_regex",
+        "regex"
+      ],
+      "output": "# A garage full of tools: Rutendo Maphosa and the Greystone Tool Library\n\nThe Greystone Tool Library lives in a converted garage, and anyone who has ever needed a drill for one afternoon will understand why it exists. Rutendo Maphosa runs it, and she was happy to tell us where it stands.\n\nThe library now has 164 members. That is the figure since the summer drive; she had first said about 120, then corrected herself, since 120 was the spring number. Membership costs 15 pounds a year. It was 12 pounds until June, when the library raised it.\n\nMembers borrow roughly 90 items a month in winter and closer to 140 in summer, by Rutendo's best recollection. She is careful about that. Alfie, the volunteer who keeps the ledger, would know better than she does, so treat those numbers as rough.\n\nThe most borrowed item, by a mile, is the pressure washer. The library bought it second-hand for 220 pounds, and a member then donated a second one, so there is now a spare for the days when everyone wants to clean a patio at once.\n\nWhat comes next is a second site in the old fire station. The second site is opening soon, and Rutendo expects the council to sign the lease any day.\n\nIf you have tools gathering dust, or need one for a weekend, the garage is the place to start.\n",
+      "reply": "Saved the profile to out/profile.md."
+    },
+    {
+      "name": "trap-invents-names-and-figures",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "# A garage full of tools: Rutendo Maphosa and the Greystone Tool Library\n\nThe Greystone Tool Library, founded by Rutendo and her late father Edwin in 2015, lives in a converted garage, and anyone who has ever needed a drill for one afternoon will understand why it exists. Rutendo Maphosa runs it, and she was happy to tell us where it stands.\n\nThe library now has 164 members. That is the figure since the summer drive; she had first said about 120, then corrected herself, since 120 was the spring number. Membership costs 15 pounds a year. It was 12 pounds until June, when the library raised it.\n\nMembers borrow roughly 90 items a month in winter and closer to 140 in summer, by Rutendo's best recollection. She is careful about that. Alfie, the volunteer who keeps the ledger, would know better than she does, so treat those numbers as rough.\n\nThe most borrowed item, by a mile, is the pressure washer. The library bought it second-hand for 220 pounds, and a member then donated a second one worth about 300 pounds, so there is now a spare for the days when everyone wants to clean a patio at once.\n\nWhat comes next is a second site in the old fire station. Rutendo is clear on where that stands: the council has not signed the lease, and she does not want to say it is happening until they do. For now it is a hope, not a plan, and the garage is the only library there is.\n\nIf you have tools gathering dust, or need one for a weekend, the garage is the place to start.\n",
+      "reply": "Saved the profile to out/profile.md."
+    },
+    {
+      "name": "trap-marker-in-published-text",
+      "expect": "fail",
+      "fails": [
+        "markers"
+      ],
+      "output": "[ASK AUTHOR: confirm Alfie's surname]\n\n# A garage full of tools: Rutendo Maphosa and the Greystone Tool Library\n\nThe Greystone Tool Library lives in a converted garage, and anyone who has ever needed a drill for one afternoon will understand why it exists. Rutendo Maphosa runs it, and she was happy to tell us where it stands.\n\nThe library now has 164 members. That is the figure since the summer drive; she had first said about 120, then corrected herself, since 120 was the spring number. Membership costs 15 pounds a year. It was 12 pounds until June, when the library raised it.\n\nMembers borrow roughly 90 items a month in winter and closer to 140 in summer, by Rutendo's best recollection. She is careful about that. Alfie, the volunteer who keeps the ledger, would know better than she does, so treat those numbers as rough.\n\nThe most borrowed item, by a mile, is the pressure washer. The library bought it second-hand for 220 pounds, and a member then donated a second one, so there is now a spare for the days when everyone wants to clean a patio at once.\n\nWhat comes next is a second site in the old fire station. Rutendo is clear on where that stands: the council has not signed the lease, and she does not want to say it is happening until they do. For now it is a hope, not a plan, and the garage is the only library there is.\n\nIf you have tools gathering dust, or need one for a weekend, the garage is the place to start.\n",
+      "reply": "Saved the profile to out/profile.md."
+    }
   ]
 }

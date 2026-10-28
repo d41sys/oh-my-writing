@@ -1,0 +1,85 @@
+{
+  "id": "anti-slop-editing/keep-bare-stance-no-edit",
+  "skill": "anti-slop-editing",
+  "description": "Near-identical to the seed-trial write-up but with no frame: a bare 'my favorite part', a bare 'the most surprising result' and a mid-sentence casual 'Honestly'. All are the author's own stance in a casual voice, so the right answer is no edit and the file comes back essentially identical.",
+  "prompt": "Check trial.md for AI-sounding phrasing and fix whatever needs it. It's a season write-up for our allotment newsletter. Save the result to out/trial.md.",
+  "files": {
+    "trial.md": "We planted 24 beds in the Alder Lane seed trial between April and June, and 17 gave a harvest.\n\nThe bean trellis was my favorite part of the season. The most surprising result was the purple kale, which out-yielded the spinach in every bed except the shaded ones. Honestly, I would not repeat the carrot rows. Bed 9 flooded twice and we lost it.\n"
+  },
+  "output": "out/trial.md",
+  "checks": [
+    {
+      "type": "similarity",
+      "source": "trial.md",
+      "min": 0.97
+    },
+    {
+      "type": "preserves",
+      "source": "trial.md",
+      "categories": [
+        "numbers",
+        "negations",
+        "certainty",
+        "scope",
+        "names"
+      ]
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "citations",
+        "urls"
+      ]
+    },
+    {
+      "type": "markers",
+      "min": 0,
+      "max": 0,
+      "target": "output"
+    },
+    {
+      "type": "contains_any",
+      "target": "reply",
+      "values": [
+        "no justified edit",
+        "no edit",
+        "no edits",
+        "no changes",
+        "no change",
+        "unchanged",
+        "left as is",
+        "left it as",
+        "nothing to change",
+        "nothing needed"
+      ]
+    },
+    {
+      "type": "contains",
+      "values": [
+        "my favorite part",
+        "The most surprising result",
+        "Honestly"
+      ],
+      "case_sensitive": true
+    }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "We planted 24 beds in the Alder Lane seed trial between April and June, and 17 gave a harvest.\n\nThe bean trellis was my favorite part of the season. The most surprising result was the purple kale, which out-yielded the spinach in every bed except the shaded ones. Honestly, I would not repeat the carrot rows. Bed 9 flooded twice and we lost it.\n",
+      "reply": "No justified edit. \"My favorite part\" and \"the most surprising result\" are your own stance, and the mid-sentence \"Honestly\" fits the casual voice. Left as is."
+    },
+    {
+      "name": "trap-flattens-stance",
+      "expect": "fail",
+      "fails": [
+        "similarity",
+        "contains"
+      ],
+      "output": "We planted 24 beds in the Alder Lane seed trial between April and June, and 17 gave a harvest.\n\nThe bean trellis did well. The purple kale out-yielded the spinach in every bed except the shaded ones. I would not repeat the carrot rows. Bed 9 flooded twice and we lost it.\n",
+      "reply": "Tightened the reaction phrases into plain statements."
+    }
+  ]
+}

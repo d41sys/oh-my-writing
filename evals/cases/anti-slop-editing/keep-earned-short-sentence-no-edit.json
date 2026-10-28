@@ -1,0 +1,82 @@
+{
+  "id": "anti-slop-editing/keep-earned-short-sentence-no-edit",
+  "skill": "anti-slop-editing",
+  "description": "Same cutover review already written with the scope in one sentence ('every route ... except the refund route, which ...'), a full-clause contrast and a single earned short sentence ('No customer was charged twice.'). One short sentence that carries real weight is not a punchline habit, so the right answer is no edit.",
+  "prompt": "Check review.md for AI-sounding phrasing and fix whatever needs it. It's the cutover review for the engineering wiki. Save the result to out/review.md.",
+  "files": {
+    "review.md": "# Cutover review: Harbor billing\n\nOn 12 March we moved billing to the new cluster. We tested every route before cutover except the refund route, which the vendor had not released yet. The refund route went live untested and returned errors for 40 minutes. No customer was charged twice.\n\nThe primary database came up cleanly, but the replica did not come up. Support handled 63 tickets that afternoon.\n"
+  },
+  "output": "out/review.md",
+  "checks": [
+    {
+      "type": "similarity",
+      "source": "review.md",
+      "min": 0.97
+    },
+    {
+      "type": "preserves",
+      "source": "review.md",
+      "categories": [
+        "numbers",
+        "negations",
+        "scope",
+        "names"
+      ]
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "citations",
+        "urls"
+      ]
+    },
+    {
+      "type": "markers",
+      "min": 0,
+      "max": 0,
+      "target": "output"
+    },
+    {
+      "type": "contains_any",
+      "target": "reply",
+      "values": [
+        "no justified edit",
+        "no edit",
+        "no edits",
+        "no changes",
+        "no change",
+        "unchanged",
+        "left as is",
+        "left it as",
+        "nothing to change",
+        "nothing needed"
+      ]
+    },
+    {
+      "type": "contains",
+      "values": [
+        "No customer was charged twice."
+      ],
+      "case_sensitive": true
+    }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "# Cutover review: Harbor billing\n\nOn 12 March we moved billing to the new cluster. We tested every route before cutover except the refund route, which the vendor had not released yet. The refund route went live untested and returned errors for 40 minutes. No customer was charged twice.\n\nThe primary database came up cleanly, but the replica did not come up. Support handled 63 tickets that afternoon.\n",
+      "reply": "No justified edit. The scope is stated in one sentence, the one short line (\"No customer was charged twice.\") carries real weight, and nothing else reads as template. Left as is."
+    },
+    {
+      "name": "trap-merges-short-sentence",
+      "expect": "fail",
+      "fails": [
+        "similarity",
+        "contains"
+      ],
+      "output": "# Cutover review: Harbor billing\n\nOn 12 March we moved billing to the new cluster. We tested every route before cutover except the refund route, which the vendor had not released yet. The refund route went live untested and returned errors for 40 minutes, though no customers were affected by double charges.\n\nThe primary database came up cleanly, but the replica failed to start. Support dealt with 63 tickets that afternoon.\n",
+      "reply": "Merged the short sentence into the previous one and varied some wording."
+    }
+  ]
+}

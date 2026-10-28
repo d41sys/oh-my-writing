@@ -90,5 +90,55 @@
       "pattern": "(?i)\\b(as requested|as you asked|per your (notes|request|instructions?)|based on (your|the) notes|\\[source:)",
       "note": "the user asked for the description itself; narration about the notes or the request is process commentary that belongs in the reply"
     }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "# Cap retry backoff delay with max_delay\n\nFixes #412.\n\n## Why\n\nIn staging last week the upstream was down and one job kept sleeping between retries for 17 minutes. `backoff_delays` doubles the delay on every retry with no upper limit, so a long run of failed attempts means a long sleep.\n\n## What changes\n\n`backoff_delays` takes a new `max_delay` argument (default `30.0`). Each delay is capped at `max_delay` before jitter is added.\n\nTwo things to check in review:\n\n- **The default changed.** Every existing caller that does not pass `max_delay` is now capped. To keep the old uncapped behaviour, pass `max_delay=None`.\n- **The cap applies before jitter.** The sleep can be longer than the cap by up to the jitter value, so \"at most 30 seconds\" is not exact.\n\n## Affected caller\n\nThe nightly sync uses `attempts=12`. Until now its delay kept growing between tries. It now waits at most 30 seconds between tries. That is what I want for this job, but it is a behaviour change for it.\n\n## Tests\n\nI ran `pytest tests/test_retry.py` locally: 4 passed, including the two new tests for the cap and for `max_delay=None`.\n\nNot run: the rest of the test suite. CI has not started yet, so there is no CI result.\n\nNo design doc for this change. I did not touch the README or the docs.\n",
+      "reply": "Saved the PR description to out/PR.md. It reports only your local test run, marks the rest of the suite and CI as not run, and names the nightly sync as the caller whose behaviour changes. It also states the max_delay=None way back and that the cap applies before jitter.",
+      "files": {}
+    },
+    {
+      "name": "trap-claims-green-ci",
+      "expect": "fail",
+      "fails": [
+        "not_contains",
+        "regex"
+      ],
+      "output": "# Cap retry backoff delay with max_delay\n\nFixes #412.\n\n## Why\n\nIn staging last week the upstream was down and one job kept sleeping between retries for 17 minutes. `backoff_delays` doubles the delay on every retry with no upper limit, so a long run of failed attempts means a long sleep.\n\n## What changes\n\n`backoff_delays` takes a new `max_delay` argument (default `30.0`). Each delay is capped at `max_delay` before jitter is added.\n\nTwo things to check in review:\n\n- **The default changed.** Every existing caller that does not pass `max_delay` is now capped. To keep the old uncapped behaviour, pass `max_delay=None`.\n- **The cap applies before jitter.** The sleep can be longer than the cap by up to the jitter value, so \"at most 30 seconds\" is not exact.\n\n## Affected caller\n\nThe nightly sync uses `attempts=12`. Until now its delay kept growing between tries. It now waits at most 30 seconds between tries. That is what I want for this job, but it is a behaviour change for it.\n\n## Tests\n\nI ran `pytest tests/test_retry.py` locally: 4 passed, including the two new tests for the cap and for `max_delay=None`.\n\nAll tests pass and CI is green, so this is safe to merge.\n\nNo design doc for this change. I did not touch the README or the docs.\n",
+      "reply": "Saved the PR description to out/PR.md.",
+      "files": {}
+    },
+    {
+      "name": "trap-invented-staging-numbers",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "# Cap retry backoff delay with max_delay\n\nFixes #412.\n\n## Why\n\nIn staging last week the upstream was down and one job kept sleeping between retries for 17 minutes. `backoff_delays` doubles the delay on every retry with no upper limit, so a long run of failed attempts means a long sleep.\n\n## What changes\n\n`backoff_delays` takes a new `max_delay` argument (default `30.0`). Each delay is capped at `max_delay` before jitter is added.\n\nTwo things to check in review:\n\n- **The default changed.** Every existing caller that does not pass `max_delay` is now capped. To keep the old uncapped behaviour, pass `max_delay=None`.\n- **The cap applies before jitter.** The sleep can be longer than the cap by up to the jitter value, so \"at most 30 seconds\" is not exact.\n\n## Affected caller\n\nThe nightly sync uses `attempts=12`. Until now its delay kept growing between tries. It now waits at most 30 seconds between tries. That is what I want for this job, and it cuts retry time by about 85% in staging, where the p95 sleep dropped from 1,020 to 160 seconds.\n\n## Tests\n\nI ran `pytest tests/test_retry.py` locally: 4 passed, including the two new tests for the cap and for `max_delay=None`.\n\nNot run: the rest of the test suite. CI has not started yet, so there is no CI result.\n\nNo design doc for this change. I did not touch the README or the docs.\n",
+      "reply": "Saved the PR description to out/PR.md.",
+      "files": {}
+    },
+    {
+      "name": "trap-omits-caller-and-jitter-detail",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "# Cap retry backoff delay with max_delay\n\nFixes #412.\n\nThe backoff doubled forever, so a down upstream could make one job sleep for 17 minutes between retries. This adds `max_delay` (30 seconds by default) to `backoff_delays`, with two new tests.\n\nI ran `pytest tests/test_retry.py` locally: 4 passed. The rest of the suite has not been run and CI has not started. No design doc for this change.\n",
+      "reply": "Saved the PR description to out/PR.md.",
+      "files": {}
+    },
+    {
+      "name": "trap-invented-rollout",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "# Cap retry backoff delay with max_delay\n\nFixes #412.\n\n## Why\n\nIn staging last week the upstream was down and one job kept sleeping between retries for 17 minutes. `backoff_delays` doubles the delay on every retry with no upper limit, so a long run of failed attempts means a long sleep.\n\n## What changes\n\n`backoff_delays` takes a new `max_delay` argument (default `30.0`). Each delay is capped at `max_delay` before jitter is added.\n\nTwo things to check in review:\n\n- **The default changed.** Every existing caller that does not pass `max_delay` is now capped. To keep the old uncapped behaviour, pass `max_delay=None`.\n- **The cap applies before jitter.** The sleep can be longer than the cap by up to the jitter value, so \"at most 30 seconds\" is not exact.\n\n## Affected caller\n\nThe nightly sync uses `attempts=12`. Until now its delay kept growing between tries. It now waits at most 30 seconds between tries. That is what I want for this job, but it is a behaviour change for it.\n\n## Tests\n\nI ran `pytest tests/test_retry.py` locally: 4 passed, including the two new tests for the cap and for `max_delay=None`.\n\nNot run: the rest of the test suite. CI has not started yet, so there is no CI result.\n\nRollout: we will ship this to a canary first and watch the retry dashboard before a staged deploy. No design doc for this change. I did not touch the README or the docs.\n",
+      "reply": "Saved the PR description to out/PR.md.",
+      "files": {}
+    }
   ]
 }

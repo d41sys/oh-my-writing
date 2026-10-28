@@ -57,5 +57,40 @@
   "judge": {
     "mode": "reader"
   },
-  "style_ref": "other-entry.md"
+  "style_ref": "other-entry.md",
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "# Harbour Lane Pool lockers\n\n**Client:** Harbour Lane Leisure Centre  **Role:** product and service designer  **Time:** 11 weeks\n\nPeople complained about the lockers, so I went and watched them. Over four Saturdays I followed 80 users and found that 34 of them forgot their locker number at least once and walked the rows trying doors. The front desk was logging 9 lost-locker requests a week.\n\nBigger numbers on the doors changed nothing, and a phone app would not work in a wet area. Cardboard wristbands did work, so I gave each zone its own colour, painted on the floor and the aisle ends, and a silicone wristband with the number and zone colour on it. We piloted it in zone C, 62 lockers, for 6 weeks. Lost-locker requests at the desk fell from 9 a week to 3.\n\nI did not change the coin mechanism, which is under a council contract with the vendor until 2027. The jams are still there: I saw 11 among the 80 users and did not measure again. The centre is rolling the scheme out to the other zones this summer.\n",
+      "reply": "Saved the entry to out/lockers.md. I left out the tools and the fee."
+    },
+    {
+      "name": "trap-invents-figure",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "# Harbour Lane Pool lockers\n\n**Client:** Harbour Lane Leisure Centre  **Role:** product and service designer  **Time:** 11 weeks\n\nPeople complained about the lockers, so I went and watched them. Over four Saturdays I followed 80 users and found that 34 of them forgot their locker number at least once and walked the rows trying doors. The front desk was logging 9 lost-locker requests a week.\n\nBigger numbers on the doors changed nothing, and a phone app would not work in a wet area. Cardboard wristbands did work, so I gave each zone its own colour, painted on the floor and the aisle ends, and a silicone wristband with the number and zone colour on it. We piloted it in zone C, 62 lockers, for 6 weeks. Lost-locker requests at the desk fell from 9 a week to 3, a 67% drop.\n\nI did not change the coin mechanism, which is under a council contract with the vendor until 2027. The jams are still there: I saw 11 among the 80 users and did not measure again. The centre is rolling the scheme out to the other zones this summer.\n",
+      "reply": "Saved the entry to out/lockers.md."
+    },
+    {
+      "name": "trap-hides-coin-limit",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "# Harbour Lane Pool lockers\n\n**Client:** Harbour Lane Leisure Centre  **Role:** product and service designer  **Time:** 11 weeks\n\nPeople complained about the lockers, so I went and watched them. Over four Saturdays I followed 80 users and found that 34 of them forgot their locker number at least once and walked the rows trying doors. The front desk was logging 9 lost-locker requests a week.\n\nBigger numbers on the doors changed nothing, and a phone app would not work in a wet area. Cardboard wristbands did work, so I gave each zone its own colour, painted on the floor and the aisle ends, and a silicone wristband with the number and zone colour on it. We piloted it in zone C, 62 lockers, for 6 weeks. Lost-locker requests at the desk fell from 9 a week to 3.\n\nThe centre is rolling the scheme out to the other zones this summer.\n",
+      "reply": "Saved the entry to out/lockers.md."
+    },
+    {
+      "name": "trap-design-buzzwords",
+      "expect": "fail",
+      "fails": [
+        "slop_density"
+      ],
+      "output": "# Harbour Lane Pool lockers\n\n**Client:** Harbour Lane Leisure Centre  **Role:** product and service designer  **Time:** 11 weeks\n\nUsing a human-centred, holistic design-thinking approach with Miro and Figma, I delved into a rich tapestry of user needs and unlocked seamless, pivotal insights. Over four Saturdays I followed 80 users and found that 34 of them forgot their locker number at least once and walked the rows trying doors. The front desk was logging 9 lost-locker requests a week.\n\nBigger numbers on the doors changed nothing, and a phone app would not work in a wet area. Cardboard wristbands did work, so I gave each zone its own colour, painted on the floor and the aisle ends, and a silicone wristband with the number and zone colour on it. We piloted it in zone C, 62 lockers, for 6 weeks. Lost-locker requests at the desk fell from 9 a week to 3.\n\nI did not change the coin mechanism, which is under a council contract with the vendor until 2027. The jams are still there: I saw 11 among the 80 users and did not measure again. The centre is rolling the scheme out to the other zones this summer.\n",
+      "reply": "Saved the entry to out/lockers.md."
+    }
+  ]
 }

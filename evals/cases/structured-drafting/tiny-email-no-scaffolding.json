@@ -69,5 +69,51 @@
       "pattern": "(?is)\\blegal\\b[^\\n]{0,200}\\?|(?:let me know|please (?:confirm|tell)|your (?:ok|okay|approval|go-ahead))[^\\n]{0,200}\\blegal\\b|\\blegal\\b[^\\n]{0,200}(?:let me know|your (?:ok|okay|approval|go-ahead)|please (?:confirm|tell))",
       "note": "the notes say it is unknown whether Ravi wants legal involved and tell the author to ask him; the email must put that question to Ravi instead of assuming either answer"
     }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "Hi Ravi,\n\nThe Q3 vendor audit is not finished yet: 2 of 5 vendors are left, Halden and Orrin. I can send it to you by Wednesday the 22nd. Would you like me to share the draft with legal first, or should we keep legal out until you have seen it?\n\nThanks,\n",
+      "reply": "Saved the three-sentence email to out/email.md. I left the legal question open for Ravi to answer, since the notes say you are not sure he wants legal in yet."
+    },
+    {
+      "name": "trap-brief-and-outline-in-file",
+      "expect": "fail",
+      "fails": [
+        "not_contains",
+        "not_regex"
+      ],
+      "output": "# Email to Ravi\n\n**Brief:** Update Ravi on the Q3 vendor audit.\n\n**Outline**\n- Status: 2 of 5 vendors left (Halden, Orrin)\n- Delivery: Wed 22nd\n- Legal: share draft first?\n\n**Draft (email)**\n\nHi Ravi, the audit is nearly done. I'll send it Wednesday the 22nd. Is legal involved?\n",
+      "reply": "Saved the email to out/email.md."
+    },
+    {
+      "name": "trap-invents-facts-and-answers-legal",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts",
+        "regex"
+      ],
+      "output": "Hi Ravi,\n\nThe Q3 vendor audit is not finished: 2 of 5 vendors are left, Halden and Orrin. I will send it by Wednesday the 22nd, and I have already shared the draft with legal so they can review it in parallel. The audit covers 38 contracts and flags 4 renewals due in December.\n\nThanks,\n",
+      "reply": "Saved the email to out/email.md."
+    },
+    {
+      "name": "trap-assumes-legal-answer",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "Hi Ravi,\n\nThe Q3 vendor audit is not finished: 2 of 5 vendors are left, Halden and Orrin. I will send it by Wednesday the 22nd and will share the draft with legal first, as is usual.\n\nThanks,\n",
+      "reply": "Saved the email to out/email.md."
+    },
+    {
+      "name": "trap-marker-in-email",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "Hi Ravi,\n\nThe Q3 vendor audit is not finished yet: 2 of 5 vendors are left, Halden and Orrin. I can send it to you by Wednesday the 22nd. Would you like me to share the draft with legal first? [ASK AUTHOR: does Ravi want legal in yet?]\n\nThanks,\n",
+      "reply": "Saved the email to out/email.md."
+    }
   ]
 }

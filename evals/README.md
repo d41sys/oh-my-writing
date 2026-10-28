@@ -106,6 +106,21 @@ python3 evals/gate.py check evals/results/v-ab-omp --reference-condition variant
 
 Only `skill` (HEAD) and `variant-pre` execute; baseline, competitor and `variant-iso` runs are reused. Verdicts of the old skills against baseline and competitors stay as `variant-iso:<other>` pairs; the pairs against HEAD are judged anew.
 
+### Placebo: does this content help, or does any long prompt?
+
+`--placebo` adds the condition `variant-placebo` (the placebo is an ordinary variant, so the A/B table, `--judge-pairs skill:variant-placebo`, `stats.py` and `gate.py check --reference-condition variant-placebo` work unchanged). For every skill it installs a copy with the same name, description, frontmatter and Markdown file layout, but each file's body is replaced by generic writing advice of about the same word count: whole consecutive sentences from `evals/placebo/generic-advice.md` (our own deliberately unremarkable advice about audience, structure, revision and concision, with none of the skills' methods), stopping where the length is closest to the original, so a body never starts or ends mid-sentence and is off by at most half a sentence. Scripts, assets and every other non-Markdown file are dropped. It controls for "any longer prompt helps": the model sees a skill with the same name, trigger text and size, so a gap between `skill` and `variant-placebo` is attributable to what the skill says, not to having a skill. The placebo is built into `.cache/placebo/<id>/skills`, where `<id>` is a sha256 of the generator version, the generic text and each skill's name, description and per-file word counts; `run.json` records it under `variants.placebo` (`ref` and `placebo: true`, `sha` is that id), and `--resume` redoes placebo runs whose id changed. The name `placebo` is reserved and cannot be given to `--variant`.
+
+`--prereg FILE` pre-registers the decision rule. Before any run the file is copied into the results directory as `prereg.md`, and its sha256 and the UTC time go into `run.json` under `prereg`; `report.md` starts with the pre-registered text, and grading the directory again with `grade.py` keeps it there. On `--resume` a different file is refused (so is registering a file in a directory that already holds runs).
+
+```bash
+cat > /tmp/prereg.md <<'EOF'
+# Pre-registration
+Hypothesis: our skills beat a same-size placebo. Decision: ship only if skill minus placebo is at least +10 points of pass rate overall.
+EOF
+python3 evals/run.py --host omp --repeat 3 --jobs 4 --placebo --prereg /tmp/prereg.md \
+  --judge omp --judge-pairs skill:variant-placebo --out evals/results/v-placebo-omp
+```
+
 ## Case format
 
 ```json
@@ -129,6 +144,20 @@ Only `skill` (HEAD) and `variant-pre` execute; baseline, competitor and `variant
 - Optional `deliverables`: files the agent is asked to write, e.g. `["out/report.md", "out/report.html"]`. `output` stays the primary text file; the grader records in `results.json` which deliverables exist.
 - Optional `judge`: `{"mode": "visual", "render": "out/report.html"}` switches the blind judge for this case to the visual judge (below). `render` must be listed in `deliverables`. `{"mode": "style"}` switches it to the style judge and `{"mode": "reader"}` to the reader judge (both below); neither takes a `render`. Other cases keep the text judge.
 - Optional `style_ref`: the name of one of the case's `files`, the example or guide whose style the output must match. The reader judge is told to judge fit against it; `--validate` rejects a name that is not in `files`.
+- Required `controls`: sample answers that prove the checks work. Each is `{"name", "expect", "fails", "output", "reply", "files"}`:
+
+  ```json
+  {"name": "good", "expect": "pass", "output": "<deliverable text>", "reply": "<final message>"}
+  {"name": "drops-negation", "expect": "fail", "fails": ["preserves"], "output": "...", "reply": "...", "files": {"out/x.html": "..."}}
+  ```
+
+  `name` is unique within the case. `output` is the text written to the case's `output` path, or `null` for "file not written". `reply` is the agent's final message. `files` (optional) are extra workspace files on top of the case's own `files` and `fixtures` (an HTML deliverable, an SVG); relative paths only, never the `output` path. `expect: "pass"` means every check passes. `expect: "fail"` means the grade fails and, for each check type in `fails` (`output_present` counts), at least one check of that type fails: the trap is caught by the check meant for it, not by accident. Every case needs at least one `pass` and one `fail` control. A pass control is a good answer; a fail control is a plausible wrong one (the mistake the case exists for), never an empty string. `--validate` rejects a case without both.
+
+  ```bash
+  python3 evals/grade.py --controls [GLOB]    # GLOB matches case ids (default all); one line per control; exit 1 on any mismatch
+  ```
+
+  The workspace is built by the runner's `make_workspace` (case `files`, `fixtures` verbatim), then the control's `files` and `output` are written, and `grade_case` runs with `open-questions.md` files appended to the reply as in real grading. No run date is set. The `diagrams` check's optional `self_check` needs the user-level `diagram-design` skill and is skipped (passes) when it is not installed; a control must not rely on it.
 
 Check types:
 
@@ -279,6 +308,8 @@ Limits: with 3 to 6 cases per skill the per-skill CIs are wide and approximate, 
 A case passes when all its checks pass. The report gives, per skill, host and condition: the pass rate, the mean score (per run, the share of checks passed, averaged, with the lowest and highest run), the skill-minus-baseline difference, how often the skill was actually loaded, and per-check failure counts; with `--repeat` it also lists each repetition. The checks are mechanical: they catch invented numbers, lost negations, missing markers, leftover stock phrases, leaked context, missed facts, wrong or invented diagram content and unsafe HTML. They do not measure prose quality, argument strength, voice or visual design; the judge gives a preference, not proof. Case counts are small and repetitions of one case are not independent cases, so treat differences of one or two cases as noise.
 
 A host error (the CLI exits or times out without writing the output file) is shown as `ERROR`, not `FAIL`. The (case, repetition) is then left out of both conditions for that host, so the difference always compares the same runs.
+
+Read `skill` against `variant-placebo` before reading it against `baseline`: if the placebo scores about as well, the gain came from having a longer prompt, not from the skill's content. Fix the decision threshold in a `--prereg` file before the first run, so the number is not chosen after the results are known.
 
 Claude Code must be able to run `claude -p` non-interactively with its configured model. If it reports `unrecognized_model` (a gateway model name its catalog does not know), update Claude Code or map the name in its settings, or pass a known model with `--claude-model`; until then every Claude run is a host error.
 

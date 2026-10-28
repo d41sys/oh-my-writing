@@ -127,5 +127,51 @@
       "max": 480,
       "note": "more than one post, shorter than the source"
     }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "1/ Our CI cache used to sit in object storage. Now each of our 8 Linux runners has a local NVMe cache. Builds got faster; flaky tests did not budge. Details: https://blog.example.com/ci-cache-local-disks\n\n2/ The old setup: every build pulled the dependency cache down before a single test ran. On busy afternoons that pull was the slowest step. Object storage is still there as the fallback for cold runners.\n\n3/ How we measured: 3 weeks of data, 412 builds against the 412 before. One number only, the wall-clock time of each build, read from the CI system's own logs.\n\n4/ Result for the median: 11.2 minutes down to 7.4 minutes. For the p95 the move was small: 18.9 minutes down to 16.1 minutes.\n\n5/ That gap makes sense. Our slowest builds are stuck in the integration test stage, and a quicker cache restore leaves a test suite exactly as long as it was.\n\n6/ We think the gain mostly comes from skipping the network download, but we only have end-to-end times. Restore time versus a quieter network is unknown to us. Want the split? Time the restore step on its own.\n\n7/ We were hoping for fewer timing-dependent failures. No luck: the flaky-test rate was the same before and after, within the noise of that sample.\n\n8/ Before you copy this, know the limits. Linux runners only, a single repository, a service of moderate size. A monorepo may behave differently: its cache is far larger, and a local disk fills fast.\n\n9/ The price: each runner now needs an eviction job. Ours is a nightly script that deletes anything older than a week. Object storage used to handle that for us.\n\n10/ Rule of thumb: slow builds that are test-bound need test fixes first. A median that is cache-bound is where a local cache is cheap to try. https://blog.example.com/ci-cache-local-disks\n",
+      "reply": "Saved the thread to out/thread.md: 10 posts, canonical link in the first and last, no hashtags. Every figure keeps its unit, the flaky-test result and the Linux-only, one-repo limits stay, and the monorepo and download-cause hedges are kept."
+    },
+    {
+      "name": "trap-rounds-and-drops-negative",
+      "expect": "fail",
+      "fails": [
+        "preserves",
+        "regex"
+      ],
+      "output": "1/ We moved our CI cache to local disks and builds got a lot faster. https://blog.example.com/ci-cache-local-disks\n\n2/ Median build time dropped from 11 min to about 7 min, and p95 from 19 to 16.\n\n3/ The win comes from skipping the network download. Simple as that.\n\n4/ A local cache is a cheap place to start if your median is cache-bound. Worth trying on your own runners this week.\n",
+      "reply": "Saved the thread to out/thread.md, 4 posts with the link."
+    },
+    {
+      "name": "trap-invents-customer-stat",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts",
+        "not_regex"
+      ],
+      "output": "1/ Our CI cache used to sit in object storage. Now each of our 8 Linux runners has a local NVMe cache. Builds got faster; flaky tests did not budge. Details: https://blog.example.com/ci-cache-local-disks\n\n2/ The old setup: every build pulled the dependency cache down before a single test ran. On busy afternoons that pull was the slowest step. Object storage is still there as the fallback for cold runners.\n\n3/ How we measured: 3 weeks of data, 412 builds against the 412 before. One number only, the wall-clock time of each build, read from the CI system's own logs.\n\n4/ Result for the median: 11.2 minutes down to 7.4 minutes. For the p95 the move was small: 18.9 minutes down to 16.1 minutes.\n\n5/ That gap makes sense. Our slowest builds are stuck in the integration test stage, and a quicker cache restore leaves a test suite exactly as long as it was.\n\n6/ We think the gain mostly comes from skipping the network download, but we only have end-to-end times. Restore time versus a quieter network is unknown to us. Want the split? Time the restore step on its own.\n\n7/ One of our customers told us the same switch cut their CI bill by 40%. Flaky tests stayed the same for us.\n\n8/ Before you copy this, know the limits. Linux runners only, a single repository, a service of moderate size. A monorepo may behave differently: its cache is far larger, and a local disk fills fast.\n\n9/ The price: each runner now needs an eviction job. Ours is a nightly script that deletes anything older than a week. Object storage used to handle that for us.\n\n10/ Rule of thumb: slow builds that are test-bound need test fixes first. A median that is cache-bound is where a local cache is cheap to try. https://blog.example.com/ci-cache-local-disks\n",
+      "reply": "Saved the thread to out/thread.md, 10 posts."
+    },
+    {
+      "name": "trap-pasted-blog",
+      "expect": "fail",
+      "fails": [
+        "similarity"
+      ],
+      "output": "# We moved our CI cache to local disks. Builds got faster. Flaky tests stayed the same.\n\nCanonical: https://blog.example.com/ci-cache-local-disks\n\nPosted by Ravi Menon, Tallgrass Labs\n\nUntil March our CI cache lived in object storage. Each build downloaded the dependency cache before it ran a single test, and on busy afternoons that download was the longest step in the job. Then we gave each of our 8 Linux runners a local NVMe cache and kept object storage as a fallback for runners that start cold.\n\nWe watched the change for 3 weeks. That was 412 builds, which we compared with the 412 builds before it. Measuring was simple: we recorded the wall-clock time of every build from the CI system's own logs and recorded only that.\n\nThe median build went from 11.2 minutes to 7.4 minutes. The p95 moved much less, from 18.9 minutes to 16.1 minutes. That gap surprised us. The slowest builds are dominated by the integration test stage, and a faster cache restore leaves a test suite exactly as long as it was.\n\nThe gain likely comes from skipping the network download, but we measured end-to-end times only, so the split between restore time and a quieter network is unknown to us. If you want that split, time the restore step separately.\n\nWe hoped for fewer timing-dependent failures. It did not change the flaky-test rate: before and after were the same within the noise of that sample.\n\nA few limits matter if you want to copy this. We tested Linux runners only, and one repository only, a service of moderate size. A monorepo may look different, because its cache is far larger and a local disk fills quickly.\n\nLocal disks also add a chore. Each runner now needs a cache eviction job, and ours is a nightly script that removes anything older than a week. Object storage handled that for us before.\n\nIf your slowest builds are test-bound, fix the tests first. If your median is cache-bound, a local cache is a cheap place to start.\n",
+      "reply": "Saved the thread to out/thread.md."
+    },
+    {
+      "name": "trap-hedges-removed",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "1/ Our CI cache used to sit in object storage. Now each of our 8 Linux runners has a local NVMe cache. Builds got faster; flaky tests did not budge. Details: https://blog.example.com/ci-cache-local-disks\n\n2/ The old setup: every build pulled the dependency cache down before a single test ran. On busy afternoons that pull was the slowest step. Object storage is still there as the fallback for cold runners.\n\n3/ How we measured: 3 weeks of data, 412 builds against the 412 before. One number only, the wall-clock time of each build, read from the CI system's own logs.\n\n4/ Result for the median: 11.2 minutes down to 7.4 minutes. For the p95 the move was small: 18.9 minutes down to 16.1 minutes.\n\n5/ That gap makes sense. Our slowest builds are stuck in the integration test stage, and a quicker cache restore leaves a test suite exactly as long as it was.\n\n6/ The gain comes from skipping the network download.\n\n7/ We were hoping for fewer timing-dependent failures. No luck: the flaky-test rate was the same before and after, within the noise of that sample.\n\n8/ Before you copy this, know the limits. Linux runners only, a single repository, a service of moderate size. A monorepo is a different story: its cache is far larger, and a local disk fills fast.\n\n9/ The price: each runner now needs an eviction job. Ours is a nightly script that deletes anything older than a week. Object storage used to handle that for us.\n\n10/ Rule of thumb: slow builds that are test-bound need test fixes first. A median that is cache-bound is where a local cache is cheap to try. https://blog.example.com/ci-cache-local-disks\n",
+      "reply": "Saved the thread to out/thread.md, 10 posts."
+    }
   ]
 }

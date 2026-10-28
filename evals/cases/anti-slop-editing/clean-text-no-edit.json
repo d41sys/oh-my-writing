@@ -53,5 +53,42 @@
         "nothing needed"
       ]
     }
+  ],
+  "controls": [
+    {
+      "name": "good-no-edit",
+      "expect": "pass",
+      "output": "We moved the invoice export to the new queue on Tuesday. It took about three hours, mostly because the old job held a lock on the orders table until 02:10. Nobody lost data, but 41 invoices went out twice; Priya sent the customers a correction on Wednesday.\n\nI think the retry limit of 5 is too high. It hid the lock problem for a week. I'd drop it to 3 and let the alert fire, but that's Dmitri's call, since he owns the pager rotation.\n\nThe estimator in the report is robust to outliers (breakdown point 0.5), so the median delay of 38 minutes isn't skewed by the two runs that stalled overnight.\n",
+      "reply": "No justified edit. I read notes.md for AI-sounding phrasing and found none: the opinions are first-person and attributed (\"I think\", \"that's Dmitri's call\"), and \"robust\" is a technical term backed by the breakdown point. I left it as is and saved the same text to out/notes.md."
+    },
+    {
+      "name": "trap-over-edits-and-drops-hedge",
+      "expect": "fail",
+      "fails": [
+        "similarity",
+        "preserves"
+      ],
+      "output": "We moved the invoice export to the new queue on Tuesday. The migration took about three hours, mainly because the old job held a lock on the orders table until 02:10. No data was lost, but 41 invoices were sent twice, and Priya sent customers a correction on Wednesday.\n\nThe retry limit of 5 is too high. It hid the lock problem for a week. Drop it to 3 and let the alert fire.\n\nThe estimator in the report is resistant to outliers, so the median delay of 38 minutes is not skewed by the two runs that stalled overnight.\n",
+      "reply": "Cleaned up notes.md: tightened the phrasing, removed the first-person hedges and made the recommendation more direct. Saved to out/notes.md."
+    },
+    {
+      "name": "trap-edits-but-claims-nothing-changed-wrongly",
+      "expect": "fail",
+      "fails": [
+        "contains_any"
+      ],
+      "output": "We moved the invoice export to the new queue on Tuesday. It took about three hours, mostly because the old job held a lock on the orders table until 02:10. Nobody lost data, but 41 invoices went out twice; Priya sent the customers a correction on Wednesday.\n\nI think the retry limit of 5 is too high. It hid the lock problem for a week. I'd drop it to 3 and let the alert fire, but that's Dmitri's call, since he owns the pager rotation.\n\nThe estimator in the report is robust to outliers (breakdown point 0.5), so the median delay of 38 minutes isn't skewed by the two runs that stalled overnight.\n",
+      "reply": "Cleaned up notes.md and saved the polished version to out/notes.md. It reads much better now."
+    },
+    {
+      "name": "trap-adds-marker-and-number",
+      "expect": "fail",
+      "fails": [
+        "markers",
+        "no_added_facts"
+      ],
+      "output": "We moved the invoice export to the new queue on Tuesday. It took about three hours, mostly because the old job held a lock on the orders table until 02:10. Nobody lost data, but 41 invoices went out twice; Priya sent the customers a correction on Wednesday.\n\nI think the retry limit of 5 is too high. It hid the lock problem for a week, about 9 days in total. I'd drop it to 3 and let the alert fire, but that's Dmitri's call, since he owns the pager rotation.\n\nThe estimator in the report is robust to outliers (breakdown point 0.5) [VERIFY: confirm the 0.5 figure], so the median delay of 38 minutes isn't skewed by the two runs that stalled overnight.\n",
+      "reply": "No justified edit beyond one flag: I marked the breakdown point for checking and clarified how long the retry limit hid the problem. Saved to out/notes.md."
+    }
   ]
 }

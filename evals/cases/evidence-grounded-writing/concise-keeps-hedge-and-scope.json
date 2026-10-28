@@ -59,5 +59,59 @@
       "source": "draft.md",
       "min": 0.1
     }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "In our laboratory experiments, Rilvastat may reduce tumour growth in mice: 24 mice given 10 mg/kg daily for 28 days. It has not been tested in humans.\n",
+      "reply": "Saved the tighter paragraph to out/tight.md. I cut the filler and the stacked hedges to a single \"may\", and kept the mice, the dose and duration, and the not-tested-in-humans limit."
+    },
+    {
+      "name": "trap-stronger-verb",
+      "expect": "fail",
+      "fails": [
+        "regex",
+        "not_regex"
+      ],
+      "output": "Rilvastat reduces tumour growth in mice (24 mice, 10 mg/kg daily for 28 days) and has not been tested in humans.\n",
+      "reply": "Saved to out/tight.md."
+    },
+    {
+      "name": "trap-drops-human-limit",
+      "expect": "fail",
+      "fails": [
+        "contains"
+      ],
+      "output": "In laboratory experiments, Rilvastat may reduce tumour growth in mice: 24 mice given 10 mg/kg daily for 28 days showed the effect.\n",
+      "reply": "Saved to out/tight.md."
+    },
+    {
+      "name": "trap-drops-numbers",
+      "expect": "fail",
+      "fails": [
+        "preserves"
+      ],
+      "output": "Rilvastat may reduce tumour growth in mice, though it has not been tested in humans and the result comes from laboratory experiments only.\n",
+      "reply": "Saved to out/tight.md."
+    },
+    {
+      "name": "trap-drops-mice",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "Rilvastat may reduce tumour growth in a laboratory study of 24 animals given 10 mg/kg daily for 28 days, but it has not been tested in humans.\n",
+      "reply": "Saved to out/tight.md."
+    },
+    {
+      "name": "trap-keeps-filler",
+      "expect": "fail",
+      "fails": [
+        "not_contains"
+      ],
+      "output": "It is important to note that, on the basis of the results obtained in our laboratory, Rilvastat may reduce tumour growth in mice (24 mice, 10 mg/kg daily for 28 days) but has not been tested in humans.\n",
+      "reply": "Saved to out/tight.md."
+    }
   ]
 }

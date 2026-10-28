@@ -57,5 +57,40 @@
   "judge": {
     "mode": "reader"
   },
-  "style_ref": "statement-sample.md"
+  "style_ref": "statement-sample.md",
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "My doctoral work began with 412 ship's logbooks from the Brightwater Company archive, 19 of which have no date because their covers were lost or their pages rebound. Archivists date such books by eye, and my first attempt, which sorted pages by the shape of their letters, reached 78% on the decade and kept confusing neighbouring decades. The turn came when I stopped dating pages and began dating scribes. Six hands wrote 83% of the logs, and the company's payroll book gives each clerk's start and leaving years, so once a hand is dated, its logs inherit the window. Seventeen of the 19 undated logs now fall within about ten years, and on 60 dated logs held out as a test the method was right 54 times. Two logs stay ambiguous, because two clerks overlap from 1811 to 1816. At Halden I will test whether the idea works on the Corvane Company archive, about 900 logs, where no payroll book survives.\n",
+      "reply": "Saved paragraph 2 to out/rs-para2.md. I left out the watermark and handwriting-recognition dead ends and the transcription hours."
+    },
+    {
+      "name": "trap-invents-figure",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "My doctoral work began with 412 ship's logbooks from the Brightwater Company archive, 19 of which have no date because their covers were lost or their pages rebound. Archivists date such books by eye, and my first attempt, which sorted pages by the shape of their letters, reached 78% on the decade and kept confusing neighbouring decades. The turn came when I stopped dating pages and began dating scribes. Six hands wrote 83% of the logs, and the company's payroll book gives each clerk's start and leaving years, so once a hand is dated, its logs inherit the window. Seventeen of the 19 undated logs now fall within about ten years, and on 60 dated logs held out as a test the method was right 54 times, and 92% of its other dates held. Two logs stay ambiguous, because two clerks overlap from 1811 to 1816. At Halden I will test whether the idea works on the Corvane Company archive, about 900 logs, where no payroll book survives.\n",
+      "reply": "Saved paragraph 2 to out/rs-para2.md."
+    },
+    {
+      "name": "trap-hides-unresolved-two",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "My doctoral work began with 412 ship's logbooks from the Brightwater Company archive, 19 of which have no date because their covers were lost or their pages rebound. Archivists date such books by eye, and my first attempt, which sorted pages by the shape of their letters, reached 78% on the decade and kept confusing neighbouring decades. The turn came when I stopped dating pages and began dating scribes. Six hands wrote 83% of the logs, and the company's payroll book gives each clerk's start and leaving years, so once a hand is dated, its logs inherit the window. Seventeen of the 19 undated logs now fall within about ten years, and on 60 dated logs held out as a test the method was right 54 times. At Halden I will test whether the idea works on the Corvane Company archive, about 900 logs, where no payroll book survives.\n",
+      "reply": "Saved paragraph 2 to out/rs-para2.md."
+    },
+    {
+      "name": "trap-hides-next-step",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "My doctoral work began with 412 ship's logbooks from the Brightwater Company archive, 19 of which have no date because their covers were lost or their pages rebound. Archivists date such books by eye, and my first attempt, which sorted pages by the shape of their letters, reached 78% on the decade and kept confusing neighbouring decades. The turn came when I stopped dating pages and began dating scribes. Six hands wrote 83% of the logs, and the company's payroll book gives each clerk's start and leaving years, so once a hand is dated, its logs inherit the window. Seventeen of the 19 undated logs now fall within about ten years, and on 60 dated logs held out as a test the method was right 54 times. Two logs stay ambiguous, because two clerks overlap from 1811 to 1816. At Halden I will extend this work to a larger body of material.\n",
+      "reply": "Saved paragraph 2 to out/rs-para2.md."
+    }
+  ]
 }

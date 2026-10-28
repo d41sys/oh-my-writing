@@ -90,5 +90,44 @@
   ],
   "judge": {
     "mode": "style"
-  }
+  },
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "Hi Marta,\n\nThe checkout launch moves from 3 November to 10 November. In testing, VAT came out wrong by 1 cent on orders that mix two VAT rates, 11 of our 240 test orders. The fix is in, but it needs one more full test pass, and that takes 4 working days.\n\nThe fee stays at the agreed fixed 4,800 EUR. The delay is on me, so there is no extra charge. You don't need to change anything in your product data.\n\nTwo things from you:\n\n1. Staging is ready: https://staging.lindqvistceramics.example/checkout. Please place 5 test orders there by Wednesday 28 October, and make at least one basket hold a 19% item and a 7% item. Tell me if anything looks off.\n2. Decide whether we keep guest checkout. I'd keep it. Removing it would not save any build time.\n\nJonas\n",
+      "reply": "Saved the email to out/email.md. It is about 150 words and opens with the new date.",
+      "files": {}
+    },
+    {
+      "name": "trap-stock-opener-and-closer",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "Hi Marta,\n\nI hope this email finds you well. I wanted to reach out to give you a quick update on the checkout rebuild.\n\nUnfortunately the launch moves from 3 November to 10 November. In testing, VAT came out wrong by 1 cent on orders that mix two VAT rates, 11 of 240 test orders. The fix is in, but it needs another full test pass of 4 working days.\n\nThe fee stays at the agreed fixed 4,800 EUR, with no extra charge for the delay.\n\nCould you place 5 test orders on staging by Wednesday 28 October? The link is https://staging.lindqvistceramics.example/checkout. Please also decide whether to keep guest checkout. I recommend keeping it.\n\nI sincerely apologize for any inconvenience this may cause, and thank you so much for your patience and understanding. Don't hesitate to reach out with any questions.\n\nBest regards,\nJonas\n",
+      "reply": "Saved the email to out/email.md.",
+      "files": {}
+    },
+    {
+      "name": "trap-invented-figure",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "Hi Marta,\n\nThe checkout launch moves from 3 November to 10 November. In testing, VAT came out wrong by 1 cent on orders that mix two VAT rates, 11 of our 240 test orders. The fix is in, but it needs one more full test pass, and that takes 4 working days (about 9% of the build budget).\n\nThe fee stays at the agreed fixed 4,800 EUR. The delay is on me, so there is no extra charge. You don't need to change anything in your product data.\n\nOn top of that, about 30 orders a week go through this checkout, so the fix matters. Two things from you:\n\n1. Staging is ready: https://staging.lindqvistceramics.example/checkout. Please place 5 test orders there by Wednesday 28 October, and make at least one basket hold a 19% item and a 7% item. Tell me if anything looks off.\n2. Decide whether we keep guest checkout. I'd keep it. Removing it would not save any build time.\n\nJonas\n",
+      "reply": "Saved the email to out/email.md.",
+      "files": {}
+    },
+    {
+      "name": "trap-gap-marker-in-file",
+      "expect": "fail",
+      "fails": [
+        "markers"
+      ],
+      "output": "Hi Marta,\n\nThe checkout launch moves from 3 November to 10 November. In testing, VAT came out wrong by 1 cent on orders that mix two VAT rates, 11 of our 240 test orders. The fix is in, but it needs one more full test pass, and that takes 4 working days.\n\nThe fee stays at the agreed fixed 4,800 EUR. The delay is on me, so there is no extra charge. You don't need to change anything in your product data.\n\nTwo things from you:\n\n1. Staging is ready: https://staging.lindqvistceramics.example/checkout. Please place 5 test orders there by Wednesday 28 October, and make at least one basket hold a 19% item and a 7% item. Tell me if anything looks off.\n2. Decide whether we keep guest checkout. I'd keep it. Removing it would not save any build time.\n\n[ASK AUTHOR: sign off with phone number?]\nJonas\n",
+      "reply": "Saved the email to out/email.md, with one question for you inside it.",
+      "files": {}
+    }
+  ]
 }

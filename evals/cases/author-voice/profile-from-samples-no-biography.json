@@ -56,5 +56,41 @@
         "citations"
       ]
     }
+  ],
+  "controls": [
+    {
+      "name": "good-profile",
+      "expect": "pass",
+      "output": "# Voice profile: Ola, Spoke & Chain blog\n\n**Confidence: low.** Four short posts (post-1 to post-4), one blog, one audience (readers and members). Traits below are observed in those posts only. Ratings: strong = in all four posts, moderate = in two or three, weak = in one.\n\n## Observed traits\n\n| Trait | Strength | Evidence | Does not mean |\n|---|---|---|---|\n| Very short, plain sentences | strong | \"That is the whole story.\" (post-1); \"The stand stays.\" (post-2); \"It will not stay tidy.\" (post-3) | Not clipped or cold; the sentences carry dry humor |\n| Dry \"which is fine\" aside after a mishap | moderate | \"We replaced it, which is fine.\" (post-1); \"It leans, which is fine\" (post-2); \"The heating is now back, which is fine.\" (post-4) | Not a stock catchphrase to put in every post |\n| Understated humor that turns a failure into a small joke | strong | \"which is a kind of progress\" (post-3); \"which is when heating fails\" (post-4) | Not sarcasm and not jokes about members |\n| First person plural, \"we\" | strong | \"We fixed three bikes before lunch\" (post-4) | Not a company-announcement voice |\n| Closing line that states the outcome flatly | moderate | \"The drawer is tidy. It will not stay tidy.\" (post-3) | Not a call to action or a moral |\n| Parenthetical aside, rare | weak | \"(it was not the rim's fault)\" (post-2) | Not a habit to copy into every paragraph |\n\n## Habits to keep out\nNo exclamation marks, no calls to action and no hype appear in any post, so a writer should not add them.\n\n## Stated preference (not observed)\nOla wants to sound a bit more formal in funding proposals. No funding proposal is among the samples, so nothing here shows how that register would sound in Ola's hands. Treat it as a suggested extension: keep the short sentences and the plain outcome statements, and ask Ola for a first proposal paragraph before settling the register.\n\n## What would raise confidence\nMore posts in other registers, and any draft of Ola's that was edited by Ola.\n",
+      "reply": "Saved the voice profile to out/voice-profile.md. Confidence is low: four short posts from one blog. Each trait has quoted evidence from post-1 to post-4, a strength rating and a note on what it does not mean. The wish for a more formal register is kept in its own section as a stated preference, not mixed into the observed traits, and nothing about your background is assumed."
+    },
+    {
+      "name": "trap-invents-biography",
+      "expect": "fail",
+      "fails": [
+        "not_regex",
+        "not_contains"
+      ],
+      "output": "# Voice profile: Ola, Spoke & Chain blog\n\nOla is a seasoned writer with 12 years of experience running a bike cooperative and was born in a small town where cycling was a way of life.\n\n**Confidence: low.** Four short posts (post-1 to post-4), one blog, one audience (readers and members). Traits below are observed in those posts only. Ratings: strong = in all four posts, moderate = in two or three, weak = in one.\n\n## Observed traits\n\n| Trait | Strength | Evidence | Does not mean |\n|---|---|---|---|\n| Very short, plain sentences | strong | \"That is the whole story.\" (post-1); \"The stand stays.\" (post-2); \"It will not stay tidy.\" (post-3) | Not clipped or cold; the sentences carry dry humor |\n| Dry \"which is fine\" aside after a mishap | moderate | \"We replaced it, which is fine.\" (post-1); \"It leans, which is fine\" (post-2); \"The heating is now back, which is fine.\" (post-4) | Not a stock catchphrase to put in every post |\n| Understated humor that turns a failure into a small joke | strong | \"which is a kind of progress\" (post-3); \"which is when heating fails\" (post-4) | Not sarcasm and not jokes about members |\n| First person plural, \"we\" | strong | \"We fixed three bikes before lunch\" (post-4) | Not a company-announcement voice |\n| Closing line that states the outcome flatly | moderate | \"The drawer is tidy. It will not stay tidy.\" (post-3) | Not a call to action or a moral |\n| Parenthetical aside, rare | weak | \"(it was not the rim's fault)\" (post-2) | Not a habit to copy into every paragraph |\n\n## Habits to keep out\nNo exclamation marks, no calls to action and no hype appear in any post, so a writer should not add them.\n\n## Stated preference (not observed)\nOla wants to sound a bit more formal in funding proposals. No funding proposal is among the samples, so nothing here shows how that register would sound in Ola's hands. Treat it as a suggested extension: keep the short sentences and the plain outcome statements, and ask Ola for a first proposal paragraph before settling the register.\n\n## What would raise confidence\nMore posts in other registers, and any draft of Ola's that was edited by Ola.\n",
+      "reply": "Saved the voice profile to out/voice-profile.md, with a short background so a writer can picture Ola."
+    },
+    {
+      "name": "trap-formal-wish-as-observed-trait",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "# Voice profile: Ola, Spoke & Chain blog\n\n**Confidence: low.** Four short posts (post-1 to post-4), one blog.\n\n| Trait | Strength | Evidence |\n|---|---|---|\n| Very short, plain sentences | strong | \"That is the whole story.\" (post-1); \"The stand stays.\" (post-2) |\n| Dry \"which is fine\" aside | moderate | \"We replaced it, which is fine.\" (post-1) |\n| Formal, measured register | moderate | Suits funding proposals and the cooperative's formal readers |\n| First person plural, \"we\" | strong | \"We fixed three bikes before lunch\" (post-4) |\n",
+      "reply": "Saved the voice profile to out/voice-profile.md. It covers short sentences, the dry aside, the formal register and the \"we\" voice."
+    },
+    {
+      "name": "trap-no-evidence-no-ratings",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "# Voice profile: Ola\n\nOla writes warm, concise, witty posts for the cooperative. The tone is friendly and understated, with a gentle sense of humor and a focus on community. Use short sentences and keep things light. In funding proposals, aim for a more formal tone.\n",
+      "reply": "Saved the voice profile to out/voice-profile.md as a short summary a writer can use right away."
+    }
   ]
 }

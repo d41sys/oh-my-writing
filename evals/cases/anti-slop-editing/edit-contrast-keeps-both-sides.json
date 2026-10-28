@@ -1,0 +1,114 @@
+{
+  "id": "anti-slop-editing/edit-contrast-keeps-both-sides",
+  "skill": "anti-slop-editing",
+  "description": "Depot memo with a denied-then-asserted pair carrying a value judgment ('isn't about money; it's about the crew deserving ...'), a template concession whose second half is a still-vague limitation, and a time-sense 'While'. The contrast becomes plain sentences keeping both propositions and 'deserving'; the time 'While' stays; the vague 'retention remains a challenge' is not made specific with invented detail and is reported as still vague.",
+  "prompt": "Clean up memo.md, it sounds machine-written. It's going to the depot crews. Save the edited version to out/memo.md.",
+  "files": {
+    "memo.md": "Subject: Night schedule change\n\nThe new night schedule isn't about saving money; it's about the crew deserving a safe drive home after midnight. We will not cut any hours.\n\nWhile the pilot was encouraging, retention remains a challenge. While the nightly sync ran, I counted 31 late arrivals at the north depot.\n"
+  },
+  "output": "out/memo.md",
+  "checks": [
+    {
+      "type": "preserves",
+      "source": "memo.md",
+      "categories": [
+        "numbers",
+        "negations"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)\\b(?:not|no|n.t|never)\\b[^.\\n]{0,60}\\bmoney\\b|\\bmoney\\b[^.\\n]{0,60}\\b(?:not|no|n.t|never)\\b",
+      "note": "the denied half (the schedule is not for saving money) is a proposition of its own"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)safe drive home",
+      "note": "the asserted half survives"
+    },
+    {
+      "type": "contains",
+      "values": [
+        "deserv",
+        "While the nightly sync ran"
+      ],
+      "note": "the value judgment survives and the time-sense 'While' is left alone"
+    },
+    {
+      "type": "slop_absent",
+      "patterns": [
+        "denied-then-asserted",
+        "about-x-about-y",
+        "false-concession"
+      ]
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)retention",
+      "note": "the limitation is kept"
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "citations",
+        "urls"
+      ]
+    },
+    {
+      "type": "markers",
+      "min": 0,
+      "max": 0,
+      "target": "output"
+    },
+    {
+      "type": "contains_any",
+      "target": "reply",
+      "values": [
+        "vague",
+        "residual",
+        "unspecific",
+        "not specific",
+        "nonspecific",
+        "still general"
+      ],
+      "note": "'retention remains a challenge' names no cause or size; after the edit it is still vague, so the reply lists it instead of calling it fixed"
+    }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "Subject: Night schedule change\n\nThe new night schedule gives the crew a safe drive home after midnight, which they deserve. It was not meant to save money. We will not cut any hours.\n\nThe pilot was encouraging, but retention remains a challenge. While the nightly sync ran, I counted 31 late arrivals at the north depot.\n",
+      "reply": "Rewrote the \"isn't about money; it's about\" pair as plain sentences that keep both halves and the point that the crew deserve a safe drive home. Dropped the \"While ..., ...\" template for the pilot. Left the \"While the nightly sync ran\" sentence alone: it is about time.\n\nStill vague, listed as a residual rather than fixed: \"retention remains a challenge\" (and \"the pilot was encouraging\"). The text does not say what the retention problem is or what made the pilot encouraging. [ASK AUTHOR: what is the retention problem, and what made the pilot encouraging?]"
+    },
+    {
+      "name": "trap-drops-denied-half-and-judgment",
+      "expect": "fail",
+      "fails": [
+        "regex",
+        "contains"
+      ],
+      "output": "Subject: Night schedule change\n\nThe new night schedule gives the crew a safe drive home after midnight. We will not cut any hours.\n\nThe pilot was encouraging, but retention remains a challenge. While the nightly sync ran, I counted 31 late arrivals at the north depot.\n",
+      "reply": "Simplified the contrast into a single direct claim. Still vague, listed as residual: \"retention remains a challenge\"."
+    },
+    {
+      "name": "trap-invents-specifics",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "Subject: Night schedule change\n\nThe new night schedule gives the crew a safe drive home after midnight, which they deserve. It was not meant to save money. We will not cut any hours.\n\nThe pilot cut turnover from 22% to 15%, but retention remains a challenge. While the nightly sync ran, I counted 31 late arrivals at the north depot.\n",
+      "reply": "Made the vague pilot sentence specific. Still vague, listed as residual: \"retention remains a challenge\"."
+    },
+    {
+      "name": "trap-leaves-contrast",
+      "expect": "fail",
+      "fails": [
+        "slop_absent"
+      ],
+      "output": "Subject: Night schedule change\n\nThe new night schedule isn't about saving money; it's about the crew deserving a safe drive home after midnight. We will not cut any hours.\n\nWhile the pilot was encouraging, retention remains a challenge. While the nightly sync ran, I counted 31 late arrivals at the north depot.\n",
+      "reply": "Reviewed the memo. Still vague, listed as residual: \"retention remains a challenge\"."
+    }
+  ]
+}

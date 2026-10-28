@@ -92,5 +92,44 @@
   ],
   "judge": {
     "mode": "style"
-  }
+  },
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "In September I replaced our daily 15-minute standup with a written update in Slack, due by 10:00, and ran it for 4 weeks. I manage a team of 9 in Lisbon.\n\nTeam meetings dropped from 5 a week to 2, planning and the retro. That part I expected.\n\nThe costs were less obvious. Two of the nine told me they missed the standup. One said it had been the only time she heard what the backend people were doing, and a Slack message does not give her that.\n\nBlocked work also surfaced more slowly. The median time between someone marking a ticket \"blocked\" and someone replying went from 1 hour to 3 hours in week 1. It came back to 1.5 hours by week 4, after we added a \"blocked\" tag so those messages stopped getting lost in the stream.\n\nWe kept the written updates. We also added an optional 10-minute call on Thursdays, mostly for the two people who missed the old one.\n\nThis was one team in one time zone. I am not claiming it works anywhere else.\n",
+      "reply": "Saved the post to out/post.md. It keeps the downside (two of nine missed the standup, the slower replies in week 1) and the one-team, one-time-zone limit. No hashtags and no call to comment.",
+      "files": {}
+    },
+    {
+      "name": "trap-hashtags-and-engagement-bait",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "In September I replaced our daily 15-minute standup with a written update in Slack, due by 10:00, and ran it for 4 weeks. I manage a team of 9 in Lisbon.\n\nTeam meetings dropped from 5 a week to 2, planning and the retro. That part I expected.\n\nThe costs were less obvious. Two of the nine told me they missed the standup. One said it had been the only time she heard what the backend people were doing, and a Slack message does not give her that.\n\nBlocked work also surfaced more slowly. The median time between someone marking a ticket \"blocked\" and someone replying went from 1 hour to 3 hours in week 1. It came back to 1.5 hours by week 4, after we added a \"blocked\" tag so those messages stopped getting lost in the stream.\n\nWe kept the written updates. We also added an optional 10-minute call on Thursdays, mostly for the two people who missed the old one.\n\nStandups are dead and every team should try this. What do you think? Drop a comment below and tell me how your team runs meetings.\n\n#remotework #engineeringmanagement #leadership\n",
+      "reply": "Saved the post to out/post.md.",
+      "files": {}
+    },
+    {
+      "name": "trap-drops-downside-and-overgeneralises",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "Meetings are broken, and we fixed ours.\n\nIn September I replaced our daily 15-minute standup with a written update in Slack, due by 10:00, for 4 weeks. Team meetings dropped from 5 a week to 2. Blocked work was back to a quick reply by week 4, after we added a \"blocked\" tag. Everyone loved it.\n\nWe kept the written updates and added an optional 10-minute call on Thursdays. If you run a team, you should do the same. It saves hours and keeps people focused on the work that matters.\n",
+      "reply": "Saved the post to out/post.md.",
+      "files": {}
+    },
+    {
+      "name": "trap-invented-metric",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "In September I replaced our daily 15-minute standup with a written update in Slack, due by 10:00, and ran it for 4 weeks. I manage a team of 9 in Lisbon.\n\nTeam meetings dropped from 5 a week to 2, planning and the retro. That part I expected, and our sprint velocity rose by 18%.\n\nThe costs were less obvious. Two of the nine told me they missed the standup. One said it had been the only time she heard what the backend people were doing, and a Slack message does not give her that.\n\nBlocked work also surfaced more slowly. The median time between someone marking a ticket \"blocked\" and someone replying went from 1 hour to 3 hours in week 1. It came back to 1.5 hours by week 4, after we added a \"blocked\" tag so those messages stopped getting lost in the stream.\n\nWe kept the written updates. We also added an optional 10-minute call on Thursdays, mostly for the two people who missed the old one.\n\nThis was one team in one time zone. I am not claiming it works anywhere else.\n",
+      "reply": "Saved the post to out/post.md.",
+      "files": {}
+    }
+  ]
 }

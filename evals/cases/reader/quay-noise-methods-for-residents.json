@@ -64,5 +64,40 @@
   "judge": {
     "mode": "reader"
   },
-  "style_ref": "newsletter-sample.md"
+  "style_ref": "newsletter-sample.md",
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "**How we measured the ships**\n\nFor 28 days, from 14 April to 11 May, we kept sound meters running at five places along the quay frontage, 1.5 m above the ground. To know which noise was ships, we took each ship call from the harbour's tracking records, 64 in all, and compared it with the quarter-hours around its arrival or departure, allowing 10 minutes either way. We also measured ordinary road traffic for 48 hours on 2 and 3 May, when no ships called. We left out windy periods and any time with rain, which touched at least seven of the 28 days.\n",
+      "reply": "Saved the paragraph to out/methods-lay.md. I left out the night results, the guideline comparison and the phone-app idea; they belong in the results."
+    },
+    {
+      "name": "trap-invents-figure",
+      "expect": "fail",
+      "fails": [
+        "no_added_facts"
+      ],
+      "output": "**How we measured the ships**\n\nFor 28 days, from 14 April to 11 May, we kept sound meters running at five places along the quay frontage, 1.5 m above the ground, calibrated to within 0.5 dB. To know which noise was ships, we took each ship call from the harbour's tracking records, 64 in all, and compared it with the quarter-hours around its arrival or departure, allowing 10 minutes either way. We also measured ordinary road traffic for 48 hours on 2 and 3 May, when no ships called. We left out windy periods and any time with rain, which touched at least seven of the 28 days.\n",
+      "reply": "Saved the paragraph to out/methods-lay.md."
+    },
+    {
+      "name": "trap-drops-rain-exclusion",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "**How we measured the ships**\n\nFor 28 days, from 14 April to 11 May, we kept sound meters running at five places along the quay frontage, 1.5 m above the ground. To know which noise was ships, we took each ship call from the harbour's tracking records, 64 in all, and compared it with the quarter-hours around its arrival or departure, allowing 10 minutes either way. We also measured ordinary road traffic for 48 hours on 2 and 3 May, when no ships called. We also checked the meters before and after the survey.\n",
+      "reply": "Saved the paragraph to out/methods-lay.md."
+    },
+    {
+      "name": "trap-drops-ship-count",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "**How we measured the ships**\n\nFor 28 days, from 14 April to 11 May, we kept sound meters running at five places along the quay frontage, 1.5 m above the ground. To know which noise was ships, we took each ship call from the harbour's tracking records and compared it with the quarter-hours around its arrival or departure, allowing 10 minutes either way. We also measured ordinary road traffic for 48 hours on 2 and 3 May, when no ships called. We left out windy periods and any time with rain, which touched at least seven of the 28 days.\n",
+      "reply": "Saved the paragraph to out/methods-lay.md."
+    }
+  ]
 }

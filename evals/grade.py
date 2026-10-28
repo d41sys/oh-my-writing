@@ -2,7 +2,8 @@
 """Deterministic grader for the Oh My Writing benchmark.
 
 Usage:
-  python3 evals/grade.py --validate            check every case file
+  python3 evals/grade.py --validate            check every case file (including its controls)
+  python3 evals/grade.py --controls [GLOB]     grade the controls of matching cases; exit 1 on any mismatch
   python3 evals/grade.py RUN_DIR               (re)grade a results directory written by run.py
 
 Checks are mechanical (see evals/README.md). They catch invented numbers, lost negations,
@@ -24,6 +25,7 @@ import json
 import os
 import re
 import subprocess
+import shutil
 import sys
 import tempfile
 import urllib.parse
@@ -207,6 +209,65 @@ def _validate_extras(case: dict) -> list[str]:
     return errs
 
 
+def _validate_controls(case: dict, check_types: set | None = None) -> list[str]:
+    """Validate the shape of the `controls` field: unique names, expect pass/fail, fail controls naming the check
+    types they must trip, output and reply text, extra workspace files."""
+    controls = case["controls"]
+    if not isinstance(controls, list) or not controls:
+        return ["controls must be a non-empty list"]
+    if check_types is None:
+        check_types = {c.get("type") for c in case.get("checks", []) if isinstance(c, dict)}
+    known = check_types | {"output_present"}
+    errs, names = [], set()
+    for i, control in enumerate(controls):
+        where = f"controls[{i}]"
+        if not isinstance(control, dict):
+            errs.append(f"{where}: must be an object")
+            continue
+        name = control.get("name")
+        if not (isinstance(name, str) and name.strip()):
+            errs.append(f"{where}: name must be a non-empty string")
+        elif name in names:
+            errs.append(f"{where}: name {name!r} repeats")
+        else:
+            names.add(name)
+        extra = set(control) - {"name", "expect", "fails", "output", "reply", "files"}
+        if extra:
+            errs.append(f"{where}: unknown fields {sorted(extra)}")
+        expect = control.get("expect")
+        if expect not in ("pass", "fail"):
+            errs.append(f"{where}: expect must be 'pass' or 'fail'")
+        fails = control.get("fails")
+        if expect == "fail":
+            if not (isinstance(fails, list) and fails and all(isinstance(t, str) for t in fails)):
+                errs.append(f"{where}: a fail control needs `fails`, a non-empty list of check types")
+            else:
+                unknown = [t for t in fails if t not in known]
+                if unknown:
+                    errs.append(f"{where}: fails names check types the case does not have: {unknown}")
+        elif expect == "pass" and "fails" in control:
+            errs.append(f"{where}: a pass control must not set `fails`")
+        if "output" not in control or not (control["output"] is None or isinstance(control["output"], str)):
+            errs.append(f"{where}: output must be a string (the deliverable text) or null (file not written)")
+        if not isinstance(control.get("reply"), str):
+            errs.append(f"{where}: reply must be a string")
+        files = control.get("files", {})
+        if not isinstance(files, dict) or not all(_rel_path_ok(k) and isinstance(v, str) for k, v in files.items()):
+            errs.append(f"{where}: files must map relative paths (no '..', not absolute) to text")
+        elif case.get("output") in files:
+            errs.append(f"{where}: files must not write the case output {case['output']!r}; use `output`")
+    return errs
+
+
+def _control_rule_errors(case: dict) -> list[str]:
+    """The shipped-case rule: controls exist and include at least one pass and one fail control."""
+    controls = case.get("controls")
+    if not isinstance(controls, list) or not controls:
+        return ["controls are required: at least one pass and one fail control"]
+    expects = {c.get("expect") for c in controls if isinstance(c, dict)}
+    return [f"controls need at least one {want!r} control" for want in ("pass", "fail") if want not in expects]
+
+
 def validate_case(case: dict) -> list[str]:
     errs = []
     path = Path(case.get("_path", ""))
@@ -260,7 +321,14 @@ def validate_case(case: dict) -> list[str]:
                 errs.append(f"{where}: source {src!r} is not an input file")
         if not missing and kind in {"facts_recalled", "diagrams", "html_deliverable", "slop_density", "rhythm"}:
             errs += _validate_new_check(kind, check, where)
+    if "controls" in case:
+        errs += _validate_controls(case, {c.get("type") for c in case["checks"] if isinstance(c, dict)})
     return errs
+
+
+def validate_real_case(case: dict) -> list[str]:
+    """validate_case plus the rule for the shipped cases: every case has at least one pass and one fail control."""
+    return validate_case(case) + _control_rule_errors(case)
 
 
 # ---------------------------------------------------------------- helper scripts
@@ -1029,6 +1097,13 @@ JUDGE_CRITERIA = {"accuracy": "factual accuracy vs sources", "needs": "covers wh
                   "layout": "layout and readability"}
 
 
+def with_open_questions(reply: str, workspace: Path) -> str:
+    """Questions left for the author in an open-questions file are addressed to the author, like the reply."""
+    for notes in sorted(workspace.glob("**/open-questions.md")) if workspace.is_dir() else []:
+        reply += "\n\n" + notes.read_text(encoding="utf-8", errors="replace")
+    return reply
+
+
 def grade_run(run_dir: Path) -> dict:
     cases = {c["id"]: c for c in load_cases()}
     runs = []
@@ -1042,9 +1117,7 @@ def grade_run(run_dir: Path) -> dict:
         output = out_path.read_text(encoding="utf-8", errors="replace") if out_path.is_file() else None
         reply_path = meta_path.parent / "reply.md"
         reply = reply_path.read_text(encoding="utf-8", errors="replace") if reply_path.is_file() else ""
-        # Questions left for the author in an open-questions file are addressed to the author, like the reply.
-        for notes in sorted(workspace.glob("**/open-questions.md")) if workspace.is_dir() else []:
-            reply += "\n\n" + notes.read_text(encoding="utf-8", errors="replace")
+        reply = with_open_questions(reply, workspace)
         use_run_dates(run_dir, meta)
         grade = grade_case(case, output, reply, workspace)
         deliverables = {d: (workspace / d).is_file() for d in case.get("deliverables", [])}
@@ -1057,8 +1130,27 @@ def grade_run(run_dir: Path) -> dict:
     info = json.loads(info_path.read_text(encoding="utf-8")) if info_path.is_file() else {}
     results = {"run": info, "runs": runs, "judge": judge, "summary": summarize(runs, judge)}
     (run_dir / "results.json").write_text(json.dumps(results, indent=2, ensure_ascii=False), encoding="utf-8")
-    (run_dir / "report.md").write_text(render_report(results), encoding="utf-8")
+    (run_dir / "report.md").write_text(prereg_header(run_dir) + render_report(results), encoding="utf-8")
     return results
+
+
+PREREG_FILE = "prereg.md"
+PREREG_MARK = "<!-- pre-registered text"
+
+
+def prereg_header(run_dir: Path) -> str:
+    """The pre-registered text (run.py --prereg copied it to prereg.md before any run) for the top of report.md,
+    behind a marker comment with its hash and registration time; empty when the run was not pre-registered. Built on
+    every grading, so re-running grade.py keeps it."""
+    kept = run_dir / PREREG_FILE
+    if not kept.is_file():
+        return ""
+    info_path = run_dir / "run.json"
+    info = (json.loads(info_path.read_text(encoding="utf-8")).get("prereg") or {}) if info_path.is_file() else {}
+    digest = hashlib.sha256(kept.read_bytes()).hexdigest()
+    mark = f"{PREREG_MARK}: prereg.md, sha256 {digest}, registered {info.get('registered', 'unknown')} -->"
+    return f"{mark}\n{kept.read_text(encoding='utf-8').rstrip()}\n\n---\n\n"
+
 
 
 def _rate(rows: list[dict]) -> float | None:
@@ -1472,16 +1564,91 @@ def render_report(results: dict) -> str:
     return "\n".join(lines)
 
 
+# ---------------------------------------------------------------- controls
+
+def _control_workspace(case: dict, control: dict) -> Path:
+    """A workspace built as the runner builds one (case files, fixtures verbatim, output folder), plus the control's
+    own files and, when the control wrote one, its deliverable at the case's output path."""
+    import run  # lazy: run.py imports this module
+    ws = run.make_workspace(case, "claude", "baseline")
+    for name, text in control.get("files", {}).items():
+        path = ws / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text, encoding="utf-8")
+    if control["output"] is not None:
+        out = ws / case["output"]
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(control["output"], encoding="utf-8")
+    return ws
+
+
+def grade_control(case: dict, control: dict) -> dict:
+    """Grade one control as a real run is graded (grade_case with the workspace, open-questions files added to the
+    reply, no run date). `ok` says whether the grade is what the control expects; `problem` says why not."""
+    global RUN_DATES
+    ws = _control_workspace(case, control)
+    saved, RUN_DATES = RUN_DATES, []
+    try:
+        result = grade_case(case, control["output"], with_open_questions(control["reply"], ws), ws)
+    finally:
+        RUN_DATES = saved
+        shutil.rmtree(ws, ignore_errors=True)
+    failing = [r["type"] for r in result["checks"] if not r["passed"]]
+    detail = "; ".join(f"{r['type']}: {r['detail']}" for r in result["checks"] if not r["passed"])
+    problem = None
+    if control["expect"] == "pass":
+        if not result["passed"]:
+            problem = f"expected pass, failed {detail}"
+    elif result["passed"]:
+        problem = "expected fail, every check passed"
+    else:
+        unmet = [t for t in control["fails"] if t not in failing]
+        if unmet:
+            problem = f"expected {unmet} to fail, failing: {sorted(set(failing))}"
+    return {"passed": result["passed"], "failing": failing, "ok": problem is None, "problem": problem}
+
+
+def run_controls(patterns: list[str] | None = None) -> int:
+    """Grade the controls of the matching cases, print one line per control and a summary; 1 on any mismatch."""
+    cases = load_cases(patterns)
+    if not cases:
+        print("[FAIL] no cases matched")
+        return 1
+    total = bad = 0
+    for case in cases:
+        errs = (_validate_controls(case) if "controls" in case else []) + _control_rule_errors(case)
+        for err in errs:
+            bad += 1
+            print(f"[FAIL] {case['id']}: {err}")
+        if errs:
+            continue
+        for control in case["controls"]:
+            total += 1
+            got = grade_control(case, control)
+            bad += not got["ok"]
+            types = ",".join(sorted(set(got["failing"]))) or "-"
+            line = (f"{'[OK]  ' if got['ok'] else '[FAIL]'} {case['id']} {control['name']} "
+                    f"expected={control['expect']} got={'pass' if got['passed'] else 'fail'} failing={types}")
+            print(line if got["ok"] else f"{line}\n       {got['problem']}")
+    print(f"[FAIL] {bad} control problem(s) in {len(cases)} cases, {total} controls graded" if bad
+          else f"[OK] {total} controls behave as expected in {len(cases)} cases")
+    return 1 if bad else 0
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("run_dir", nargs="?", help="results directory written by run.py")
     parser.add_argument("--validate", action="store_true", help="validate every case file and exit")
+    parser.add_argument("--controls", nargs="?", const="*", metavar="GLOB",
+                        help="grade the controls of the cases whose id matches GLOB (default all); exit 1 on a mismatch")
     args = parser.parse_args(argv)
+    if args.controls is not None:
+        return run_controls([args.controls])
     if args.validate or not args.run_dir:
         bad = 0
         cases = load_cases()
         for case in cases:
-            for err in validate_case(case):
+            for err in validate_real_case(case):
                 bad += 1
                 print(f"[FAIL] {case.get('_path')}: {err}")
         print(f"[OK] {len(cases)} cases valid" if not bad else f"[FAIL] {bad} problems in {len(cases)} cases")

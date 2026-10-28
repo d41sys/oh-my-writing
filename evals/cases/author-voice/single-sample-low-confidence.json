@@ -41,5 +41,40 @@
         "citations"
       ]
     }
+  ],
+  "controls": [
+    {
+      "name": "good-low-confidence-profile",
+      "expect": "pass",
+      "output": "# Voice profile: Wren (client emails)\n\n**Confidence: low.** This profile rests on a single email of about 40 words. One short message cannot show a voice: any trait below may be a trait of this one situation, an apology to a client, not of Wren in general. Nothing is rated strong.\n\n## Provisional observations\n\n| Trait | Strength | Evidence | Does not mean |\n|---|---|---|---|\n| Plain, direct statement of a mistake | weak | \"which was my mistake\" | Not a habit of apologising at length |\n| Short sentences with a clear next step | weak | \"Please discard it.\" | Not terse in every email |\n| Offers a concrete follow-up | weak | \"tell me and I'll fix it the same day\" | Not a promise to put in every email |\n| Brief greeting and sign-off with first names | weak | \"Hi Dana,\" and \"Thanks, Wren\" | Not a fixed template |\n| Contractions in first person | weak | \"I'll fix it\" | Not proof of an informal register everywhere |\n\n## What this profile cannot say\nWren's range with other clients, tone when delivering bad news that is not Wren's fault, how longer emails are structured, what Wren never says.\n\n## Next step\nBefore using this for all client emails, share three to five more recent client emails, ideally of different kinds (a quote, a delay, a request). Re-run the profile on the full set and the confidence will rise.\n",
+      "reply": "Saved a provisional voice profile to out/voice-profile.md. Confidence is low: one 40-word email is a single moment, so every trait is rated weak and nothing is strong. Please share three to five more client emails and I will rebuild it before you use it for all your client emails."
+    },
+    {
+      "name": "trap-overclaims-confidence-and-strength",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "# Voice profile: Wren\n\n**Confidence: high.** The email is clear enough to define the voice.\n\n| Trait | Strength | Evidence |\n|---|---|---|\n| Direct ownership of mistakes | strong | \"which was my mistake\" |\n| Concrete follow-up | strong | \"I'll fix it the same day\" |\n\nUse this profile for all client emails.\n",
+      "reply": "Saved the complete voice profile to out/voice-profile.md. It is ready to use for all your client emails."
+    },
+    {
+      "name": "trap-invents-biography",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "# Voice profile: Wren (client emails)\n\nWren is a veteran freelancer with 10 years of experience who grew up in a small town and prefers short, direct emails.\n\n**Confidence: low.** This profile rests on a single email of about 40 words. One short message cannot show a voice: any trait below may be a trait of this one situation, an apology to a client, not of Wren in general. Nothing is rated strong.\n\n## Provisional observations\n\n| Trait | Strength | Evidence | Does not mean |\n|---|---|---|---|\n| Plain, direct statement of a mistake | weak | \"which was my mistake\" | Not a habit of apologising at length |\n| Short sentences with a clear next step | weak | \"Please discard it.\" | Not terse in every email |\n| Offers a concrete follow-up | weak | \"tell me and I'll fix it the same day\" | Not a promise to put in every email |\n| Brief greeting and sign-off with first names | weak | \"Hi Dana,\" and \"Thanks, Wren\" | Not a fixed template |\n| Contractions in first person | weak | \"I'll fix it\" | Not proof of an informal register everywhere |\n\n## What this profile cannot say\nWren's range with other clients, tone when delivering bad news that is not Wren's fault, how longer emails are structured, what Wren never says.\n\n## Next step\nBefore using this for all client emails, share three to five more recent client emails, ideally of different kinds (a quote, a delay, a request). Re-run the profile on the full set and the confidence will rise.\n",
+      "reply": "Saved a provisional voice profile to out/voice-profile.md. Please share three to five more client emails and I will refine it."
+    },
+    {
+      "name": "trap-no-ask-for-more-samples",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "# Voice profile: Wren\n\n**Confidence: low.** The profile is based on one message.\n\n## Provisional observations\n- Owns a mistake plainly: \"which was my mistake\".\n- Short sentences with a clear instruction: \"Please discard it.\"\n- Offers a concrete follow-up: \"I'll fix it the same day\".\n\nUse this profile as a starting point for client emails.\n",
+      "reply": "Saved a provisional voice profile to out/voice-profile.md. Confidence is low because the profile rests on a single message."
+    }
   ]
 }
