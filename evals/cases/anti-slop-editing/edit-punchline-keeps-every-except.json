@@ -30,8 +30,8 @@
     },
     {
       "type": "not_regex",
-      "pattern": "(?i)\\b(?:did|didn.t|does|doesn.t|do|don.t|was|wasn.t)(?: not)?\\s*[.!]",
-      "note": "no stranded auxiliary ('the replica didn't.') may remain"
+      "pattern": "(?im)(?:^|[.!?;]\\s+)(?:[\\w'’-]+\\s+){1,3}(?:did|didn.t|does|doesn.t|do|don.t|was|wasn.t)(?: not)?\\s*[.!]",
+      "note": "no stranded auxiliary may remain: a short clause that ends on the auxiliary as its own sentence or after a semicolon ('the replica didn't.'). Ordinary ellipsis inside a longer sentence ('came up cleanly, but the replica didn't.') is fine; the first version of this check flagged it (corrected after v-upstream-omp)"
     },
     {
       "type": "no_added_facts",

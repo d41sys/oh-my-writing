@@ -51,6 +51,8 @@ Ask in plain words, for example "edit this so it doesn't read like AI, keep ever
 
 The checks measure faithfulness: invented facts, lost hedges and negations, missing gap markers, stock phrasing. A blind judge preferred our output to every pack except humanizer, and split close to even against no skills. See the limits in the benchmark doc.
 
+A pre-registered run with a placebo (each skill's name and layout with generic advice of the same length) on the four skills revised last: 74% passed with our skills, 29% with the placebo, 38% with no skills. The blind judge did not agree. It preferred the placebo 34 to 27, mostly on independent-review, so we do not claim the judge sees the gain. See [Placebo control](docs/BENCHMARK.md#placebo-control-pre-registered).
+
 **Tests:** about 840 unit tests cover the skill contract, every helper script, the grader and the installer. Run `for t in tests/*/; do uv run --with pytest --with pyyaml --with numpy --with matplotlib python -m pytest "$t" -q; done`.
 
 ## Contributing

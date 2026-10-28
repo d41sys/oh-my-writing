@@ -84,6 +84,43 @@ Judge W-L (ties and order-inconsistent picks left out). Writers on omp, judge gp
 - **Judge reasons for no-skill wins:** our output "ends like a measurement report", keeps more technical detail, and uses exact figures where the house style uses everyday proportions. Every condition ran longer than the style reference in about 40% of runs.
 - **Rules v3** (`6938abb`): the self-check lists (`eval.md`) were brought in line with the new rules after a real revision still added "targets, not results" sentences. Tested on 2 held-out cases, 2 repeats, gpt-6.1-sol. Against no skills: fit 3-0, flow 1-1, faithful 2-0. Against rules v2: fit 1-3, flow 1-3, faithful 1-0. Four pairs are too few to tell v3 from v2.
 
+## Placebo control (pre-registered)
+
+Run `v-upstream-omp`: omp/18.13.3 with its default model, 3 repeats, after the skill revisions that followed the upstream review (anti-slop-editing 1.16, evidence-grounded-writing 1.9, independent-review 1.5, author-voice 1.5). It covers those four skills' 28 cases, including 8 new edit/keep pairs, plus the 5 style and reader cases that belong to them. The decision rules were committed before the first run (`evals/prereg/v-upstream-omp.md`, commit `c49e7e4`).
+
+The placebo installs every skill with its real name, description and file layout, but each file's text is replaced by generic writing advice of about the same length. A gain over the placebo comes from what the skills say, not from having a longer prompt.
+
+| Skill | With skills | Placebo | No skills | Runs per condition |
+|---|---|---|---|---|
+| anti-slop-editing | **76%** | 13% | 13% | 45 |
+| author-voice | **80%** | 40% | 60% | 15 |
+| evidence-grounded-writing | **57%** | 38% | 52% | 21 |
+| independent-review | **83%** | 50% | 67% | 18 |
+| All | **74%** | 29% | 38% | 99 |
+
+Blind judge on text cases, wins and losses for our skills (ties and order-inconsistent picks left out):
+
+| Skill | Against no skills | Against placebo |
+|---|---|---|
+| anti-slop-editing | 15-12 | 12-16 |
+| author-voice | 7-6 | 7-7 |
+| evidence-grounded-writing | 4-5 | 7-2 |
+| independent-review | 2-11 | 1-9 |
+| All | 28-34 | 27-34 |
+
+The pre-registered rules, answered:
+
+1. **No regression: met.** `gate.py check` against the frozen reference passed, so the revisions stay.
+2. **The content helps, not the length: not met.** The pass rate is 45 points above the placebo, well over the 10 points required. But the blind judge preferred the placebo's output (34 to 27), and the rule needed both. So the checks show a gain from the skills' content and the judge does not.
+3. **Edit/keep pairs: met.** With skills, 15 of 24 runs passed; the placebo and no skills passed none. On the keep cases (the text was already fine) we passed 9 of 12 and both others 0 of 12, so the rules do not over-edit there.
+
+What else the run showed:
+
+- **independent-review loses the judge** to both no skills and the placebo. The judge calls the other reviewer prompts and triage notes tighter and more focused on the decision the reader must make. Earlier runs leaned the same way on 3 cases.
+- **evidence-grounded-writing loaded in only 57% of its runs**, so its row partly measures the model without the skill.
+- **One new rule is not followed.** In `edit-contrast-keeps-both-sides` no condition reported that "retention remains a challenge" stays vague after the edit, which the anti-slop residuals list now asks for.
+- **One check was corrected after the run.** In `edit-punchline-keeps-every-except` the stranded-auxiliary check also flagged ordinary ellipsis inside a longer sentence ("came up cleanly, but the replica didn't."). Narrowed to a short clause standing alone, the case passes 3 of 3 with skills, 3 of 3 with the placebo and 1 of 3 without skills, and the totals become 77%, 32% and 39%. The pre-registered answers above use the numbers as run (`report-as-run.md` in the results folder).
+
 ## Limits
 
 - **The checks and the skills were written by the same team.** Some checks were corrected after reading outputs. Each fix was justified in the check's note and applied to every condition. The fixes still lean toward the outputs we read most, which were ours. Treat the judge columns as the less biased signal.
