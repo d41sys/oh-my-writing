@@ -862,7 +862,7 @@ def run_record(case: dict, meta: dict, output: str | None, reply: str, workspace
         metrics["case_passed"] = 1.0 if graded["passed"] else 0.0
     return {"case": case["id"], "skill": case["skill"], "kind": case_kind(case), "host": meta["host"],
             "condition": meta["condition"], "rep": meta.get("rep") or 1, "host_error": host_error,
-            "skill_loaded": meta.get("skill_loaded"), "metrics": metrics}
+            "skill_loaded": meta.get("skill_loaded"), "skill_versions": meta.get("skill_versions"), "metrics": metrics}
 
 
 def read_run(run_dir: Path, hosts: set[str] | None = None) -> tuple[dict, list[dict]]:

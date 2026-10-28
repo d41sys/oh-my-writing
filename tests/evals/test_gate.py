@@ -192,6 +192,46 @@ def test_freeze_and_check_round_trip(tmp_path, capsys):
     assert "few" in capsys.readouterr().out
 
 
+def _stamp_versions(run_dir, rep, versions):
+    meta_path = next((run_dir / "runs").glob(f"*__skill__r{rep}/meta.json"))
+    meta = json.loads(meta_path.read_text())
+    if versions is None:
+        meta.pop("skill_versions", None)
+    else:
+        meta["skill_versions"] = versions
+    meta_path.write_text(json.dumps(meta))
+
+
+def test_freeze_records_the_versions_the_runs_installed_not_todays(tmp_path):
+    run_dir = tmp_path / "r"
+    for rep in (1, 2):
+        make_run(run_dir, GOOD, rep=rep)
+    _stamp_versions(run_dir, 1, {"anti-slop-editing": "1.0", "post-writing": "2.0"})
+    _stamp_versions(run_dir, 2, {"anti-slop-editing": "1.1", "post-writing": "2.0"})  # a --resume after an edit
+    ref = gate.freeze(run_dir)
+    assert ref["skill_versions"] == {"anti-slop-editing": ["1.0", "1.1"], "post-writing": "2.0"}
+    assert ref["skill_versions_from"] == "runs (meta.json)"
+    _stamp_versions(run_dir, 2, None)  # one run made before versions were recorded: no claim about the runs
+    ref = gate.freeze(run_dir)
+    assert ref["skill_versions_from"] == "repository at freeze time" and ref["skill_versions"] == stats.skill_versions()
+
+
+def test_case_fingerprint_ignores_controls_but_not_checks(tmp_path, monkeypatch):
+    import shutil
+    cases = tmp_path / "cases"
+    shutil.copytree(stats.grade.CASES_DIR, cases)
+    monkeypatch.setattr(stats.grade, "CASES_DIR", cases)
+    before = stats.tool_fingerprint()["cases"]
+    path = next(cases.glob("style/*.json"))
+    case = json.loads(path.read_text())
+    case["controls"] = case["controls"][:1]
+    path.write_text(json.dumps(case))  # controls changed and the file reformatted: no score can change
+    assert stats.tool_fingerprint()["cases"] == before
+    case["checks"] = case["checks"][:-1]
+    path.write_text(json.dumps(case))
+    assert stats.tool_fingerprint()["cases"] != before
+
+
 def test_check_rejects_other_metric_version_and_missing_condition(tmp_path, capsys):
     run_dir = tmp_path / "r"
     make_run(run_dir, GOOD)

@@ -71,11 +71,26 @@ def _gated_records(records: list[dict], condition: str) -> list[dict]:
             for r in records if r["condition"] == condition and not r["host_error"]]
 
 
+def run_skill_versions(records: list[dict]) -> dict | None:
+    """Skill versions the given runs installed (meta.json `skill_versions`, which run.py records per run): one version
+    per skill, or a sorted list when runs of one results directory used different versions (a --resume after an
+    edit). None when any run did not record them (runs made before run.py recorded versions)."""
+    if not records or any(not r.get("skill_versions") for r in records):
+        return None
+    seen: dict[str, set] = {}
+    for r in records:
+        for name, version in r["skill_versions"].items():
+            seen.setdefault(name, set()).add(version)
+    return {name: (next(iter(v)) if len(v) == 1 else sorted(v, key=str)) for name, v in sorted(seen.items())}
+
+
 def freeze(run_dir: Path, condition: str = "skill", model: str | None = None, hosts: set[str] | None = None) -> dict:
     info, records = stats.read_run(run_dir, hosts)
+    chosen = [r for r in records if r["condition"] == condition and not r["host_error"]]
     runs = _gated_records(records, condition)
     if not runs:
         raise SystemExit(f"no '{condition}' runs in {run_dir}")
+    versions = run_skill_versions(chosen)
     return {
         "schema": SCHEMA, "metrics_version": stats.METRICS_VERSION, "tools": stats.tool_fingerprint(),
         "condition": condition,
@@ -83,10 +98,10 @@ def freeze(run_dir: Path, condition: str = "skill", model: str | None = None, ho
                 "hosts": sorted({r["host"] for r in runs}), "cases": len({r["case"] for r in runs}),
                 "repeat": info.get("repeat"), "host_versions": {k: v for k, v in info.items() if k.endswith("_version")},
                 "models": info.get("models") or {}, "model": model or "host default"},
-        # the versions the run used (run.json, since run.py records them); older runs fall back to the repository's
+        # the versions the frozen runs installed; runs made before run.py recorded them fall back to the repository's
         # versions at freeze time, which match only when the reference is frozen right after its run
-        "skill_versions": info.get("skill_versions") or stats.skill_versions(),
-        "skill_versions_from": "run.json" if info.get("skill_versions") else "repository at freeze time",
+        "skill_versions": versions or stats.skill_versions(),
+        "skill_versions_from": "runs (meta.json)" if versions else "repository at freeze time",
         "runs": runs,
     }
 

@@ -13,7 +13,7 @@
   "checks": [
     {
       "type": "regex",
-      "pattern": "(?is)(?:\\bF1\\b|8:00|weekday (?:lane )?(?:swimming )?time)(?:(?!\\bF\\d\\b).){0,500}?(?:accept|apply|\\bact\\b|\\bfix|correct|change (?:the draft|it) to|update)|(?:accept|apply|\\bact\\b|\\bfix|correct|update)\\w*[^\\n]{0,40}\\n(?:\\s*\\n)?[^\\n]{0,12}\\bF1\\b",
+      "pattern": "(?is)(?:\\bF1\\b|8:00|weekday (?:lane )?(?:swimming )?time)(?:(?!\\bF\\d\\b).){0,500}?(?:accept|apply|\\bact\\b|\\bfix|correct|change (?:the draft|it) to|update)|(?:accept|apply|\\bact\\b|\\bfix|correct|update)\\w*[^\\n]{0,40}\\n(?:\\s*\\n)?[^\\n]{0,12}\\bF1\\b|(?m:^#+[^\\n]*\\b(?:act on|accept|apply|fix)[^\\n]*\\n(?:(?!^#).)*?\\bF1\\b)",
       "note": "F1 is a real defect: the letter says 8:00 where the draft says 8:30; the verdict may follow F1 or head the group above it"
     },
     {
@@ -23,8 +23,8 @@
     },
     {
       "type": "regex",
-      "pattern": "(?is)(?:\\bF2\\b|24 February)(?:(?!\\bF\\d\\b).){0,500}?(?:reject|decline|disagree|not (?:supported|correct|confirmed)|contradict|letter (?:says|states Feb|gives)|already (?:says|states|correct)|no change|skip|do not change|don't change|keep (?:17|the draft))|^[^\\n]*(?:reject|skip)[^\\n]*\\bF2\\b[^\\n]*$",
-      "note": "F2 asks for a date the letter contradicts: reject it"
+      "pattern": "(?is)(?:\\bF2\\b|24 February)(?:(?!\\bF\\d\\b).){0,500}?(?:reject|decline|disagree|not (?:supported|correct|confirmed)|contradict|letter (?:says|states Feb|gives)|already (?:says|states|correct|has|matches|addressed|covered|handled)|no change|skip|do not change|don't change|keep (?:17|the draft))|^[^\\n]*(?:reject|skip)[^\\n]*\\bF2\\b[^\\n]*$|(?m:^#+[^\\n]*\\b(?:reject|skip|decline|leave)[^\\n]*\\n(?:(?!^#).)*?\\bF2\\b)",
+      "note": "F2 asks for a date the letter contradicts: reject it. The verdict follows F2 in its own entry, or F2 sits under a Reject/Skip heading"
     },
     {
       "type": "regex",
@@ -38,13 +38,13 @@
     },
     {
       "type": "regex",
-      "pattern": "(?is)(?:\\bF3\\b|low attendance|explaining)(?:(?!\\bF\\d\\b).){0,500}?(?:reject|decline|\\[ASK AUTHOR|ask the author|needs author|needs? your (?:answer|input|confirmation|decision)|you need to answer|answer (?:it )?yourself|author (?:must|needs to) (?:answer|supply|provide|confirm)|(?:can|has|have) the council (?:confirm|confirmed)|not (?:in|stated|given|supported)|(?:letter|draft|source)[^.\\n]{0,60}(?:does not|doesn't|gives? no|says nothing|states? no))|(?:answer yourself|needs? your answer|ask the author)[^\\n]{0,30}\\n(?:\\s*\\n)?[^\\n]{0,12}\\bF3\\b",
-      "note": "the letter gives no reason for the change; F3 is rejected or goes to the author. The verdict may be 'Needs your answer' (the prompt's own words for that group), may restate that the sources give no reason, or may head the group above F3"
+      "pattern": "(?is)(?:\\bF3\\b|low attendance|explaining)(?:(?!\\bF\\d\\b).){0,500}?(?:reject|decline|\\[ASK AUTHOR|ask the author|needs author|needs? your (?:answer|input|confirmation|decision)|you need to answer|answer (?:it )?yourself|author (?:must|needs to) (?:answer|supply|provide|confirm)|(?:can|has|have) the council (?:confirm|confirmed)|not (?:in|stated|given|supported)|(?:letter|draft|source)[^.\\n]{0,60}(?:does not|doesn't|gives? no|says nothing|states? no))|(?:answer yourself|needs? your answer|ask the author)[^\\n]{0,30}\\n(?:\\s*\\n)?[^\\n]{0,12}\\bF3\\b|(?m:^#+[^\\n]*\\b(?:reject|decline|answer (?:it )?yourself|needs? your (?:answer|input|decision)|ask the author)[^\\n]*\\n(?:(?!^#).)*?\\bF3\\b)",
+      "note": "the letter gives no reason for the change; F3 is rejected or goes to the author. The verdict may be 'Needs your answer' (the prompt's own words for that group), may restate that the sources give no reason, or may be the heading of the section F3 sits in"
     },
     {
       "type": "regex",
-      "pattern": "(?is)(?:\\bF4\\b|headline|punchier)(?:(?!\\bF\\d\\b).){0,300}?(?:skip|nit|optional|ignore|decline|reject|no change|not needed|low priority|leave)",
-      "note": "the nit is skipped"
+      "pattern": "(?is)(?:\\bF4\\b|headline|punchier)(?:(?!\\bF\\d\\b).){0,300}?(?:skip|nit|optional|ignore|decline|reject|no change|not needed|low priority|leave)|(?m:^#+[^\\n]*\\b(?:skip|nit|optional|ignore|decline|reject|leave|low priority)[^\\n]*\\n(?:(?!^#).)*?\\bF4\\b)",
+      "note": "the nit is skipped, in its own entry or by the heading of the section it sits in"
     },
     {
       "type": "no_added_facts",
@@ -58,6 +58,12 @@
       "expect": "pass",
       "output": "# Triage of reviewer findings\n\n## Act on\n\n- **F1 (accept).** The letter says weekday lane swimming runs \"from 6:30 to 8:00 in the morning\"; the draft says 8:30. Correct the draft to end at 8:00.\n\n## Skip\n\n- **F2 (reject).** The letter says the pool \"will close for one day, 17 February, for maintenance\" and reopens on 18 February. The draft already matches the letter, so the reviewer's date is not supported. Keep 17 February.\n- **F4 (nit, skip).** A plainer headline is fine for a notice like this. No change needed.\n\n## Needs your answer\n\n- **F3.** The letter gives no reason for the weekday change, so the draft cannot say it is because of low attendance. Ask the council why the time is changing; add a sentence only if they confirm a reason.\n",
       "reply": "Triage saved to out/triage.md. Act on F1: the letter ends the weekday session at 8:00, not 8:30. Reject F2: the letter confirms 17 February. F3 needs your answer, since the letter gives no reason. Skip F4."
+    },
+    {
+      "name": "good-verdicts-by-heading",
+      "expect": "pass",
+      "output": "# Triage of reviewer findings\n\n## Act on\n\n- F1: the letter ends weekday lane swimming at 8:00 and the draft says 8:30. Change the draft to 8:00.\n\n## Skip\n\n- F2: the letter gives 17 February for the closure, which is what the draft has.\n- F4: the headline works for a notice.\n\n## Needs your answer\n\n- F3: the letter gives no reason for the new times. Ask the council before adding one.\n",
+      "reply": "Triage saved to out/triage.md: act on F1, skip F2 and F4, and F3 needs your answer."
     },
     {
       "name": "trap-adopts-wrong-date",

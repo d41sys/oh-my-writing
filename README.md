@@ -51,7 +51,7 @@ Ask in plain words, for example "edit this so it doesn't read like AI, keep ever
 
 The checks measure faithfulness: invented facts, lost hedges and negations, missing gap markers, stock phrasing. A blind judge preferred our output to every pack except humanizer, and split close to even against no skills. See the limits in the benchmark doc.
 
-**Tests:** about 770 unit tests cover the skill contract, every helper script, the grader and the installer. Run `for t in tests/*/; do uv run --with pytest --with pyyaml --with numpy --with matplotlib python -m pytest "$t" -q; done`.
+**Tests:** about 840 unit tests cover the skill contract, every helper script, the grader and the installer. Run `for t in tests/*/; do uv run --with pytest --with pyyaml --with numpy --with matplotlib python -m pytest "$t" -q; done`.
 
 ## Contributing
 

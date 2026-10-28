@@ -743,6 +743,8 @@ def run_one(case: dict, host: str, condition: str, rep: int, run_dir: Path, args
         base["competitor"] = competitor_name(condition)
     if variant:
         base.update({"variant": variant["name"], "variant_sha": variant["sha"]})
+    if condition == "skill":  # the versions this run installed; a --resume after an edit can mix versions in one run
+        base["skill_versions"] = {s.name: skill_version(s / "SKILL.md") for s in SKILLS}
     if host in QUOTA_HIT:  # do not burn timeouts once the host has refused for quota; --resume picks these up
         meta = {**base, "skill_loaded": False, "exit_code": None, "error": "skipped: host usage limit reached",
                 "duration_s": 0}
@@ -1383,7 +1385,6 @@ def main(argv=None) -> int:
         print(f"adopted {moved} {src} runs as {dst} ({exported[variant_name(dst)]['sha'][:10]})", flush=True)
     info = {"id": run_dir.name, "started": dt.datetime.now().isoformat(timespec="seconds"), "hosts": args.host,
             "conditions": conditions, "cases": len(cases), "repeat": args.repeat, "contaminated": bool(dirty),
-            "skill_versions": {s.name: skill_version(s / "SKILL.md") for s in SKILLS},  # what the skill condition ran
             "competitors": {name: competitor_record(specs[name]) for name in used},
             "variants": {name: variant_record(v) for name, v in exported.items()},
             **({"adopted": adopted} if adopted else {}),
