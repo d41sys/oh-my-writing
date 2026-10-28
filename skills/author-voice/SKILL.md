@@ -4,7 +4,7 @@ description: Builds an evidence-based voice profile from an author's real writin
 license: MIT
 compatibility: Optional helper scripts need Python 3.10+; the skill works without them.
 metadata:
-  version: "1.4"
+  version: "1.5"
   skill-author: d41sys
 ---
 
@@ -37,7 +37,7 @@ Read or collect:
 - Samples: file paths or pasted text, from the author, self-written. See [sampling guide](references/sampling.md).
 - An existing profile file, if the user has one (default name `voice-profile.md`).
 - For `apply` and `check`: the draft or source material, the target channel and audience, and any explicit style request for this piece.
-- A style guide, brand guideline or "write like this article" by someone else is not a sample. Record it as declared rules or a stated preference. An earlier model-written draft counts as a sample only if the author says they wrote or heavily rewrote it.
+- A style guide, brand guideline or "write like this article" by someone else is not a sample. Record it as declared rules or a stated preference. An earlier model-written draft counts as a sample only if the author says they wrote or heavily rewrote it. What the author changed in a draft written for them (the draft plus their edited version) is evidence in its own right and the strongest kind; see the [sampling guide](references/sampling.md).
 
 Ask at most three questions, fewer for short tasks, and only if the answer changes the output; otherwise proceed and state the assumption. In non-interactive runs proceed on stated assumptions. When the work is a file deliverable and nobody can answer, put each open question in the reply and in an `open-questions.md` beside the output, one `[ASK AUTHOR: ...]` line per question with what it blocks, and record the assumption there. A voice profile is an author-facing file, so a question may also sit inside it; text meant for a reader never carries the question (rule 15).
 
@@ -56,21 +56,22 @@ Pick the mode: samples and no profile means `build`; a profile plus new samples 
 1. Screen the samples with the [sampling guide](references/sampling.md): keep self-written, recent, finished pieces; set aside ghost-written, heavily edited, AI-drafted, translated, or quoted material; tag each sample with channel, audience, date and word count. Split public voice from private or casual voice.
 2. Measure each set. If Python is available, run `python scripts/voice_stats.py FILE... --json` from this skill's directory (omit `--json` for a readable report). Without Python, count by hand on two or three samples. Treat the figures as observations.
 3. Read the samples for what numbers miss: openings, closings, hedging, humor, jargon, transitions, evidence habits, recurring moves, never-do zones. The [trait catalog](references/trait-catalog.md) says what to look for and how to evidence each.
-4. Write one row per trait you can evidence: observation, evidence (a short quote with the sample name, or a figure with the set), strength (strong, moderate, weak) and where it holds. Use the strength rubric in the catalog. Drop any trait you cannot evidence.
-5. Keep observed and preferred apart. Wishes the author states go in "Stated preferences, not observed". If a wish contradicts the samples, record the conflict and ask; do not resolve it silently.
-6. Record splits instead of averaging them. If two sets differ, write channel notes for each.
-7. Fill the header from [the profile template](assets/voice-profile-template.md): author, dates, sample set with exclusions and reasons, confidence, language and locale. Two to four samples, or under about a thousand words in total, means confidence low and no row above moderate. One sample means hypotheses only: write every row as weak, say plainly that one sample is not a voice, and ask for more samples (an `[ASK AUTHOR: ...]` line in the profile file, which is author-facing, and in the reply). Zero samples means no profile.
-8. Show the author a short version (the three to five strongest traits, the splits, the open questions) and ask them to confirm or correct. Mark the profile confirmed only after they do; until then the header says `Confirmed by author: no`.
-9. Offer to save it as a file they own. Do not save, and never put it in a tracked repository, unless they ask; naming an output file in the request counts as asking.
+4. Write one row per trait you can evidence: observation, what it does not mean (the misreading to avoid, a few words), evidence (a short quote with the sample name, or a figure with the set), strength (strong, moderate, weak) and where it holds. Use the strength rubric in the catalog. Drop any trait you cannot evidence.
+5. Keep a never-use list: words and phrases the author avoids, strikes from drafts or has declared banned, one line each with the reason (their own words when given). A word merely absent from the samples is weak evidence; one the author named as banned, or struck from two or more drafts, is firm.
+6. Keep observed and preferred apart. Wishes the author states go in "Stated preferences, not observed". If a wish contradicts the samples, record the conflict and ask; do not resolve it silently.
+7. Record splits instead of averaging them. If two sets differ, write channel notes for each.
+8. Fill the header from [the profile template](assets/voice-profile-template.md): author, dates, sample set with exclusions and reasons, confidence, language and locale. Two to four samples, or under about a thousand words in total, means confidence low and no row above moderate. One sample means hypotheses only: write every row as weak, say plainly that one sample is not a voice, and ask for more samples (an `[ASK AUTHOR: ...]` line in the profile file, which is author-facing, and in the reply). Zero samples means no profile.
+9. Show the author a short version (the three to five strongest traits, the splits, the open questions) and ask them to confirm or correct. Mark the profile confirmed only after they do; until then the header says `Confirmed by author: no`.
+10. Offer to save it as a file they own. Do not save, and never put it in a tracked repository, unless they ask; naming an output file in the request counts as asking.
 
-To update an existing profile, run steps 1 to 4 on the new samples only, then compare with the old rows. Same direction raises strength; opposite direction becomes a split or a question. Never overwrite a confirmed trait silently. Add a dated changelog line naming the samples added and the traits changed.
+To update an existing profile, run steps 1 to 5 on the new samples only, then compare with the old rows. Same direction raises strength; opposite direction becomes a split or a question. Never overwrite a confirmed trait silently. Add a dated changelog line naming the samples added and the traits changed.
 
 ### Mode: apply
 
 1. Load the profile and choose the section for the target channel and audience. If that channel has no samples, use the nearest one and say it is extrapolated.
 2. Settle precedence: the author's facts and the task's requirements first; clarity for the stated reader next; venue or house rules (they govern structure and mechanics); then the profile; generic style advice last. A current explicit request from the author overrides the stored register; say so.
 3. Decide draft or edit. For a draft, work from the author's material only: the facts, names, numbers and anecdotes in the samples belong to the samples and do not carry into new text unless the brief supplies them again. Use only the figures the brief gives, as the brief gives them: do not compute a remainder, total, difference or percentage, even when the samples show the author doing so (that habit shapes a sentence, it does not license a new number); say "the rest" or "most" instead. For an edit, diagnose first (nothing to change, a few small fixes, or a structural problem). Make the smallest effective edit; rebuild or reorder only with permission. If nothing needs changing, return the text unchanged and say it is already in voice. Leave quotations, titles, proper names, code, and regional or non-native phrasing the author uses as they are.
-4. Use traits by strength: follow strong; follow moderate unless the content or reader argues otherwise; ignore weak unless asked. Treat every trait as a tendency. Do not insert a contraction, dash or short sentence to hit a rate, and do not merge, smooth or "upgrade" wording the samples show as habit. A requested transformation (for example no first person) covers the whole passage, reasons and hedges included, and keeps the stance and its uncertainty.
+4. Use traits by strength: follow strong; follow moderate unless the content or reader argues otherwise; ignore weak unless asked. Treat every trait as a tendency, and check its "does not mean" note before leaning on it. Keep every word and phrase on the never-use list out, even when it would fit. Do not insert a contraction, dash or short sentence to hit a rate, and do not merge, smooth or "upgrade" wording the samples show as habit. A requested transformation (for example no first person) covers the whole passage, reasons and hedges included, and keeps the stance and its uncertainty.
 5. Keep identity, change register. Stance, vocabulary and characteristic moves carry across channels; length, formality and layout follow the channel notes. When one finished piece goes to another channel, hold the claim, numbers and qualifiers fixed, cut examples before arguments, and do not copy the original verbatim into each version. Every version should read as the same author under different limits.
 6. Where the voice would call for an opinion, reaction, anecdote or credential the author has not supplied, do not invent it and do not leave a marker in the text. Write the passage without it, or state the gap in plain reader language when the reader needs to know (for example "The notes do not say what caused the delay."). Put the question in the reply as `[ASK AUTHOR: what did you think when it failed?]`, and when the work is a file deliverable also in `open-questions.md` beside it. Exception: the author asked for a draft to edit; then a marker may stay in the draft.
 7. Run `check` mode on your own output, then the self-check in [eval.md](eval.md). Fix every failure.
@@ -115,9 +116,9 @@ Author-facing artifacts, where markers and notes about the work may stay: the vo
 
 Profile row (illustrative):
 
-| Trait | Observation | Evidence | Strength | Holds in |
-|---|---|---|---|---|
-| Opening | Starts on the case, not the topic | "The build broke on Tuesday." (post-03); post-01 and post-05 open the same way | moderate | public set |
+| Trait | Observation | Does not mean | Evidence | Strength | Holds in |
+|---|---|---|---|---|---|
+| Opening | Starts on the case, not the topic | Not a story every time; a how-to opens on the task | "The build broke on Tuesday." (post-03); post-01 and post-05 open the same way | moderate | public set |
 
 Check output (illustrative):
 

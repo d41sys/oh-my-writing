@@ -33,7 +33,7 @@ Answer each check pass or fail. Fix every failure before returning.
 
 19. Does every citation point to something that was read, and was each use checked for existence, matching details and support of its exact sentence?
 20. Does the report list each failing citation use on its own line, by the citation as written, instead of burying it in a count?
-21. Is every reference in the output present in the supplied material or verified, with none written from memory and no similar-looking real source substituted?
+21. Is every reference in the output present in the supplied material or verified, with none written from memory and no similar-looking real source substituted? Is no reference called fabricated only because an index lacks it, and do cited keys and bibliography keys reconcile as two lists?
 22. Are secondhand sources marked as such, and preprints distinguished from published versions?
 23. Do all quotation marks enclose exact source wording, with omissions and edits marked?
 24. Was every "studies show"-type phrase named, narrowed, marked for the author, or cut?

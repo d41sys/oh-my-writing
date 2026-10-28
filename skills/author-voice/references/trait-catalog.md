@@ -11,7 +11,7 @@ Throughout: numbers describe the samples, they do not set targets. Words such as
 1. Run the measured traits first (`scripts/voice_stats.py`, or count by hand on two or three samples if Python is unavailable).
 2. Read the samples for the move traits. Read at least three samples before writing a move down.
 3. Write one row per trait that you can evidence. Skip a trait you cannot evidence; leave it out rather than guessing.
-4. Rate each row with the strength rubric at the end of this file.
+4. Beside each observation write what it does not mean: the misreading a writer would fall into by over-applying it, in a few words ("short sentences: not fragments for effect", "opens on a case: not a story every time"). The catalog's Trap column names the evidence trap; this note names the misapplication.
 
 ## Measured traits
 
@@ -43,7 +43,7 @@ Throughout: numbers describe the samples, they do not set targets. Words such as
 | Evidence habits | How often numbers, examples, mechanisms or sources appear; how they are introduced | Count one or two per sample; quote one | Never copy the facts. Record only the habit ("gives the number before the claim") |
 | Recurring moves | Signature constructions: a list of three, an aside in parentheses, a question then answer, a turn ("That said,") | Quote each and count the samples it appears in | A move seen in one sample is an event, not a move |
 | Humor-adjacent tone markers | Emoji, slang, in-jokes, era-bound references | Quote with date context | Dated references carry voice. Keep them unless they hurt meaning |
-| Never-do zones | Things the author avoids: exclamation marks, first person, hype adjectives, a topic | Needs absence across many samples or an explicit request. Record the count (absent in 6 of 6) | Absence in three short samples proves little. Rate weak or ask the author |
+| Never-do zones and never-use words | Things the author avoids: exclamation marks, first person, hype adjectives, a topic; and specific words or phrases they refuse or cut from drafts | Needs absence across many samples, an explicit request, or the author's repeated edits. Record the count (absent in 6 of 6) or the edit pair. List each word or phrase on its own line with the reason the author gives, or the reason you can see (sounds salesy, reads as corporate, belongs to someone else) | Absence in three short samples proves little. Rate weak or ask the author. A word struck from two or more drafts is firm even if it never appears in the author's own text; struck once, it is weak |
 | Compression and density | How much each sentence carries: terse and compressed, or explained and spelled out; whether terms are defined on the spot | Quote one dense and one spelled-out passage; say which is typical | Density follows the reader. Compare within one channel |
 | Claim style | How a claim is framed, supported and sharpened: number first, mechanism first, example first; whether emphasis comes from detail or from adjectives | Quote two claims with what supports each | Record the habit, not the claim. Never copy the facts |
 | Calls to action and sign-offs | Whether pieces end by asking the reader to do something, and how directly | Quote the endings that do, and count the samples that end without one | A convention (an email sign-off) is not a habit of the voice. An absent call to action in three samples is weak evidence |
@@ -102,12 +102,12 @@ Never merge the second row into the first. When the author asks for a trait they
 
 | Strength | Meaning |
 |---|---|
-| Strong | Holds in nearly every sample of the set, in every set the profile covers, or the measured figure is close across samples. At least a quote or a figure from three samples |
+| Strong | Holds in nearly every sample of the set, in every set the profile covers, or the measured figure is close across samples. At least a quote or a figure from three samples. The same change made by the author to two or more drafts written for them is also strong, and outranks sample counts: it shows what they reject |
 | Moderate | Holds in about half the samples, or in one set only, or the figure varies noticeably |
 | Weak | Seen in one or two samples, or figures swing widely, or the trait depends on a small sample. Keep it only if it is distinctive; flag it as weak |
 | Not recorded | Cannot be evidenced. Leave it out |
 
-Strength describes how reliable the observation is, not how much the author cares about it. A thin sample set caps every row: with fewer than five samples or about a thousand words in total, nothing above moderate.
+Strength describes how reliable the observation is, not how much the author cares about it. A thin sample set caps every row built on samples: with fewer than five samples or about a thousand words in total, nothing above moderate. The cap does not lower a row backed by repeated author edits (see the sampling guide).
 
 ## What never goes into a profile
 

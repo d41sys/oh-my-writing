@@ -73,8 +73,8 @@ Words that announce, introduce or comment on content instead of delivering it.
 ### Performed reaction, candor and attention (`stock-reaction`, `lingering-attention`, `hollow-intensifier`, `announced-feeling`)
 - Looks like: "What surprised me most", "The line I keep coming back to", "To be honest", "I'm thrilled to announce".
 - Cost: borrows the look of a personal response without content.
-- Fine when: the author actually had the reaction and the sentence says why; mid-sentence "honestly" in casual voice.
-- Fix: open with the reason the detail matters if the text gives it. Never invent a reaction, reason or experience to fill the gap.
+- Fine when: the author actually had the reaction, with or without a stated reason: a bare "my favorite part" or "the most surprising result" is their stance; mid-sentence "honestly" in casual voice.
+- Fix: remove only the empty frame and keep the judgment itself ("What surprised me most was the 2 ms gap" becomes "The 2 ms gap surprised me"). If the text gives the reason, lead with it. Never delete the stance, and never invent a reaction, reason or experience to fill the gap.
 
 ### Restated importance (`importance-restated`)
 - Looks like: "This matters because", "Here's why this matters".
@@ -125,8 +125,8 @@ Sentence shapes that stage a point by denying something nobody said.
 ### Denied-then-asserted contrast (`not-just`, `about-x-about-y`, `denied-then-asserted`, `split-denial`)
 - Looks like: "It's not just a tool, it's a movement." "This isn't about speed; it's about trust." "Not because it was cheap. Because it worked."
 - Cost: invents an opponent, then defeats them. It sounds deep and says less than the plain claim.
-- Fine when: someone really asserted the denied half and the text says who or what measured it, or two measured options are being compared.
-- Fix: state the second half directly, with its evidence. If the denied half was a real misreading, name it once.
+- Fine when: someone really asserted the denied half and the text says who or what measured it, the sentence is a literal correction of a claim someone made, or two measured options are being compared.
+- Fix: state the second half directly, with its evidence. Keep both propositions: a stated value judgment ("about trust") and a limitation the pair leaves open survive the simplification. If the denied half was a real misreading, name it once. A literal correction stays as written.
 
 ### Negation chains and drumbeats (`negation-chain`)
 - Looks like: "No setup, no waiting, no fuss." "It didn't ask. It didn't wait."
@@ -198,6 +198,18 @@ Claims of importance or consensus with nothing behind them.
 - Fine when: the source itself is that uncertain; a single accurate hedge ("may", "in our sample") is not a defect.
 - Fix: keep one hedge at the source's level of certainty. Never drop a hedge the claim needs.
 
+### Chatty certainty (found by reading)
+- Looks like: casual asides, contractions and "honestly" or "look," wrapped around claims that are all stated as settled, with no hedge, limit or "I think" anywhere in the passage.
+- Cost: the friendly tone borrows trust and the flat certainty hides which claims the author actually checked.
+- Fine when: the author's samples talk this way, or each claim is backed by something the text shows (a number, a source, a first-hand test).
+- Fix: cut the chatty filler and leave the claims at the certainty the source gives them. Do not add hedges the author never wrote; that changes the claim. For a flat claim with nothing behind it in the text, leave it and ask in the reply (`[VERIFY: basis for ...]`).
+
+### Reflexive specificity (found by reading)
+- Looks like: a round statistic ("nearly 70% of teams"), a too-neat anecdote ("a founder once told me over coffee that..."), or an exact-sounding detail added because specifics read as credible.
+- Cost: decoration that looks like evidence. If the source never had it, it is a fabrication, not style.
+- Fine when: the source contains the figure or story, or the author supplied it. Keep it exactly. In `edit` and `detect`, a figure already in the author's text counts as supplied: keep it, and if nothing backs it, ask for the basis in the reply instead of cutting it.
+- Fix: if the source does not contain it, cut it (never keep it as ornament, and never swap in another invented one; see rule 5) and ask in the reply (`[VERIFY: source for the figure]` or `[ASK AUTHOR: which real example?]`). In `detect`, name it as an unsupported specific.
+
 ### Overbroad ranges and analogy stacks (`false-range`)
 - Looks like: "from startups to nations, from ideas to infrastructure", three historical comparisons in a row.
 - Cost: sounds expansive and covers nothing in particular.
@@ -225,8 +237,8 @@ Claims of importance or consensus with nothing behind them.
 ### False concession and invented antonyms (`false-concession`)
 - Looks like: "While X is impressive, Y remains a challenge.", "false precision rather than genuine accuracy".
 - Cost: balance by template; the second half is a stock worry, or the pair has a made-up opposite that only exists for symmetry.
-- Fine when: both halves carry named facts the text supports.
-- Fix: state each half as its own fact; keep the uncertainty on both sides as the source has it. Do not resolve a tension the author left open.
+- Fine when: both halves carry named facts the text supports, or "while" is only about time ("While the build ran, I wrote the notes").
+- Fix: state each half as its own fact and keep both, including a stated value judgment and an unresolved limitation; keep the uncertainty on both sides as the source has it. Do not resolve a tension the author left open.
 
 ### Vague association (`vague-association`)
 - Looks like: "He is associated with the leadership of ExampleCorp.", "tied to economic modernization".
@@ -275,10 +287,10 @@ Found by reading shape, not words. Scanner hits here are always weak.
 - Fix: pick the clearest term and repeat it. Repeating a technical term is correct.
 
 ### Manufactured punchlines and stranded auxiliaries (found by reading)
-- Looks like: "We planned for every failure mode. Except the one that happened.", "The tool died; the data didn't.", "Not always. Not perfectly."
+- Looks like: "We checked every invoice. Except March's.", "The tool died; the data didn't.", "Not always. Not perfectly."
 - Cost: a twist or a beat stands where the specific event should be; one is style, a repeated habit is a template.
 - Fine when: one earned short sentence carries real weight, or the passage is comic or theatrical by design.
-- Fix: keep one if earned; turn the rest into a sentence with the actual subject and cause. If the source does not say what the missed failure mode was, keep the original beat or cut it, and ask in the reply (`[ASK AUTHOR: which failure mode?]`) instead of guessing.
+- Fix: keep one if earned; turn the rest into a sentence with the actual subject and cause. Keep the scope the original claims: "every invoice. Except March's." becomes one sentence that keeps "every ... except" ("We checked every invoice except March's"), not a smaller claim such as "we missed one". If the source does not say why the exception happened, keep the original beat or cut it, and ask in the reply (`[ASK AUTHOR: why was March not checked?]`) instead of guessing.
 
 ### Colon into a forced triple (found by reading)
 - Looks like: "The architecture provides: separate ports, processes, and local state."

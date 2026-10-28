@@ -66,14 +66,15 @@ Specificity comes from the user's material, never from the reviewer or from you.
 - Two reviewers raise the same finding: raise confidence, not severity automatically.
 - Reviewers contradict each other: record both, apply the reader brief and the author's sample, and send the unresolved ones to the author. Do not split the difference in the text.
 - A finding repeated in round two that you rejected in round one: reconsider once, and keep the rejection only with a stronger reason.
-- Reply with no verdict line: treat as `revise`.
+- Reply with no verdict line, or cut off before it: treat as `revise`, and as a failed review, not a partial pass. Rerun in a new session (the whole artifact, or the part that was missed) before any stop rule counts it.
+- Reply says `ready` but lists no findings, no "no critical or major findings" line, and no scores against the stated threshold: not a pass. Ask in a new session for the checked list. If the reply covered only some sections, record those sections in the report and treat the rest as not reviewed.
 - Reply with only praise: valid as a result, but check that the prompt did not contain leading language; if it did, rerun in a new session with a cleaned prompt.
 
 ## 6. Stop rules
 
 Stop when any of these holds:
 
-1. No accepted critical or major findings remain after a fresh round.
+1. No accepted critical or major findings remain after a fresh round that finished and covered the whole artifact.
 2. The second round is complete. The cap is two by default; a third needs the user's approval.
 3. What remains needs evidence, a decision or a specialist you do not have; list it as open.
 4. Only minor findings and nits remain; list them, apply the cheap ones, and stop.

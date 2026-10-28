@@ -54,13 +54,14 @@ Answer each check pass or fail. Fix every failure before returning.
 ## Stopping and reporting
 
 35. Does the review stop within two rounds, or is the extra round approved by the user?
-36. Is the "edit, re-review, repeat until clean" loop absent?
-37. Are unresolved critical or major items listed under Remaining, with the reason and the effort needed?
-38. Where the author might assume the review covered something it cannot (technical correctness, legal or medical accuracy), does the report say so once and route it to a specialist or the author?
-39. Is the depth (light, standard, high) stated and proportionate to the stakes, with the number of sessions used?
-40. Is the report short, with changes listed one line each, each point said once (not again in a verdict, remaining or not-covered line), no claims of verification you did not perform, and each question to the author a plain sentence naming the missing item (no marker syntax unless the question sits in a file the author will edit)?
-41. When the report or triage is saved as a file, does the chat reply name the file, the decision and the one open question, without repeating the file?
-42. When you wrote the text you self-checked, did you apply what the check found (restated facts, stock thanks, a closing paragraph that repeats the body) before handing it over?
+36. Does the report say which parts of the artifact the reviewer read, and is a reply that was cut off, covered only part of it, or gave a bare `ready` with no findings or scores treated as no review, rerun, and never reported as a pass?
+37. Is the "edit, re-review, repeat until clean" loop absent?
+38. Are unresolved critical or major items listed under Remaining, with the reason and the effort needed?
+39. Where the author might assume the review covered something it cannot (technical correctness, legal or medical accuracy), does the report say so once and route it to a specialist or the author?
+40. Is the depth (light, standard, high) stated and proportionate to the stakes, with the number of sessions used?
+41. Is the report short, with changes listed one line each, each point said once (not again in a verdict, remaining or not-covered line), no claims of verification you did not perform, and each question to the author a plain sentence naming the missing item (no marker syntax unless the question sits in a file the author will edit)?
+42. When the report or triage is saved as a file, does the chat reply name the file, the decision and the one open question, without repeating the file?
+43. When you wrote the text you self-checked, did you apply what the check found (restated facts, stock thanks, a closing paragraph that repeats the body) before handing it over?
 
 ## Final read
 

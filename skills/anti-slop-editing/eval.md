@@ -6,7 +6,7 @@ Answer each check pass or fail. Fix every failure before returning.
 
 1. Did you work in the mode the user asked for (or `edit` by default), and say so when you assumed it?
 2. In `detect` mode, is the source text left unrewritten and byte-identical (any saved report written to a separate file), and free of an authorship verdict? Does each finding quote its whole pattern (both halves of a staged contrast) rather than a fragment?
-3. Did every change stay inside the scope the user authorized, with untouched paragraphs left exactly as they were?
+3. Did every change stay inside the scope the user authorized, with untouched paragraphs left exactly as they were, and is each change better than the source wording rather than only different?
 4. If the text needed no justified edit, did you say so and return it unchanged instead of making cosmetic changes?
 
 ## Findings quality
@@ -41,7 +41,7 @@ Answer each check pass or fail. Fix every failure before returning.
 
 24. Does the What changed list match the delivered text, with no phrase listed as removed that is still present?
 25. Does the report say which checks did not run, labelling reading-only checks as model-only, and call a clean script run "no mechanical errors" rather than "meaning verified", without padding the report with process claims the reader cannot use?
-26. Are residuals (kept, protected, source-blocked, pass limit) listed with a one-line reason each?
+26. Are residuals (kept, protected, source-blocked, pass limit, still vague after the edit) listed with a one-line reason each?
 27. Did you stay within two editing passes, and state how many were used and why you stopped?
 28. For non-English text, did you skip the English word lists and say that lexical lists do not transfer?
 29. Did the output avoid any claim or hint about who wrote the text?
@@ -52,6 +52,7 @@ Answer each check pass or fail. Fix every failure before returning.
 31. Does the edited text open with what changed or what the reader must do, with no sentence kept that only states the conclusion of the next one or describes the thing without saying anything about it, and with every scope fact the source states (who, for what, limits) still present as a plain statement? Did you add no greeting or sign-off the source lacked?
 32. When a stock lead-in ("Studies show that") stood beside a citation, did you drop the lead-in and leave the citation byte-identical?
 33. In `detect`, when the user asked only what sounds off, does every finding name the problem and its cost without rewrite instructions, and are plain slips (a comma splice, a doubled word, two figures that measure different things set side by side) reported as ordinary findings?
+34. For a small or local request, does the answer list just the edited lines, each with a short reason, and leave out the full audit and the full text, naming any serious problem elsewhere in one line without fixing it?
 
 ## Final read
 

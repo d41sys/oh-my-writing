@@ -4,7 +4,7 @@ description: Audits and edits prose for AI-writing patterns such as stock vocabu
 license: MIT
 compatibility: Optional helper scripts need Python 3.10+; the skill works without them.
 metadata:
-  version: "1.13"
+  version: "1.14"
   skill-author: d41sys
 ---
 
@@ -44,7 +44,7 @@ Profiles for the scanner and for judgment:
 Modes:
 
 - `detect`: quote each finding, name the pattern, give a short fix. Do not rewrite. Do not give an authorship verdict. Use it for someone else's text, published work, creative writing, or when the user wants to decide the fixes.
-- `edit` (default): minimal effective edit within the authorized scope. Return the full edited text once and a short What changed list.
+- `edit` (default): minimal effective edit within the authorized scope. Return the full edited text once and a short What changed list. Point edit, inside `edit`: when the user asks for one small or local fix ("fix this sentence", "is this line okay?", "tighten the second bullet"), skip the audit and return only the changed lines, each with a one-line reason. A serious problem elsewhere gets one line and no fix.
 - `rewrite`: only when the user asks for heavier change (rebuild a paragraph, restructure, change register). Same preservation rules; rebuild from the source's own content as the only material.
 
 Steps:
@@ -67,7 +67,7 @@ Steps:
 1. **Candidate, then finding, then edit.** A match is only a candidate; a finding needs context; an edit needs the user's scope and mode. Reason: pattern lists misfire on technical terms, deliberate rhetoric and quotations. Exception: none for chat residue pasted into finished prose, which can be removed in `edit` mode without debate.
 2. **Writing quality, not authorship.** Reports describe what the text does to a reader, never who produced it. Reason: the same patterns appear in rushed human writing, second-language writing and house style, and no list proves origin. Exception: none; decline authorship verdicts and consequential accusations.
 3. **The author's samples outrank generic rules.** Match their punctuation, rhythm, hedging and register. Reason: a rewrite that removes every flag but erases the voice has failed. Exception: user instructions outrank samples.
-4. **Smallest effective edit.** Change the span, not the paragraph; delete before rewriting; keep structure and argument. Reason: each extra change is a chance to lose meaning. Exception: `rewrite` mode, which is for heavier change at the user's request.
+4. **Smallest effective edit.** Change the span, not the paragraph; delete before rewriting; keep structure and argument. In every mode, revert a change you cannot justify as better; one that is only different goes back to the source wording. Reason: each extra change is a chance to lose meaning. Exception: `rewrite` mode, which is for heavier change at the user's request, still keeps the revert rule.
 5. **Subtract or restate; never invent.** Do not add facts, numbers, quotes, sources, experiences, reactions, opinions, stakes or confidence. Missing detail stays missing: the span is left or cut, and the question goes to the author in the reply. Reason: specificity comes from the author's material. Exception: a correction the user supplied.
 6. **Preserve the contract.** Claims, numbers with units, names, dates, negation, conditions, causality, certainty level, attribution, quotes, citations, code, links and the formatting the reader depends on stay. Hedges that carry real uncertainty stay. Reason: style edits are where facts get lost. Exception: changes the user explicitly requested.
 7. **Protected regions stay.** Code, inline code, URLs, paths, quotations, citations, frontmatter, tables of data and illustrative bad-writing samples are not edited or flagged as defects. Reason: they are not the author's prose or not prose at all. Exception: the user asks for a change to that region.
@@ -108,6 +108,8 @@ Checks: passes used of the ceiling; scanner and preservation script ran or did n
 ```
 
 For a named file edited in place, return the report only, not the file. For a clean text, say "No justified edit found", add the one-line reason, and return the text unchanged (or say it is unchanged for long files). `detect` never writes to the source: if the user wants the report saved, write only the report to the path they gave and leave the source byte-identical.
+
+A point edit returns "L12: before -> after (reason)" lines, plus the one-line note on a serious problem elsewhere; it leaves out the full text, Left alone and the pass count, but still runs the preservation check on the changed lines.
 
 **rewrite**: a two or three line diagnosis, the rewritten text once, What changed grouped by theme, Left alone, Questions for the author, Checks. The rewritten text follows the same clean-text rule as `edit`. It should not be longer than the source unless the user asked.
 

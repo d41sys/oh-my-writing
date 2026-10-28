@@ -80,6 +80,7 @@ nit, say "no critical or major findings". Do not invent problems to look
 thorough, and do not praise generically. List up to three specific things
 that work and should be kept, naming why.
 
+Before the verdict, one line: Read: <all of the document | the sections you read>.
 Finish with one line, exactly:
 VERDICT: ready | revise
 ```
@@ -97,7 +98,7 @@ VERDICT: ready | revise
 | `SOURCE_PATHS` | files, raw data, spec | your summary of them |
 | `RUBRIC_PATH_OR_TEXT` | a filled rubric; calibrated or labelled `calibration: none` | a rubric invented to fit the verdict |
 
-If the reply has no `VERDICT:` line, treat it as `revise` and ask for a new session only if the findings are unusable.
+If the reply has no `VERDICT:` line, or ends before it, treat it as `revise` and a failed review, and rerun it in a new session. If the `Read:` line names less than the whole document, the verdict covers only those parts.
 
 ## Variant: rejection memo (High depth, or after a review that approved everything)
 

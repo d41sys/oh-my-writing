@@ -3,7 +3,7 @@ name: independent-review
 description: Reviews a finished or near-finished draft through a reader or reviewer who does not share the writer's context, so the verdict is not contaminated by what the writer meant. Covers fresh-reader tests, independent reviewer prompts, rubric calibration against human-chosen examples, blind pairwise comparison of two versions, finding triage by reader impact, point-by-point responses to reviewer comments, and stop rules. Use when the user asks to review, critique, test or sanity-check a draft, wants a fresh pair of eyes or a second opinion, asks whether a reader will understand it, wants to choose between two versions, has reviewer or editor comments to sort or answer, or asks you to grade your own writing.
 license: MIT
 metadata:
-  version: "1.4"
+  version: "1.5"
   skill-author: d41sys
 ---
 
@@ -71,6 +71,7 @@ When the job is a reply to reviewers rather than a review of a draft, follow [re
 - **Audience prerequisites are not defects.** If the brief says the reader knows X and the reader stalls on X, the audience is wrong, not the text. If the brief does not say, treat the stall as a defect.
 - **Anchor every finding in a quote and a reader consequence.** Reason: findings without location or impact cannot be triaged. Exception: whole-document findings (structure, missing section) name the section instead.
 - **A clean result is a valid result.** A reviewer who finds nothing important says so; you do not hunt for something to change. Empty feedback means no findings were raised in that review, not that the text is proven correct.
+- **A verdict counts only for what the reviewer actually read.** The reply must be complete (it ends on the verdict line, not cut off by a length or time limit) and must say it covered the whole artifact you sent, not a subset. Reason: a reviewer that stopped halfway or skimmed one section says nothing about the rest. A bare `ready` with no findings list, or with no scores against the threshold you set, is not a pass either. Treat an incomplete or label-only reply as no review, rerun it in a new session, and until then do not report the text as reviewed.
 - **Reviewer fixes are suggestions.** Taste-only findings are nits and are skipped when a real author sample or the user's stated style disagrees. Reason: a real author sample outranks a generic reviewer preference.
 - **Never loop "edit, re-review, repeat until clean".** Reason: the editor learns to please the reviewer, and the text drifts. Re-run only to confirm a specific accepted finding is gone, in a new session.
 - **Do not average disagreements away.** When two reviewers differ on severity or score, find the cause (different reading of the criterion, different evidence, different reader assumed) and record it. Reason: the disagreement is usually the finding.
@@ -88,7 +89,7 @@ Depth: light | standard | high    Rounds: <n>    Reviewer sessions: <n> (family:
 Fresh-reader test: main point restated: matches brief | partly | misses
   Stalls: <n text defects / n audience boundary / n reader limitation>
   Next question the reader asked: <quote>
-Reviewer verdict (verbatim line): <ready | revise>
+Reviewer verdict (verbatim line): <ready | revise>    Reviewed: <whole artifact | only these parts: ...>
 Rubric: <n> criteria, calibration <calibrated | partly | none> | no rubric used
 
 Findings (a table for more than three; otherwise one plain sentence each: quote, reader impact, decision)

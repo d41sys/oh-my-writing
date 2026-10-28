@@ -58,6 +58,15 @@ Leave out, and note why in the profile:
 - Heavily quoted or collaborative documents where the author's share cannot be separated.
 - Anything older than the author's current style, if they say they write differently now.
 
+## The author's edits to drafts written for them
+
+A draft that someone else or an assistant wrote is not a sample. What the author did to it is the strongest voice evidence there is, because it shows what they reject and not only what they produce. Ask for both the draft and the version the author sent or published, and compare them: record what was cut, swapped, reordered or left alone.
+
+- A change repeated across drafts (the same word struck each time, the same opener rewritten) is a firm trait, or a never-use entry when the author removes the word and offers no replacement. A change seen once is weak.
+- Quote the shortest before and after span, with the pair's name. Keep the reason if the author gave one.
+- Edits made for facts, legal review, length or someone else's instruction are not voice. Leave them out.
+- Keep these pairs apart from the sample set in the provenance log, so a later update can see which rows rest on edits.
+
 ## Provenance log
 
 Record for each sample what the profile needs later: a file name or title, date, channel and audience, set, word count and any note on editing. The profile template has a table for this. With it, a later update can tell what changed and why.

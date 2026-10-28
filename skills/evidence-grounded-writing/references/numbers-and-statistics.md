@@ -28,13 +28,14 @@ Do them yourself, in the open, before keeping a number.
 - **Percent change** = (new - old) / old x 100. A drop from 210 ms to 168 ms is (168-210)/210 = -20%, a 20% reduction. "Reduced by 96%" would mean the new value is 4% of the old.
 - **Percent versus percentage points.** Going from 10% to 12% is +2 percentage points, and +20% relative. Say which. Writing "up 2%" for a rate that rose from 10% to 12% is wrong.
 - **Relative versus absolute.** "Cut the error rate by 50%" may mean 0.02% to 0.01%, an absolute change of 0.01 percentage points. Give both when the base is small or the gain looks big. If the reader needs to judge impact, the absolute figure matters more.
+- **Combining separate improvements.** Relative gains from separate changes multiply, they do not add: a 20% cut and a 10% cut leave 0.8 x 0.9 = 72% of the original, a 28% cut, not 30%. A combined figure worked out this way was not measured; call it a projection and say it assumes the changes act independently. Only a run with all the changes together is a measured combined effect.
 - **Reverse changes are not symmetric.** A 50% fall needs a 100% rise to recover.
 - **Reading "times".** "3x faster" is ambiguous (three times the speed, or three times quicker to run?). State the pair of values.
 - **Sum checks.** Parts add to the whole (allow rounding). Percentages in an exclusive set add to about 100%; if not, say why (multiple answers, missing category).
 - **Rates and per-unit values.** Per what? Per 1,000 users, per year, per request. Compare rates only over the same unit and period.
 - **Averages.** Name the average (mean, median) and match it to the question: the mean when the reader needs a total (cost, hours, bytes, because total = n x mean); the median or a percentile for a typical experience under skewed values (income, latency, price). Give the spread. An average of averages is not the overall average unless the groups are equal in size.
 - **Sample size.** State how many units the number rests on and what counts as a unit (people, sessions, seeds). Many measurements on a few units are not many independent results.
-- **Total counts versus evaluable counts.** Say how many were excluded, lost or unmeasurable before quoting percentages of the rest.
+- **Total counts versus evaluable counts.** Say how many were excluded, lost or unmeasurable before quoting percentages of the rest. A rate that needs a follow-up window (resolved within 30 days, retained after 90) has a denominator of only the cases whose window has closed. Cases still inside their window are reported separately as pending; they are not counted as failures and not counted as successes.
 
 ## 3. Base rates and conditional probabilities
 

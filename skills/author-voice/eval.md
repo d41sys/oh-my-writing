@@ -4,17 +4,17 @@ Answer each check pass or fail. Fix every failure before returning.
 
 ## Evidence (build and update)
 
-1. Does every trait row cite either a short quote with its sample name or a measured figure with its set?
+1. Does every trait row cite either a short quote with its sample name or a measured figure with its set, and say in a few words what the trait does not mean?
 2. Does every row carry a strength of strong, moderate or weak, consistent with the rubric in the trait catalog, or, when every row shares one strength and scope, does the header state it once?
 3. Is every row above weak backed by at least three samples, or by a figure that holds across samples?
 4. If there are fewer than five samples or about a thousand words in total, is confidence marked low and no row above moderate? With a single sample, is every row weak, is it stated that one sample is not a voice, and is more material requested?
 5. Are the excluded samples listed with the reason for each exclusion (ghost-written, heavily edited, AI-drafted, translated, quoted, too old)? Was a style guide, an admired author's text or an assistant's earlier draft kept out of the evidence?
-6. Are public and private or casual samples kept in separate sets, with splits recorded rather than averaged?
+6. Are public and private or casual samples kept in separate sets, with splits recorded rather than averaged? Where the author edited drafts written for them, are the draft and edited pair used as evidence (a change repeated in two or more drafts rated strong, a one-off weak), apart from the sample set?
 7. Are measured figures labelled as observations from a named set, not as targets?
 
 ## Separation and safety
 
-8. Are observed traits, the author's stated preferences, and declared rules (words refused, terms, casing) kept in separate sections, with any conflict recorded as a question?
+8. Are observed traits, the author's stated preferences, and declared rules (words refused, terms, casing) kept in separate sections, with any conflict recorded as a question? Is there a never-use list, each word or phrase with its reason and basis, and is it kept out of drafted text?
 9. Is the profile free of biography, anecdotes, opinions, employers, credentials and facts taken from the samples, including names, places and numbers that appear in them?
 10. Are quotes short, and is no private detail exposed that a described habit could have replaced?
 11. Was the profile saved only where the author asked (an output file named in the request counts), with a date and the sample set in the changelog, and marked unconfirmed until the author confirms?

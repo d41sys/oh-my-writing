@@ -38,21 +38,23 @@ Measured with: <tool and command, for example `voice_stats.py` on the public set
 
 <!-- Numbers come from a script or a hand count. Say which sample set they describe.
 They are observations, not targets. Strength: strong = holds in nearly every sample and in
-every set; moderate = holds in about half the samples or in one set only; weak = seen in one or
-two samples, or numbers that swing widely. Omit anything weaker than weak. -->
+every set, or the author made the same edit to two or more drafts written for them; moderate =
+holds in about half the samples or in one set only; weak = seen in one or two samples, or numbers
+that swing widely. Omit anything weaker than weak. "Does not mean" is a few words naming the
+misreading to avoid when applying the trait. -->
 
-<!-- Few samples: when every row has the same strength and scope, say it once in the Confidence cell above and drop the Strength and Holds in columns here and below. Leave out any section that would be empty (Splits, Stated preferences, Declared rules, Never-do zones) instead of keeping an empty table. -->
+<!-- Few samples: when every row has the same strength and scope, say it once in the Confidence cell above and drop the Strength and Holds in columns here and below. Leave out any section that would be empty (Splits, Stated preferences, Declared rules, Never-do zones and never-use words) instead of keeping an empty table. -->
 
-| Trait | Observation | Evidence | Strength | Holds in |
-|---|---|---|---|---|
-| Sentence length | <mean 14, median 12, stdev 8; short sentences between longer ones> | <voice_stats public set: mean 14.2, stdev 8.1> | <strong> | <all sets> |
-| Paragraph shape | <2 to 4 sentences, point first> | <stat: 3.1 sentences on average; sample-02 para 3> | <moderate> | <public> |
-| Person and address | <first person singular, speaks to "you"> | <I 22 and you 18 per 1000 words> | <strong> | <all sets> |
-| Contractions | <uses them freely> | <contractions 31 per 1000 words> | <strong> | <all sets> |
-| Punctuation | <rare semicolons, parentheses for asides> | <semicolon 0.4, parenthesis 6 per 1000 words> | <moderate> | <public> |
-| Formatting | <prose with occasional short lists> | <bullet ratio 0.15> | <weak> | <public> |
-| Fragments and rhythm | <runs of very short sentences, rarely a long one> | <stat: median 6, max 14; post-01 opening run> | <moderate> | <public> |
-| Capitalization | <conventional> | <all sample titles and sentences> | <weak> | <public> |
+| Trait | Observation | Does not mean | Evidence | Strength | Holds in |
+|---|---|---|---|---|---|
+| Sentence length | <mean 14, median 12, stdev 8; short sentences between longer ones> | <not every sentence short> | <voice_stats public set: mean 14.2, stdev 8.1> | <strong> | <all sets> |
+| Paragraph shape | <2 to 4 sentences, point first> | <not one-liners> | <stat: 3.1 sentences on average; sample-02 para 3> | <moderate> | <public> |
+| Person and address | <first person singular, speaks to "you"> | <not "we" for the team> | <I 22 and you 18 per 1000 words> | <strong> | <all sets> |
+| Contractions | <uses them freely> | <not slang or fragments> | <contractions 31 per 1000 words> | <strong> | <all sets> |
+| Punctuation | <rare semicolons, parentheses for asides> | <not a dash habit> | <semicolon 0.4, parenthesis 6 per 1000 words> | <moderate> | <public> |
+| Formatting | <prose with occasional short lists> | <not bullets by default> | <bullet ratio 0.15> | <weak> | <public> |
+| Fragments and rhythm | <runs of very short sentences, rarely a long one> | <not staged fragments for effect> | <stat: median 6, max 14; post-01 opening run> | <moderate> | <public> |
+| Capitalization | <conventional> | <not lowercase for warmth> | <all sample titles and sentences> | <weak> | <public> |
 
 ## Observed moves
 
@@ -60,16 +62,16 @@ two samples, or numbers that swing widely. Omit anything weaker than weak. -->
 transitions, how evidence appears, recurring phrases. Quote the sample; keep quotes short and
 name the file. -->
 
-| Move | What the author does | Evidence (quote and sample) | Strength | Holds in |
-|---|---|---|---|---|
-| Opening | <starts on the concrete case, not the topic> | <"The build broke on Tuesday." (post-03)> | <moderate> | <public> |
-| Closing | <ends on the last point, no summary> | <post-01, post-02, post-04 end mid-argument> | <strong> | <public> |
-| Hedging | <hedges once, with the reason> | <"probably, since I only ran it twice" (post-02)> | <moderate> | <all sets> |
-| Humor | <dry, one aside per piece> | <"(it did not)" (post-05)> | <weak> | <public> |
-| Recurring phrase | <"in practice"> | <3 of 6 samples> | <moderate> | <public> |
-| Compression | <compressed: terms defined in passing> | <post-02 "a cache, meaning the copy we keep nearby"> | <weak> | <public> |
-| Claim style | <number first, then the claim> | <post-01, post-03, post-04> | <moderate> | <public> |
-| Call to action | <none; pieces end on the last point> | <absent in 5 of 5 samples> | <moderate> | <public> |
+| Move | What the author does | Does not mean | Evidence (quote and sample) | Strength | Holds in |
+|---|---|---|---|---|---|
+| Opening | <starts on the concrete case, not the topic> | <not a story every time; a how-to opens on the task> | <"The build broke on Tuesday." (post-03)> | <moderate> | <public> |
+| Closing | <ends on the last point, no summary> | <not abrupt; the last point lands> | <post-01, post-02, post-04 end mid-argument> | <strong> | <public> |
+| Hedging | <hedges once, with the reason> | <not hedging every claim> | <"probably, since I only ran it twice" (post-02)> | <moderate> | <all sets> |
+| Humor | <dry, one aside per piece> | <not jokes in every paragraph> | <"(it did not)" (post-05)> | <weak> | <public> |
+| Recurring phrase | <"in practice"> | <not a filler opener> | <3 of 6 samples> | <moderate> | <public> |
+| Compression | <compressed: terms defined in passing> | <not clipped or cryptic> | <post-02 "a cache, meaning the copy we keep nearby"> | <weak> | <public> |
+| Claim style | <number first, then the claim> | <not a figure in every sentence> | <post-01, post-03, post-04> | <moderate> | <public> |
+| Call to action | <none; pieces end on the last point> | <not cold; no ask at all> | <absent in 5 of 5 samples> | <moderate> | <public> |
 
 ## Splits and conflicts
 
@@ -109,14 +111,17 @@ formality, layout) changes. Write only what a sample supports; mark the rest as 
 | <Email to clients> | <direct, short> | <no asides, fewer contractions> | <email-01..03> |
 | <Channel with no samples> | <unknown> | <extrapolated; confirm before relying on it> | <none> |
 
-## Never-do zones
+## Never-do zones and never-use words
 
-<!-- Only things the author avoids that the samples show across several samples (absence needs
-enough samples to mean something), or that the author explicitly asked for. Say which. -->
+<!-- Things the author avoids that the samples show across several samples (absence needs enough
+samples to mean something), that the author explicitly asked for, or that they struck from drafts
+written for them (two or more drafts). One row per zone, word or phrase, with the reason: the
+author's own words if given. Say which basis applies. -->
 
-| Zone | Basis (observed in N samples / requested by author) | Notes |
+| Zone, word or phrase | Basis (observed in N samples / requested by author / struck from N drafts) | Why |
 |---|---|---|
 | <No exclamation marks> | <observed in 6 of 6 samples> | <including celebratory posts> |
+| <"leverage"> | <struck from 3 drafts> | <"sounds like a vendor"> |
 
 ## Language and locale notes
 
