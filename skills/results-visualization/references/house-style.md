@@ -49,8 +49,8 @@ Pick the preset for where the figure is printed. A 12-inch figure shrunk to one 
 ## 5. Chart details
 
 - **Lines:** light grid (alpha 0.3), x-limits set to the data, legend inside the plot where it covers no data. A share such as accuracy stops at 1.0 instead of padding past it.
-- **Bars:** zero baseline, white edges, dashed horizontal grid only. Stacked bars keep the legend in stack order. Grouped bars share one legend across panels and draw a zero line when values go negative. Value axes from 1,000 up use thousands separators, matching the value labels.
-- **Confusion matrices:** purple-red sequential map (`PuRd`), the count in every cell, predicted on x and true on y. Shading is by share of the true class, so a small class with errors is visible next to a large one. Use count shading only when classes are of similar size.
+- **Bars:** zero baseline, white edges, dashed horizontal grid only. Stacked bars keep the legend in stack order. Grouped bars share one legend across panels, listing every method of every panel, and draw a zero line when values go negative. Value labels in one panel share one number of decimals (none for whole numbers or values from 100 up). Value axes from 1,000 up use thousands separators, matching the value labels.
+- **Confusion matrices:** purple-red sequential map (`PuRd`), the value in every cell (counts with thousands separators, shares or rates with two decimals), predicted on x and true on y. Shading is by share of the true class, so a small class with errors is visible next to a large one. Use count shading only when classes are of similar size.
 - **Bubble matrices:** one colour per row, area proportional to count, dash-dot grid, and a size key that shows what a bubble of each size means.
 - **Frame:** black axes, no top-right removal tricks unless the template does it.
 

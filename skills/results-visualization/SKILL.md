@@ -3,7 +3,7 @@ name: results-visualization
 description: "Turns experiment and measurement results into publication-ready charts in one consistent paper style: method comparisons over rounds, clients or a parameter, cost or time breakdowns, confusion matrices, and per-group distributions such as samples per class on each client. Reads the numbers from result files, keeps each method's colour and marker the same across panels and figures, flags axes that exaggerate small gaps, and writes a caption that states the finding. Matches the author's own plotting template when one is given. Use when asked to plot, chart or visualise results, make figures for a paper, thesis, report or slides, redo figures in a house style, compare methods in a figure, or draw confusion matrices or data-distribution plots. Not for architecture or flow diagrams, dashboards, or decorative graphics."
 license: MIT
 metadata:
-  version: "1.4"
+  version: "1.5"
   skill-author: d41sys
 ---
 

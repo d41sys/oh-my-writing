@@ -6,9 +6,11 @@ Render a figure without writing Python:
 uv run --with matplotlib --with numpy python scripts/plotstyle.py render spec.json --out figures/accuracy
 ```
 
-The command writes `figures/accuracy.pdf` and `figures/accuracy.png` and prints each warning as `check: …`; fix it or state it in the caption. The exit code is 0 once the files are written, even with checks printed, and 2 when the spec is wrong. `--strict` exits 1 when checks were printed, for pipelines that must stop on them. `--preset` picks the size (`paper-single`, `paper-double`, `notebook`, `slide`). `--no-tex` skips LaTeX text.
+The command writes `figures/accuracy.pdf` and `figures/accuracy.png` and prints each warning as `check: …`; fix it or state it in the caption. The exit code is 0 once the files are written, even with checks printed, and 2 when the spec is wrong (invalid JSON, a missing field, a missing or non-numeric CSV column). `--strict` exits 1 when checks were printed, for pipelines that must stop on them. `--preset` picks the size (`paper-single`, `paper-double`, `notebook`, `slide`); a `"preset"` field in the spec overrides it. `--no-tex` skips LaTeX text.
 
 Paths to CSV files are relative to the spec file.
+
+A missing value is `null` inline, or an empty or `NA` cell in a CSV. Lines and grouped bars draw a gap there and print a `check:` line, so the caption can say which run is missing. Stacked bars refuse a missing part, because the stack total would be wrong.
 
 ## Lines
 
@@ -59,7 +61,7 @@ Methods sit side by side in each category. A panel takes `categories` and `serie
 }
 ```
 
-One part gives plain bars.
+One part gives plain bars. A panel can also read a `csv`: `x` names the category column and `series` lists the part columns.
 
 ## Confusion matrices
 

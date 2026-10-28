@@ -14,6 +14,8 @@ import plotstyle as ps  # noqa: E402
 @pytest.fixture(autouse=True)
 def style():
     ps.apply_style("paper-double", tex=False)
+    yield
+    ps.plt.close("all")
 
 
 def _line_props(ax):
@@ -196,3 +198,68 @@ def test_tex_escaping_leaves_math_alone():
         assert "€" not in out
     finally:
         ps.apply_style("paper-double", tex=False)
+
+
+def test_missing_runs_are_gaps_with_a_caption_check_not_a_crash(tmp_path, capsys):
+    fig, warnings = ps.method_lines([{"x": [1, 2, 3], "series": {"A": [0.5, None, 0.7], "B": [0.6, 0.7, 0.8]}}])
+    a = next(l for l in fig.axes[0].get_lines() if l.get_label() == "A")
+    assert np.isnan(a.get_ydata()[1]) and a.get_ydata()[2] == 0.7  # nothing interpolated or shifted
+    assert len(warnings) == 1 and "A: 1 missing value" in warnings[0]
+    # the same gap from an empty CSV cell, through the command line
+    (tmp_path / "r.csv").write_text("round,A,B\n1,0.5,0.6\n2,,0.7\n3,0.7,NA\n", encoding="utf-8")
+    spec = {"type": "lines", "panels": [{"csv": "r.csv", "x": "round", "series": ["A", "B"], "ylim": [0, 1]}]}
+    (tmp_path / "spec.json").write_text(json.dumps(spec), encoding="utf-8")
+    assert ps.main(["render", str(tmp_path / "spec.json"), "--out", str(tmp_path / "fig"), "--no-tex"]) == 0
+    out = capsys.readouterr().out
+    assert "A: 1 missing value" in out and "B: 1 missing value" in out
+
+
+def test_a_csv_series_with_text_is_a_spec_error_not_a_categorical_axis(tmp_path, capsys):
+    (tmp_path / "r.csv").write_text("n,A\n1,0.5\n2,0.6%\n", encoding="utf-8")
+    spec = {"type": "lines", "panels": [{"csv": "r.csv", "x": "n", "series": ["A"]}]}
+    (tmp_path / "spec.json").write_text(json.dumps(spec), encoding="utf-8")
+    assert ps.main(["render", str(tmp_path / "spec.json"), "--out", str(tmp_path / "fig"), "--no-tex"]) == 2
+    assert "'A' is not numeric" in capsys.readouterr().err
+
+
+def test_a_stack_with_a_missing_part_is_refused():
+    with pytest.raises(ValueError, match="a stack needs every part"):
+        ps.stacked_bars([{"categories": ["x", "y"], "parts": {"p1": [2, None]}}])
+
+
+def test_a_matrix_of_shares_shows_its_values_not_zeros():
+    fig, _ = ps.confusion_grid([{"labels": ["a", "b"], "matrix": [[0.95, 0.05], [0.2, 0.8]]}])
+    assert {t.get_text() for t in fig.axes[0].texts} == {"0.95", "0.05", "0.20", "0.80"}
+
+
+def test_grouped_legend_lists_a_method_missing_from_the_first_panel():
+    panels = [{"categories": ["w"], "series": {"A": [1], "Ours": [2]}},
+              {"categories": ["w"], "series": {"A": [3], "B": [2], "Ours": [1]}}]
+    fig, _ = ps.grouped_bars(panels, highlight="Ours")
+    assert [t.get_text() for t in fig.legends[0].get_texts()] == ["A", "Ours", "B"]
+
+
+def test_value_labels_in_a_panel_share_one_number_of_decimals():
+    fig, _ = ps.grouped_bars([{"categories": ["a", "b"], "series": {"A": [21.0, 22.8], "B": [1.25, 3]}}],
+                             value_labels=True)
+    assert {t.get_text() for t in fig.axes[0].texts} == {"21.0", "22.8", "1.2", "3.0"}
+    fig, _ = ps.grouped_bars([{"categories": ["a"], "series": {"A": [12], "B": [7]}}], value_labels=True)
+    assert {t.get_text() for t in fig.axes[0].texts} == {"12", "7"}  # counts stay whole
+
+
+def test_stacked_bars_read_parts_from_csv(tmp_path):
+    (tmp_path / "t.csv").write_text("rho,Dec,Agg\n10,2,8\n5,1,4\n", encoding="utf-8")
+    spec = {"type": "stacked_bars", "panels": [{"csv": "t.csv", "x": "rho", "series": ["Dec", "Agg"]}]}
+    panel = ps._stack_panel(spec["panels"][0], tmp_path)
+    fig, _ = ps.stacked_bars([panel])
+    ax = fig.axes[0]
+    assert [t.get_text() for t in ax.get_xticklabels()] == ["10", "5"]
+    assert sorted(round(r.get_y() + r.get_height(), 9) for r in ax.patches) == [1.0, 2.0, 5.0, 10.0]
+
+
+@pytest.mark.parametrize("text, message", [("{\"type\": \"lines\"}", "no 'panels' field"),
+                                           ("{type: lines", "Expecting property name")])
+def test_a_broken_spec_exits_2_with_a_message(tmp_path, capsys, text, message):
+    (tmp_path / "spec.json").write_text(text, encoding="utf-8")
+    assert ps.main(["render", str(tmp_path / "spec.json"), "--out", str(tmp_path / "fig"), "--no-tex"]) == 2
+    assert message in capsys.readouterr().err

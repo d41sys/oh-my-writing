@@ -60,7 +60,7 @@ def tex_available() -> bool:
 
 
 def apply_style(preset: str = "paper-double", tex: bool | None = None) -> dict:
-    """Serif type, bold labels and titles, light grid, black frame. LaTeX text when installed (or forced)."""
+    """Computer Modern Sans words, bold labels and titles, light grid, black frame. LaTeX text when usable (or forced)."""
     if preset not in PRESETS:
         raise ValueError(f"unknown preset {preset!r}; choose from {', '.join(PRESETS)}")
     p = PRESETS[preset]
@@ -139,9 +139,31 @@ def plain(text: str) -> str:
 
 
 def _thousands(ax) -> None:
-    """Thousands separators on the value axis once values reach 1,000, matching the value labels."""
+    """Thousands separators on the value axis once values reach 1,000, matching the value labels. Under LaTeX the
+    numbers stay in maths mode, so they keep the Computer Modern digits of every other axis."""
     if max(abs(v) for v in ax.get_ylim()) >= 1000:
-        ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:,.0f}"))
+        tex = _STATE["tex"]
+        ax.yaxis.set_major_formatter(FuncFormatter(
+            lambda v, _: f"${v:,.0f}$".replace(",", "{,}") if tex else f"{v:,.0f}"))
+
+
+def _values(vals) -> np.ndarray:
+    """Numbers as floats. None (JSON null) and NaN are missing values: lines and bars draw a gap there."""
+    return np.array([np.nan if v is None else v for v in vals], dtype=float)
+
+
+def _gap_warning(where: str, name: str, y: np.ndarray) -> str | None:
+    gaps = int(np.isnan(y).sum())
+    return f"{where}, {name}: {gaps} missing value(s) drawn as a gap; say so in the caption" if gaps else None
+
+
+def _label_decimals(values: list[float]) -> int:
+    """One number of decimals for every value label in a panel, so 21 does not sit beside 22.8 like a typo:
+    whole numbers get none, values of 100 or more none, smaller values three significant digits of the largest."""
+    top = max((abs(v) for v in values), default=0.0)
+    if top == 0 or top >= 100 or all(float(v).is_integer() for v in values):
+        return 0
+    return max(0, 2 - int(np.floor(np.log10(top))))
 
 
 def figsize(panels: int = 1, aspect: float = 0.42) -> tuple[float, float]:
@@ -193,28 +215,32 @@ def method_lines(panels: list[dict], highlight: str | None = None, legend: str =
     warnings = []
     for i, (ax, panel) in enumerate(zip(axes[0], panels)):
         x = panel["x"]
+        values = []
         for name in names:
             if name not in panel["series"]:
                 continue
-            y = panel["series"][name]
+            y = _values(panel["series"][name])
             if len(y) != len(x):
                 raise ValueError(f"panel {i + 1}, {name}: {len(y)} values for {len(x)} x points")
+            gap = _gap_warning(f"panel {i + 1}", name, y)
+            if gap:
+                warnings.append(gap)
+            values += [float(v) for v in y if not np.isnan(v)]
             ax.plot(x, y, label=plain(name), **styles[name])
         ax.set_xlabel(bold(panel.get("xlabel", "")))
         ax.set_ylabel(bold(panel.get("ylabel", "")))
         if panel.get("title"):
             ax.set_title(bold(_letter(i, panel["title"]) if len(panels) > 1 else panel["title"]), pad=8)
         ax.set_xlim(*(panel.get("xlim") or (min(x), max(x))))
-        values = [v for n in names if n in panel["series"] for v in panel["series"][n]]
         if panel.get("ylim"):
             ax.set_ylim(*panel["ylim"])
-        elif 0 <= min(values) and max(values) <= 1 < ax.get_ylim()[1]:
+        elif values and 0 <= min(values) and max(values) <= 1 < ax.get_ylim()[1]:
             # a share (accuracy, F1) cannot exceed 1; stop the axis there and let markers at 1.0 draw whole
             ax.set_ylim(top=1.0)
             for line in ax.get_lines():
                 line.set_clip_on(False)
         ax.legend(loc=legend)
-        w = zoom_warning(values, ax.get_ylim(), f"panel {i + 1}")
+        w = zoom_warning(values, ax.get_ylim(), f"panel {i + 1}") if values else None
         if w:
             warnings.append(w)
     fig.tight_layout()
@@ -232,7 +258,10 @@ def stacked_bars(panels: list[dict], legend: str = "best"):
         x = np.arange(len(cats))
         bottom = np.zeros(len(cats))
         for k, (name, vals) in enumerate(panel["parts"].items()):
-            vals = np.asarray(vals, dtype=float)
+            vals = _values(vals)
+            if np.isnan(vals).any():
+                raise ValueError(f"panel {i + 1}, {name}: missing value; a stack needs every part, so plot the "
+                                 "parts as grouped bars or get the value from the source")
             if len(vals) != len(cats):
                 raise ValueError(f"panel {i + 1}, {name}: {len(vals)} values for {len(cats)} categories")
             if (vals < 0).any():
@@ -282,19 +311,25 @@ def grouped_bars(panels: list[dict], highlight: str | None = None, value_labels:
     for i, (ax, panel) in enumerate(zip(axes[0], panels)):
         cats = [str(c) for c in panel.get("categories", panel.get("x", []))]
         present = [n for n in names if n in panel["series"]]
+        series = {n: _values(panel["series"][n]) for n in present}
+        finite = [float(v) for y in series.values() for v in y if not np.isnan(v)]
+        decimals = _label_decimals(finite)
         width = 0.8 / max(len(present), 1)
         x = np.arange(len(cats))
         for j, name in enumerate(present):
-            vals = np.asarray(panel["series"][name], dtype=float)
+            vals = series[name]
             if len(vals) != len(cats):
                 raise ValueError(f"panel {i + 1}, {name}: {len(vals)} values for {len(cats)} categories")
+            gap = _gap_warning(f"panel {i + 1}", name, vals)
+            if gap:
+                warnings.append(gap)
             bars = ax.bar(x + (j - (len(present) - 1) / 2) * width, vals, width=width, label=plain(name),
                           color=styles[name]["color"], hatch=patterns[name],
                           edgecolor="black" if hatch else "white", linewidth=0.6,
                           zorder=3)
             if value_labels:
                 # three or more bars per group leave no room for horizontal labels; turn them upright
-                ax.bar_label(bars, labels=[f"{v:,.0f}" if abs(v) >= 100 else f"{v:,.3g}" for v in vals],
+                ax.bar_label(bars, labels=["" if np.isnan(v) else f"{v:,.{decimals}f}" for v in vals],
                              padding=2, rotation=90 if len(present) > 2 else 0,
                              fontsize=max(PRESETS[_STATE["preset"]]["tick"] - 1.5, 6))
         if value_labels:
@@ -307,14 +342,19 @@ def grouped_bars(panels: list[dict], highlight: str | None = None, value_labels:
         ax.grid(True, axis="y", linestyle="--", linewidth=0.5)
         ax.grid(False, axis="x")
         ax.set_axisbelow(True)
-        if any(v < 0 for n in present for v in panel["series"][n]):
+        if any(v < 0 for v in finite):
             ax.axhline(0, color="black", linewidth=0.8, zorder=4)
         elif ax.get_ylim()[0] != 0:
             warnings.append(f"panel {i + 1}: bars must start at zero")
         if panel.get("title"):
             ax.set_title(bold(_letter(i, panel["title"]) if len(panels) > 1 else panel["title"]), pad=8)
-    handles, labels = axes[0][0].get_legend_handles_labels()
-    fig.legend(handles, labels, loc="upper center", ncol=len(labels), frameon=False, bbox_to_anchor=(0.5, 1.0))
+    # one legend for the figure, from every panel: a method missing from the first panel still gets its entry
+    handles = {}
+    for ax in axes[0]:
+        for handle, label in zip(*ax.get_legend_handles_labels()):
+            handles.setdefault(label, handle)
+    fig.legend(list(handles.values()), list(handles), loc="upper center", ncol=len(handles), frameon=False,
+               bbox_to_anchor=(0.5, 1.0))
     fig.tight_layout(rect=(0, 0, 1, 0.9))
     return fig, warnings
 
@@ -340,9 +380,12 @@ def confusion_grid(matrices: list[dict], color_by: str = "row-share"):
         im = ax.imshow(shade, cmap=CONFUSION_CMAP, vmin=0, vmax=1 if color_by == "row-share" else None)
         cut = shade.max() * 0.6 if shade.max() else 1
         size = max(PRESETS[_STATE["preset"]]["tick"] - (2 if len(labels) > 5 else 0), 6)
+        # counts get thousands separators; a matrix of shares or rates keeps two decimals instead of becoming 0
+        whole = bool(np.allclose(m, np.round(m)))
         for r in range(m.shape[0]):
             for c in range(m.shape[1]):
-                ax.text(c, r, f"{int(m[r, c]):,}" if not _STATE["tex"] else f"{int(m[r, c]):,}".replace(",", "{,}"),
+                cell = f"{m[r, c]:,.0f}" if whole else f"{m[r, c]:.2f}"
+                ax.text(c, r, cell.replace(",", "{,}") if _STATE["tex"] else cell,
                         ha="center", va="center", fontsize=size, color="white" if shade[r, c] > cut else "black")
         ax.set_xticks(range(len(labels)), [plain(l) for l in labels], fontsize=size)
         ax.set_yticks(range(len(labels)), [plain(l) for l in labels], fontsize=size, rotation=90, va="center")
@@ -424,18 +467,35 @@ def save(fig, base: str | Path, formats=("pdf", "png")) -> list[Path]:
 # ------------------------------------------------------------------ spec rendering
 
 
+MISSING_CELLS = {"", "na", "n/a", "nan", "null", "none"}
+
+
+def _number(cell: str) -> float | int:
+    if cell.lower() in MISSING_CELLS:
+        return float("nan")
+    try:
+        return int(cell)  # whole numbers stay whole, so a category 10 is labelled "10", not "10.0"
+    except ValueError:
+        return float(cell)
+
+
 def _csv_columns(path: Path) -> dict[str, list]:
+    """Columns of a CSV. A column whose cells are all numbers or empty is numeric; empty cells and NA are missing
+    values (NaN), drawn as gaps. Any other column stays text."""
     with path.open(newline="", encoding="utf-8") as fh:
         rows = list(csv.DictReader(fh))
     if not rows:
         raise ValueError(f"{path}: no rows")
-    cols = {k: [r[k] for r in rows] for k in rows[0]}
     out = {}
-    for k, vals in cols.items():
+    for k in rows[0]:
+        cells = [(r.get(k) or "").strip() for r in rows]
+        if all(c.lower() in MISSING_CELLS for c in cells):
+            out[k] = [float("nan")] * len(cells)  # every run missing: a whole gap, warned like any other
+            continue
         try:
-            out[k] = [float(v) for v in vals]
+            out[k] = [_number(c) for c in cells]
         except ValueError:
-            out[k] = vals
+            out[k] = cells
     return out
 
 
@@ -447,8 +507,20 @@ def _resolve_panel(panel: dict, root: Path) -> dict:
     missing = [c for c in [panel["x"], *panel["series"]] if c not in cols]
     if missing:
         raise ValueError(f"{panel['csv']}: no column {missing}; columns are {list(cols)}")
+    for c in panel["series"]:
+        text = [v for v in cols[c] if isinstance(v, str)]
+        if text:
+            raise ValueError(f"{panel['csv']}: column {c!r} is not numeric (for example {text[0]!r})")
     return {**{k: v for k, v in panel.items() if k not in {"csv", "x", "series"}},
             "x": cols[panel["x"]], "series": {c: cols[c] for c in panel["series"]}}
+
+
+def _stack_panel(panel: dict, root: Path) -> dict:
+    """A stacked panel read from a CSV: the x column gives the categories, the series columns the parts."""
+    if "csv" not in panel:
+        return panel
+    p = _resolve_panel(panel, root)
+    return {**{k: v for k, v in p.items() if k not in {"x", "series"}}, "categories": p["x"], "parts": p["series"]}
 
 
 def render(spec: dict, out: str | Path, root: Path | None = None) -> tuple[list[Path], list[str]]:
@@ -457,7 +529,7 @@ def render(spec: dict, out: str | Path, root: Path | None = None) -> tuple[list[
     if kind == "lines":
         fig, warnings = method_lines([_resolve_panel(p, root) for p in spec["panels"]], spec.get("highlight"))
     elif kind == "stacked_bars":
-        fig, warnings = stacked_bars(spec["panels"])
+        fig, warnings = stacked_bars([_stack_panel(p, root) for p in spec["panels"]])
     elif kind == "grouped_bars":
         fig, warnings = grouped_bars([_resolve_panel(p, root) for p in spec["panels"]], spec.get("highlight"),
                                      spec.get("value_labels", False), spec.get("hatch", False))
@@ -481,11 +553,14 @@ def main(argv=None) -> int:
     r.add_argument("--strict", action="store_true", help="exit 1 when there are checks to fix or state")
     args = ap.parse_args(argv)
     spec_path = Path(args.spec)
-    spec = json.loads(spec_path.read_text(encoding="utf-8"))
-    apply_style(spec.get("preset", args.preset), tex=False if args.no_tex else None)
     try:
+        spec = json.loads(spec_path.read_text(encoding="utf-8"))
+        apply_style(spec.get("preset", args.preset), tex=False if args.no_tex else None)
         paths, warnings = render(spec, args.out, spec_path.parent)
-    except ValueError as exc:
+    except KeyError as exc:  # a required spec field is absent
+        print(f"error: the spec has no {exc} field", file=sys.stderr)
+        return 2
+    except ValueError as exc:  # also invalid JSON
         print(f"error: {exc}", file=sys.stderr)
         return 2
     for p in paths:
