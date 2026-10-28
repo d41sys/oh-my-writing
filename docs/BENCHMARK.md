@@ -112,7 +112,7 @@ The pre-registered rules, answered:
 
 1. **No regression: met.** `gate.py check` against the frozen reference passed, so the revisions stay.
 2. **The content helps, not the length: not met.** The pass rate is 45 points above the placebo, well over the 10 points required. But the blind judge preferred the placebo's output (34 to 27), and the rule needed both. So the checks show a gain from the skills' content and the judge does not.
-3. **Edit/keep pairs: met.** With skills, 15 of 24 runs passed; the placebo and no skills passed none. On the keep cases (the text was already fine) we passed 9 of 12 and both others 0 of 12, so the rules do not over-edit there.
+3. **Edit/keep pairs: met.** With skills, 15 of 24 runs passed; the placebo and no skills passed none. On the keep cases (the text was already fine) we passed 9 of 12 and both others 0 of 12. Of those 24 other runs, 23 rewrote the text (similarity 0.42 to 0.95, below the 0.97 floor), most losing a protected phrase on the way; one left it unchanged but did not say so in the reply.
 
 What else the run showed:
 
