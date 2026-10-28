@@ -7,6 +7,7 @@ import pytest
 
 SCRIPTS = Path(__file__).resolve().parents[2] / "skills" / "results-visualization" / "scripts"
 sys.path.insert(0, str(SCRIPTS))
+sys.dont_write_bytecode = True
 import plotstyle as ps  # noqa: E402
 
 
@@ -90,6 +91,20 @@ def test_bubble_area_is_proportional_to_count_and_has_a_size_key():
     legend = ax.get_legend()
     assert legend is not None and legend.get_title().get_text() == "count"
     assert any("zero" in w for w in warnings)
+
+
+@pytest.mark.parametrize("missing", ["latex", "dvipng", "type1cm", "type1ec"])
+def test_partial_tex_install_falls_back_instead_of_crashing(monkeypatch, missing):
+    # usetex with latex but no cm-super (BasicTeX) makes every render raise, so detection needs every piece
+    monkeypatch.setattr(ps.shutil, "which", lambda name: None if name == missing else f"/bin/{name}")
+    monkeypatch.setattr(ps, "_has_tex_package", lambda name: name != missing)
+    assert ps.tex_available() is False
+
+
+def test_full_tex_install_is_detected(monkeypatch):
+    monkeypatch.setattr(ps.shutil, "which", lambda name: f"/bin/{name}")
+    monkeypatch.setattr(ps, "_has_tex_package", lambda name: True)
+    assert ps.tex_available() is True
 
 
 def _narrow_spec(tmp_path):

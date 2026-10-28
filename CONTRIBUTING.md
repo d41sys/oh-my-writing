@@ -18,7 +18,7 @@ A real failing example is the most useful contribution. It can become a benchmar
 git clone https://github.com/d41sys/academic-writing-skill.git && cd academic-writing-skill
 node bin/oh-my-writing.mjs install --dry-run        # see what the installer would do
 for d in skills/*/; do uvx --from 'git+https://github.com/agentskills/agentskills.git#subdirectory=skills-ref' skills-ref validate "$d"; done
-for t in tests/*/; do uv run --with pytest --with pyyaml python -m pytest "$t" -q -p no:cacheprovider; done
+for t in tests/*/; do uv run --with pytest --with pyyaml --with numpy --with matplotlib python -m pytest "$t" -q -p no:cacheprovider; done
 python3 evals/grade.py --validate
 ```
 

@@ -13,7 +13,7 @@ The default look for result figures. `scripts/plotstyle.py` applies it with `app
 
 ## 1. Type
 
-- Computer Modern **Sans** for words: axis titles, panel titles, legend and tick labels set in text. With LaTeX installed, text is set by LaTeX (`text.usetex`) in its sans family, and tick numbers on line charts come out in Computer Modern maths digits. Without LaTeX, a sans fallback with Computer Modern maths.
+- Computer Modern **Sans** for words: axis titles, panel titles, legend and tick labels set in text. With a complete LaTeX install (latex, dvipng and the cm-super fonts), text is set by LaTeX (`text.usetex`) in its sans family, and tick numbers on line charts come out in Computer Modern maths digits. Otherwise, including a partial install such as BasicTeX, a sans fallback with Computer Modern maths.
 - Axis titles and panel titles bold; tick labels and legend entries regular.
 - Under LaTeX, bold needs `\textbf{…}` because the font-weight setting is ignored. `bold()` in the script handles both modes.
 - Math in labels uses `$…$`, for example `Encryption ratio ($\rho$)`.

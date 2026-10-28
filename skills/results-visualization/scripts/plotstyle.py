@@ -53,7 +53,10 @@ _STATE = {"preset": "paper-double", "tex": False}
 
 
 def tex_available() -> bool:
-    return bool(shutil.which("latex"))
+    """True when matplotlib's usetex can render: latex, dvipng for PNG output, and the type1cm and type1ec
+    (cm-super) packages its preamble loads. A partial install such as BasicTeX has latex without cm-super."""
+    return (bool(shutil.which("latex")) and bool(shutil.which("dvipng"))
+            and _has_tex_package("type1cm") and _has_tex_package("type1ec"))
 
 
 def apply_style(preset: str = "paper-double", tex: bool | None = None) -> dict:
