@@ -11,16 +11,17 @@
   "checks": [
     {
       "type": "regex",
-      "pattern": "(?ism)(?:F4|resident quote|concrete figure).{0,500}?(?:reject|\\[ASK AUTHOR|ask the author|needs author|needs? (?:your|my) (?:own )?(?:answer|input|decision)|(?:you|I) (?:need|must|have) to answer|for you to answer|answer (?:it )?yourself|author (?:must|needs to) (?:answer|supply|provide)|decline)|^[^\\n]*(?:reject|\\[ASK AUTHOR)[^\\n]*(?:resident quote|concrete figure)[^\\n]*$",
+      "pattern": "(?ism)(?:F4|resident quote|concrete figure)(?:(?!\\bF\\d\\b).){0,500}?(?:reject|\\[ASK AUTHOR|ask the author|needs author|needs? (?:your|my) (?:own )?(?:answer|input|decision)|(?:you|I) (?:need|must|have) to answer|for you to answer|answer (?:it )?yourself|author (?:must|needs to) (?:answer|supply|provide)|decline)|^[^\\n]*(?:reject|\\[ASK AUTHOR)[^\\n]*(?:resident quote|concrete figure)[^\\n]*$",
       "note": "F4 must be rejected or handed back to the author; the prompt asks which findings 'I need to answer myself', so a verdict worded 'Needs your answer' says the same as 'needs author'"
     },
     {
       "type": "regex",
-      "pattern": "(?is)(?:F2|bulky items).{0,400}?(?:reject|already (?:says|states|defines|defined|explains)|no change|skip)"
+      "pattern": "(?ism)(?:F2|bulky items)(?:(?!\\bF\\d\\b).){0,400}?(?:reject|already (?:says|states|defines|defined|explains|addressed|covered|handled|included)|no change|skip)|^#+[^\\n]*\\b(?:skip|reject)[^\\n]*\\n(?:(?!^#).)*?\\bF2\\b",
+      "note": "F2 must be skipped or rejected: the verdict follows F2 within its own entry, or F2 sits under a Skip/Reject heading"
     },
     {
       "type": "regex",
-      "pattern": "(?is)(?:F1|first collection|dates).{0,300}?(?:accept|apply|\\bact\\b|fix)|(?:accept|apply|\\bact\\b|fix)\\w*[^\\n]{0,40}\\n(?:\\s*\\n)?[^\\n]{0,12}\\bF1\\b",
+      "pattern": "(?is)(?:F1|first collection|dates)(?:(?!\\bF\\d\\b).){0,300}?(?:accept|apply|\\bact\\b|fix)|(?:accept|apply|\\bact\\b|fix)\\w*[^\\n]{0,40}\\n(?:\\s*\\n)?[^\\n]{0,12}\\bF1\\b",
       "note": "F1 must be marked to act on; the verdict may come after F1 or as the group heading right above it"
     },
     {
@@ -50,7 +51,7 @@
       "fails": [
         "regex"
       ],
-      "output": "# Triage of reviewer findings\n\n## Act on\n\n- F1: accept. Move the dates up.\n\n## Leave alone\n\n- F3: nit, leave it.\n\n## Needs your answer\n\n- F4: reject. There is no resident quote or figure in the source, so ask the author.\n\n## Also act on\n\n- F2: add a definition of what counts as a bulky item, so residents know about mattresses.\n",
+      "output": "# Triage of reviewer findings\n\n## Act on\n\n- F1: accept. Move the dates up.\n- F2: add a definition of what counts as a bulky item, so residents know about mattresses.\n\n## Leave alone\n\n- F3: nit, skip.\n\n## Needs your answer\n\n- F4: reject. There is no resident quote or figure in the source, so ask the author.\n",
       "reply": "Saved the triage to out/triage.md."
     },
     {

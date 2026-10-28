@@ -83,7 +83,11 @@ def freeze(run_dir: Path, condition: str = "skill", model: str | None = None, ho
                 "hosts": sorted({r["host"] for r in runs}), "cases": len({r["case"] for r in runs}),
                 "repeat": info.get("repeat"), "host_versions": {k: v for k, v in info.items() if k.endswith("_version")},
                 "models": info.get("models") or {}, "model": model or "host default"},
-        "skill_versions": stats.skill_versions(), "runs": runs,
+        # the versions the run used (run.json, since run.py records them); older runs fall back to the repository's
+        # versions at freeze time, which match only when the reference is frozen right after its run
+        "skill_versions": info.get("skill_versions") or stats.skill_versions(),
+        "skill_versions_from": "run.json" if info.get("skill_versions") else "repository at freeze time",
+        "runs": runs,
     }
 
 

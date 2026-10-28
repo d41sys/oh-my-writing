@@ -88,8 +88,8 @@
     },
     {
       "type": "not_regex",
-      "pattern": "(?i)delay\\w*[^.\\n]{0,80}\\b(?:because|due to|caused|courier|customs|supplier|strike|shipping|backlog|stock)\\b|\\b(?:because|due to)\\b[^.\\n]{0,60}\\bdelay",
-      "note": "the notes give no reason for the delay; the post must leave it out or say it is unknown, not invent one"
+      "pattern": "(?i)\\b(?:delay\\w*|late|held up|stuck (?:at|in|behind)|took (?:so |far |too |way )?long|overdue|behind schedule|slow\\w*|stalled)\\b[^.\\n]{0,80}?\\b(?:because|due to|owing to|on account of|courier|customs|supplier|strike|shipping|backlog|stock|warehouse|factory|weather|lost|went missing|misplaced|ran out)\\b|\\b(?:because|due to|owing to|on account of)\\b[^.\\n]{0,80}?\\b(?:delay\\w*|late|held up|stuck|took (?:so |far |too |way )?long|overdue|behind schedule|stalled)\\b|\\bstuck (?:at|in|behind)\\b",
+      "note": "the notes give no reason for the delay; the post must leave it out or say it is unknown, not invent one. The check is anchored on any wording for 'late' (delayed, late, held up, stuck at, took so long, overdue) followed or preceded within the sentence by cause wording (because, due to, courier, customs, supplier ...), so rephrasing the delay does not escape it"
     },
     {
       "type": "not_regex",
@@ -111,6 +111,15 @@
         "not_regex"
       ],
       "output": "The wheel-truing stand arrived on Wednesday (finally; the order was delayed because the courier lost it in customs). I have been truing wheels with the grin of a man who owns a new stand, which is a grin I recommend and cannot charge for. 17 bikes went through the shop this week, and 2 are still waiting on parts, which I am choosing to call a healthy queue.\n\nWorkshop is open Saturday 9 to 1, as usual. On Sunday, 10 to 12, there is a free puncture-repair morning (bring your own bike; I will supply the patience). Prices are unchanged. Is that news? It is to me.\n",
+      "reply": "Saved this week's update to out/update.md. I explained the late order to make the post more satisfying."
+    },
+    {
+      "name": "trap-invents-delay-cause-held-up",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "The wheel-truing stand arrived on Wednesday (finally; it was held up because the courier lost it in customs). I have been truing wheels with the grin of a man who owns a new stand, which is a grin I recommend and cannot charge for. 17 bikes went through the shop this week, and 2 are still waiting on parts, which I am choosing to call a healthy queue.\n\nWorkshop is open Saturday 9 to 1, as usual. On Sunday, 10 to 12, there is a free puncture-repair morning (bring your own bike; I will supply the patience). Prices are unchanged. Is that news? It is to me.\n",
       "reply": "Saved this week's update to out/update.md. I explained the late order to make the post more satisfying."
     },
     {

@@ -1103,10 +1103,13 @@ def rules_digest() -> str:
 
 def tool_fingerprint() -> dict:
     """Digests of everything whose change makes old and new metric values not comparable: the two helper scripts
-    the metrics call, this file's rule data and the case files (their checks decide check_pass_rate)."""
+    the metrics call, this file's rule data and the case files (their checks decide check_pass_rate). A case's
+    `controls` are left out: sample answers that test the checks do not change any score."""
     cases = hashlib.sha256()
     for path in sorted(grade.CASES_DIR.glob("*/*.json")):
-        cases.update(path.read_bytes())
+        case = {k: v for k, v in json.loads(path.read_text(encoding="utf-8")).items() if k != "controls"}
+        cases.update(path.relative_to(grade.CASES_DIR).as_posix().encode() + b"\0")
+        cases.update(json.dumps(case, sort_keys=True, ensure_ascii=False).encode() + b"\0")
     return {"fact_diff.py": file_digest(grade.FACT_DIFF), "slop_scan.py": file_digest(grade.SLOP_SCAN),
             "stats rules": rules_digest(), "cases": cases.hexdigest()[:12]}
 

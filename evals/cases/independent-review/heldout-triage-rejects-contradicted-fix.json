@@ -13,7 +13,7 @@
   "checks": [
     {
       "type": "regex",
-      "pattern": "(?is)(?:\\bF1\\b|8:00|weekday (?:lane )?(?:swimming )?time).{0,500}?(?:accept|apply|\\bact\\b|\\bfix|correct|change (?:the draft|it) to|update)|(?:accept|apply|\\bact\\b|\\bfix|correct|update)\\w*[^\\n]{0,40}\\n(?:\\s*\\n)?[^\\n]{0,12}\\bF1\\b",
+      "pattern": "(?is)(?:\\bF1\\b|8:00|weekday (?:lane )?(?:swimming )?time)(?:(?!\\bF\\d\\b).){0,500}?(?:accept|apply|\\bact\\b|\\bfix|correct|change (?:the draft|it) to|update)|(?:accept|apply|\\bact\\b|\\bfix|correct|update)\\w*[^\\n]{0,40}\\n(?:\\s*\\n)?[^\\n]{0,12}\\bF1\\b",
       "note": "F1 is a real defect: the letter says 8:00 where the draft says 8:30; the verdict may follow F1 or head the group above it"
     },
     {
@@ -23,7 +23,7 @@
     },
     {
       "type": "regex",
-      "pattern": "(?is)(?:\\bF2\\b|24 February).{0,500}?(?:reject|decline|disagree|not (?:supported|correct|confirmed)|contradict|letter (?:says|states Feb|gives)|already (?:says|states|correct)|no change|skip|do not change|don't change|keep (?:17|the draft))|^[^\\n]*(?:reject|skip)[^\\n]*\\bF2\\b[^\\n]*$",
+      "pattern": "(?is)(?:\\bF2\\b|24 February)(?:(?!\\bF\\d\\b).){0,500}?(?:reject|decline|disagree|not (?:supported|correct|confirmed)|contradict|letter (?:says|states Feb|gives)|already (?:says|states|correct)|no change|skip|do not change|don't change|keep (?:17|the draft))|^[^\\n]*(?:reject|skip)[^\\n]*\\bF2\\b[^\\n]*$",
       "note": "F2 asks for a date the letter contradicts: reject it"
     },
     {
@@ -38,12 +38,12 @@
     },
     {
       "type": "regex",
-      "pattern": "(?is)(?:\\bF3\\b|low attendance|explaining).{0,500}?(?:reject|decline|\\[ASK AUTHOR|ask the author|needs author|needs? your (?:answer|input|confirmation|decision)|you need to answer|answer (?:it )?yourself|author (?:must|needs to) (?:answer|supply|provide|confirm)|(?:can|has|have) the council (?:confirm|confirmed)|not (?:in|stated|given|supported)|(?:letter|draft|source)[^.\\n]{0,60}(?:does not|doesn't|gives? no|says nothing|states? no))|(?:answer yourself|needs? your answer|ask the author)[^\\n]{0,30}\\n(?:\\s*\\n)?[^\\n]{0,12}\\bF3\\b",
+      "pattern": "(?is)(?:\\bF3\\b|low attendance|explaining)(?:(?!\\bF\\d\\b).){0,500}?(?:reject|decline|\\[ASK AUTHOR|ask the author|needs author|needs? your (?:answer|input|confirmation|decision)|you need to answer|answer (?:it )?yourself|author (?:must|needs to) (?:answer|supply|provide|confirm)|(?:can|has|have) the council (?:confirm|confirmed)|not (?:in|stated|given|supported)|(?:letter|draft|source)[^.\\n]{0,60}(?:does not|doesn't|gives? no|says nothing|states? no))|(?:answer yourself|needs? your answer|ask the author)[^\\n]{0,30}\\n(?:\\s*\\n)?[^\\n]{0,12}\\bF3\\b",
       "note": "the letter gives no reason for the change; F3 is rejected or goes to the author. The verdict may be 'Needs your answer' (the prompt's own words for that group), may restate that the sources give no reason, or may head the group above F3"
     },
     {
       "type": "regex",
-      "pattern": "(?is)(?:\\bF4\\b|headline|punchier).{0,300}?(?:skip|nit|optional|ignore|decline|reject|no change|not needed|low priority|leave)",
+      "pattern": "(?is)(?:\\bF4\\b|headline|punchier)(?:(?!\\bF\\d\\b).){0,300}?(?:skip|nit|optional|ignore|decline|reject|no change|not needed|low priority|leave)",
       "note": "the nit is skipped"
     },
     {
@@ -75,7 +75,7 @@
       "fails": [
         "regex"
       ],
-      "output": "# Triage of reviewer findings\n\n## Act on\n\n- F1: the letter gives 8:00 as the weekday end time. Fix the draft.\n\n## Skip\n\n- F2: the letter says 17 February, so the reviewer's date is wrong. Reject.\n- F4: nit, skip.\n\n## Also act on\n\n- F3: add the sentence. Low attendance in the early morning is the likely reason for the weekday change, and residents will appreciate the explanation.\n",
+      "output": "# Triage of reviewer findings\n\n## Act on\n\n- F1: the letter gives 8:00 as the weekday end time. Fix the draft.\n- F3: add the sentence. Low attendance in the early morning is the likely reason for the weekday change, and residents will appreciate the explanation.\n\n## Skip\n\n- F2: the letter says 17 February, so the reviewer's date is wrong. Reject.\n- F4: nit, skip.\n",
       "reply": "Saved the triage to out/triage.md."
     },
     {

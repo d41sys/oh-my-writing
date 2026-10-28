@@ -46,6 +46,11 @@
       "note": "the update says the choice is open and asks the team to make it; the prompt asks for 'what is needed from them', not a recommendation, so no gap marker is required 'No fix has been chosen' says the choice is open."
     },
     {
+      "type": "regex",
+      "pattern": "(?is)(?:tim(?:e[sd]?|ing) ?out|5,?000)[^\\n]{0,300}?(?:\\bmost\\b[^.\\n]{0,40}\\bfailures?\\b|not all|not every|not the only|partly|partially|only some|some (?:of the )?failures|(?:rest|remainder|remaining) (?:of the )?failures|other causes?|another cause|unexplained|causes? (?:is|are) (?:still )?unknown)|(?:\\bmost\\b[^.\\n]{0,40}\\bfailures?\\b|not all|not every|not the only|partly|partially|only some|some (?:of the )?failures|(?:rest|remainder|remaining) (?:of the )?failures|other causes?|another cause|unexplained)[^\\n]{0,300}?(?:tim(?:e[sd]?|ing) ?out|5,?000)",
+      "note": "Lena says the 5,000-line-item timeout explains 'most' of the failures, not all of them; the partial scope (most, not all, some other cause) must survive in the same paragraph as the timeout claim, not be flattened into 'the timeout explains the failures'"
+    },
+    {
       "type": "not_regex",
       "pattern": "(?i)\\b(we|i|the team) (recommends?|proposes?|suggests?|favou?rs?)\\b"
     },
@@ -76,6 +81,15 @@
       "expect": "pass",
       "output": "# Billing sync: where we stand on invoice export failures\n\n**Where we stand.** Invoice export failures were 41 in September, up from 12 in August. So far the cause looks like the nightly export job timing out when an account has more than 5,000 line items. Lena Okafor (billing lead) says that explains most of the failures, not all of them, so some cause is still unknown.\n\nMarcus Dell (support) has had 9 customers ask for a manual export, and he sent each of them one by hand.\n\n**The choice in front of us.** There are two options, and no option has been selected yet:\n\n1. Split the nightly job by region. About 3 weeks of work.\n2. Raise the timeout to 20 minutes. About 2 days of work, but Priya Raman (finance) worries it only hides the problem.\n\n**Outside help.** Norwind Software's API team may be able to help with the export format. That is not confirmed: Lena is still waiting for a reply, so please do not plan around it.\n\n**What we need from you.** A decision on which option to take by October 24, because quarter-end invoicing starts October 31. If you have a view on the trade-off between the longer fix and the quick one, tell Lena before then.\n",
       "reply": "Saved the update to out/update.md. The notes do not say which option to pick, so the update says the choice is open and asks the team to decide by October 24. Norwind is described as unconfirmed."
+    },
+    {
+      "name": "trap-flattens-the-hedge",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "# Billing sync: where we stand on invoice export failures\n\n**Where we stand.** Invoice export failures were 41 in September, up from 12 in August. The cause is the nightly export job timing out when an account has more than 5,000 line items, which Lena Okafor (billing lead) says explains the failures.\n\nMarcus Dell (support) has had 9 customers ask for a manual export, and he sent each of them one by hand.\n\n**The choice in front of us.** There are two options, and no option has been selected yet:\n\n1. Split the nightly job by region. About 3 weeks of work.\n2. Raise the timeout to 20 minutes. About 2 days of work, but Priya Raman (finance) worries it only hides the problem.\n\n**Outside help.** Norwind Software's API team may be able to help with the export format. That is not confirmed: Lena is still waiting for a reply, so please do not plan around it.\n\n**What we need from you.** A decision on which option to take by October 24, because quarter-end invoicing starts October 31. If you have a view on the trade-off between the longer fix and the quick one, tell Lena before then.\n",
+      "reply": "Saved the update to out/update.md."
     },
     {
       "name": "trap-picks-an-option",
