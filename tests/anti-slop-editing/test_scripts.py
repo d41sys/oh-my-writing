@@ -447,8 +447,9 @@ def test_section_numbers_in_headings_are_not_figures(tmp_path):
     for heading in ("## 1. Summary", "### 2.1 Method", "# 3) Risks", "## 1.2. Scope"):
         proc, report = diff_json(before, write(tmp_path, "a.md", f"{heading}\n\nRevenue was 120 in March.\n"))
         assert proc.returncode == 0 and not added_items(report, "numbers"), (heading, report["categories"]["numbers"])
-    _, report = diff_json(before, write(tmp_path, "a.md", "## 2024 results\n\nRevenue was 120 in March.\n"))
-    assert added_items(report, "numbers") == {"2024"}  # a year in a heading is still a figure
+    for heading in ("## 2024 results", "## 2.5 million users", "## 1.5 Billion Rows"):
+        _, report = diff_json(before, write(tmp_path, "a.md", f"{heading}\n\nRevenue was 120 in March.\n"))
+        assert added_items(report, "numbers"), heading  # a figure in a heading is still a figure
 
 
 def test_comparison_idioms_are_not_scope_claims(tmp_path):

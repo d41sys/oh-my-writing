@@ -116,9 +116,12 @@ def _match_dates(lost: list, added: list, before_items: dict, after_items: dict)
 
 
 FIELD_LABEL_RE = re.compile(r"[A-Z]{3,}|[A-Z][a-z]+(?:-[A-Z][a-z]+)+")  # VERDICT, Reviewer-Model
-# List markers and heading section numbers ("## 2.1 Method", "## 1. Summary") are layout, not figures; a heading that
-# starts with a bare number ("## 2024 results") keeps it.
-LIST_MARKER_RE = re.compile(r"^[ \t]*(?:#{1,6}[ \t]+(?:\d+(?:\.\d+)*[.)]|\d+(?:\.\d+)+)|\d+[.)]|[-*+])[ \t]+", re.M)
+# List markers and heading section numbers ("## 2.1 Method", "## 1. Summary") are layout, not figures. A section
+# number without a closing dot or bracket needs a sub-number and a capitalised title word after it, so headings that
+# carry a figure ("## 2024 results", "## 2.5 million users", "## 1.5 Billion Rows") keep it.
+LIST_MARKER_RE = re.compile(
+    r"^[ \t]*(?:#{1,6}[ \t]+(?:\d+(?:\.\d+)*[.)]|\d+(?:\.\d+)+(?=[ \t]+[A-Z])"
+    r"(?![ \t]+(?:Million|Billion|Trillion|Thousand|Percent|Hundred)\b))|\d+[.)]|[-*+])[ \t]+", re.M)
 # Markers this skill tells the editor to insert; their wording is a question, not a fact.
 MARKER_RE = re.compile(r"\[(?:ASK AUTHOR|VERIFY|CONFIRM|UNTESTED|CITATION NEEDED)\b[^\]\n]*\]", re.I)
 CURRENCY = {"$": "usd", "\u20ac": "eur", "\u00a3": "gbp", "\u00a5": "jpy"}
