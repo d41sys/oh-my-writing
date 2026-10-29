@@ -23,21 +23,25 @@
     },
     {
       "type": "not_regex",
-      "pattern": "(?i)(?:^|[.\\n])(?![^.\\n]*\\b(?:review|reviews|reply|feedback|report|findings?|response|answer|return|you|your|assess|list|write)\\b)[^.\\n]*\\bhalf[- ](?:a[- ])?page\\b",
-      "note": "the defect this case measures: the half-page limit belongs to the review, so a sentence that states it without saying it is about the review ('Hard constraint: half a page', 'the application must fit on half a page', 'Genre: half-page application') puts the author's review limit on the application. A sentence addressed to the reviewer ('In no more than half a page, assess...', 'Return no more than half a page') is about the review"
+      "pattern": "(?i)(?:^|[.\\n])(?![^.\\n]*\\b(?:review|reviews|reply|feedback|report|findings?|response|answer|return|you|your|assess|list|write|give|provide)\\b)[^.\\n]*\\bhalf[- ](?:a[- ])?page\\b",
+      "note": "the defect this case measures: the half-page limit belongs to the review, so a sentence that states it without saying it is about the review ('Hard constraint: half a page', 'the application must fit on half a page', 'Genre: half-page application') puts the author's review limit on the application. A sentence addressed to the reviewer ('In no more than half a page, assess...', 'Return no more than half a page') is about the review. Corrected after v-review112-limit: 'give' and 'provide' added, because 'Then give a short table, no more than half a page' (skill r8, r9; variant-r111 r3) is addressed to the reviewer"
     },
     {
       "type": "regex",
-      "pattern": "(?i)\\b(?:review|reply|feedback|report|findings|response|return)\\b[^.\\n]{0,80}\\bhalf[- ](?:a[- ])?page\\b|\\bhalf[- ](?:a[- ])?page\\b[^.\\n]{0,80}\\b(?:review|reply|feedback|report|findings|response)\\b",
-      "note": "the author's limit for the review reaches the reviewer as a limit on the review"
+      "pattern": "(?i)\\b(?:review|reply|feedback|report|findings|response|return|give|provide)\\b[^.\\n]{0,80}\\bhalf[- ](?:a[- ])?page\\b|\\bhalf[- ](?:a[- ])?page\\b[^.\\n]{0,80}\\b(?:review|reply|feedback|report|findings|response)\\b",
+      "note": "the author's limit for the review reaches the reviewer as a limit on the review. Corrected after v-review112-limit: 'give' and 'provide' added, for the same reason as the check above"
     },
     {
       "type": "contains",
       "values": [
-        "300 words",
         "panel"
       ],
-      "note": "the form's word limit is a hard rule for the application, and the panel is the reader"
+      "note": "the panel is the reader"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b300[- ]words?\\b",
+      "note": "the form's word limit is a hard rule for the application. Corrected after v-review112-limit: this was 'contains 300 words', which failed eight prompts that carried the limit as '300-word maximum' or '300-word limit'"
     },
     {
       "type": "regex",
@@ -138,7 +142,7 @@
       "name": "trap-drops-form-limit",
       "expect": "fail",
       "fails": [
-        "contains"
+        "regex"
       ],
       "output": "You are reviewing a grant application before it goes to its readers. Work only from draft.md and this brief.\n\nReader: the community fund panel, four residents and a council officer, who score each application on local need, who benefits, and value for money, then decide which to fund.\n\nQuestions: could a panel member score the application on all three criteria from the text alone, and is anything they would need missing? Would they know what the money buys and who uses the fridge?\n\nFormat: return your review as a short table, no more than half a page. Do not rewrite the application.\n",
       "reply": "Saved to out/reviewer-prompt.md."
