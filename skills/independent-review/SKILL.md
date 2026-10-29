@@ -3,7 +3,7 @@ name: independent-review
 description: Reviews a finished or near-finished draft through a reader or reviewer who does not share the writer's context, so the verdict is not contaminated by what the writer meant. Covers fresh-reader tests, independent reviewer prompts, rubric calibration against human-chosen examples, blind pairwise comparison of two versions, finding triage by reader impact, point-by-point responses to reviewer comments, and stop rules. Use when the user asks to review, critique, test or sanity-check a draft, wants a fresh pair of eyes or a second opinion, asks whether a reader will understand it, wants to choose between two versions, has reviewer or editor comments to sort or answer, or asks you to grade your own writing.
 license: MIT
 metadata:
-  version: "1.5"
+  version: "1.6"
   skill-author: d41sys
 ---
 
@@ -101,6 +101,8 @@ Not covered: <only what this review cannot tell and the author might assume it d
 ```
 
 If nothing is wrong, the report is two lines: the run line and "no accepted findings".
+
+Two jobs skip this report. Sorting findings someone else raised, with no review run: the triage table alone ([triage](references/triage.md), section 8). Writing a reviewer prompt for the user to send: the filled prompt alone.
 
 ## Reference files
 

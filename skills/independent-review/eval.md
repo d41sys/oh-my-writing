@@ -24,8 +24,8 @@ Answer each check pass or fail. Fix every failure before returning.
 
 ## Findings and triage
 
-15. Does every finding carry a severity, a location (quote or section), and a reader consequence?
-16. Is severity assigned by reader impact rather than reviewer tone, and are taste-only items marked nit?
+15. In a review report, does every finding carry a severity, a location (quote or section), and a reader consequence? (A triage-only table, triage section 8, carries severity only where you changed it.)
+16. Where severity is given, is it assigned by reader impact rather than reviewer tone, and are taste-only items marked nit?
 17. Does every finding have exactly one decision: accept, reject with a one-line evidence-based reason, or needs author?
 18. Was any finding that would add an unsupported claim, number, quote, name or example rejected as written, and turned into a needs-author question in the findings (not text in the artifact) if the gap is real?
 19. Are accepted fixes the smallest edits, with the author's voice, claims, qualifiers, numbers and structure intact, reported as a list or marked edits? Is every revised draft or rewritten passage free of `[ASK AUTHOR]`, `[VERIFY]` and `[UNTESTED]` markers, review notes, finding IDs and process narration, with gaps left as they were, dropped, or stated plainly, each question put in the findings, and no heading (except a notice's own short headline), signposting, closing recap paragraph or repeated caveat added to the author's text?
