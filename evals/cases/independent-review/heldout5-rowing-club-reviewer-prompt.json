@@ -1,0 +1,176 @@
+{
+  "id": "independent-review/heldout5-rowing-club-reviewer-prompt",
+  "skill": "independent-review",
+  "heldout": true,
+  "description": "Held-out (written before the second run of the independent-review 1.8 date fix, and before any run on this case). Asked to prepare the prompt for an independent reviewer of a short club proposal whose dates carry no year: the prompt carries the committee, the 28 May decision and the author's stated questions, leaks none of the private context, and does not tell the reviewer in advance that any of the draft's dates lack a year, with or without naming them (the reviewer finds that from the reading date).",
+  "prompt": "Please draft the prompt for an independent reviewer who will check draft.md in a new session before it goes to our club committee. Background is in notes.md. Save it as out/reviewer-prompt.md.",
+  "files": {
+    "draft.md": "# Proposal: a second safety boat for Sunday outings\n\nSunday morning outings have grown to eleven crews. One safety boat cannot cover the upper reach and the slipway at the same time.\n\n## What would change\n\nFrom Sunday 7 June, a second launch would cover the upper reach from 08:00 to 11:00. The club already owns the boat, but its engine needs a service first.\n\n## What it needs\n\nFour more qualified launch drivers on the rota, and the engine service, quoted at £340.\n\n## Decision needed\n\nAgree the change at the committee meeting on 28 May.\n",
+    "notes.md": "Who reads it: the club committee, eight members. They set the rota and the budget and know the river well. On 28 May they decide whether to run a second safety boat from 7 June.\n\nQuestions for the check: can a committee member see what is asked, what it costs, and who would have to do what? Is anything missing for the decision? Keep it to one page, and each finding should name the sentence it is about.\n\nNot for the reviewer:\n- Martin, our captain, thinks the juniors should simply go out on Saturdays instead. I don't want that raised.\n- I haven't checked yet whether four drivers will sign up.\n- The treasurer has informally agreed to the £340.\n"
+  },
+  "output": "out/reviewer-prompt.md",
+  "checks": [
+    {
+      "type": "not_contains",
+      "values": [
+        "Martin",
+        "captain",
+        "Saturday",
+        "informally",
+        "treasurer",
+        "haven't checked",
+        "don't want"
+      ],
+      "note": "everything under 'Not for the reviewer' is a member's view, the author's wish, an unchecked assumption or an informal approval"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\bI (?:don't want|do not want|want|hope|worry|know)\\b[^.\\n]{0,60}\\b(?:committee|reviewer|option|drivers?|boat|change)\\b",
+      "note": "no statement of what the author wants the committee or the reviewer to conclude"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)(?:\\b(?:both|either|neither|these|those|the two|its)\\s+(?:\\w+\\s+){0,2}dates?\\b|\\b(?:draft|proposal)'s\\s+(?:\\w+\\s+){0,2}dates?\\b|\\b(?:meeting|start|decision|committee|rota|launch|June|May)\\s+dates?\\b|\\b(?:28 May|7 June)\\b|\\bthe dates?\\s+(?:have|has|lack|lacks|carry|carries|give|gives|are|is)\\b|\\bfor the dates?\\b)[^.\\n]{0,100}\\byears?\\b|\\byears?\\b[^.\\n]{0,100}(?:\\b(?:both|either|neither|these|those|the two|its)\\s+(?:\\w+\\s+){0,2}dates?\\b|\\b(?:draft|proposal)'s\\s+(?:\\w+\\s+){0,2}dates?\\b|\\b(?:meeting|start|decision|committee|rota|launch|June|May)\\s+dates?\\b|\\b(?:28 May|7 June)\\b|\\bthe dates?\\s+(?:have|has|lack|lacks|carry|carries|give|gives|are|is)\\b|\\bfor the dates?\\b)",
+      "note": "the defect this case measures: a remark that this draft's dates lack a year is a finding written in advance, whether it names the dates ('28 May has no year') or not ('both dates', 'the meeting date', 'these dates', 'the dates have no year', 'a year for the dates'). A general instruction ('flag any date without a year', 'do not assume a year for dates that omit one') and a reading date are allowed"
+    },
+    {
+      "type": "contains",
+      "values": [
+        "committee",
+        "28 May"
+      ],
+      "note": "the reader and the decision date go to the reviewer"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)7 June|second (?:safety )?boat|second launch",
+      "note": "the decision itself: a second safety boat from 7 June"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b(?:quote|quoting|cite|citing|point(?:s|ing)? to|exact (?:words|text|sentence)|which sentence|the sentence (?:it|each)|name[sd]? the sentence)",
+      "note": "the author asked for findings that name the sentence they concern"
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "citations",
+        "urls",
+        "names"
+      ],
+      "allow": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "English",
+        "END",
+        "END DRAFT",
+        "END PROPOSAL",
+        "DRAFT",
+        "PROPOSAL",
+        "BEGIN",
+        "BEGIN DRAFT"
+      ],
+      "note": "list numbering and line numbers are not new figures; 'English' is the review language; BEGIN/END lines delimit the pasted draft"
+    },
+    {
+      "type": "word_count",
+      "min": 60
+    }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "You are reviewing a proposal before it goes to its readers. Work only from draft.md and this brief.\n\nReader: the rowing club committee, eight members who set the rota and the budget and know the river. At their meeting on 28 May they decide whether to run a second safety boat from 7 June.\n\nFlag any date you cannot place on a calendar, or a date without a year; do not assume a year for dates that omit one, and do not repair them.\n\nQuestions: can a committee member see what is asked, what it costs, and who would have to do what? Is anything missing for the decision?\n\nFormat: one page of findings, each naming the sentence it is about. Do not rewrite the proposal.\n",
+      "reply": "Saved to out/reviewer-prompt.md. It carries the committee, the 28 May decision and your questions; nothing from the private part of your notes."
+    },
+    {
+      "name": "good-template-wording",
+      "expect": "pass",
+      "output": "Review draft.md for the club committee, who decide on 28 May whether to add a second safety boat from 7 June. Answer from the page: what is asked, what it costs, who does what, and what is missing for the decision. Flag a date without a year or one already past on the reading date rather than silently supplying a year. Give one page of findings, each quoting the sentence it concerns, and do not rewrite the proposal.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-leaks-private-context",
+      "expect": "fail",
+      "fails": [
+        "not_contains"
+      ],
+      "output": "Review draft.md for the club committee, who decide on 28 May whether to add a second safety boat from 7 June. They set the rota and the budget and know the river. Answer from the page: what is asked, what it costs, who would have to do what, and what is missing for the decision. Background: the treasurer has already agreed to the cost, and the captain would rather move juniors to Saturdays. Give one page of findings, each quoting the sentence it concerns, and do not rewrite the proposal.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-both-dates",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "Review draft.md for the club committee, who decide on 28 May whether to add a second safety boat from 7 June. They set the rota and the budget and know the river. Answer from the page: what is asked, what it costs, who would have to do what, and what is missing for the decision. Note that both dates in the proposal have no year. Give one page of findings, each quoting the sentence it concerns, and do not rewrite the proposal.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-meeting-date",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "Review draft.md for the club committee, who decide on 28 May whether to add a second safety boat from 7 June. They set the rota and the budget and know the river. Answer from the page: what is asked, what it costs, who would have to do what, and what is missing for the decision. The meeting date carries no year, so check whether the decision is still ahead. Give one page of findings, each quoting the sentence it concerns, and do not rewrite the proposal.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-these-dates",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "Review draft.md for the club committee, who decide on 28 May whether to add a second safety boat from 7 June. They set the rota and the budget and know the river. Answer from the page: what is asked, what it costs, who would have to do what, and what is missing for the decision. These dates have no year; say whether a reader could place them. Give one page of findings, each quoting the sentence it concerns, and do not rewrite the proposal.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-names-the-day",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "Review draft.md for the club committee, who decide on 28 May whether to add a second safety boat from 7 June. They set the rota and the budget and know the river. Answer from the page: what is asked, what it costs, who would have to do what, and what is missing for the decision. Do not assume a year for 7 June. Give one page of findings, each quoting the sentence it concerns, and do not rewrite the proposal.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-year-for-the-dates",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "Review draft.md for the club committee, who decide on 28 May whether to add a second safety boat from 7 June. They set the rota and the budget and know the river. Answer from the page: what is asked, what it costs, who would have to do what, and what is missing for the decision. Do not supply a year for the dates; the proposal leaves it out. Give one page of findings, each quoting the sentence it concerns, and do not rewrite the proposal.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-drops-reader-and-date",
+      "expect": "fail",
+      "fails": [
+        "contains"
+      ],
+      "output": "Please review draft.md and tell me what is unclear or missing. It proposes a second safety boat on Sunday mornings. Answer from the page: what is asked, what it costs, who would have to do what, and what is missing. Give one page of findings, each quoting the sentence it concerns, and do not rewrite the proposal. Be specific about what would change for the launch drivers.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    }
+  ]
+}
