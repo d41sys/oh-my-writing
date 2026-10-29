@@ -1,0 +1,156 @@
+{
+  "id": "independent-review/heldout6-community-fridge-reviewer-prompt",
+  "skill": "independent-review",
+  "heldout": true,
+  "description": "Held-out (written before the independent-review 1.12 fix and before any run on this case). Asked to prepare the prompt for an independent reviewer of a short grant application: the form's 300-word limit is a rule for the application, while 'a short table, no more than half a page' is the author's limit for the review. The prompt keeps each limit on the right object, carries the panel and its three criteria, and leaks none of the private context.",
+  "prompt": "Can you set up the prompt for an independent reviewer, in a new session, to check my grant application in draft.md before I submit it? My notes are in notes.md. Put the prompt in out/reviewer-prompt.md.",
+  "files": {
+    "draft.md": "# Community fridge for Eastgate\n\nWe are asking for £1,200 to set up a community fridge in Eastgate, where the nearest supermarket has closed. Local shops and the allotment group already give away surplus food that would otherwise be thrown out, but there is nowhere to store it safely.\n\nThe money buys a commercial fridge (£780), a food-safety thermometer and labels (£95), hygiene training for six volunteers (£240) and signage (£85).\n\nThe fridge would sit in St Anne's church hall, open 9:00 to 18:00 on weekdays. Volunteers would check the temperature twice a day and log what comes in and goes out.\n\nAnyone can take food, no questions asked. We expect families on the Eastgate estate and older residents without a car to use it most.\n",
+    "notes.md": "Who reads it: the Westford Community Fund panel, four residents and a council officer. They score each application on the fund's three criteria (local need, who benefits, value for money) and decide which to fund.\n\nThe form: this section allows 300 words at most, plain text, no headings.\n\nWhat I want from the reviewer: could a panel member score it on all three criteria from the text alone? Is anything they would need missing? I'd like the review back as a short table, no more than half a page.\n\nNot for the reviewer:\n- The church hall has only said maybe to hosting the fridge.\n- Kofi from the food bank thinks we should apply to the bigger fund instead; I'd rather not go into that.\n- We asked for £1,200 because that is what is left in the fund this round.\n"
+  },
+  "output": "out/reviewer-prompt.md",
+  "checks": [
+    {
+      "type": "not_contains",
+      "values": [
+        "maybe",
+        "Kofi",
+        "bigger fund",
+        "left in the fund",
+        "rather not"
+      ],
+      "note": "everything under 'Not for the reviewer' is an unconfirmed arrangement, a colleague's view, the author's wish or the reason behind the amount"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)(?:^|[.\\n])(?![^.\\n]*\\b(?:review|reviews|reply|feedback|report|findings?|response|answer|return|you|your|assess|list|write)\\b)[^.\\n]*\\bhalf[- ](?:a[- ])?page\\b",
+      "note": "the defect this case measures: the half-page limit belongs to the review, so a sentence that states it without saying it is about the review ('Hard constraint: half a page', 'the application must fit on half a page', 'Genre: half-page application') puts the author's review limit on the application. A sentence addressed to the reviewer ('In no more than half a page, assess...', 'Return no more than half a page') is about the review"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b(?:review|reply|feedback|report|findings|response|return)\\b[^.\\n]{0,80}\\bhalf[- ](?:a[- ])?page\\b|\\bhalf[- ](?:a[- ])?page\\b[^.\\n]{0,80}\\b(?:review|reply|feedback|report|findings|response)\\b",
+      "note": "the author's limit for the review reaches the reviewer as a limit on the review"
+    },
+    {
+      "type": "contains",
+      "values": [
+        "300 words",
+        "panel"
+      ],
+      "note": "the form's word limit is a hard rule for the application, and the panel is the reader"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\btable\\b",
+      "note": "the author asked for the review as a table"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)value for money",
+      "note": "the panel's criteria go to the reviewer as the reader's questions"
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "citations",
+        "urls",
+        "names"
+      ],
+      "allow": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "English",
+        "END",
+        "END DRAFT",
+        "END APPLICATION",
+        "DRAFT",
+        "APPLICATION",
+        "BEGIN",
+        "BEGIN DRAFT"
+      ],
+      "note": "list numbering and line numbers are not new figures; 'English' is the review language; BEGIN/END lines delimit the pasted draft"
+    },
+    {
+      "type": "word_count",
+      "min": 60
+    }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "You are reviewing a grant application before it goes to its readers. Work only from draft.md and this brief.\n\nReader: the community fund panel, four residents and a council officer, who score each application on local need, who benefits, and value for money, then decide which to fund.\n\nHard constraints on the application: at most 300 words, plain text, no headings.\n\nQuestions: could a panel member score the application on all three criteria from the text alone, and is anything they would need missing?\n\nFormat: return your review as a short table, no more than half a page. Do not rewrite the application.\n",
+      "reply": "Saved to out/reviewer-prompt.md. The 300-word limit is given as a rule for the application and half a page as the limit for the review; nothing from the private part of your notes."
+    },
+    {
+      "name": "good-template-wording",
+      "expect": "pass",
+      "output": "You are reviewing a document as a careful member of its intended readership. Document to review: draft.md.\nGenre: grant application.\nReader: the community fund panel, who score applications on local need, who benefits and value for money.\nHard constraints on the document: at most 300 words, plain text, no headings.\nLimits on this review: a short table, no more than half a page.\nReport each finding with a short exact quote and the smallest fix. Do not rewrite the document.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-limit-on-application",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "You are reviewing a grant application before it goes to its readers. Work only from draft.md and this brief.\n\nReader: the community fund panel, four residents and a council officer, who score each application on local need, who benefits, and value for money, then decide which to fund.\n\nHard constraints: at most 300 words, plain text, no headings, and the application must fit on half a page.\n\nQuestions: could a panel member score the application on all three criteria from the text alone, and is anything they would need missing?\n\nFormat: return your review as a short table, no more than half a page. Do not rewrite the application.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-limit-in-genre",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "You are reviewing a grant application before it goes to its readers. Work only from draft.md and this brief.\n\nGenre: half-page grant application.\n\nReader: the community fund panel, four residents and a council officer, who score each application on local need, who benefits, and value for money, then decide which to fund.\n\nHard constraints on the application: at most 300 words, plain text, no headings.\n\nQuestions: could a panel member score the application on all three criteria from the text alone, and is anything they would need missing?\n\nFormat: return your review as a short table, no more than half a page. Do not rewrite the application.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-drops-review-limit",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "You are reviewing a grant application before it goes to its readers. Work only from draft.md and this brief.\n\nReader: the community fund panel, four residents and a council officer, who score each application on local need, who benefits, and value for money, then decide which to fund.\n\nHard constraints on the application: at most 300 words, plain text, no headings.\n\nQuestions: could a panel member score the application on all three criteria from the text alone, and is anything they would need missing?\n\nFormat: return your review as a short table. Do not rewrite the application.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-drops-form-limit",
+      "expect": "fail",
+      "fails": [
+        "contains"
+      ],
+      "output": "You are reviewing a grant application before it goes to its readers. Work only from draft.md and this brief.\n\nReader: the community fund panel, four residents and a council officer, who score each application on local need, who benefits, and value for money, then decide which to fund.\n\nQuestions: could a panel member score the application on all three criteria from the text alone, and is anything they would need missing? Would they know what the money buys and who uses the fridge?\n\nFormat: return your review as a short table, no more than half a page. Do not rewrite the application.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-leaks-private-context",
+      "expect": "fail",
+      "fails": [
+        "not_contains"
+      ],
+      "output": "You are reviewing a grant application before it goes to its readers. Work only from draft.md and this brief.\n\nReader: the community fund panel, four residents and a council officer, who score each application on local need, who benefits, and value for money, then decide which to fund.\n\nHard constraints on the application: at most 300 words, plain text, no headings.\n\nBackground: the church hall has only said maybe, and Kofi thinks we should apply to the bigger fund instead.\n\nFormat: return your review as a short table, no more than half a page. Do not rewrite the application.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    }
+  ]
+}
