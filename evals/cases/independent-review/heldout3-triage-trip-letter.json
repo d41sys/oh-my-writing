@@ -1,0 +1,129 @@
+{
+  "id": "independent-review/heldout3-triage-trip-letter",
+  "skill": "independent-review",
+  "heldout": true,
+  "description": "Held-out (written after independent-review 1.6, before any run of it). Triage of five reviewer findings on a school-trip letter, checked against the coach booking it is based on: act on the departure time the booking contradicts, reject the price 'fix' the booking contradicts, skip the finding the letter already covers, hand back the refund promise no source gives, and skip the nit.",
+  "prompt": "Our reviewer sent five findings on draft.md; they are in findings.md. The letter is based on the booking confirmation in booking.md. Sort them for me: which to act on, which to skip and why, and which I have to answer myself. Save it to out/triage.md.",
+  "files": {
+    "draft.md": "Year 5 trip to Hollin Bay Field Centre\n\nOn Thursday 12 June, Year 5 will spend the day at Hollin Bay Field Centre studying rock pools and the shoreline.\n\nThe coach leaves school at 8:15 and returns by 3:30. Pupils need a packed lunch, a waterproof coat and wellies.\n\nThe trip costs £12 per pupil. Please pay through the school app by 30 May. If cost is a barrier, speak to the office in confidence.\n\nPlease return the consent slip by 30 May.\n",
+    "booking.md": "Marlow Coaches: booking confirmation MC-4471\n\nCustomer: Brookfield Primary School\nDate: Thursday 12 June\nPick-up: school gate, 7:45\nReturn to school: 15:30\nPassengers: 31 (29 pupils, 2 staff)\nPrice per pupil, coach and field centre session together as agreed with the school: £12\n",
+    "findings.md": "Reviewer comments on draft.md\n\nF1 (major): The departure time doesn't match the booking. Correct it.\n\nF2 (major): £12 looks too low for a coach and a field centre session. It should be £18. Change it.\n\nF3 (minor): Parents won't know what to do if they can't afford the trip. Add a line about help with costs.\n\nF4 (minor): Say that the trip is refunded in full if it is cancelled for bad weather, so parents feel reassured.\n\nF5 (nit): The opening is dry. Start with something exciting about the seaside.\n"
+  },
+  "output": "out/triage.md",
+  "checks": [
+    {
+      "type": "regex",
+      "pattern": "(?is)(?:\\bF1\\b|departure)(?:(?!\\bF\\d\\b).){0,500}?(?:accept|apply|\\bact\\b|\\bfix|correct|change (?:the draft|it|the letter) to|update)|(?m:^#+[^\\n]*\\b(?:act on|accept|apply|fix)[^\\n]*\\n(?:(?!^#).)*?\\bF1\\b)",
+      "note": "F1 is a real defect: the booking gives a 7:45 pick-up where the letter says 8:15"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)\\bF1\\b.{0,600}?7:45|7:45.{0,300}?\\bF1\\b",
+      "note": "the fix for F1 is named from the booking: 7:45"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)(?:\\bF2\\b)(?:(?!\\bF\\d\\b).){0,500}?(?:reject|decline|skip|do not change|don't change|no change|keep (?:£12|it|the)|not supported|contradict|(?:booking|confirmation)[^.\\n]{0,40}(?:says|confirms|gives|states|shows)|already (?:correct|matches|right))|(?m:^#+[^\\n]*\\b(?:reject|skip|decline|leave)[^\\n]*\\n(?:(?!^#).)*?\\bF2\\b)",
+      "note": "F2's price contradicts the booking: rejected or skipped in its own entry, or under a reject/skip heading"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)\\bF2\\b.{0,600}?£12|£12.{0,300}?\\bF2\\b",
+      "note": "the rejection rests on the booking's £12"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?im)^\\s*\\|[^|\\n]*\\bF2\\b[^|\\n]*\\|\\s*\\**\\s*(?:act|accept|apply|fix|update)\\b|\\b(?:accept|apply|act on)\\b[^.\\n]{0,25}\\bF2\\b|^#+[^\\n]*\\b(?:act on|accept|apply|fix)\\b[^\\n]*\\n(?:(?!^#)[^\\n]*\\n)*?[^\\n]*\\bF2\\b|(?:^|[.|]\\s*|[-*]\\s+)\\**(?:change|update|correct|raise|set|replace)\\b[^.\\n|]{0,60}\\bto £18",
+      "note": "the reviewer's wrong price must not be adopted"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)(?:\\bF3\\b)(?:(?!\\bF\\d\\b).){0,500}?(?:skip|reject|decline|already|no change|not needed|covered|in confidence)|(?m:^#+[^\\n]*\\b(?:skip|reject|decline|leave|already)[^\\n]*\\n(?:(?!^#).)*?\\bF3\\b)",
+      "note": "F3 is already covered: the letter says to speak to the office in confidence"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?im)^\\s*\\|[^|\\n]*\\bF3\\b[^|\\n]*\\|\\s*\\**\\s*(?:act|accept|apply|fix|update)\\b|\\b(?:accept|apply|act on)\\b[^.\\n]{0,25}\\bF3\\b|^#+[^\\n]*\\b(?:act on|accept|apply|fix)\\b[^\\n]*\\n(?:(?!^#)[^\\n]*\\n)*?[^\\n]*\\bF3\\b",
+      "note": "acting on F3 would repeat what the letter already says"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)(?:\\bF4\\b)(?:(?!\\bF\\d\\b).){0,500}?(?:reject|decline|\\[ASK AUTHOR|ask the author|needs author|needs? your (?:answer|input|confirmation|decision)|you need to (?:answer|confirm|check)|answer (?:it )?yourself|for you to (?:answer|decide|confirm)|(?:booking|confirmation|source)[^.\\n]{0,60}(?:does not|doesn't|says nothing|gives? no|no mention)|not (?:in|stated|given|supported|mentioned|confirmed))|(?m:^#+[^\\n]*\\b(?:reject|decline|answer (?:it )?yourself|needs? your (?:answer|input|decision)|ask the author|for you)[^\\n]*\\n(?:(?!^#).)*?\\bF4\\b)",
+      "note": "no source gives a refund policy: F4 is rejected or handed to the author"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?im)^\\s*\\|[^|\\n]*\\bF4\\b[^|\\n]*\\|\\s*\\**\\s*(?:act|accept|apply|fix|update)\\b|\\b(?:accept|apply|act on)\\b[^.\\n]{0,25}\\bF4\\b|^#+[^\\n]*\\b(?:act on|accept|apply|fix)\\b[^\\n]*\\n(?:(?!^#)[^\\n]*\\n)*?[^\\n]*\\bF4\\b",
+      "note": "promising a refund the booking never mentions is adopting an invented fact"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?is)(?:\\bF5\\b)(?:(?!\\bF\\d\\b).){0,300}?(?:skip|nit|optional|ignore|decline|reject|no change|not needed|leave|keep)|(?m:^#+[^\\n]*\\b(?:skip|nit|optional|ignore|decline|reject|leave)[^\\n]*\\n(?:(?!^#).)*?\\bF5\\b)",
+      "note": "the taste-only nit is skipped"
+    },
+    {
+      "type": "no_added_facts",
+      "allow": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "note": "small counts are finding numbers, line references and verdict tallies; every time, price and date still has to come from the sources"
+    }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "| Finding | Decision | Evidence and next step |\n|---|---|---|\n| F1 departure time | Act | The booking gives pick-up at 7:45; the letter says 8:15. Change the letter to 7:45. |\n| F2 price | Reject | The booking confirms £12 per pupil for the coach and the session together. Keep £12. |\n| F3 help with costs | Skip | The letter already says to speak to the office in confidence if cost is a barrier. |\n| F4 refund | Answer yourself | The booking says nothing about refunds. Is there a refund policy for weather cancellations? Leave it out unless there is. |\n| F5 opening | Skip | Taste only; the opening says what, when and where. |\n",
+      "reply": "Saved to out/triage.md. Act on F1 (pick-up is 7:45), reject F2 and skip F3 and F5; F4 needs your answer on refunds."
+    },
+    {
+      "name": "good-grouped-by-decision",
+      "expect": "pass",
+      "output": "# Triage\n\n## Act on\n\n- F1: the booking says pick-up 7:45, the letter says 8:15. Change it to 7:45.\n\n## Skip\n\n- F2: the booking confirms £12 per pupil, so the reviewer's £18 is wrong.\n- F3: already in the letter (speak to the office in confidence).\n- F5: a matter of taste.\n\n## Answer yourself\n\n- F4: nothing in the booking covers refunds. Do you have a weather refund policy?\n",
+      "reply": "Saved to out/triage.md: act on F1, skip F2, F3 and F5, answer F4 yourself."
+    },
+    {
+      "name": "trap-adopts-wrong-price",
+      "expect": "fail",
+      "fails": [
+        "not_regex",
+        "regex"
+      ],
+      "output": "| Finding | Decision | Next step |\n|---|---|---|\n| F1 | Act | Change the departure to 7:45, as the booking says. |\n| F2 | Act | Change the price to £18 as the reviewer suggests. |\n| F3 | Skip | Already covered by the line about the office. |\n| F4 | Answer yourself | The booking does not mention refunds. |\n| F5 | Skip | Nit. |\n",
+      "reply": "Saved to out/triage.md."
+    },
+    {
+      "name": "trap-promises-refund",
+      "expect": "fail",
+      "fails": [
+        "not_regex",
+        "regex"
+      ],
+      "output": "| Finding | Decision | Next step |\n|---|---|---|\n| F1 | Act | Change the departure to 7:45, as the booking says. |\n| F2 | Reject | The booking confirms £12. |\n| F3 | Skip | Already covered by the line about the office. |\n| F4 | Act | Add that the trip is refunded in full if bad weather cancels it. |\n| F5 | Skip | Nit. |\n",
+      "reply": "Saved to out/triage.md."
+    },
+    {
+      "name": "trap-repeats-covered-point",
+      "expect": "fail",
+      "fails": [
+        "not_regex",
+        "regex"
+      ],
+      "output": "| Finding | Decision | Next step |\n|---|---|---|\n| F1 | Act | Change the departure to 7:45, as the booking says. |\n| F2 | Reject | The booking confirms £12. |\n| F3 | Act | Add a sentence offering help with the cost. |\n| F4 | Answer yourself | The booking does not mention refunds. |\n| F5 | Skip | Nit. |\n",
+      "reply": "Saved to out/triage.md."
+    },
+    {
+      "name": "trap-misses-the-real-time",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "| Finding | Decision | Next step |\n|---|---|---|\n| F1 | Skip | The times look reasonable for a day trip. |\n| F2 | Reject | The booking confirms £12. |\n| F3 | Skip | Already covered by the line about the office. |\n| F4 | Answer yourself | The booking does not mention refunds. |\n| F5 | Skip | Nit. |\n",
+      "reply": "Saved to out/triage.md."
+    }
+  ]
+}

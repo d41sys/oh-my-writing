@@ -1,0 +1,112 @@
+{
+  "id": "independent-review/heldout3-food-bank-reviewer-prompt",
+  "skill": "independent-review",
+  "heldout": true,
+  "description": "Held-out (written after independent-review 1.6, before any run of it). Asked to prepare the prompt for an independent reviewer of a food-bank proposal: the prompt carries the trustees, the 4 December decision, the trial being decided and the author's stated check, and leaks none of the author's intent, softened figures, an earlier reader's verdict, a board member's name or the unrelated lease.",
+  "prompt": "I want an independent check of draft.md before it goes to the board. Please write the prompt I'll give a reviewer in a fresh session. My notes are in author-notes.md. Save the prompt to out/reviewer-prompt.md.",
+  "files": {
+    "draft.md": "# Proposal: booked collection slots on Saturdays\n\nOn a typical Saturday, people wait outside for up to an hour before the doors open, in all weather.\n\n## What would change\n\nFrom the first Saturday in January, people would book a 20-minute slot by phone or at the desk the week before. Walk-ins would still be served after 12:00.\n\n## Volunteers\n\nBooking calls would be handled by existing volunteers during the week.\n\n## What we ask\n\nApprove a three-month trial. We would report back to the trustees at the April meeting.\n",
+    "author-notes.md": "Reader: the seven trustees of Eastgate Food Bank. They know how Saturday collections work now but have not seen the queue figures. At their meeting on 4 December they decide whether to move Saturday collections to booked 20-minute slots for a three-month trial starting in January.\n\nWhat I want from the check: can a trustee tell what they are being asked to approve, what changes for the people who collect food, and what the trial would cost in volunteer time? Findings on one page, each pointing to the sentence it is about. No rewrite.\n\nPrivate context, not for the reviewer:\n- I need this approved; Marguerite will block it if she gets the chance.\n- Last time the board said the queue numbers were made up, so I softened them.\n- Dev read it and said the volunteer section is hand-wavy. I haven't changed it.\n- Don't mention that the warehouse lease is up in March; that's a separate fight.\n"
+  },
+  "output": "out/reviewer-prompt.md",
+  "checks": [
+    {
+      "type": "not_contains",
+      "values": [
+        "Marguerite",
+        "block it",
+        "made up",
+        "softened",
+        "hand-wavy",
+        "separate fight",
+        "need this approved"
+      ],
+      "note": "everything under 'Private context' is intent, history, an earlier reader's verdict or an unrelated matter"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)(?-i:\\bDev\\b)|\\blease\\b|\\bI (?:need|want|hope|worry|fear|think)\\b[^.\\n]{0,60}\\b(?:trustees|board|approved?|them)\\b|volunteer(?:s| section)?[^.\\n]{0,60}\\b(?:weak|thin|vague|hand-wavy|worried|worry)\\b",
+      "note": "no earlier reader named, no mention of the unrelated lease (a word-bounded match: 'lease' sits inside 'please'), and no hint steering the reviewer to the author's private worry about the volunteer section"
+    },
+    {
+      "type": "contains",
+      "values": [
+        "trustees",
+        "4 December"
+      ],
+      "note": "the reader and the decision date go to the reviewer"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)three[- ]month|20[- ]minute",
+      "note": "the decision itself: a three-month trial of 20-minute slots"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b(?:quote|quoting|cite|citing|point(?:s|ing)? to|exact (?:words|text|sentence)|which sentence|the sentence (?:it|each))",
+      "note": "the author asked for findings that point to the sentence they concern"
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "citations",
+        "urls",
+        "names"
+      ],
+      "allow": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "English"
+      ],
+      "note": "list numbering a prompt needs is not a new figure; 'English' is the review language"
+    },
+    {
+      "type": "word_count",
+      "min": 60
+    }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "You are reviewing a proposal before it goes to its readers. Work only from the proposal in draft.md and this brief.\n\nReader: the seven trustees of Eastgate Food Bank. They know how Saturday collections work now but have not seen the queue figures. On 4 December they decide whether to move Saturday collections to booked 20-minute slots for a three-month trial starting in January.\n\nQuestions: can a trustee tell what they are asked to approve, what changes for the people who collect food, and what the trial would cost in volunteer time?\n\nFormat: one page of findings, each pointing to the sentence it is about. Do not rewrite the proposal.\n",
+      "reply": "Saved to out/reviewer-prompt.md. It carries the trustees, the 4 December decision and your three questions; nothing from your private notes."
+    },
+    {
+      "name": "trap-leaks-private-context",
+      "expect": "fail",
+      "fails": [
+        "not_contains"
+      ],
+      "output": "You are reviewing draft.md for the seven trustees of Eastgate Food Bank, who decide on 4 December on a three-month trial of 20-minute slots. Background: the board said last time that the queue numbers were made up, so they were softened. Marguerite may try to block it. Give one page of findings, each pointing to the sentence it is about.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-steers-to-volunteer-section",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "You are reviewing draft.md for the seven trustees of Eastgate Food Bank, who decide on 4 December on a three-month trial of 20-minute slots. The volunteer section is probably thin, so look hard at whether it holds up. Give one page of findings, each pointing to the sentence it is about, and do not rewrite the proposal.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-drops-reader-and-date",
+      "expect": "fail",
+      "fails": [
+        "contains"
+      ],
+      "output": "Please review draft.md and tell me what is unclear or unsupported. It proposes a three-month trial of booked 20-minute slots on Saturdays. Give one page of findings, each pointing to the sentence it is about, and do not rewrite the proposal. Be specific about what would change for the people who collect food.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    }
+  ]
+}

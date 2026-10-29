@@ -5451,9 +5451,9 @@
  },
  "skill_versions_from": "first freeze of this run (repository at that time); re-frozen for new scoring files",
  "tools": {
-  "cases": "0382ddd4e9de",
+  "cases": "28f832fd3238",
   "fact_diff.py": "99baa76672a2",
   "slop_scan.py": "0943fe800406",
-  "stats rules": "0657ed0c3501"
+  "stats rules": "c60b883eb3c3"
  }
 }
