@@ -14,7 +14,6 @@ Check the filled prompt against this list. Remove anything that matches.
 - Any hint of the verdict you want, or reassurance or warnings about weak spots.
 - Leading questions ("is the opening strong?", "isn't this clear?").
 - Anything about the writer's process, tools, or model.
-- Any remark about the draft's own content, such as which dates lack a year, which figure looks wrong, or which section is thin. The reading date and the reader's questions let the reviewer find these; saying them first is a finding written for the reviewer.
 - Confidential or unpublished material the owner has not cleared to leave this session (see step 3 of the skill).
 
 Allowed: who reads the text, what that reader knows and needs, what the reader must be able to answer after reading, the reading date, hard constraints (length, format, venue, house style), sources the text must agree with, the rubric, and the output format below. Not allowed: the draft's known weak spots, even as "check X carefully"; derive the reader's questions from the reader's job, not from what you already see missing.
@@ -95,7 +94,7 @@ VERDICT: ready | revise
 | `READER_REASON` | the question or task bringing them to the text | the writer's goal |
 | `READER_NEXT_ACTION_OR_DECISION` | the concrete act: approve, run, apply, reply | the conclusion you want them to reach |
 | `READER_NEEDS` | three to five questions anyone in that role would ask before acting, in plain words (funding call: what it costs, what it commits us to, by when, how success is judged; instructions: what to have ready, what each step does, how to know it worked) | questions that name the draft's gaps, the writer's worries or an expected answer |
-| `READING_DATE` | today's date, when the text has dates without a year or relative dates; otherwise delete the line | a guess, or a note on which of the draft's dates lack a year |
+| `READING_DATE` | today's date, when the text has dates without a year or relative dates; otherwise delete the line | a guess |
 | `SOURCE_PATHS` | files, raw data, spec | your summary of them |
 | `RUBRIC_PATH_OR_TEXT` | a filled rubric; calibrated or labelled `calibration: none` | a rubric invented to fit the verdict |
 
