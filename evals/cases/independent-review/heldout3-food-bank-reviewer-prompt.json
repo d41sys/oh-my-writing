@@ -65,9 +65,24 @@
         "8",
         "9",
         "10",
-        "English"
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "English",
+        "END",
+        "END DRAFT",
+        "END PROPOSAL",
+        "DRAFT",
+        "PROPOSAL"
       ],
-      "note": "list numbering a prompt needs is not a new figure; 'English' is the review language"
+      "note": "list numbering and line numbers a prompt needs are not new figures; 'English' is the review language; END DRAFT / END PROPOSAL are delimiters closing the pasted draft. Corrected after v-review16-heldout: the first version flagged a line number ('14.') and those delimiters (3 runs outside the skill condition)"
     },
     {
       "type": "word_count",
