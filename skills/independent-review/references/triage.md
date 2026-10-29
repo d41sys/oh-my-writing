@@ -108,8 +108,6 @@ Cost: <sessions, rounds>
 
 For a clean text: "no accepted findings".
 
-When the user hands you findings to sort and nothing else (no review was run, no draft to revise), the table is the whole output. One row per finding: the decision (act, skip or reject, or answer yourself), one sentence of evidence that quotes or points to the draft or source, and the next step in one sentence. A needs-author row holds one question. Leave out the count lines and the cost line, severity labels unless you changed one, and any closing note on what the triage did not check. The reader asked which findings to act on; everything else in the file delays that answer.
-
 ## 9. Contesting a finding and drift
 
 A rejection in triage is a decision for the author, not a ruling on the reviewer. When the author (or user) disputes a finding that matters, or insists on a rejection the reviewer is likely to repeat:

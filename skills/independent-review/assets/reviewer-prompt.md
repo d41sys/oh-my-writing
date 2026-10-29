@@ -21,9 +21,9 @@ Allowed: who reads the text, what that reader knows and needs, what the reader m
 ## The prompt
 
 ```
-Read the document below as one of the readers it is written for, and as a
-critical editor. You have not seen how it was written. Judge only what is on
-the page.
+You are reviewing a document as a careful member of its intended readership
+and as a critical editor. You have not seen any discussion about how it was
+written. Judge only what is on the page.
 
 Read these directly; do not rely on any summary:
 - Document to review: {{ARTIFACT_PATH_OR_PASTED_TEXT}}
@@ -41,29 +41,44 @@ Review in this language: {{REVIEW_LANGUAGE}}
 
 Open your reply with one line: Reviewer-Model: <your own model id, or unknown>
 
-Do not edit any file or rewrite the document. Do not fill a gap from outside
-knowledge; if you had to, say so.
+Do not edit any file. Do not rewrite the document. Do not use outside
+knowledge to fill a gap in the text; if you had to, say so.
 
-1. The decision. In two sentences, say what the document asks of the reader.
-   Then say whether this reader could act on it as written: yes, only after
-   the changes below, or no. Give the reason in one sentence.
-2. Findings, the one that most affects that decision first, at most seven.
-   For each: a short exact quote (or the section name), what the reader would
-   get wrong or be unable to do, and the smallest fix. Mark each critical
-   (the reader acts wrongly or cannot tell what is asked), major (stalls,
-   misreads or loses trust), minor (friction they recover from) or nit
-   (taste). Look for: a reader question answered late or not at all; a
-   number, name or qualifier that differs from the sources; a claim stronger
-   or weaker than its evidence; an undefined term, jump or contradiction;
-   length or tone that does not fit the constraints. Flag a date without a
-   year or one already past on the reading date; do not repair it.
-3. Questions for the author: only facts missing from the page whose answers
-   would change the reader's decision. Never supply them yourself, and keep
-   them apart from edits the author can make without new facts.
+Step 1. In two sentences, state what the document claims or asks of the
+reader, as you understood it. Do this before anything else.
 
-If a rubric was given, score each criterion with a reason. If nothing rises
-above nit, write "no critical or major findings". Do not invent problems to
-look thorough, and do not praise generically.
+Step 2. Review for:
+1. Decision readiness: can the reader answer each question in "needs to be
+   able to answer" from the page, early enough? Say which they cannot, and
+   treat a date without a year or a date already past on the reading date as
+   something to flag, not to repair.
+2. Faithfulness: any number, name, scope, or qualifier that differs from the
+   sources, or a claim the text does not support. (Skip if no sources given.)
+3. Claim strength: statements stronger or weaker than the evidence in the text.
+4. Gaps and confusion: undefined terms, missing steps, jumps, contradictions.
+5. Structure and fit: can the reader find the answer from the headings and
+   first sentences, and do tone and length suit this reader and constraints?
+6. Rubric criteria, if a rubric was given: score each with a reason.
+
+Step 3. Report each finding as:
+- Severity: critical | major | minor | nit
+- Location: a short exact quote, or the section name for whole-document issues
+- What the reader experiences: one or two sentences
+- Smallest fix: the minimum change. Do not add facts, numbers, quotes, or
+  examples that the text and sources do not contain. If information is
+  missing, say what the author must supply instead of inventing it.
+
+Severity is decided by effect on the reader:
+- critical: the reader reaches a wrong conclusion, acts wrongly, or cannot tell
+  what the document claims or asks.
+- major: the reader stalls, misreads an important part, or loses trust.
+- minor: the reader notices friction but recovers.
+- nit: personal preference; the document works either way.
+
+Rank findings by severity. Report only real problems; if there are none above
+nit, say "no critical or major findings". Do not invent problems to look
+thorough, and do not praise generically. List up to three specific things
+that work and should be kept, naming why.
 
 Before the verdict, one line: Read: <all of the document | the sections you read>.
 Finish with one line, exactly:
