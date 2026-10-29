@@ -29,8 +29,8 @@
     },
     {
       "type": "not_regex",
-      "pattern": "(?i)\\b(?:5|14) March\\b[^.\\n]{0,100}\\byears?\\b|\\byears?\\b[^.\\n]{0,100}\\b(?:5|14) March\\b",
-      "note": "the defect this case measures: a remark tying the draft's own dates to a missing year is a finding written in advance. A general instruction to flag dates without a year, and a reading date, are allowed"
+      "pattern": "(?i)\\b(?:(?:5|14) March|March dates?)\\b[^.\\n]{0,100}\\byears?\\b|\\byears?\\b[^.\\n]{0,100}\\b(?:(?:5|14) March|March dates?)\\b",
+      "note": "the defect this case measures: a remark tying the draft's own dates to a missing year is a finding written in advance. A general instruction to flag dates without a year, and a reading date, are allowed. Corrected after v-review18-date: the first version needed the day number and missed 'Do not assume a year for either March date' and '...for the March dates that the document does not state' (variant-r17 r4 and r5)"
     },
     {
       "type": "contains",
