@@ -1,6 +1,6 @@
 {
   "id": "reader/repair-cafe-grant-abstract",
-  "skill": "evidence-grounded-writing",
+  "skill": "structured-drafting",
   "description": "Public grant abstract (150-word cap) from messy applicant notes with many figures and an unreliable estimate. The output should read like the funded example: plain English, one story of who benefits and what changes, only the few figures that support the ask, no acronyms from the notes, no stacked qualifiers.",
   "prompt": "Write the 150-word public abstract for the Dunmore Civic Fund application from notes.md. The fund published a funded example, funded-example.md; match how it reads. Save it to out/abstract.md.",
   "files": {

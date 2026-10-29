@@ -1,9 +1,9 @@
 ---
 name: structured-drafting
-description: Turns raw material (notes or a notes file, meeting notes, source excerpts, interview transcripts, bullet ideas, or an existing rough draft) into a first draft, short update, email or article through explicit, size-scaled stages - brief, material inventory, core message, grounding order, shape, outline, block-by-block drafting - and offers a section-by-section co-authoring mode when the author wants to steer. Use when drafting articles or posts from transcripts, interviews or rough notes, or when asked to "turn these notes into a draft", "turn my meeting notes into an update", "write a short email from notes.md", "write a first draft from this", "outline this for me", "structure this document", "help me write this together", or "organize my rough ideas into an article". It can sit beside a genre skill for structure and fact coverage; when writing samples or a voice profile are given, the voice skill decides person, asides and sentence shape.
+description: Turns raw material (notes, meeting notes, source excerpts, transcripts, bullet ideas, or a rough draft) into a first draft, short update, email or article through explicit, size-scaled stages - brief, material inventory, core message, grounding order, shape, outline, block-by-block drafting - and offers a section-by-section co-authoring mode when the author wants to steer. Use when drafting articles or posts from transcripts, interviews or rough notes, or when asked to "turn these notes into a draft", "turn my meeting notes into an update", "write a short email from notes.md", "write a first draft from this", "outline this for me", "structure this document", "help me write this together", or "organize my rough ideas into an article". It can sit beside a genre skill for structure and fact coverage; when writing samples or a voice profile are given, the voice skill decides person, asides and sentence shape. Shortening a finished abstract or results passage goes to evidence-grounded-writing.
 license: MIT
 metadata:
-  version: "1.9"
+  version: "1.10"
   skill-author: d41sys
 ---
 

@@ -1,10 +1,10 @@
 ---
 name: anti-slop-editing
-description: Audits and edits prose for AI-writing patterns such as stock vocabulary, empty framing, staged contrasts and reveals ("The best part?", "Here's the thing:"), puffery, vague attribution, formulaic endings, decorative formatting and chatbot residue, while keeping the author's meaning, facts and voice. Works in detect, edit and rewrite modes and reports writing-quality signals, never a verdict on who wrote the text. Use when the user asks to remove AI-sounding phrasing, de-slop or clean up a draft, check a text for AI tells, make writing sound less robotic or more natural, strip chatbot leftovers, or run an AI-pattern audit before publishing. Claims and citation audits go to evidence-grounded-writing, whole-draft reader reviews to independent-review, and "sound like me" requests to author-voice.
+description: Audits and edits prose for AI-writing patterns such as stock vocabulary, empty framing, staged contrasts and reveals ("The best part?", "Here's the thing:"), puffery, vague attribution, formulaic endings, decorative formatting and chatbot residue, while keeping the author's meaning, facts and voice. Works in detect, edit and rewrite modes and reports writing-quality signals, never a verdict on who wrote the text. Use when the user asks to remove AI-sounding phrasing, de-slop or clean up a draft, check a text for AI tells, make writing sound less robotic or more natural, strip chatbot leftovers, or run an AI-pattern audit before publishing. Claims and citation audits, and shortening an abstract or a passage that reports results, go to evidence-grounded-writing, whole-draft reader reviews to independent-review, and "sound like me" requests to author-voice.
 license: MIT
 compatibility: Optional helper scripts need Python 3.10+; the skill works without them.
 metadata:
-  version: "1.16"
+  version: "1.17"
   skill-author: d41sys
 ---
 
@@ -49,7 +49,7 @@ Modes:
 
 Steps:
 
-1. **Fix the brief.** Settle mode, scope (whole text, a section, a named file), destination and genre, protected passages, and user corrections. Pick a profile (`casual`, `professional`, `technical`, `academic`) from the destination; for fiction, read without scanning. If the scope is unclear, use the narrowest clearly relevant scope or ask once. See [genre calibration](references/genre-calibration.md).
+1. **Fix the brief.** Settle mode, scope (whole text, a section, a named file), destination and genre, protected passages, and user corrections. Pick a profile (`casual`, `professional`, `technical`, `academic`) from the destination; for fiction, read without scanning. If the scope is unclear, work on the smallest part the request plainly covers, or ask once. See [genre calibration](references/genre-calibration.md).
 2. **Read the whole text once without changing anything.** Note the author's habits (dashes, fragments, hedges, asides, bold) from the text itself or the supplied sample. A habit the author shows is voice, not slop.
 3. **Locate candidates.** If Python 3.10+ is available, run the scanner by its path in this skill's `scripts/` directory (your working directory is probably the user's project, not the skill) and keep its output as a list of places to look:
    `python <skill-dir>/scripts/slop_scan.py --profile professional draft.md` (add `--json` for machine output; reads stdin when no file is given).

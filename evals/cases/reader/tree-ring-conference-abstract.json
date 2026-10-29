@@ -1,6 +1,6 @@
 {
   "id": "reader/tree-ring-conference-abstract",
-  "skill": "evidence-grounded-writing",
+  "skill": "structured-drafting",
   "description": "Conference abstract (200-word cap) from a lab's notes: a new method, simulation and field numbers, a dead end and a delicate positioning request. The output should follow the accepted abstract: one idea, plain statement of what was tried and found, a couple of paired figures, the limit stated once in one sentence, no hype, no heading scaffolding.",
   "prompt": "Conference abstract for NRS 2026 (200 words max) from notes.md. The accepted abstract in last-year-abstract.md is the model for how it should be built. Save it to out/abstract.md.",
   "files": {
