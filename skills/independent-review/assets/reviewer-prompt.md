@@ -2,7 +2,7 @@ Load when: sending a draft to an independent reviewer (fresh session, ideally a 
 
 # Reviewer prompt
 
-Fill every `{{placeholder}}`. Delete any optional line you cannot fill truthfully (sources, rubric, reading date); do not invent it. Send the text inside the fence as the reviewer's whole prompt, in a new session, with read-only access.
+Fill every `{{placeholder}}`. Delete any optional line you cannot fill truthfully (sources, rubric, reading date, review limits); do not invent it. Send the text inside the fence as the reviewer's whole prompt, in a new session, with read-only access.
 
 ## Before you send
 
@@ -16,7 +16,7 @@ Check the filled prompt against this list. Remove anything that matches.
 - Anything about the writer's process, tools, or model.
 - Confidential or unpublished material the owner has not cleared to leave this session (see step 3 of the skill).
 
-Allowed: who reads the text, what that reader knows and needs, what the reader must be able to answer after reading, the reading date, hard constraints (length, format, venue, house style), sources the text must agree with, the rubric, and the output format below. Not allowed: the draft's known weak spots, even as "check X carefully"; derive the reader's questions from the reader's job, not from what you already see missing.
+Allowed: who reads the text, what that reader knows and needs, what the reader must be able to answer after reading, the reading date, hard constraints on the document (length, format, venue, house style), limits the writer set on the review itself (its length or layout), sources the text must agree with, the rubric, and the output format below. Not allowed: the draft's known weak spots, even as "check X carefully"; derive the reader's questions from the reader's job, not from what you already see missing.
 
 ## The prompt
 
@@ -35,9 +35,10 @@ Reader: {{WHO_THEY_ARE_AND_WHAT_THEY_ALREADY_KNOW}}
 The reader opens the document because: {{READER_REASON}}
 After reading, the reader has to: {{READER_NEXT_ACTION_OR_DECISION}}
 The reader needs to be able to answer: {{READER_NEEDS}}
-Hard constraints: {{LENGTH_FORMAT_VENUE_STYLE_RULES}}
+Hard constraints on the document: {{LENGTH_FORMAT_VENUE_STYLE_RULES}}
 The reader reads this on: {{READING_DATE}}
 Review in this language: {{REVIEW_LANGUAGE}}
+Limits on your review (optional): {{REVIEW_LIMITS}}
 
 Open your reply with one line: Reviewer-Model: <your own model id, or unknown>
 
@@ -95,6 +96,8 @@ VERDICT: ready | revise
 | `READER_NEXT_ACTION_OR_DECISION` | the concrete act: approve, run, apply, reply | the conclusion you want them to reach |
 | `READER_NEEDS` | three to five questions anyone in that role would ask before acting, in plain words (funding call: what it costs, what it commits us to, by when, how success is judged; instructions: what to have ready, what each step does, how to know it worked) | questions that name the draft's gaps, the writer's worries or an expected answer |
 | `READING_DATE` | today's date, when the text has dates without a year or relative dates; otherwise delete the line | a guess |
+| `LENGTH_FORMAT_VENUE_STYLE_RULES` | rules the document itself must meet: a word or page limit set by the venue or form, required format, house style | anything the writer asked of the review; that goes in `REVIEW_LIMITS` |
+| `REVIEW_LIMITS` | what the writer asked of the review itself: "one page", "a short table", "at most five findings"; otherwise delete the line | rules for the document |
 | `SOURCE_PATHS` | files, raw data, spec | your summary of them |
 | `RUBRIC_PATH_OR_TEXT` | a filled rubric; calibrated or labelled `calibration: none` | a rubric invented to fit the verdict |
 
