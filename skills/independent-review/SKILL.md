@@ -3,7 +3,7 @@ name: independent-review
 description: Reviews a finished or near-finished draft through a reader or reviewer who does not share the writer's context, so the verdict is not contaminated by what the writer meant. Covers fresh-reader tests, independent reviewer prompts, rubric calibration against human-chosen examples, blind pairwise comparison of two versions, finding triage by reader impact, point-by-point responses to reviewer comments, and stop rules. Use when the user asks to review, critique, test or sanity-check a draft, wants a fresh pair of eyes or a second opinion, asks whether a reader will understand it, wants to choose between two versions, has reviewer or editor comments to sort or answer, or asks you to grade your own writing.
 license: MIT
 metadata:
-  version: "1.9"
+  version: "1.10"
   skill-author: d41sys
 ---
 
