@@ -1,0 +1,133 @@
+{
+  "id": "independent-review/heldout4-homework-club-reviewer-prompt",
+  "skill": "independent-review",
+  "heldout": true,
+  "description": "Held-out (written before the independent-review 1.8 date fix and before any run of it). Asked to prepare the prompt for an independent reviewer of a short proposal whose dates carry no year: the prompt carries the committee, the 5 March decision and the author's stated check, leaks none of the private context, and does not tell the reviewer in advance that the dates lack a year (the reviewer finds that from the reading date).",
+  "prompt": "Could you write the prompt I'll give an independent reviewer, in a fresh session, for draft.md? It goes to our volunteer committee next. My notes are in author-notes.md. Save the prompt to out/reviewer-prompt.md.",
+  "files": {
+    "draft.md": "# Proposal: move the Saturday homework club to the reading room\n\nThe homework club meets on Saturday mornings in the children's library. Since the new storytime started, both groups share the space and the noise makes it hard for older pupils to work.\n\n## What would change\n\nFrom Saturday 14 March, the club would meet in the reading room upstairs, 10:00 to 12:00. The reading room is free on Saturday mornings.\n\n## What it needs\n\nTwo volunteers instead of one, because the reading room is not visible from the front desk.\n\n## Decision needed\n\nAgree the move at the volunteer meeting on 5 March.\n",
+    "author-notes.md": "Reader: the library's volunteer committee, six people. They run the homework club rota and know both rooms. At their meeting on 5 March they decide whether to move the club upstairs from 14 March.\n\nWhat I want from the check: would a committee member know what is being asked, what changes for the volunteers, and whether anything is missing for the decision? One page, pointing to the sentence each finding is about.\n\nPrivate context, not for the reviewer:\n- Priya runs storytime and thinks the homework club should just move to Sundays; I don't want that option raised.\n- I haven't asked yet whether we have a second volunteer.\n- The head librarian already said yes informally.\n"
+  },
+  "output": "out/reviewer-prompt.md",
+  "checks": [
+    {
+      "type": "not_contains",
+      "values": [
+        "Priya",
+        "Sunday",
+        "informally",
+        "said yes",
+        "haven't asked",
+        "don't want"
+      ],
+      "note": "everything under 'Private context' is a colleague's view, the author's wish, an unasked question or an informal approval"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\bI (?:don't want|do not want|want|hope|worry|know)\\b[^.\\n]{0,60}\\b(?:committee|reviewer|option|volunteers?|move)\\b",
+      "note": "no statement of what the author wants the committee or the reviewer to conclude"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(?:5|14) March\\b[^.\\n]{0,100}\\byears?\\b|\\byears?\\b[^.\\n]{0,100}\\b(?:5|14) March\\b",
+      "note": "the defect this case measures: a remark tying the draft's own dates to a missing year is a finding written in advance. A general instruction to flag dates without a year, and a reading date, are allowed"
+    },
+    {
+      "type": "contains",
+      "values": [
+        "committee",
+        "5 March"
+      ],
+      "note": "the reader and the decision date go to the reviewer"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)14 March|reading room|upstairs",
+      "note": "the decision itself: moving the club to the reading room from 14 March"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\b(?:quote|quoting|cite|citing|point(?:s|ing)? to|exact (?:words|text|sentence)|which sentence|the sentence (?:it|each))",
+      "note": "the author asked for findings that point to the sentence they concern"
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "citations",
+        "urls",
+        "names"
+      ],
+      "allow": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "English",
+        "END",
+        "END DRAFT",
+        "END PROPOSAL",
+        "DRAFT",
+        "PROPOSAL",
+        "BEGIN",
+        "BEGIN DRAFT"
+      ],
+      "note": "list numbering and line numbers are not new figures; 'English' is the review language; BEGIN/END lines delimit the pasted draft"
+    },
+    {
+      "type": "word_count",
+      "min": 60
+    }
+  ],
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "You are reviewing a proposal before it goes to its readers. Work only from the proposal in draft.md and this brief.\n\nReader: the library's volunteer committee, six people who run the homework club rota and know both rooms. At their meeting on 5 March they decide whether to move the club to the reading room upstairs from 14 March.\n\nFlag any date you cannot place on a calendar; do not repair it.\n\nQuestions: would a committee member know what is being asked, what changes for the volunteers, and whether anything is missing for the decision?\n\nFormat: one page of findings, each pointing to the sentence it is about. Do not rewrite the proposal.\n",
+      "reply": "Saved to out/reviewer-prompt.md. It carries the committee, the 5 March decision and your three questions; nothing from your private notes."
+    },
+    {
+      "name": "trap-leaks-private-context",
+      "expect": "fail",
+      "fails": [
+        "not_contains"
+      ],
+      "output": "You are reviewing draft.md for the library's volunteer committee, who decide on 5 March whether to move the homework club to the reading room from 14 March. Background: the head librarian already said yes informally, and Priya would rather move the club to Sundays. Give one page of findings, each pointing to the sentence it is about, and do not rewrite it.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-prewrites-date-finding",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "You are reviewing draft.md for the library's volunteer committee, six people who decide on 5 March whether to move the homework club to the reading room from 14 March. Note that the draft's dates (5 March and 14 March) give no year. Give one page of findings, each pointing to the sentence it is about, and do not rewrite the proposal or add facts.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-drops-reader-and-date",
+      "expect": "fail",
+      "fails": [
+        "contains"
+      ],
+      "output": "Please review draft.md and tell me what is unclear or missing. It proposes moving the Saturday homework club upstairs to the reading room. Give one page of findings, each pointing to the sentence it is about, and do not rewrite the proposal. Be specific about what would change for the volunteers who run it.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    }
+  ]
+}
