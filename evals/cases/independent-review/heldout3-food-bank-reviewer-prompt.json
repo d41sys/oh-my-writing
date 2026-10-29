@@ -25,8 +25,8 @@
     },
     {
       "type": "not_regex",
-      "pattern": "(?i)(?-i:\\bDev\\b)|\\blease\\b|\\bI (?:need|want|hope|worry|fear|think)\\b[^.\\n]{0,60}\\b(?:trustees|board|approved?|them)\\b|volunteer(?:s| section)?[^.\\n]{0,60}\\b(?:weak|thin|vague|hand-wavy|worried|worry)\\b",
-      "note": "no earlier reader named, no mention of the unrelated lease (a word-bounded match: 'lease' sits inside 'please'), and no hint steering the reviewer to the author's private worry about the volunteer section"
+      "pattern": "(?i)(?-i:\\bDev\\b)|\\blease\\b|\\bI (?:need|want|hope|worry|fear|think)\\b[^.\\n]{0,60}\\b(?:trustees|board|approved?|them)\\b|volunteer section[^.?!\\n]{0,60}\\b(?:weak|thin|vague|hand-wavy|worried|worry)\\b",
+      "note": "no earlier reader named, no mention of the unrelated lease (a word-bounded match: 'lease' sits inside 'please'), and no hint steering the reviewer to the author's private worry about the volunteer section. Narrowed after v-review16-heldout (no run affected): the first version also matched a fair reader question such as 'How many volunteers does it need? Flag anything vague.'"
     },
     {
       "type": "contains",
