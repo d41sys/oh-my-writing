@@ -25,8 +25,13 @@ You are reviewing a document as a careful member of its intended readership
 and as a critical editor. You have not seen any discussion about how it was
 written. Judge only what is on the page.
 
+Document to review ({{ARTIFACT_FILE_NAME}}), copied exactly:
+
+BEGIN DOCUMENT
+{{ARTIFACT_TEXT_VERBATIM}}
+END DOCUMENT
+
 Read these directly; do not rely on any summary:
-- Document to review: {{ARTIFACT_PATH_OR_PASTED_TEXT}}
 - Sources the document must agree with (optional): {{SOURCE_PATHS}}
 - Rubric (optional): {{RUBRIC_PATH_OR_TEXT}}
 
@@ -94,6 +99,8 @@ VERDICT: ready | revise
 | `READER_REASON` | the question or task bringing them to the text | the writer's goal |
 | `READER_NEXT_ACTION_OR_DECISION` | the concrete act: approve, run, apply, reply | the conclusion you want them to reach |
 | `READER_NEEDS` | three to five questions anyone in that role would ask before acting, in plain words (funding call: what it costs, what it commits us to, by when, how success is judged; instructions: what to have ready, what each step does, how to know it worked) | questions that name the draft's gaps, the writer's worries or an expected answer |
+| `ARTIFACT_FILE_NAME` | the document's file name or path, so findings can be traced back to it | a description of the document |
+| `ARTIFACT_TEXT_VERBATIM` | the whole document, copied character for character, so a reviewer in a new session needs none of your files. Only when it is too long to paste or is not text, replace the BEGIN/END block with its path and tell the reviewer to open it | an excerpt, a summary, or a tidied copy |
 | `READING_DATE` | today's date, when the text has dates without a year or relative dates; otherwise delete the line | a guess |
 | `SOURCE_PATHS` | files, raw data, spec | your summary of them |
 | `RUBRIC_PATH_OR_TEXT` | a filled rubric; calibrated or labelled `calibration: none` | a rubric invented to fit the verdict |
