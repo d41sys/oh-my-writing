@@ -1,0 +1,179 @@
+{
+  "id": "independent-review/heldout11-canoe-hire-reviewer-prompt",
+  "skill": "independent-review",
+  "heldout": true,
+  "description": "Held-out (written before any run on this case, for the end-to-end review stage; a no-skills pilot calibrated it). Asked to prepare the prompt for an independent reviewer of a canoe-hire guide with six planted problems: three of kinds the 1.18 checklist line names (a total that does not add up, two capacities, a briefing listed after launching) and three it does not (a capsize procedure never given, 'portage' unexplained, no deposit amount). The notes ask a general question and name none of them. The prompt stage checks the reader, leaks and hints that point at a planted problem.",
+  "prompt": "Before this goes out to new members, I'd like someone independent to check draft.md. Please write the prompt for a reviewer in a fresh session; my notes are in notes.md. Save the prompt to out/reviewer-prompt.md.",
+  "files": {
+    "draft.md": "# Hiring a canoe at Millbrook Canoe Club\n\nThis guide is for members who want to take a club canoe out on the river.\n\n## Booking\n\nBook at least a day ahead at the boathouse desk or by phone on 01632 960214. Hire costs £12 per person for up to three hours, so a family of four pays £40. A deposit is taken when you collect the canoe and returned when it comes back undamaged.\n\n## Canoes and groups\n\nUp to six people can share a canoe, so larger families can stay together.\n\n## On the day\n\n1. Collect paddles and buoyancy aids from the boathouse.\n2. Carry the canoe to the slipway and launch.\n3. Attend the ten-minute safety briefing at the boathouse.\n4. Paddle upstream to the weir, portage, and continue to Hollow Bridge before turning back.\n\nReturn the canoe to the slipway by 5pm.\n\n## Safety\n\n- Everyone must wear a buoyancy aid on the water.\n- Each canoe seats three adults.\n- If you capsize, follow the capsize procedure.\n- Do not go out if the river level board by the slipway shows red.\n",
+    "notes.md": "Who reads it: members who joined this season and have never hired a club canoe. A few have paddled on holiday; most have not.\n\nWhat I'd like from the reviewer: could a new member book, take a canoe out and bring it back safely using only this guide? A short list of what would go wrong is fine.\n\nNot for the reviewer:\n- Our insurers asked us to tighten the safety wording after an incident last summer.\n- I'm worried the committee will think the prices are too low.\n"
+  },
+  "output": "out/reviewer-prompt.md",
+  "review_stage": {
+    "files": [
+      "draft.md"
+    ],
+    "brief": "Could a new member book, take a canoe out and bring it back safely using only this guide? A short list of what would go wrong is fine.",
+    "defects": [
+      {
+        "id": "total",
+        "description": "The worked price is wrong: at £12 per person a family of four pays £48, not the £40 the guide gives."
+      },
+      {
+        "id": "capacity",
+        "description": "The guide says up to six people can share a canoe, but the safety section says each canoe seats three adults."
+      },
+      {
+        "id": "briefing-order",
+        "description": "The steps put launching (step 2) before the safety briefing at the boathouse (step 3), so a member following them would be on the water before the briefing."
+      },
+      {
+        "id": "capsize",
+        "description": "'Follow the capsize procedure' refers to a procedure the guide never gives or points to."
+      },
+      {
+        "id": "portage",
+        "description": "'Portage' at the weir is not explained, so a new member may not know they must carry the canoe around the weir, or where."
+      },
+      {
+        "id": "deposit",
+        "description": "The deposit is mentioned but its amount, and how to pay it, are not given."
+      }
+    ]
+  },
+  "checks": [
+    {
+      "type": "not_contains",
+      "values": [
+        "insurer",
+        "incident",
+        "tighten the safety",
+        "too low",
+        "worried"
+      ],
+      "note": "everything under 'Not for the reviewer' is background on the writer, not on the reader"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\bjoined this season\\b|\\bnever (?:hired|had|paddled|been out|taken)\\b|\\bnew (?:club )?members?\\b|\\bnewly joined\\b",
+      "note": "the reader (members new this season who have never hired a club canoe) goes to the reviewer; the guide's own text does not satisfy this"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(?:£12|£40|per person|famil(?:y|ies) of four)\\b[^.\\n]{0,80}\\b(?:add up|adds up|totals?|sums?|arithmetic|multipl)|\\b(?:seats?|seating|six people|capacity)\\b[^.\\n]{0,80}\\b(?:conflict|contradict|inconsisten|clash|disagree|match)|\\b(?:conflict|contradict|inconsisten|clash|disagree)\\w*[^.\\n]{0,80}\\b(?:seats?|seating|six people|capacity)\\b|\\bbriefing\\b[^.\\n]{0,80}\\b(?:before|after|order|sequence|first)\\b|\\b(?:order|sequence)\\b[^.\\n]{0,60}\\bbriefing\\b|\\bcapsize procedure\\b[^.\\n]{0,60}\\b(?:not given|missing|is not|isn't|where|exists?|explained|described)\\b|\\bportage\\b[^.\\n]{0,60}\\b(?:jargon|explain\\w*|define\\w*|mean\\w*|term)\\b|\\b(?:jargon|explain\\w*|define\\w*)\\b[^.\\n]{0,40}\\bportage\\b|\\bdeposit\\b[^.\\n]{0,60}\\b(?:amount|how much|not (?:stated|given)|missing|unstated)\\b|\\b(?:links?|urls?|contact details?|phone numbers?|procedures?|instructions)\\b[^.\\n]{0,60}\\b(?:exists?|is given|are given|is provided|are provided|appears?|is shown)\\b|\\b(?:has|have) been given\\b[^.\\n]{0,60}\\b(?:procedure|instructions|briefing|deposit)\\b|\\b(?:club|internal|paddling|boating) (?:terms|jargon|words)\\b",
+      "note": "a finding written in advance: an instruction that points the reviewer at a planted problem (whether the family price adds up; the two capacities; the briefing after launching; the capsize procedure; 'portage'; the deposit amount; a procedure, contact or instruction that may not exist; club terms). General rules ('check the arithmetic', 'flag unexplained jargon', 'check the order of steps') are allowed, and neither the guide's own text nor the reviewer templates match"
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "citations",
+        "urls",
+        "names"
+      ],
+      "allow": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31",
+        "32",
+        "33",
+        "34",
+        "35",
+        "36",
+        "37",
+        "38",
+        "39",
+        "40",
+        "English",
+        "BEGIN",
+        "END",
+        "DOCUMENT",
+        "DRAFT",
+        "GUIDE",
+        "BEGIN DOCUMENT",
+        "END DOCUMENT",
+        "BEGIN DRAFT",
+        "END DRAFT",
+        "BEGIN GUIDE",
+        "END GUIDE"
+      ],
+      "note": "list numbering and line numbers are not new figures; 'English' is the review language; BEGIN/END lines delimit a pasted guide"
+    },
+    {
+      "type": "word_count",
+      "min": 60
+    }
+  ],
+  "controls": [
+    {
+      "name": "good-pasted",
+      "expect": "pass",
+      "output": "You are reviewing a club guide before it goes to its readers. Judge only what is on the page.\n\nReader: members who joined this season and have never hired a club canoe; a few have paddled on holiday, most have not.\n\nQuestion to answer first: could a new member book, take a canoe out and bring it back safely using only this guide?\n\nThen list what would go wrong, worst first, each with a short quote and the smallest fix. Do not rewrite the guide.\n\nDocument to review (draft.md), copied exactly:\n\nBEGIN DOCUMENT\n# Hiring a canoe at Millbrook Canoe Club\n\nThis guide is for members who want to take a club canoe out on the river.\n\n## Booking\n\nBook at least a day ahead at the boathouse desk or by phone on 01632 960214. Hire costs £12 per person for up to three hours, so a family of four pays £40. A deposit is taken when you collect the canoe and returned when it comes back undamaged.\n\n## Canoes and groups\n\nUp to six people can share a canoe, so larger families can stay together.\n\n## On the day\n\n1. Collect paddles and buoyancy aids from the boathouse.\n2. Carry the canoe to the slipway and launch.\n3. Attend the ten-minute safety briefing at the boathouse.\n4. Paddle upstream to the weir, portage, and continue to Hollow Bridge before turning back.\n\nReturn the canoe to the slipway by 5pm.\n\n## Safety\n\n- Everyone must wear a buoyancy aid on the water.\n- Each canoe seats three adults.\n- If you capsize, follow the capsize procedure.\n- Do not go out if the river level board by the slipway shows red.\nEND DOCUMENT\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-leaks-private-context",
+      "expect": "fail",
+      "fails": [
+        "not_contains"
+      ],
+      "output": "You are reviewing a club guide before it goes to its readers. Judge only what is on the page.\n\nDocument to review: draft.md.\n\nReader: members who joined this season and have never hired a club canoe; most have not paddled before.\n\nOur insurers asked for tighter safety wording, so look hard at that. List what would go wrong, worst first, each with a short quote, what goes wrong for the reader, and the smallest fix. Do not rewrite the guide.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-drops-reader",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "You are reviewing a club guide before it goes to its readers. Judge only what is on the page, and do not rely on anything you know about the club from elsewhere.\n\nDocument to review: draft.md.\n\nList what would go wrong for the people who read it, worst first, each with a short quote, what goes wrong for them, and the smallest fix. Do not rewrite the guide, and do not add facts the guide does not contain. Finish with one line saying whether the guide is ready to send.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-prewritten-capsize",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "You are reviewing a club guide before it goes to its readers. Judge only what is on the page.\n\nDocument to review: draft.md.\n\nReader: members who joined this season and have never hired a club canoe; most have not paddled before.\n\nCheck whether the capsize procedure is explained anywhere, and do not assume club terms are known. List what would go wrong, worst first, each with a short quote, what goes wrong for the reader, and the smallest fix. Do not rewrite the guide.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-prewritten-order",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "You are reviewing a club guide before it goes to its readers. Judge only what is on the page.\n\nDocument to review: draft.md.\n\nReader: members who joined this season and have never hired a club canoe; most have not paddled before.\n\nLook at whether the briefing comes before the launch. List what would go wrong, worst first, each with a short quote, what goes wrong for the reader, and the smallest fix. Do not rewrite the guide.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    }
+  ]
+}

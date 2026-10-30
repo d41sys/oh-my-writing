@@ -51,19 +51,26 @@ Do not edit any file or rewrite the document. Do not fill a gap from outside
 knowledge; if you had to, say so.
 
 1. Answer the review question above first, in one or two plain sentences.
-2. List the problems this reader would actually hit, worst first: what stops
+2. Read the whole document once more for what a careful reader would catch:
+   sections that disagree with each other, figures and totals that do not
+   add up, a weekday that does not match its date, steps in an order the
+   reader cannot follow, and steps that need something the reader will not
+   have yet.
+3. List the problems this reader would actually hit, worst first: what stops
    them acting at all, then what makes them act wrongly, then what slows them
    down. For each, give a short exact quote (or the section), what goes wrong
    for the reader, and the smallest fix. A problem that one fix solves is one
    item, even if it shows in two places. A reader question the page does not
-   answer is a problem in this list; so is a date without a year, or one
-   already past on the reading date (name it, do not repair it). A fix adds no
-   fact the document does not contain; if something is missing, say what the
-   author must supply. If sources were given, include anything that differs
-   from them; if a rubric was given, score each criterion with a reason.
+   answer is a problem in this list; so is a date without a year or a relative
+   date the reading date cannot place. Call a full date past only after
+   comparing its day, month and year with the reading date. Name date
+   problems; do not repair them. A fix adds no fact the document does not
+   contain; if something is missing, say what the author must supply. If
+   sources were given, include anything that differs from them; if a rubric
+   was given, score each criterion with a reason.
    Report only real problems. If none would make the reader act wrongly or
    stall, say "no critical or major findings".
-3. Then one line: Read: <all of the document | the sections you read>
+4. Then one line: Read: <all of the document | the sections you read>
    Finish with one line, exactly:
    VERDICT: ready | revise
 ```
