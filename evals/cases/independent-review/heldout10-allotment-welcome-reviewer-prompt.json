@@ -1,0 +1,163 @@
+{
+  "id": "independent-review/heldout10-allotment-welcome-reviewer-prompt",
+  "skill": "independent-review",
+  "heldout": true,
+  "description": "Held-out (written before any run on this case, for the end-to-end review stage). Asked to prepare the prompt for an independent reviewer of an allotment welcome sheet with seven planted problems, three of them subtle (a step that needs a card that arrives later, a gate code new holders cannot get, a wrong weekday). The notes ask a general question and name none of them. The prompt stage checks the reader, leaks, and hints that point the reviewer at a planted problem; the review stage counts which planted problems the review finds.",
+  "prompt": "I'd like an independent check of draft.md before we start emailing it to new plot holders. Could you write the prompt for a reviewer in a fresh session? My notes are in notes.md. Save the prompt to out/reviewer-prompt.md.",
+  "files": {
+    "draft.md": "# Welcome to Ashgrove Allotments\n\nYou now hold plot 14B. This sheet covers what you need for your first month.\n\n## Getting in\n\nThe main gate has a code lock. The code changes on the first Monday of each month and is sent to plot holders by text. The tool shed key is in the key safe by the north gate, and its code is the same as the gate's.\n\n## Rent\n\nRent is £48 a year, payable in two instalments of £20. The first instalment is due by 31 March. Plots with rent unpaid after 30 days are offered to the waiting list.\n\n## Your first month\n\n1. Clear perennial weeds from the plot before planting anything.\n2. Collect your free starter pack of seeds from the shed. Bring your membership card.\n3. Book the rotavator using the online calendar.\n4. Hand your cultivation plan to the site rep within your first two weeks.\n\nYour membership card will be posted to you within four weeks of joining.\n\n## Watering\n\nWater in the evening in summer. In July and August you may use a hosepipe on the main tap for up to an hour.\n\n## Site rules\n\n- Bonfires are allowed on Wednesdays and Sundays before 10am, from 1 October to 31 March.\n- Hosepipes are not allowed between May and September.\n- Dogs must be kept on a lead.\n\n## Induction walk\n\nNew plot holders are welcome on the induction walk, Saturday 7 March 2027 at 10am, starting at the north gate.\n\nQuestions? Ask your site rep.\n",
+    "notes.md": "Who reads it: people who have just been given their first allotment plot; most have never had an allotment before. They get this sheet by email on the day their plot is allocated.\n\nWhat I'd like from the reviewer: could a new plot holder get through their first month using only this sheet? A short list of what would trip them up is fine.\n\nNot for the reviewer:\n- The previous site rep quit after a row about bonfires.\n- Half the committee wants to drop the starter pack.\n"
+  },
+  "output": "out/reviewer-prompt.md",
+  "review_stage": {
+    "files": [
+      "draft.md"
+    ],
+    "brief": "Could a new plot holder get through their first month using only this sheet? A short list of what would trip them up is fine.",
+    "defects": [
+      {
+        "id": "rent-sum",
+        "description": "The rent does not add up: two instalments of £20 make £40, not the £48 a year the sheet states."
+      },
+      {
+        "id": "card",
+        "description": "Step 2 says to bring the membership card to collect the starter pack, but the card is posted up to four weeks after joining, so a new holder may not have it during the first month."
+      },
+      {
+        "id": "gate-code",
+        "description": "The gate code changes on the first Monday of each month and is texted to plot holders, but the sheet does not say how a new holder gets the current code to get in before the next change (or whether they are on the text list)."
+      },
+      {
+        "id": "weekday",
+        "description": "The induction walk is given as 'Saturday 7 March 2027', but 7 March 2027 is a Sunday, so the day and the date disagree."
+      },
+      {
+        "id": "hosepipe",
+        "description": "The watering section allows a hosepipe in July and August, but the site rules ban hosepipes from May to September."
+      },
+      {
+        "id": "site-rep",
+        "description": "The site rep, who receives the cultivation plan and answers questions, is never named and no way to contact them is given."
+      },
+      {
+        "id": "calendar",
+        "description": "Step 3 says to book the rotavator on 'the online calendar' but gives no link and does not say where to find it."
+      }
+    ]
+  },
+  "checks": [
+    {
+      "type": "not_contains",
+      "values": [
+        "quit",
+        "row about",
+        "drop the starter pack",
+        "committee wants",
+        "half the committee"
+      ],
+      "note": "everything under 'Not for the reviewer' is background on the writer, not on the reader"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\bnever (?:had|gardened|kept|held|rented)\\b|\\bfirst (?:allotment|plot)\\b|\\b(?:just|newly) (?:been )?(?:given|allocated)\\b",
+      "note": "the reader (people just given their first plot, most new to allotments) goes to the reviewer; the page's own text does not satisfy this"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\b(?:links?|urls?|web address(?:es)?|contact details?|phone numbers?|email address(?:es)?)\\b[^.\\n]{0,60}\\b(?:exists?|is given|are given|is provided|are provided|appears?|is shown)\\b|\\b(?:internal|local|society|club|committee) (?:names|terms|jargon|roles|titles|acronyms)\\b|\\b7 March\\b[^.\\n]{0,60}\\b(?:sunday|weekday|day of the week)\\b|\\b(?:sunday|weekday|day of the week)\\b[^.\\n]{0,60}\\b7 March\\b|\\bmembership card\\b[^.\\n]{0,80}\\b(?:before|until|arrives?|wait|in time|not yet)\\b|\\b(?:before|until)\\b[^.\\n]{0,40}\\bmembership card\\b|\\b(?:gate )?code\\b[^.\\n]{0,80}\\b(?:new (?:plot )?holders?|mid-month|join(?:s|ed|ing)?|before the first Monday)\\b|\\bnew (?:plot )?holders?\\b[^.\\n]{0,60}\\b(?:gate )?code\\b|\\bhose\\w*[^.\\n]{0,100}\\b(?:conflict|contradict|inconsisten|clash)|\\b(?:conflict|contradict|inconsisten|clash)\\w*[^.\\n]{0,100}\\bhose|\\b(?:instal+ments?|£20|£48|rent)\\b[^.\\n]{0,80}\\b(?:add up|adds up|totals?|sums?|arithmetic|multipl)|\\bsite rep\\b[^.\\n]{0,60}\\b(?:not named|unnamed|who (?:is|the)|contact|named?)\\b|\\bcalendar\\b[^.\\n]{0,60}\\b(?:link|url|address|where (?:it|to find))\\b",
+      "note": "a finding written in advance: an instruction that points the reviewer at a planted problem (a link, contact or form that may not exist; internal names; 7 March and its weekday; the membership card arriving late; the gate code for new holders; the two hosepipe rules; whether the rent adds up; an unnamed site rep; the calendar link). General rules ('do not fill gaps from outside knowledge', 'check the arithmetic', 'do not invent contact details') are allowed, and the page's own text never matches"
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "citations",
+        "urls",
+        "names"
+      ],
+      "allow": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "English",
+        "BEGIN",
+        "END",
+        "DOCUMENT",
+        "DRAFT",
+        "SHEET",
+        "BEGIN DOCUMENT",
+        "END DOCUMENT",
+        "BEGIN DRAFT",
+        "END DRAFT",
+        "BEGIN SHEET",
+        "END SHEET"
+      ],
+      "note": "list numbering and line numbers are not new figures; 'English' is the review language; BEGIN/END lines delimit a pasted sheet"
+    },
+    {
+      "type": "word_count",
+      "min": 60
+    }
+  ],
+  "controls": [
+    {
+      "name": "good-pasted",
+      "expect": "pass",
+      "output": "You are reviewing an information sheet before it reaches its readers. Judge only what is on the page.\n\nReader: people who have just been given their first allotment plot; most have never had an allotment before. They get the sheet by email on the day their plot is allocated.\n\nQuestion to answer first: could a new plot holder get through their first month using only this sheet?\n\nThen list what would trip them up, worst first, each with a short quote and the smallest fix. Do not rewrite the sheet.\n\nDocument to review (draft.md), copied exactly:\n\nBEGIN DOCUMENT\n# Welcome to Ashgrove Allotments\n\nYou now hold plot 14B. This sheet covers what you need for your first month.\n\n## Getting in\n\nThe main gate has a code lock. The code changes on the first Monday of each month and is sent to plot holders by text. The tool shed key is in the key safe by the north gate, and its code is the same as the gate's.\n\n## Rent\n\nRent is £48 a year, payable in two instalments of £20. The first instalment is due by 31 March. Plots with rent unpaid after 30 days are offered to the waiting list.\n\n## Your first month\n\n1. Clear perennial weeds from the plot before planting anything.\n2. Collect your free starter pack of seeds from the shed. Bring your membership card.\n3. Book the rotavator using the online calendar.\n4. Hand your cultivation plan to the site rep within your first two weeks.\n\nYour membership card will be posted to you within four weeks of joining.\n\n## Watering\n\nWater in the evening in summer. In July and August you may use a hosepipe on the main tap for up to an hour.\n\n## Site rules\n\n- Bonfires are allowed on Wednesdays and Sundays before 10am, from 1 October to 31 March.\n- Hosepipes are not allowed between May and September.\n- Dogs must be kept on a lead.\n\n## Induction walk\n\nNew plot holders are welcome on the induction walk, Saturday 7 March 2027 at 10am, starting at the north gate.\n\nQuestions? Ask your site rep.\nEND DOCUMENT\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-leaks-private-context",
+      "expect": "fail",
+      "fails": [
+        "not_contains"
+      ],
+      "output": "You are reviewing an information sheet before it reaches its readers. Judge only what is on the page.\n\nDocument to review: draft.md.\n\nReader: people who have just been given their first allotment plot; most have never had an allotment before.\n\nThe previous site rep quit, so be gentle about that part. List what would trip them up, worst first, each with a short quote and the smallest fix. Do not rewrite the sheet.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-drops-reader",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "You are reviewing an information sheet before it reaches its readers. Judge only what is on the page, and do not rely on anything you know about the site from elsewhere.\n\nDocument to review: draft.md.\n\nList what would trip up the people who read it, worst first, each with a short quote, what goes wrong for them, and the smallest fix. Do not rewrite the sheet, and do not add facts the sheet does not contain. Finish with one line saying whether the sheet is ready to send.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-prewritten-missing-details",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "You are reviewing an information sheet before it reaches its readers. Judge only what is on the page.\n\nDocument to review: draft.md.\n\nReader: people who have just been given their first allotment plot; most have never had an allotment before.\n\nDo not assume that a link or contact detail exists unless the sheet shows it, and do not assume knowledge of internal names or roles. List what would trip them up, worst first, each with a short quote and the smallest fix. Do not rewrite the sheet.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-prewritten-gate-code",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "You are reviewing an information sheet before it reaches its readers. Judge only what is on the page.\n\nDocument to review: draft.md.\n\nReader: people who have just been given their first allotment plot; most have never had an allotment before.\n\nCheck how new plot holders get the gate code in their first weeks. List what would trip them up, worst first, each with a short quote and the smallest fix. Do not rewrite the sheet.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    }
+  ]
+}
