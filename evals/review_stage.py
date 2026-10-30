@@ -49,7 +49,8 @@ Review:
 {review}
 </review>
 
-For each known problem, decide whether the review identifies it. It counts only if the review points to that problem itself (the place, the fact or the missing piece), not merely to a nearby topic, and does not call it fine.
+For each known problem, decide whether the review identifies it anywhere in the review, including a fix or a finding about another problem. Count an explicit statement that the information is missing or unclear, or an instruction to the author to supply that information; the review need not repeat the diagnosis or give it a separate item. Match the specific problem (the place, the fact or the missing piece), not merely a nearby topic. Do not count a generic request for more detail, a different omission about the same topic, or a statement that calls the problem fine.
+For a missing-information problem that lists multiple missing pieces, count an explicit identification of at least one listed omission. Do not require the review to list every omission or to repeat it in the proposed fix. This does not credit a different gap about the same topic.
 Answer with exactly one line per problem, in the order given, and nothing after them:
 {answer_lines}"""
 
