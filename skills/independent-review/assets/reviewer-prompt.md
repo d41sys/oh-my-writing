@@ -25,7 +25,11 @@ You are one of this document's intended readers, reading it carefully before
 you have to act on it. You have not seen how it was written. Judge only what
 is on the page.
 
-Document to review: {{ARTIFACT_PATH}}. Open it and read all of it.
+Document to review ({{ARTIFACT_FILE_NAME}}), copied exactly:
+
+BEGIN DOCUMENT
+{{ARTIFACT_TEXT_VERBATIM}}
+END DOCUMENT
 
 Read these directly; do not rely on any summary:
 - Sources the document must agree with (optional): {{SOURCE_PATHS}}
@@ -68,7 +72,8 @@ knowledge; if you had to, say so.
 | `WHO_THEY_ARE_AND_WHAT_THEY_ALREADY_KNOW` | role, background, vocabulary they have | what you wish they believed |
 | `READER_NEXT_ACTION_OR_DECISION` | the concrete act: approve, run, apply, reply | the conclusion you want them to reach |
 | `READER_NEEDS` | three to five questions anyone in that role would ask before acting, in plain words, one per line (funding call: what it costs, what it commits us to, by when, how success is judged; instructions: what to have ready, what each step does, how to know it worked) | questions that name the draft's gaps, the writer's worries or an expected answer |
-| `ARTIFACT_PATH` | the document's path, readable from the reviewer's session; when the reviewer cannot open your files, copy the whole document in its place between `BEGIN DOCUMENT` and `END DOCUMENT` lines, character for character | a description, an excerpt or a summary of the document |
+| `ARTIFACT_FILE_NAME` | the document's file name or path, so findings can be traced back to it | a description of the document |
+| `ARTIFACT_TEXT_VERBATIM` | the whole document, copied character for character, so a reviewer in a new session needs none of your files. Only when it is too long to paste or is not text, replace the BEGIN/END block with its path and tell the reviewer to open it | an excerpt, a summary, or a tidied copy |
 | `READING_DATE` | today's date, when the text has dates without a year or relative dates; otherwise delete the line | a guess |
 | `SOURCE_PATHS` | files, raw data, spec | your summary of them |
 | `RUBRIC_PATH_OR_TEXT` | a filled rubric; calibrated or labelled `calibration: none` | a rubric invented to fit the verdict |

@@ -1,0 +1,136 @@
+{
+  "id": "independent-review/heldout9-hall-booking-reviewer-prompt",
+  "skill": "independent-review",
+  "heldout": true,
+  "description": "Held-out (written before any run on this case, for the end-to-end review stage). Asked to prepare the prompt for an independent reviewer of a hall-booking page with six planted problems; the author's notes name the reader and a general question but none of the problems. The prompt stage checks the reader and leaks; the review stage counts which planted problems the review finds.",
+  "prompt": "Can you write the prompt for an independent reviewer to check draft.md in a fresh session before we put it on the members' page? My notes are in notes.md. Save the prompt to out/reviewer-prompt.md.",
+  "files": {
+    "draft.md": "# Booking the hall\n\nMembers can hire the main hall at Elm Road Community Centre for private events such as birthday parties and family gatherings.\n\n## Cost\n\nThe hall costs £18 an hour, with a minimum of three hours. A four-hour party therefore costs £62. A £50 deposit is also due when you book; it is returned within two weeks if the hall is left clean and undamaged.\n\n## Booking\n\nBook at least two weeks before your event. Fill in the booking form at the end of this page and send it to the HMC with the deposit. The bookings secretary will email you to confirm.\n\nRequests received less than ten days before the event cannot be accepted.\n\n## On the day\n\nCollect the key from the centre office between 9am and 5pm on the day of your event. Bookings can run until 11pm. The hall must be empty and locked by 10:30pm, and the key returned through the office letterbox.\n\n## Questions\n\nEmail the bookings secretary.\n",
+    "notes.md": "Who reads it: members who joined this year and have never booked the hall. They will read it at home while deciding whether to hold a party there.\n\nWhat I'd like from the reviewer: could a new member book the hall and use it from this page alone, and what would they get wrong? A short list is fine.\n\nNot for the reviewer:\n- The committee argued for months about the hourly rate, so please don't reopen it.\n- Our last secretary left in a hurry and I rebuilt this page from her old emails.\n"
+  },
+  "output": "out/reviewer-prompt.md",
+  "checks": [
+    {
+      "type": "not_contains",
+      "values": [
+        "argued",
+        "reopen",
+        "last secretary",
+        "in a hurry",
+        "old emails"
+      ],
+      "note": "everything under 'Not for the reviewer' is background on the writer, not on the reader"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\bmembers?\\b[^\\n]{0,80}\\b(?:joined|new|never|first)|\\b(?:new|first-time)\\b[^\\n]{0,20}\\bmembers?\\b",
+      "note": "the reader (members new this year who have never booked) goes to the reviewer"
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "citations",
+        "urls",
+        "names"
+      ],
+      "allow": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "English",
+        "BEGIN",
+        "END",
+        "DOCUMENT",
+        "DRAFT",
+        "PAGE",
+        "BEGIN DOCUMENT",
+        "END DOCUMENT",
+        "BEGIN DRAFT",
+        "END DRAFT",
+        "BEGIN PAGE",
+        "END PAGE"
+      ],
+      "note": "list numbering and line numbers are not new figures; 'English' is the review language; BEGIN/END lines delimit a pasted page"
+    },
+    {
+      "type": "word_count",
+      "min": 60
+    }
+  ],
+  "review_stage": {
+    "files": [
+      "draft.md"
+    ],
+    "brief": "Could a member who joined this year, and has never booked the hall, book it and use it from this page alone, and what would they get wrong? A short list is fine.",
+    "defects": [
+      {
+        "id": "cost-sum",
+        "description": "The worked cost is wrong: at £18 an hour a four-hour party costs £72, not the £62 the page gives."
+      },
+      {
+        "id": "notice",
+        "description": "The notice period disagrees with itself: 'at least two weeks before your event' against 'less than ten days before the event cannot be accepted'."
+      },
+      {
+        "id": "end-time",
+        "description": "The finishing time disagrees with itself: 'Bookings can run until 11pm' against 'must be empty and locked by 10:30pm'."
+      },
+      {
+        "id": "hmc",
+        "description": "'The HMC', where the form and deposit go, is never explained, so a new member does not know who or where that is."
+      },
+      {
+        "id": "form",
+        "description": "The page says to fill in 'the booking form at the end of this page', but there is no form on the page."
+      },
+      {
+        "id": "contact",
+        "description": "'Email the bookings secretary' gives no email address or name, so a member cannot actually send a question."
+      }
+    ]
+  },
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "You are reviewing a web page before it goes to its readers. Judge only what is on the page.\n\nDocument to review: draft.md.\n\nReader: members who joined this year and have never booked the hall. They read it at home while deciding whether to hold a party there.\n\nCould a new member book the hall and use it from this page alone? List what they would get wrong or could not find, each with a short quote and the smallest fix. Keep it short and do not rewrite the page.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-leaks-private-context",
+      "expect": "fail",
+      "fails": [
+        "not_contains"
+      ],
+      "output": "You are reviewing a web page before it goes to its readers. Judge only what is on the page.\n\nDocument to review: draft.md.\n\nReader: members who joined this year and have never booked the hall. The page was rebuilt from the last secretary's old emails, so some details may be stale.\n\nList what a new member would get wrong or could not find, each with a short quote and the smallest fix. Keep it short and do not rewrite the page.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-drops-reader",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "You are reviewing a web page before it is published. Judge only what is on the page.\n\nDocument to review: draft.md.\n\nSay what is unclear, wrong or missing for the people who will read it, each with a short quote and the smallest fix. Keep the list short, do not rewrite the page, and do not add facts that the page does not contain.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    }
+  ]
+}
