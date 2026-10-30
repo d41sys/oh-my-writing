@@ -1,0 +1,138 @@
+{
+  "id": "independent-review/heldout7-tool-library-reviewer-prompt",
+  "skill": "independent-review",
+  "heldout": true,
+  "description": "Held-out (written before the independent-review 1.14 change and before any run on this case). Asked to prepare the prompt for an independent reviewer of a short volunteer how-to: the prompt carries the document itself, copied exactly, so a reviewer in a fresh session without the writer's files can read it; it also carries the reader and the author's questions, and leaks none of the private context.",
+  "prompt": "Write the prompt I'll give an independent reviewer, in a new session, for draft.md. My notes are in notes.md. Save the prompt to out/reviewer-prompt.md.",
+  "files": {
+    "draft.md": "# Checking out a tool\n\nWelcome to the Northside Tool Library. This page is for volunteers on the front desk.\n\n## Before the member arrives\n\nOpen the lending laptop and log in with the shared desk account. Keep the returns shelf clear so that you can put back anything that comes in.\n\n## Lending a tool\n\n1. Ask for the member card and scan the barcode on the back.\n2. Scan the tag on the tool handle. The screen shows the due date, which is seven days from today for most tools.\n3. Check the tool with the member: blades covered, battery charged, all parts in the case.\n4. Write any damage on the paper slip and put the slip in the tray under the desk.\n\n## If something goes wrong\n\nIf the card does not scan, type the member number by hand. If the tool shows as already on loan, do not lend it; put it on the returns shelf and leave a note for the coordinator.\n",
+    "notes.md": "Who reads it: new front-desk volunteers on their first shift. Most have borrowed tools as members but have never worked the desk.\n\nWhat I want from the check: could a new volunteer lend a tool from this page alone, without asking anyone? What would they need to have ready, and how would they know each step worked?\n\nNot for the reviewer:\n- Teodora wrote the old version and is sensitive about it being replaced.\n- The barcode scanner breaks often; we have not fixed it and I'd rather not mention it.\n- I think step 3 is too long, but I want a second opinion without saying so.\n"
+  },
+  "output": "out/reviewer-prompt.md",
+  "checks": [
+    {
+      "type": "contains",
+      "values": [
+        "Keep the returns shelf clear so that you can put back anything that comes in.",
+        "Write any damage on the paper slip and put the slip in the tray under the desk.",
+        "If the tool shows as already on loan, do not lend it; put it on the returns shelf and leave a note for the coordinator."
+      ],
+      "note": "the measure: the document is copied into the prompt exactly, so a reviewer without the writer's files can read it and no tidied copy stands in for it"
+    },
+    {
+      "type": "not_contains",
+      "values": [
+        "Teodora",
+        "sensitive",
+        "breaks often",
+        "rather not",
+        "second opinion"
+      ],
+      "note": "everything under 'Not for the reviewer' is a colleague's feelings, a known fault the author keeps out, or the author's own suspicion"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)\\bstep 3\\b[^.\\n]{0,80}\\b(?:long|wordy|length|lengthy|dense|crowded)\\b|\\b(?:long|wordy|lengthy|dense|crowded)\\b[^.\\n]{0,80}\\bstep 3\\b",
+      "note": "the author's suspicion about step 3 is a finding written in advance"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\bvolunteers?\\b",
+      "note": "the reader goes to the reviewer"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\bfirst shift\\b|\\bnever worked the desk\\b|\\bnew (?:front[- ]desk )?volunteers?\\b",
+      "note": "what the reader already knows: new to the desk"
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "citations",
+        "urls",
+        "names"
+      ],
+      "allow": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "English",
+        "BEGIN",
+        "END",
+        "DOCUMENT",
+        "DRAFT",
+        "BEGIN DOCUMENT",
+        "END DOCUMENT",
+        "BEGIN DRAFT",
+        "END DRAFT"
+      ],
+      "note": "list numbering and line numbers are not new figures; 'English' is the review language; BEGIN/END lines delimit the pasted document"
+    },
+    {
+      "type": "word_count",
+      "min": 60
+    }
+  ],
+  "controls": [
+    {
+      "name": "good-pasted",
+      "expect": "pass",
+      "output": "You are reviewing a how-to page before it goes to its readers. Judge only what is on the page.\n\nDocument to review (draft.md, copied exactly):\n\nBEGIN DOCUMENT\n# Checking out a tool\n\nWelcome to the Northside Tool Library. This page is for volunteers on the front desk.\n\n## Before the member arrives\n\nOpen the lending laptop and log in with the shared desk account. Keep the returns shelf clear so that you can put back anything that comes in.\n\n## Lending a tool\n\n1. Ask for the member card and scan the barcode on the back.\n2. Scan the tag on the tool handle. The screen shows the due date, which is seven days from today for most tools.\n3. Check the tool with the member: blades covered, battery charged, all parts in the case.\n4. Write any damage on the paper slip and put the slip in the tray under the desk.\n\n## If something goes wrong\n\nIf the card does not scan, type the member number by hand. If the tool shows as already on loan, do not lend it; put it on the returns shelf and leave a note for the coordinator.\nEND DOCUMENT\n\nReader: new front-desk volunteers on their first shift; most have borrowed tools as members but never worked the desk.\n\nQuestions: could a new volunteer lend a tool from this page alone? What would they need to have ready, and how would they know each step worked?\n\nReport each finding with a short exact quote and the smallest fix. Do not rewrite the page.\n",
+      "reply": "Saved to out/reviewer-prompt.md, with the page copied in so the reviewer does not need your files."
+    },
+    {
+      "name": "trap-path-only",
+      "expect": "fail",
+      "fails": [
+        "contains"
+      ],
+      "output": "You are reviewing a how-to page before it goes to its readers. Judge only what is on the page. Read draft.md directly; do not rely on any summary.\n\nReader: new front-desk volunteers on their first shift; most have borrowed tools as members but never worked the desk.\n\nQuestions: could a new volunteer lend a tool from this page alone? What would they need to have ready, and how would they know each step worked?\n\nReport each finding with a short exact quote and the smallest fix. Do not rewrite the page.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-tidied-copy",
+      "expect": "fail",
+      "fails": [
+        "contains"
+      ],
+      "output": "You are reviewing a how-to page before it goes to its readers. Judge only what is on the page.\n\nBEGIN DOCUMENT\n# Checking out a tool\n\nWelcome to the Northside Tool Library. This page is for front-desk volunteers.\n\nBefore the member arrives: log in to the lending laptop with the shared desk account and keep the returns shelf clear.\n\nLending a tool: scan the member card, scan the tool tag (the due date is usually seven days away), check the tool with the member, and note any damage on the paper slip in the tray.\n\nIf the card does not scan, type the member number. If the tool is already on loan, do not lend it; shelve it and tell the coordinator.\nEND DOCUMENT\n\nReader: new front-desk volunteers on their first shift; most have borrowed tools as members but never worked the desk.\n\nQuestions: could a new volunteer lend a tool from this page alone? What would they need to have ready, and how would they know each step worked? Report each finding with a short exact quote and the smallest fix.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-leaks-private-context",
+      "expect": "fail",
+      "fails": [
+        "not_contains"
+      ],
+      "output": "You are reviewing a how-to page before it goes to its readers. Judge only what is on the page.\n\nBEGIN DOCUMENT\n# Checking out a tool\n\nWelcome to the Northside Tool Library. This page is for volunteers on the front desk.\n\n## Before the member arrives\n\nOpen the lending laptop and log in with the shared desk account. Keep the returns shelf clear so that you can put back anything that comes in.\n\n## Lending a tool\n\n1. Ask for the member card and scan the barcode on the back.\n2. Scan the tag on the tool handle. The screen shows the due date, which is seven days from today for most tools.\n3. Check the tool with the member: blades covered, battery charged, all parts in the case.\n4. Write any damage on the paper slip and put the slip in the tray under the desk.\n\n## If something goes wrong\n\nIf the card does not scan, type the member number by hand. If the tool shows as already on loan, do not lend it; put it on the returns shelf and leave a note for the coordinator.\nEND DOCUMENT\n\nBackground: Teodora wrote the old version, and the barcode scanner breaks often.\n\nReader: new front-desk volunteers on their first shift.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-leading-step-3",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "You are reviewing a how-to page before it goes to its readers. Judge only what is on the page.\n\nBEGIN DOCUMENT\n# Checking out a tool\n\nWelcome to the Northside Tool Library. This page is for volunteers on the front desk.\n\n## Before the member arrives\n\nOpen the lending laptop and log in with the shared desk account. Keep the returns shelf clear so that you can put back anything that comes in.\n\n## Lending a tool\n\n1. Ask for the member card and scan the barcode on the back.\n2. Scan the tag on the tool handle. The screen shows the due date, which is seven days from today for most tools.\n3. Check the tool with the member: blades covered, battery charged, all parts in the case.\n4. Write any damage on the paper slip and put the slip in the tray under the desk.\n\n## If something goes wrong\n\nIf the card does not scan, type the member number by hand. If the tool shows as already on loan, do not lend it; put it on the returns shelf and leave a note for the coordinator.\nEND DOCUMENT\n\nReader: new front-desk volunteers on their first shift; most have borrowed tools as members but never worked the desk.\n\nSay whether step 3 is too long for a busy desk. Report each finding with a short exact quote and the smallest fix.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    }
+  ]
+}
