@@ -102,9 +102,9 @@ def test_summary_counts_told_separately_and_treats_a_missing_told_grade_as_an_er
     assert text.count("Mean told") == 1
 
 
-def test_parse_outside_counts_fact_lines_and_needs_a_total():
+def test_parse_outside_counts_fact_lines_not_fragments_and_needs_a_total():
     reply = ('Thinking.\nFACT: "Wait until the kiln reads below 100°C."\nFACT: \u201cFixer must not go down the drain.\u201d\n'
-             "TOTAL: 3\n")
+             'FACT: "safelight"\nTOTAL: 3\n')
     assert review_stage.parse_outside(reply) == ["Wait until the kiln reads below 100°C.",
                                                  "Fixer must not go down the drain."]
     assert review_stage.parse_outside("TOTAL: 0\n") == []
