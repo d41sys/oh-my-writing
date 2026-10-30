@@ -24,6 +24,15 @@ def test_parse_found_takes_the_last_answer_and_ignores_unknown_ids():
     assert review_stage.parse_found(reply, IDS) == {"cost": False, "return-time": True, "plp": False}
 
 
+def test_misquotes_flags_only_quotes_absent_from_the_document():
+    doc = "# Trip\n\nThe trip costs **£12 per child**, which covers the coach.\nPlease pay the usual way.\n"
+    review = ("- \u201cThe trip costs £12 per child\u201d is clear.\n"            # exact, markdown and curly quotes
+              "- \"costs £12 per child, \u2026 the coach\" is fine.\n"          # ellipsis: each piece found
+              "- \"Please pay the normal way\" is vague.\n"                    # one word changed
+              "- \"usual way\" and \"Trip\" are too short to count.\n")
+    assert review_stage.misquotes(review, doc) == ["Please pay the normal way"]
+
+
 def test_summary_counts_failed_or_ungraded_reviews_as_errors_not_as_zero_found():
     reviews = [
         {"case": "c", "condition": "skill", "rep": 1, "error": None, "words": 100,

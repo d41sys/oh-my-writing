@@ -21,86 +21,54 @@ Allowed: who reads the text, what that reader knows and needs, what the reader m
 ## The prompt
 
 ```
-You are reviewing a document as a careful member of its intended readership
-and as a critical editor. You have not seen any discussion about how it was
-written. Judge only what is on the page.
+You are one of this document's intended readers, reading it carefully before
+you have to act on it. You have not seen how it was written. Judge only what
+is on the page.
 
-Document to review ({{ARTIFACT_FILE_NAME}}), copied exactly:
-
-BEGIN DOCUMENT
-{{ARTIFACT_TEXT_VERBATIM}}
-END DOCUMENT
+Document to review: {{ARTIFACT_PATH}}. Open it and read all of it.
 
 Read these directly; do not rely on any summary:
 - Sources the document must agree with (optional): {{SOURCE_PATHS}}
 - Rubric (optional): {{RUBRIC_PATH_OR_TEXT}}
 
-Genre: {{GENRE}}
 Reader: {{WHO_THEY_ARE_AND_WHAT_THEY_ALREADY_KNOW}}
-The reader opens the document because: {{READER_REASON}}
 After reading, the reader has to: {{READER_NEXT_ACTION_OR_DECISION}}
-The reader needs to be able to answer: {{READER_NEEDS}}
+Questions the reader must be able to answer from the page:
+{{READER_NEEDS}}
 Hard constraints: {{LENGTH_FORMAT_VENUE_STYLE_RULES}}
 The reader reads this on: {{READING_DATE}}
 Review in this language: {{REVIEW_LANGUAGE}}
 
 Open your reply with one line: Reviewer-Model: <your own model id, or unknown>
 
-Do not edit any file. Do not rewrite the document. Do not use outside
-knowledge to fill a gap in the text; if you had to, say so.
+Do not edit any file or rewrite the document. Do not fill a gap from outside
+knowledge; if you had to, say so.
 
-Step 1. In two sentences, state what the document claims or asks of the
-reader, as you understood it. Do this before anything else.
-
-Step 2. Review for:
-1. Decision readiness: can the reader answer each question in "needs to be
-   able to answer" from the page, early enough? Say which they cannot, and
-   treat a date without a year or a date already past on the reading date as
-   something to flag, not to repair.
-2. Faithfulness: any number, name, scope, or qualifier that differs from the
-   sources, or a claim the text does not support. (Skip if no sources given.)
-3. Claim strength: statements stronger or weaker than the evidence in the text.
-4. Gaps and confusion: undefined terms, missing steps, jumps, contradictions.
-5. Structure and fit: can the reader find the answer from the headings and
-   first sentences, and do tone and length suit this reader and constraints?
-6. Rubric criteria, if a rubric was given: score each with a reason.
-
-Step 3. Report each finding as:
-- Severity: critical | major | minor | nit
-- Location: a short exact quote, or the section name for whole-document issues
-- What the reader experiences: one or two sentences
-- Smallest fix: the minimum change. Do not add facts, numbers, quotes, or
-  examples that the text and sources do not contain. If information is
-  missing, say what the author must supply instead of inventing it.
-
-Severity is decided by effect on the reader:
-- critical: the reader reaches a wrong conclusion, acts wrongly, or cannot tell
-  what the document claims or asks.
-- major: the reader stalls, misreads an important part, or loses trust.
-- minor: the reader notices friction but recovers.
-- nit: personal preference; the document works either way.
-
-Rank findings by severity. Report only real problems; if there are none above
-nit, say "no critical or major findings". Do not invent problems to look
-thorough, and do not praise generically. List up to three specific things
-that work and should be kept, naming why.
-
-Before the verdict, one line: Read: <all of the document | the sections you read>.
-Finish with one line, exactly:
-VERDICT: ready | revise
+1. Answer each of the reader's questions in one line: yes, partly or no, and
+   where the page answers it or what is missing. A date without a year, or one
+   already past on the reading date, is a gap to name, not to repair.
+2. List the problems this reader would actually hit, worst first: what makes
+   them act wrongly before what slows them down. For each, give a short exact
+   quote (or the section), what goes wrong for the reader, and the smallest
+   fix. A problem that one fix solves is one item, even if it shows in two
+   places. A fix adds no fact the document does not contain; if something is
+   missing, say what the author must supply. If sources were given, include
+   anything that differs from them; if a rubric was given, score each
+   criterion with a reason. Report only real problems. If none would make the
+   reader act wrongly or stall, say "no critical or major findings".
+3. Then one line: Read: <all of the document | the sections you read>
+   Finish with one line, exactly:
+   VERDICT: ready | revise
 ```
 
 ## Placeholder notes
 
 | Placeholder | Fill with | Do not fill with |
 |---|---|---|
-| `GENRE` | post, report, README, cover letter... | the writer's own label for tone or ambition |
 | `WHO_THEY_ARE_AND_WHAT_THEY_ALREADY_KNOW` | role, background, vocabulary they have | what you wish they believed |
-| `READER_REASON` | the question or task bringing them to the text | the writer's goal |
 | `READER_NEXT_ACTION_OR_DECISION` | the concrete act: approve, run, apply, reply | the conclusion you want them to reach |
-| `READER_NEEDS` | three to five questions anyone in that role would ask before acting, in plain words (funding call: what it costs, what it commits us to, by when, how success is judged; instructions: what to have ready, what each step does, how to know it worked) | questions that name the draft's gaps, the writer's worries or an expected answer |
-| `ARTIFACT_FILE_NAME` | the document's file name or path, so findings can be traced back to it | a description of the document |
-| `ARTIFACT_TEXT_VERBATIM` | the whole document, copied character for character, so a reviewer in a new session needs none of your files. Only when it is too long to paste or is not text, replace the BEGIN/END block with its path and tell the reviewer to open it | an excerpt, a summary, or a tidied copy |
+| `READER_NEEDS` | three to five questions anyone in that role would ask before acting, in plain words, one per line (funding call: what it costs, what it commits us to, by when, how success is judged; instructions: what to have ready, what each step does, how to know it worked) | questions that name the draft's gaps, the writer's worries or an expected answer |
+| `ARTIFACT_PATH` | the document's path, readable from the reviewer's session; when the reviewer cannot open your files, copy the whole document in its place between `BEGIN DOCUMENT` and `END DOCUMENT` lines, character for character | a description, an excerpt or a summary of the document |
 | `READING_DATE` | today's date, when the text has dates without a year or relative dates; otherwise delete the line | a guess |
 | `SOURCE_PATHS` | files, raw data, spec | your summary of them |
 | `RUBRIC_PATH_OR_TEXT` | a filled rubric; calibrated or labelled `calibration: none` | a rubric invented to fit the verdict |

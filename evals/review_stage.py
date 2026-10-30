@@ -96,19 +96,45 @@ def parse_found(reply: str, ids: list[str]) -> dict[str, bool] | None:
     return found if set(found) == set(ids) else None
 
 
+def _norm(text: str) -> str:
+    text = text.translate(str.maketrans({"\u2018": "'", "\u2019": "'", "\u201c": '"', "\u201d": '"', "\u2013": "-",
+                                         "\u2014": "-", "*": " ", "#": " ", "`": " ", "_": " "}))
+    return re.sub(r"\s+", " ", text).strip().lower()
+
+
+def misquotes(review: str, reference: str) -> list[str]:
+    """Double-quoted spans of the review (straight or curly quotes, three words or more) that do not occur in the
+    reference text (the document and the prompt), ignoring case, whitespace, markdown and quote or dash styles. An
+    ellipsis splits a quote into pieces, each checked on its own."""
+    ref = _norm(reference)
+    out = []
+    for m in re.finditer(r"\u201c([^\u201d\n]{1,400})\u201d|\"([^\"\n]{1,400})\"", review):
+        span = m.group(1) or m.group(2)
+        for piece in re.split(r"\u2026|\.\.\.|\[\u2026\]|\[\.\.\.\]", span):
+            piece = _norm(piece).strip(" .,;:!?'\"()[]")
+            if len(piece.split()) >= 3 and piece not in ref:
+                out.append(span)
+                break
+    return out
+
+
 def summarise(reviews: list[dict], verdicts: list[dict], defect_ids: dict[str, list[str]]) -> dict:
-    """Per case and condition: reviews, errors, mean words, planted problems found (mean and per problem); per case
-    and pair: judge tallies. Errored or ungraded reviews count as errors, not as zero found."""
+    """Per case and condition: reviews, errors, mean words, planted problems found (mean and per problem), quotes not
+    in the document; per case and pair: judge tallies. Errored or ungraded reviews count as errors, not as zero found."""
     out: dict = {}
     for r in reviews:
         c = out.setdefault(r["case"], {"conditions": {}, "pairs": {}})
-        s = c["conditions"].setdefault(r["condition"], {"reviews": 0, "errors": 0, "words": 0, "graded": 0,
-                                                         "found": 0, "by_defect": {d: 0 for d in defect_ids[r["case"]]}})
+        s = c["conditions"].setdefault(r["condition"], {"reviews": 0, "errors": 0, "words": 0, "graded": 0, "found": 0,
+                                                         "misquotes": 0, "misquoted_reviews": 0,
+                                                         "by_defect": {d: 0 for d in defect_ids[r["case"]]}})
         if r.get("error") or r.get("found") is None:
             s["errors"] += 1
             continue
         s["reviews"] += 1
         s["words"] += r["words"]
+        bad = len(r.get("misquotes", []))
+        s["misquotes"] += bad
+        s["misquoted_reviews"] += bad > 0
         s["graded"] += 1
         s["found"] += sum(r["found"].values())
         for d, hit in r["found"].items():
@@ -149,6 +175,11 @@ def review_one(case: dict, meta: dict, run_out: Path, args) -> dict:
     if args.resume and kept.is_file():
         old = json.loads(kept.read_text(encoding="utf-8"))
         if not old.get("error") and old.get("found") is not None:
+            if "misquotes" not in old:
+                reference = stage_document(case) + "\n" + (run_out / "workspace" / case["output"]).read_text(
+                    encoding="utf-8")
+                old["misquotes"] = misquotes((review_dir / "reply.md").read_text(encoding="utf-8"), reference)
+                kept.write_text(json.dumps(old, indent=2), encoding="utf-8")
             return old
     shutil.rmtree(review_dir, ignore_errors=True)
     prompt_file = run_out / "workspace" / case["output"]
@@ -162,7 +193,8 @@ def review_one(case: dict, meta: dict, run_out: Path, args) -> dict:
         review = (review_dir / "reply.md").read_text(encoding="utf-8", errors="replace") if not error else ""
         if not error and not review.strip():
             error = "empty review"
-        record.update(error=error, duration_s=result["duration_s"], words=len(review.split()), found=None)
+        record.update(error=error, duration_s=result["duration_s"], words=len(review.split()), found=None,
+                      misquotes=misquotes(review, stage_document(case) + "\n" + prompt_file.read_text(encoding="utf-8")))
         if not error and stage["defects"]:
             ids = [d["id"] for d in stage["defects"]]
             prompt = GRADER_PROMPT.format(
@@ -223,13 +255,17 @@ def report(summary: dict) -> str:
     lines = ["# Review stage", "",
              "Each reviewer prompt from the first stage was run in a fresh session with no skills and read-only "
              "tools; the review is what came back. 'Found' counts the case's planted problems a grader says the "
-             "review identifies. Judge verdicts compare the reviews, not the prompts.", ""]
+             "review identifies. 'Misquotes' counts double-quoted spans of three words or more that are in neither "
+             "the document nor the prompt (reviews with any / spans). Judge verdicts compare the reviews, not the "
+             "prompts.", ""]
     for case_id, c in sorted(summary.items()):
-        lines += [f"## {case_id}", "", "| Condition | Reviews | Errors | Mean words | Mean found | Per problem |",
-                  "|---|---|---|---|---|---|"]
+        lines += [f"## {case_id}", "",
+                  "| Condition | Reviews | Errors | Mean words | Mean found | Misquotes | Per problem |",
+                  "|---|---|---|---|---|---|---|"]
         for cond, s in sorted(c["conditions"].items()):
             per = ", ".join(f"{d} {n}/{s['graded']}" for d, n in s["by_defect"].items()) or "-"
-            lines.append(f"| {cond} | {s['reviews']} | {s['errors']} | {s['mean_words']} | {s['mean_found']} | {per} |")
+            lines.append(f"| {cond} | {s['reviews']} | {s['errors']} | {s['mean_words']} | {s['mean_found']} | "
+                         f"{s['misquoted_reviews']} / {s['misquotes']} | {per} |")
         if c["pairs"]:
             lines += ["", "| Pair | Verdicts |", "|---|---|"]
             for pair, tally in sorted(c["pairs"].items()):
