@@ -212,12 +212,12 @@ def _validate_extras(case: dict) -> list[str]:
 
 
 def _validate_review_stage(stage, files: dict) -> list[str]:
-    """review_stage (used by review_stage.py): the case files the reviewer gets, the author's brief for the judge and
-    the planted problems, each with a unique id and a description."""
+    """review_stage (used by review_stage.py): the case files the reviewer gets, the author's brief for the judge, the
+    planted problems and, optionally, the things the reader must be told; each item has a unique id and a description."""
     if not isinstance(stage, dict):
         return ["review_stage must be an object"]
     errs = []
-    extra = set(stage) - {"files", "brief", "defects"}
+    extra = set(stage) - {"files", "brief", "defects", "must_tell"}
     if extra:
         errs.append(f"review_stage: unknown fields {sorted(extra)}")
     names = stage.get("files")
@@ -225,20 +225,21 @@ def _validate_review_stage(stage, files: dict) -> list[str]:
         errs.append("review_stage.files must be a non-empty list of the case's file names")
     if not (isinstance(stage.get("brief"), str) and stage["brief"].strip()):
         errs.append("review_stage.brief must be a non-empty string")
-    defects = stage.get("defects")
-    if not isinstance(defects, list):
-        errs.append("review_stage.defects must be a list (empty when none were planted)")
-        return errs
-    ids = []
-    for i, d in enumerate(defects):
-        ok = (isinstance(d, dict) and set(d) == {"id", "description"} and isinstance(d["id"], str)
-              and re.fullmatch(r"[A-Za-z0-9_-]+", d["id"]) and isinstance(d["description"], str) and d["description"].strip())
-        if not ok:
-            errs.append(f"review_stage.defects[{i}] must be {{id: letters, digits, '_' or '-', description: text}}")
-        else:
-            ids.append(d["id"])
-    if len(ids) != len(set(ids)):
-        errs.append("review_stage.defects ids must be unique")
+    for key in ("defects", "must_tell"):
+        items = stage.get(key, [] if key == "must_tell" else None)
+        if not isinstance(items, list):
+            errs.append(f"review_stage.{key} must be a list" + (" (empty when none were planted)" if key == "defects" else ""))
+            continue
+        ids = []
+        for i, d in enumerate(items):
+            ok = (isinstance(d, dict) and set(d) == {"id", "description"} and isinstance(d["id"], str)
+                  and re.fullmatch(r"[A-Za-z0-9_-]+", d["id"]) and isinstance(d["description"], str) and d["description"].strip())
+            if not ok:
+                errs.append(f"review_stage.{key}[{i}] must be {{id: letters, digits, '_' or '-', description: text}}")
+            else:
+                ids.append(d["id"])
+        if len(ids) != len(set(ids)):
+            errs.append(f"review_stage.{key} ids must be unique")
     return errs
 
 

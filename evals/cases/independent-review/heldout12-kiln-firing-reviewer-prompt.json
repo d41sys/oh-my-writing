@@ -1,0 +1,202 @@
+{
+  "id": "independent-review/heldout12-kiln-firing-reviewer-prompt",
+  "skill": "independent-review",
+  "heldout": true,
+  "description": "Held-out (written before any run on this case; a no-skills pilot calibrated it). Asked to prepare the prompt for an independent reviewer of a kiln-firing sheet. The review stage counts four planted problems (a total that does not add up, Start pressed before the lid is closed, 'stilt' and 'batt-washed' unexplained, 2 cm against 4 cm) and, separately, five things the reader must be told that the sheet omits (when it is safe to open the kiln, how to stop it, who to call, how to get in during the slot, whether it may run with nobody there), written from the reader's job before any run. The notes ask a general question and name none of them. The prompt stage checks the reader, leaks and hints that point at what the sheet lacks.",
+  "prompt": "Before this goes up in the kiln room, I'd like someone independent to check draft.md. Please write the prompt for a reviewer in a fresh session; my notes are in notes.md. Save the prompt to out/reviewer-prompt.md.",
+  "files": {
+    "draft.md": "# Firing your own work in Kiln 2\n\nMembers may now book the small electric kiln (Kiln 2) and run their own firings.\n\n## Booking\n\nBook a slot on the sheet by the kiln room door. A slot runs from 9am to 9am the next day. A bisque firing costs £18 and a glaze firing £24, so a piece taken through both comes to £40. Pay at the studio desk before you load.\n\n## Before you load\n\n- Pieces for a bisque firing must be bone dry. Hold the piece to your cheek: if it feels cold, it is still damp.\n- Do not fire anything thicker than 2 cm.\n- Glazed pieces need a clean, unglazed foot and must sit on a stilt or a batt-washed shelf.\n\n## Loading and firing\n\n1. Load the shelves, leaving a finger's width between pieces and 3 cm from the elements.\n2. Choose the programme on the controller: Bisque 1 for a bisque firing, Glaze 6 for a glaze firing. Press Start.\n3. Close the lid and fasten the catch.\n4. Write your name, the programme and the start time in the firing log.\n\nThick pieces, up to 4 cm, need the slower Bisque 2 programme. Bisque 1 reaches 1000°C and Glaze 6 reaches 1220°C. The kiln finishes overnight.\n\n## Unloading\n\nUnload before your slot ends at 9am and leave the shelves clean. Scrape any glaze drips off the shelves and put the shelves and props back on the rack.\n\n## Problems\n\nIf the controller shows an error code, write it in the log. The technician checks Kiln 2 every Tuesday.\n",
+    "notes.md": "Who reads it: members who joined in the last year and have never run a firing. Until now the technician loaded and fired everything for them.\n\nWhat I'd like to know from the reviewer: could one of them load, fire and unload Kiln 2 safely with only this sheet? A short list of what would go wrong is enough.\n\nNot for the reviewer:\n- Kiln 1 was condemned last spring after a member went home mid-firing with the lid propped open. Please don't make this sheet sound like we blame anyone.\n- The treasurer thinks £18 is too cheap.\n"
+  },
+  "output": "out/reviewer-prompt.md",
+  "review_stage": {
+    "files": [
+      "draft.md"
+    ],
+    "brief": "Could a member who has never run a firing load, fire and unload Kiln 2 safely with only this sheet? A short list of what would go wrong is enough.",
+    "defects": [
+      {
+        "id": "total",
+        "description": "The worked total is wrong: £18 for a bisque firing plus £24 for a glaze firing is £42, not the £40 the sheet gives."
+      },
+      {
+        "id": "lid-order",
+        "description": "The steps press Start (step 2) before closing the lid and fastening the catch (step 3), so a member following them starts the firing with the lid open."
+      },
+      {
+        "id": "jargon",
+        "description": "'Stilt' and 'batt-washed' are not explained, so a new member cannot tell what a glazed piece must sit on or where to find it."
+      },
+      {
+        "id": "thickness",
+        "description": "'Do not fire anything thicker than 2 cm' conflicts with 'Thick pieces, up to 4 cm, need the slower Bisque 2 programme'."
+      }
+    ],
+    "must_tell": [
+      {
+        "id": "cool-down",
+        "description": "When it is safe to open the kiln after a firing: a temperature to wait for, or a minimum time after the programme ends. The sheet says only that the kiln finishes overnight and to unload before 9am."
+      },
+      {
+        "id": "stop",
+        "description": "How to stop the kiln or cut its power if something goes wrong: a stop control or isolator switch, and where it is."
+      },
+      {
+        "id": "who-to-call",
+        "description": "Who to contact, and how, when something goes wrong during a firing. The sheet says only that the technician checks the kiln on Tuesdays."
+      },
+      {
+        "id": "access",
+        "description": "How the member gets into the kiln room during a 9am-to-9am slot when the studio is closed, for example overnight or early in the morning."
+      },
+      {
+        "id": "unattended",
+        "description": "Whether the kiln may be left running with nobody in the building, and if not, who must stay and for how long."
+      }
+    ]
+  },
+  "checks": [
+    {
+      "type": "not_contains",
+      "values": [
+        "condemned",
+        "Kiln 1",
+        "propped",
+        "blame",
+        "treasurer",
+        "too cheap"
+      ],
+      "note": "everything under 'Not for the reviewer' is background on the writer, not on the reader"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\bjoined in the last year\\b|\\bnever (?:run|done|fired|loaded|operated|used)\\b|\\bnew(?:er|ly joined)? members?\\b|\\bfirst (?:own )?firing\\b|\\btechnician (?:has |had )?(?:loaded|fired|done|run)\\b",
+      "note": "the reader (members who joined in the last year and have never run a firing; the technician did it for them) goes to the reviewer; the sheet's own text does not satisfy this"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)(?:£18|£24|£40|\\bbisque (?:and|plus|followed by) (?:a )?glaze\\b)[^.\\n]{0,80}\\b(?:add up|adds up|totals?|sums?|arithmetic|correct)\\b|\\b(?:lid|catch)\\b[^.\\n]{0,60}\\b(?:before|after)\\b[^.\\n]{0,40}\\b(?:start|press)|\\b(?:start|press(?:ing)?)\\b[^.\\n]{0,60}\\b(?:before|after)\\b[^.\\n]{0,40}\\b(?:lid|catch)\\b|\\b(?:batt|stilt|cone)\\w*\\b[^.\\n]{0,60}\\b(?:jargon|explain\\w*|defin\\w*|mean\\w*|terms?)\\b|\\b(?:jargon|explain\\w*|defin\\w*)\\b[^.\\n]{0,40}\\b(?:batt|stilt)\\w*|\\b(?:2 ?cm|4 ?cm|thick\\w*)\\b[^.\\n]{0,80}\\b(?:conflict|contradict|inconsisten|disagree|differ)\\w*|\\b(?:conflict|contradict|inconsisten|disagree)\\w*[^.\\n]{0,80}\\b(?:2 ?cm|4 ?cm|thick\\w*)\\b|(?:^|[.:;!?]\\s+|\\n\\s*(?:[-*]|\\d+\\.)?\\s*)(?:note that |remember that |bear in mind that )?(?:the |this )?(?:sheet|guide|page|draft|document|text|instructions)\\s+(?:never|only|nowhere|does not|doesn't|fails? to|omits? to)\\s+(?:say|says|state|states|mention|mentions|tell|tells|explain|explains|cover|covers|give|gives)\\b|\\b(?:no|missing|absent|lacks?|lacking|omits?)\\b[^.\\n]{0,30}\\b(?:emergency stop|stop button|isolator|cut (?:the )?power|cool(?:ing|-down| down)?|phone number|out[- ]of[- ]hours|key ?code|door code)\\b|\\bdo not assume\\b[^.\\n]{0,80}\\b(?:exists?|is given|are given|is stated|is provided|is explained|is covered|appears?)\\b",
+      "note": "a finding written in advance: an instruction that points the reviewer at a planted problem (whether the total adds up; Start before the lid; 'stilt' or 'batt-washed'; 2 cm against 4 cm) or tells the reviewer what the sheet lacks ('the sheet never says when to open it', 'there is no emergency stop'). General rules ('check the arithmetic', 'flag unexplained terms') and reader-role questions ('who do I call if something goes wrong?') are allowed; neither the sheet's own text nor the reviewer templates match"
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "citations",
+        "urls",
+        "names"
+      ],
+      "allow": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31",
+        "32",
+        "33",
+        "34",
+        "35",
+        "36",
+        "37",
+        "38",
+        "39",
+        "40",
+        "English",
+        "BEGIN",
+        "END",
+        "DOCUMENT",
+        "DRAFT",
+        "SHEET",
+        "BEGIN DOCUMENT",
+        "END DOCUMENT",
+        "BEGIN DRAFT",
+        "END DRAFT",
+        "BEGIN SHEET",
+        "END SHEET",
+        "NOTICE",
+        "DRAFT NOTICE",
+        "BEGIN NOTICE",
+        "END NOTICE",
+        "END OF DRAFT",
+        "END OF DRAFT NOTICE",
+        "END OF DOCUMENT",
+        "END OF SHEET"
+      ],
+      "note": "list numbering and line numbers are not new figures; 'English' is the review language; BEGIN/END lines delimit a pasted sheet"
+    },
+    {
+      "type": "word_count",
+      "min": 60
+    }
+  ],
+  "controls": [
+    {
+      "name": "good-pasted",
+      "expect": "pass",
+      "output": "You are reviewing a one-page sheet before it goes to its readers. Judge only what is on the page.\n\nReader: members who joined in the last year and have never run a firing; until now the technician loaded and fired everything for them.\n\nQuestion to answer first: could one of these members load, fire and unload Kiln 2 safely with only this sheet?\n\nThen list what would go wrong, worst first, each with a short quote and the smallest fix. Do not rewrite the sheet.\n\nDocument to review (draft.md), copied exactly:\n\nBEGIN DOCUMENT\n# Firing your own work in Kiln 2\n\nMembers may now book the small electric kiln (Kiln 2) and run their own firings.\n\n## Booking\n\nBook a slot on the sheet by the kiln room door. A slot runs from 9am to 9am the next day. A bisque firing costs £18 and a glaze firing £24, so a piece taken through both comes to £40. Pay at the studio desk before you load.\n\n## Before you load\n\n- Pieces for a bisque firing must be bone dry. Hold the piece to your cheek: if it feels cold, it is still damp.\n- Do not fire anything thicker than 2 cm.\n- Glazed pieces need a clean, unglazed foot and must sit on a stilt or a batt-washed shelf.\n\n## Loading and firing\n\n1. Load the shelves, leaving a finger's width between pieces and 3 cm from the elements.\n2. Choose the programme on the controller: Bisque 1 for a bisque firing, Glaze 6 for a glaze firing. Press Start.\n3. Close the lid and fasten the catch.\n4. Write your name, the programme and the start time in the firing log.\n\nThick pieces, up to 4 cm, need the slower Bisque 2 programme. Bisque 1 reaches 1000°C and Glaze 6 reaches 1220°C. The kiln finishes overnight.\n\n## Unloading\n\nUnload before your slot ends at 9am and leave the shelves clean. Scrape any glaze drips off the shelves and put the shelves and props back on the rack.\n\n## Problems\n\nIf the controller shows an error code, write it in the log. The technician checks Kiln 2 every Tuesday.\nEND DOCUMENT\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-leaks-private-context",
+      "expect": "fail",
+      "fails": [
+        "not_contains"
+      ],
+      "output": "You are reviewing a one-page sheet before it goes to its readers. Judge only what is on the page.\n\nDocument to review: draft.md.\n\nReader: members who joined in the last year and have never run a firing themselves.\n\nKiln 1 was condemned after a member went home mid-firing, so look hard at anything about leaving the kiln. List what would go wrong, worst first, each with a short quote, what goes wrong for the reader, and the smallest fix. Do not rewrite the sheet.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-drops-reader",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "You are reviewing a one-page sheet before it goes to its readers. Judge only what is on the page, and do not rely on anything you know about the group from elsewhere.\n\nDocument to review: draft.md.\n\nList what would go wrong for the people who read it, worst first, each with a short quote, what goes wrong for them, and the smallest fix. Do not rewrite the sheet, and do not add facts the sheet does not contain. Finish with one line saying whether the sheet is ready to go up.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-prewritten-omission",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "You are reviewing a one-page sheet before it goes to its readers. Judge only what is on the page.\n\nDocument to review: draft.md.\n\nReader: members who joined in the last year and have never run a firing themselves.\n\nThe sheet never says when the kiln is cool enough to open, so start there. List what would go wrong, worst first, each with a short quote, what goes wrong for the reader, and the smallest fix. Do not rewrite the sheet.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-prewritten-figures",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "You are reviewing a one-page sheet before it goes to its readers. Judge only what is on the page.\n\nDocument to review: draft.md.\n\nReader: members who joined in the last year and have never run a firing themselves.\n\nCheck whether £18 plus £24 adds up to the stated total. List what would go wrong, worst first, each with a short quote, what goes wrong for the reader, and the smallest fix. Do not rewrite the sheet.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    }
+  ]
+}
