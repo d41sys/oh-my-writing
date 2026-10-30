@@ -9,6 +9,13 @@
     "notes.md": "Who reads it: new front-desk volunteers on their first shift. Most have borrowed tools as members but have never worked the desk.\n\nWhat I want from the check: could a new volunteer lend a tool from this page alone, without asking anyone? What would they need to have ready, and how would they know each step worked?\n\nNot for the reviewer:\n- Teodora wrote the old version and is sensitive about it being replaced.\n- The barcode scanner breaks often; we have not fixed it and I'd rather not mention it.\n- I think step 3 is too long, but I want a second opinion without saying so.\n"
   },
   "output": "out/reviewer-prompt.md",
+  "review_stage": {
+    "files": [
+      "draft.md"
+    ],
+    "brief": "Could a new front-desk volunteer, on their first shift, lend a tool from this page alone without asking anyone? What would they need to have ready, and how would they know each step worked?",
+    "defects": []
+  },
   "checks": [
     {
       "type": "contains",

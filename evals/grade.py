@@ -173,7 +173,7 @@ def _validate_new_check(kind: str, check: dict, where: str) -> list[str]:
 
 
 def _validate_extras(case: dict) -> list[str]:
-    """Validate the optional fields: fixtures, timeout, deliverables, judge."""
+    """Validate the optional fields: fixtures, timeout, deliverables, judge, review_stage."""
     errs = []
     fixtures = case.get("fixtures")
     if "fixtures" in case:
@@ -206,6 +206,39 @@ def _validate_extras(case: dict) -> list[str]:
             errs.append("judge.render must be a relative path to the HTML to screenshot")
         elif not (isinstance(deliverables, list) and judge["render"] in deliverables):
             errs.append("judge.render must be listed in deliverables")
+    if "review_stage" in case:
+        errs += _validate_review_stage(case["review_stage"], case.get("files", {}))
+    return errs
+
+
+def _validate_review_stage(stage, files: dict) -> list[str]:
+    """review_stage (used by review_stage.py): the case files the reviewer gets, the author's brief for the judge and
+    the planted problems, each with a unique id and a description."""
+    if not isinstance(stage, dict):
+        return ["review_stage must be an object"]
+    errs = []
+    extra = set(stage) - {"files", "brief", "defects"}
+    if extra:
+        errs.append(f"review_stage: unknown fields {sorted(extra)}")
+    names = stage.get("files")
+    if not (isinstance(names, list) and names and all(isinstance(n, str) and n in files for n in names)):
+        errs.append("review_stage.files must be a non-empty list of the case's file names")
+    if not (isinstance(stage.get("brief"), str) and stage["brief"].strip()):
+        errs.append("review_stage.brief must be a non-empty string")
+    defects = stage.get("defects")
+    if not isinstance(defects, list):
+        errs.append("review_stage.defects must be a list (empty when none were planted)")
+        return errs
+    ids = []
+    for i, d in enumerate(defects):
+        ok = (isinstance(d, dict) and set(d) == {"id", "description"} and isinstance(d["id"], str)
+              and re.fullmatch(r"[A-Za-z0-9_-]+", d["id"]) and isinstance(d["description"], str) and d["description"].strip())
+        if not ok:
+            errs.append(f"review_stage.defects[{i}] must be {{id: letters, digits, '_' or '-', description: text}}")
+        else:
+            ids.append(d["id"])
+    if len(ids) != len(set(ids)):
+        errs.append("review_stage.defects ids must be unique")
     return errs
 
 

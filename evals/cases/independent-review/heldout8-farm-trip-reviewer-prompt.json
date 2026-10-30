@@ -1,0 +1,131 @@
+{
+  "id": "independent-review/heldout8-farm-trip-reviewer-prompt",
+  "skill": "independent-review",
+  "heldout": true,
+  "description": "Held-out (written before any run on this case, for the end-to-end review stage). Asked to prepare the prompt for an independent reviewer of a school trip letter that has five planted problems a parent would hit. The prompt stage checks the brief and leaks; the review stage (evals/review_stage.py) runs the prompt in a fresh session and counts which planted problems the review finds.",
+  "prompt": "Please write the prompt for an independent reviewer, in a fresh session, to check the letter in draft.md before it goes home with the children. My notes are in notes.md. Save the prompt to out/reviewer-prompt.md.",
+  "files": {
+    "draft.md": "# Year 4 trip to Hollins Farm\n\nDear parents and carers,\n\nYear 4 will visit Hollins Farm on Thursday 10 June 2027 as part of our topic on food and farming. Children will see the dairy, help feed the animals and take part in a short workshop on where food comes from.\n\nThe coach leaves school at 8:30, so please make sure your child arrives by 8:15.\n\nThe trip costs £12 per child, which covers the coach and the workshop. Please pay the usual way.\n\nChildren should bring a packed lunch and a drink in a named bag, unless they are on the PLP scheme, in which case the school will provide one. They should wear old clothes and wellies, as the farm can be muddy.\n\nPlease return the consent slip below by Friday 11 June 2027. We cannot take children without a signed slip.\n\nIf you would like to help on the day, please let the office know.\n\nThank you,\nMs Okafor, Year 4 team\n\n---\n\nConsent slip\n\nI give permission for my child ______________ to attend the Year 4 trip to Hollins Farm on Thursday 10 June 2027. I enclose £15.\n\nSigned ______________\n",
+    "notes.md": "Who reads it: parents and carers of Year 4 pupils, many reading it on a phone at pick-up. Some speak English as an additional language.\n\nWhat they need from it: what the trip is, when to drop off and collect, what it costs and how to pay, what to send, and what to return by when.\n\nWhat I'd like from the reviewer: anything a parent would get wrong or have to ask the office about. A short list is fine.\n\nNot for the reviewer:\n- Two parents complained about the cost of the last trip, and the head wants this one to go smoothly.\n- I wrote this in a hurry between lessons.\n"
+  },
+  "output": "out/reviewer-prompt.md",
+  "checks": [
+    {
+      "type": "not_contains",
+      "values": [
+        "complained",
+        "head wants",
+        "in a hurry",
+        "between lessons"
+      ],
+      "note": "everything under 'Not for the reviewer' is background on the writer, not on the reader"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\bparents?\\b",
+      "note": "the reader goes to the reviewer"
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "citations",
+        "urls",
+        "names"
+      ],
+      "allow": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "English",
+        "BEGIN",
+        "END",
+        "DOCUMENT",
+        "DRAFT",
+        "LETTER",
+        "BEGIN DOCUMENT",
+        "END DOCUMENT",
+        "BEGIN DRAFT",
+        "END DRAFT",
+        "BEGIN LETTER",
+        "END LETTER"
+      ],
+      "note": "list numbering and line numbers are not new figures; 'English' is the review language; BEGIN/END lines delimit the pasted letter"
+    },
+    {
+      "type": "word_count",
+      "min": 60
+    }
+  ],
+  "review_stage": {
+    "files": [
+      "draft.md"
+    ],
+    "brief": "Anything a parent or carer would get wrong, or would have to ask the school office about, after reading this letter. Many read it on a phone at pick-up, and some speak English as an additional language. A short list is fine.",
+    "defects": [
+      {
+        "id": "cost",
+        "description": "The money does not agree: the letter says the trip costs £12 per child, but the consent slip says 'I enclose £15'."
+      },
+      {
+        "id": "return-time",
+        "description": "The letter gives the time the coach leaves and the drop-off time, but not when the children come back or when to collect them."
+      },
+      {
+        "id": "deadline",
+        "description": "The consent slip is due on Friday 11 June 2027, the day after the trip on Thursday 10 June 2027, so the deadline cannot work."
+      },
+      {
+        "id": "plp",
+        "description": "'The PLP scheme' is never explained, so a parent cannot tell whether their child gets a school lunch."
+      },
+      {
+        "id": "payment",
+        "description": "'Please pay the usual way' does not say how to pay (online, cash, cheque, which system), which a new parent cannot know."
+      }
+    ]
+  },
+  "controls": [
+    {
+      "name": "good",
+      "expect": "pass",
+      "output": "You are reviewing a letter before it goes home to its readers. Judge only what is on the page.\n\nDocument to review: draft.md.\n\nReader: parents and carers of Year 4 pupils, many reading on a phone at pick-up; some speak English as an additional language.\n\nThey need to know what the trip is, when to drop off and collect, what it costs and how to pay, what to send, and what to return by when.\n\nList anything a parent would get wrong or have to ask the office about, each with a short quote. Keep it short and do not rewrite the letter.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-leaks-private-context",
+      "expect": "fail",
+      "fails": [
+        "not_contains"
+      ],
+      "output": "You are reviewing a letter before it goes home to its readers. Judge only what is on the page.\n\nDocument to review: draft.md.\n\nReader: parents and carers of Year 4 pupils, many reading on a phone at pick-up. Two parents complained about the cost of the last trip, so be careful with money.\n\nList anything a parent would get wrong or have to ask the office about, each with a short quote. Keep it short and do not rewrite the letter.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-drops-reader",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "You are reviewing a letter before it goes home. Judge only what is on the page.\n\nDocument to review: draft.md.\n\nSay what is unclear, wrong or missing for the people who will read it, each with a short quote, and what the smallest fix would be. Keep the list short, do not rewrite the letter, and do not add facts that the letter does not contain.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    }
+  ]
+}

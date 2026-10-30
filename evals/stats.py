@@ -261,6 +261,7 @@ CASE_KIND: dict[str, str] = {
     "independent-review/heldout5-rowing-club-reviewer-prompt": "analysis",
     "independent-review/heldout6-community-fridge-reviewer-prompt": "analysis",
     "independent-review/heldout7-tool-library-reviewer-prompt": "analysis",
+    "independent-review/heldout8-farm-trip-reviewer-prompt": "analysis",
     "independent-review/reviewer-prompt-no-leak": "analysis",
     "independent-review/self-review-not-independent": "analysis",
     "independent-review/triage-rejects-unsupported-fix": "analysis",
