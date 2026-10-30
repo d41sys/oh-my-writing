@@ -1,0 +1,222 @@
+{
+  "id": "independent-review/heldout13-darkroom-reviewer-prompt",
+  "skill": "independent-review",
+  "heldout": true,
+  "description": "Held-out (written and committed before any run on this case; a 5-run no-skills pilot screens the must-tell list). Asked to prepare the prompt for an independent reviewer of a club darkroom sheet read by members who have only shot digital. The review stage counts four planted problems (a stop-bath volume that does not add up, the main light switched on before the film is in the closed tank, two development times, 'hypo clear' neither explained nor among the listed chemicals) and eight candidate must-tell omissions, several of the kind an experienced darkroom user would raise (disposal, skin and eye protection, ventilation, first aid, chemical temperature, reuse, safelight, who to ask). Screening rule, fixed before the pilot: an item enters the decision count when the pilot's no-skills reviews ask for it in 1 to 4 of 5; every item is reported. The notes ask a general question and name none of them. The prompt stage checks the reader, leaks, and hints that point at a planted problem or tell the reviewer what the sheet lacks, including an experienced-reader role that comes with a list of what to check.",
+  "prompt": "Before this goes on the darkroom door, I'd like someone independent to check draft.md. Please write the prompt for a reviewer in a fresh session; my notes are in notes.md. Save the prompt to out/reviewer-prompt.md.",
+  "files": {
+    "draft.md": "# Using the club darkroom\n\nFrom this month, any member can book the darkroom and develop their own black-and-white film and prints.\n\n## Booking\n\nBook a two-hour session on the club calendar. Sessions cost £6, payable at the next club night.\n\n## What is in the room\n\nDeveloper, stop bath and fixer are on the shelf under the sink, with measuring jugs, a film tank and reels, three print trays and print tongs. Make up the stop bath fresh each session: 20 ml of concentrate in 480 ml of water makes 1 litre. Developer and fixer are ready mixed.\n\n## Developing a film\n\n1. In total darkness, open the film and wind it onto a reel.\n2. Switch on the main light and check the film is on the reel.\n3. Put the reel in the tank and close the lid.\n4. Pour in the developer and develop for 9 minutes, turning the tank over for the first 30 seconds and then for 10 seconds every minute.\n5. Pour out the developer, add the stop bath for 1 minute, then the fixer for 5 minutes.\n6. Use the hypo clear for 2 minutes, then wash the film for 10 minutes and hang it up to dry.\n\n| Chemical | Time at 20°C |\n|---|---|\n| Developer | 6½ minutes |\n| Stop bath | 1 minute |\n| Fixer | 5 minutes |\n\n## Making a print\n\nExpose the paper under the enlarger, then develop it for 1 minute, stop for 30 seconds and fix for 2 minutes, moving it between trays with the tongs. Wash prints for 10 minutes.\n\n## Before you leave\n\nRinse the trays, tank and reels, wipe the bench and put everything back on the shelf.\n",
+    "notes.md": "Who reads it: members who joined in the last year and have only ever shot digital; none of them has developed a film or made a print. Until now only two experienced members used the darkroom.\n\nWhat I'd like from the reviewer: could a new member develop a roll of film and make a print on their own, using only this sheet? A short list of what would go wrong is enough.\n\nNot for the reviewer:\n- One of the founders thinks newcomers will make a mess and may complain to the committee.\n- We had a leak under the sink last year and the landlord is touchy about it.\n"
+  },
+  "output": "out/reviewer-prompt.md",
+  "review_stage": {
+    "files": [
+      "draft.md"
+    ],
+    "brief": "Could a new member develop a roll of film and make a print on their own, safely, using only this sheet? A short list of what would go wrong is enough.",
+    "defects": [
+      {
+        "id": "dilution",
+        "description": "The stop bath recipe does not add up: 20 ml of concentrate in 480 ml of water makes 500 ml, not the 1 litre the sheet gives."
+      },
+      {
+        "id": "light-order",
+        "description": "Step 2 switches on the main light while the film is on the open reel, before step 3 puts it in the tank and closes the lid, so following the steps fogs the film."
+      },
+      {
+        "id": "dev-time",
+        "description": "Step 4 says to develop for 9 minutes, but the table gives 6½ minutes for the developer."
+      },
+      {
+        "id": "hypo",
+        "description": "Step 6 uses 'hypo clear', which the sheet neither explains nor lists among the chemicals in the room."
+      }
+    ],
+    "must_tell": [
+      {
+        "id": "disposal",
+        "description": "What to do with used chemicals: whether any may go down the sink, and where used developer or fixer goes instead."
+      },
+      {
+        "id": "protection",
+        "description": "What to wear or use to keep chemicals off the skin and out of the eyes, such as gloves or eye protection."
+      },
+      {
+        "id": "ventilation",
+        "description": "Whether to switch on an extractor fan or otherwise ventilate the room while chemicals are open."
+      },
+      {
+        "id": "first-aid",
+        "description": "What to do if a chemical gets on the skin or in the eyes."
+      },
+      {
+        "id": "temperature",
+        "description": "How to check that the chemicals are at the 20°C the table assumes (for example with a thermometer) and what to do if they are not."
+      },
+      {
+        "id": "reuse",
+        "description": "Whether the developer and fixer are poured back into their bottles for reuse or used once and thrown away."
+      },
+      {
+        "id": "safelight",
+        "description": "Which light, if any, is safe while handling printing paper (such as a safelight); the sheet says only that film needs total darkness."
+      },
+      {
+        "id": "contact",
+        "description": "Who to ask, and how, if something goes wrong or the member is unsure during a session."
+      }
+    ]
+  },
+  "checks": [
+    {
+      "type": "not_contains",
+      "values": [
+        "founder",
+        "complain",
+        "landlord",
+        "leak under",
+        "touchy",
+        "make a mess"
+      ],
+      "note": "everything under 'Not for the reviewer' is background on the writer, not on the reader"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\bjoined in the last year\\b|\\bonly (?:ever )?shot digital\\b|\\bnever (?:developed|made a print|printed|used a darkroom)\\b|\\bnew(?:er|ly joined)? members?\\b|\\bfirst (?:roll|film|print)\\b|\\bno darkroom experience\\b",
+      "note": "the reader (members who joined in the last year and have only shot digital) goes to the reviewer; the sheet's own text does not satisfy this"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)(?:20 ?ml|480 ?ml|1 litre|one litre|stop bath)[^.\\n]{0,80}\\b(?:add up|adds up|totals?|volume|arithmetic|sums?)\\b|\\bmain light\\b[^.\\n]{0,60}\\b(?:before|after|tank|lid|fog\\w*|ruin\\w*|expos\\w*)\\b|\\b(?:before|after)\\b[^.\\n]{0,40}\\b(?:tank|lid)\\b[^.\\n]{0,40}\\blight\\b|(?:9 minutes|6½|6 1/2|6\\.5|development time|developing time)[^.\\n]{0,80}\\b(?:conflict|contradict|inconsisten|disagree|differ|match)\\w*|\\b(?:conflict|contradict|inconsisten|disagree)\\w*[^.\\n]{0,80}(?:9 minutes|6½|6 1/2|6\\.5|development time|developing time)|\\bhypo\\b[^.\\n]{0,60}\\b(?:explain\\w*|defin\\w*|mean\\w*|jargon|terms?|listed|missing|where|shelf)\\b|\\b(?:explain\\w*|defin\\w*|jargon)\\b[^.\\n]{0,40}\\bhypo\\b|(?:^|[.:;!?]\\s+|\\n\\s*(?:[-*]|\\d+\\.)?\\s*)(?:note that |remember that |bear in mind that )?(?:the |this )?(?:sheet|guide|page|draft|document|text|instructions)\\s+(?:never|only|nowhere|does not|doesn't|fails? to|omits? to)\\s+(?:say|says|state|states|mention|mentions|tell|tells|explain|explains|cover|covers|give|gives)\\b|\\b(?:no|missing|absent|lacks?|lacking|omits?|without)\\b[^.\\n]{0,30}\\b(?:disposal|dispos\\w+|drain|gloves?|goggles|eye protection|ventilat\\w+|extractor|fan|first[- ]aid|eye ?wash|thermometer|exhausted|safelight)\\b|\\b(?:technician|expert|experienced|specialist)\\b[^.\\n]{0,80}\\b(?:ventilat\\w+|disposal|dispos\\w+|gloves?|chemical (?:safety|handling)|safelight|eye ?wash|first[- ]aid|thermometer)\\b|\\b(?:check|look at|pay attention to|focus on|attention to)\\b[^.\\n]{0,40}\\b(?:chemical (?:safety|handling)|disposal|ventilation|protective (?:gear|equipment)|safelight|first[- ]aid)\\b",
+      "note": "a finding written in advance: an instruction that points the reviewer at a planted problem (the stop-bath volume; the light before the tank is closed; 9 against 6½ minutes; 'hypo clear'), tells the reviewer what the sheet lacks ('the sheet never says where used fixer goes', 'there is no mention of gloves'), or gives an experienced-reader role with a list of what to check ('a darkroom technician checking ventilation and disposal'). The role alone, general rules ('check the arithmetic', 'flag unexplained terms') and reader-role questions ('what do I do if something goes wrong?') are allowed; neither the sheet's own text nor the reviewer templates match"
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "citations",
+        "urls",
+        "names"
+      ],
+      "allow": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31",
+        "32",
+        "33",
+        "34",
+        "35",
+        "36",
+        "37",
+        "38",
+        "39",
+        "40",
+        "English",
+        "BEGIN",
+        "END",
+        "DOCUMENT",
+        "DRAFT",
+        "SHEET",
+        "NOTICE",
+        "BEGIN DOCUMENT",
+        "END DOCUMENT",
+        "BEGIN DRAFT",
+        "END DRAFT",
+        "BEGIN SHEET",
+        "END SHEET",
+        "DRAFT NOTICE",
+        "BEGIN NOTICE",
+        "END NOTICE",
+        "END OF DRAFT",
+        "END OF DOCUMENT",
+        "END OF SHEET"
+      ],
+      "note": "list numbering and line numbers are not new figures; 'English' is the review language; BEGIN/END lines delimit a pasted sheet"
+    },
+    {
+      "type": "word_count",
+      "min": 60
+    }
+  ],
+  "controls": [
+    {
+      "name": "good-pasted",
+      "expect": "pass",
+      "output": "You are reviewing a one-page sheet before it goes to its readers. Judge only what is on the page.\n\nReader: members who joined in the last year and have only ever shot digital; none has developed a film or made a print.\n\nQuestion to answer first: could a new member develop a roll of film and make a print on their own, using only this sheet?\n\nThen list what would go wrong, worst first, each with a short quote and the smallest fix. Do not rewrite the sheet.\n\nDocument to review (draft.md), copied exactly:\n\nBEGIN DOCUMENT\n# Using the club darkroom\n\nFrom this month, any member can book the darkroom and develop their own black-and-white film and prints.\n\n## Booking\n\nBook a two-hour session on the club calendar. Sessions cost £6, payable at the next club night.\n\n## What is in the room\n\nDeveloper, stop bath and fixer are on the shelf under the sink, with measuring jugs, a film tank and reels, three print trays and print tongs. Make up the stop bath fresh each session: 20 ml of concentrate in 480 ml of water makes 1 litre. Developer and fixer are ready mixed.\n\n## Developing a film\n\n1. In total darkness, open the film and wind it onto a reel.\n2. Switch on the main light and check the film is on the reel.\n3. Put the reel in the tank and close the lid.\n4. Pour in the developer and develop for 9 minutes, turning the tank over for the first 30 seconds and then for 10 seconds every minute.\n5. Pour out the developer, add the stop bath for 1 minute, then the fixer for 5 minutes.\n6. Use the hypo clear for 2 minutes, then wash the film for 10 minutes and hang it up to dry.\n\n| Chemical | Time at 20°C |\n|---|---|\n| Developer | 6½ minutes |\n| Stop bath | 1 minute |\n| Fixer | 5 minutes |\n\n## Making a print\n\nExpose the paper under the enlarger, then develop it for 1 minute, stop for 30 seconds and fix for 2 minutes, moving it between trays with the tongs. Wash prints for 10 minutes.\n\n## Before you leave\n\nRinse the trays, tank and reels, wipe the bench and put everything back on the shelf.\nEND DOCUMENT\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-leaks-private-context",
+      "expect": "fail",
+      "fails": [
+        "not_contains"
+      ],
+      "output": "You are reviewing a one-page sheet before it goes to its readers. Judge only what is on the page.\n\nDocument to review: draft.md.\n\nReader: members who joined in the last year and have only ever shot digital.\n\nThe landlord is touchy about the sink after last year's leak, so look hard at anything about water. List what would go wrong, worst first, each with a short quote, what goes wrong for the reader, and the smallest fix. Do not rewrite the sheet.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-drops-reader",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "You are reviewing a one-page sheet before it goes to its readers. Judge only what is on the page, and do not rely on anything you know about the club from elsewhere.\n\nDocument to review: draft.md.\n\nList what would go wrong for the people who read it, worst first, each with a short quote, what goes wrong for them, and the smallest fix. Do not rewrite the sheet, and do not add facts the sheet does not contain. Finish with one line saying whether the sheet is ready to go up.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-prewritten-omission",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "You are reviewing a one-page sheet before it goes to its readers. Judge only what is on the page.\n\nDocument to review: draft.md.\n\nReader: members who joined in the last year and have only ever shot digital.\n\nThe sheet never says what to do with used fixer, so start there. List what would go wrong, worst first, each with a short quote, what goes wrong for the reader, and the smallest fix. Do not rewrite the sheet.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-role-with-checklist",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "You are reviewing a one-page sheet before it goes to its readers. Judge only what is on the page.\n\nDocument to review: draft.md.\n\nReader: members who joined in the last year and have only ever shot digital.\n\nRead it as an experienced darkroom technician checking ventilation and chemical disposal. List what would go wrong, worst first, each with a short quote, what goes wrong for the reader, and the smallest fix. Do not rewrite the sheet.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-prewritten-figures",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "You are reviewing a one-page sheet before it goes to its readers. Judge only what is on the page.\n\nDocument to review: draft.md.\n\nReader: members who joined in the last year and have only ever shot digital.\n\nCheck whether 20 ml and 480 ml add up to the stated volume. List what would go wrong, worst first, each with a short quote, what goes wrong for the reader, and the smallest fix. Do not rewrite the sheet.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    }
+  ]
+}

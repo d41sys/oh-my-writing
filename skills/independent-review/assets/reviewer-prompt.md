@@ -15,16 +15,19 @@ Check the filled prompt against this list. Remove anything that matches.
 - Leading questions ("is the opening strong?", "isn't this clear?").
 - Anything about the writer's process, tools, or model.
 - A rule or warning that names a kind of gap you saw in the draft ("do not assume a form exists", "internal committee names"): it is a finding written in advance, however general it sounds.
+- An experienced-reader role that arrives with a list of things to check ("an accountant who will look at the VAT figures"): give the role only.
 - Confidential or unpublished material the owner has not cleared to leave this session (see step 3 of the skill).
 
-Allowed: who reads the text, what that reader knows and needs, the author's own question about what the reader can understand or do, what the reader must be able to answer after reading, the reading date, hard constraints (length, format, venue, house style), sources the text must agree with, the rubric, and the output format below. Not allowed: the draft's known weak spots, even as "check X carefully"; derive the reader's questions from the reader's job, not from what you already see missing.
+Allowed: who reads the text, what that reader knows and needs, the role of someone experienced in the task (the role only), the author's own question about what the reader can understand or do, what the reader must be able to answer after reading, the reading date, hard constraints (length, format, venue, house style), sources the text must agree with, the rubric, and the output format below. Not allowed: the draft's known weak spots, even as "check X carefully"; derive the reader's questions from the reader's job, not from what you already see missing.
 
 ## The prompt
 
 ```
-You are one of this document's intended readers, reading it carefully before
-you have to act on it. You have not seen how it was written. Judge only what
-is on the page.
+You are reviewing this document on behalf of its intended reader, as
+{{EXPERIENCED_READER}} would: someone who knows this kind of task well and is
+checking whether this reader, with only what they already know, could act on
+the document safely and correctly. You have not seen how it was written.
+Judge only what is on the page.
 
 Document to review ({{ARTIFACT_FILE_NAME}}), copied exactly:
 
@@ -47,8 +50,10 @@ Review in this language: {{REVIEW_LANGUAGE}}
 
 Open your reply with one line: Reviewer-Model: <your own model id, or unknown>
 
-Do not edit any file or rewrite the document. Do not fill a gap from outside
-knowledge; if you had to, say so.
+Do not edit any file or rewrite the document. Use what you know to see what is
+missing or risky, never to fill a gap: when the reader needs a fact the page
+does not give (a limit, a time, a contact, a safety step), say what the author
+must supply; do not state the value or the procedure yourself.
 
 1. Answer the review question above first, in one or two plain sentences.
 2. Read the whole document once more for what a careful reader would catch:
@@ -56,7 +61,11 @@ knowledge; if you had to, say so.
    add up, a weekday that does not match its date, steps in an order the
    reader cannot follow, and steps that need something the reader will not
    have yet.
-3. List the problems this reader would actually hit, worst first: what stops
+3. Then ask what someone experienced in this task would make sure this reader
+   knows before starting, and whether the page says it. A beginner may not
+   know to ask; an omission that could hurt them or waste their work is a
+   problem even if no reader question names it.
+4. List the problems this reader would actually hit, worst first: what stops
    them acting at all, then what makes them act wrongly, then what slows them
    down. For each, give a short exact quote (or the section), what goes wrong
    for the reader, and the smallest fix. A problem that one fix solves is one
@@ -70,7 +79,7 @@ knowledge; if you had to, say so.
    was given, score each criterion with a reason.
    Report only real problems. If none would make the reader act wrongly or
    stall, say "no critical or major findings".
-4. Then one line: Read: <all of the document | the sections you read>
+5. Then one line: Read: <all of the document | the sections you read>
    Finish with one line, exactly:
    VERDICT: ready | revise
 ```
@@ -80,6 +89,7 @@ knowledge; if you had to, say so.
 | Placeholder | Fill with | Do not fill with |
 |---|---|---|
 | `WHO_THEY_ARE_AND_WHAT_THEY_ALREADY_KNOW` | role, background, vocabulary they have | what you wish they believed |
+| `EXPERIENCED_READER` | a role, not a person: whoever normally does this task for this reader, trains them in it, or answers their questions about it ("a payroll clerk who handles new starters", "a shift supervisor who trains new staff") | a role followed by what to check, or a role chosen to match a weakness you saw in the draft |
 | `READER_NEXT_ACTION_OR_DECISION` | the concrete act: approve, run, apply, reply | the conclusion you want them to reach |
 | `REVIEW_QUESTION` | the author's own question about the reader, in the author's words, when it asks what the reader can understand or do from the page ("could a new volunteer do this from the page alone?"); if the author gave none: could this reader take the next action using only this document, and where would they go wrong? | a question that names a part of the draft or a suspected weak spot, the writer's hopes, or the verdict wanted |
 | `READER_NEEDS` | three to five questions anyone in that role would ask before acting, in plain words, one per line (funding call: what it costs, what it commits us to, by when, how success is judged; instructions: what to have ready, what each step does, how to know it worked) | questions that name the draft's gaps, the writer's worries or an expected answer |

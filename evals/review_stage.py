@@ -9,7 +9,9 @@ run of a case with a `review_stage` block, this script:
    (runs/<run>/review/reply.md).
 2. asks a grader which of the case's planted problems (`review_stage.defects`, written before any run) the review
    identifies, one yes or no per problem, and, when the case lists them, which of the things the reader must be told
-   (`review_stage.must_tell`, omissions written from the reader's job before any run) the review asks for.
+   (`review_stage.must_tell`, omissions written from the reader's job before any run) the review asks for, and, with
+   --outside-facts, which statements in the review present a fact the document does not contain (a guard against a
+   reviewer that fills gaps from its own knowledge).
 3. judges pairs of reviews blind, in both orders, the way run.py judges outputs.
 
 Results go to review_stage.json and review-stage.md in the results directory.
@@ -72,6 +74,27 @@ Review:
 For each item, decide whether the review asks for it: it counts if the review says that information is missing or unclear, or tells the author to supply it, in any words and even inside a finding about something else. It does not count if the review only touches the topic without saying the information is missing, or if the review supplies the information itself as if the document already gave it.
 Answer with exactly one line per item, in the order given, and nothing after them:
 {answer_lines}"""
+
+OUTSIDE_FACTS_PROMPT = """You are checking a review of a document for facts the review supplies that the document does not contain.
+
+Document:
+<document>
+{document}
+</document>
+
+Review:
+<review>
+{review}
+</review>
+
+List every statement in the review that presents as true a specific fact about the world that the document does not state and that an author could copy into the document as it stands: a value, quantity, temperature, time, limit, rule, regulation, standard, product, or step of a procedure. Count each such statement once.
+
+Do not list: anything quoted or paraphrased from the document; arithmetic on the document's own figures; a statement that information is missing, unclear or contradictory; an instruction to the author to supply, confirm or decide something ("state the safe opening temperature"); a question; a general consequence any reader would know ("someone could be hurt").
+
+Write one line per statement, quoting the review's own words exactly:
+FACT: "<words from the review>"
+Then end with exactly one line: TOTAL: <number of FACT lines>
+If there are none, write only: TOTAL: 0"""
 
 REVIEW_JUDGE_PROMPT = """You are judging two reviews of the same document. Each was written in a fresh session from a prompt someone else prepared; you do not know how either prompt was made.
 
@@ -139,10 +162,19 @@ def misquotes(review: str, reference: str) -> list[str]:
     return out
 
 
+def parse_outside(reply: str) -> list[str] | None:
+    """The quoted statements of the grader's 'FACT: "..."' lines; None when the reply has no 'TOTAL: <n>' line (the
+    grader did not finish). The FACT lines are counted, not the stated total, which a model can miscount."""
+    if not re.search(r"(?im)^\s*TOTAL:\s*\d+\s*$", reply):
+        return None
+    return [m.group(1).strip() for m in re.finditer(r"(?im)^\s*FACT:\s*[\"\u201c](.+)[\"\u201d]\s*$", reply)]
+
+
 def summarise(reviews: list[dict], verdicts: list[dict], defect_ids: dict[str, list[str]],
-              told_ids: dict[str, list[str]] | None = None) -> dict:
+              told_ids: dict[str, list[str]] | None = None, outside: bool = False) -> dict:
     """Per case and condition: reviews, errors, mean words, planted problems found (mean and per problem), must-tell
-    items asked for (mean and per item, when the case lists any), quotes not in the document; per case and pair:
+    items asked for (mean and per item, when the case lists any), quotes not in the document, and with `outside` the
+    statements of fact the review supplies from outside the document (total and reviews with any); per case and pair:
     judge tallies. Errored or ungraded reviews count as errors, not as zero found."""
     out: dict = {}
     told_ids = told_ids or {}
@@ -151,9 +183,11 @@ def summarise(reviews: list[dict], verdicts: list[dict], defect_ids: dict[str, l
         s = c["conditions"].setdefault(r["condition"], {"reviews": 0, "errors": 0, "words": 0, "graded": 0, "found": 0,
                                                          "told": 0, "misquotes": 0, "misquoted_reviews": 0,
                                                          "by_defect": {d: 0 for d in defect_ids[r["case"]]},
-                                                         "by_item": {d: 0 for d in told_ids.get(r["case"], [])}})
+                                                         "by_item": {d: 0 for d in told_ids.get(r["case"], [])},
+                                                         **({"outside": 0, "outside_reviews": 0} if outside else {})})
         needs_told = bool(told_ids.get(r["case"]))
-        if r.get("error") or r.get("found") is None or (needs_told and r.get("told") is None):
+        if (r.get("error") or r.get("found") is None or (needs_told and r.get("told") is None)
+                or (outside and r.get("outside") is None)):
             s["errors"] += 1
             continue
         s["reviews"] += 1
@@ -168,6 +202,9 @@ def summarise(reviews: list[dict], verdicts: list[dict], defect_ids: dict[str, l
         for d, hit in (r.get("told") or {}).items():
             s["told"] += hit
             s["by_item"][d] += hit
+        if outside:
+            s["outside"] += len(r["outside"])
+            s["outside_reviews"] += bool(r["outside"])
     for c in out.values():
         for s in c["conditions"].values():
             s["mean_words"] = round(s.pop("words") / s["reviews"]) if s["reviews"] else None
@@ -211,9 +248,18 @@ def _grade(case: dict, review: str, items: list[dict], template: str, keyword: s
     return answers, None if answers is not None else (graded["error"] or f"grader reply lacks a {keyword} line per item")
 
 
+def _grade_outside(case: dict, review: str, out_dir: Path, args) -> tuple[list[str] | None, str | None]:
+    """One grader call listing the statements of fact the review supplies from outside the document."""
+    graded = _call(args.judge, OUTSIDE_FACTS_PROMPT.format(document=stage_document(case), review=review), out_dir, args,
+                   omp_model=run.judge_omp_model(args) if args.judge == "omp" else None)
+    reply = "" if graded["error"] else (out_dir / "reply.md").read_text(encoding="utf-8", errors="replace")
+    facts = None if graded["error"] else parse_outside(reply)
+    return facts, None if facts is not None else (graded["error"] or "outside-facts grader reply lacks a TOTAL line")
+
+
 def review_one(case: dict, meta: dict, run_out: Path, args) -> dict:
-    """Run the saved reviewer prompt of one finished run, then grade the review against the planted problems and,
-    when the case lists them, the things the reader must be told."""
+    """Run the saved reviewer prompt of one finished run, then grade the review against the planted problems, the
+    things the reader must be told (when the case lists them) and, with --outside-facts, the facts it supplies itself."""
     stage = case["review_stage"]
     must_tell = stage.get("must_tell") or []
     record = {"case": case["id"], "host": meta["host"], "condition": meta["condition"], "rep": meta["rep"]}
@@ -228,6 +274,10 @@ def review_one(case: dict, meta: dict, run_out: Path, args) -> dict:
                 old["misquotes"] = misquotes(review, stage_document(case) + "\n" + prompt_file.read_text(encoding="utf-8"))
             if must_tell and old.get("told") is None:
                 old["told"], why = _grade(case, review, must_tell, MUST_TELL_PROMPT, "TOLD", review_dir / "told", args)
+                if why:
+                    old["grade_error"] = why
+            if args.outside_facts and old.get("outside") is None:
+                old["outside"], why = _grade_outside(case, review, review_dir / "outside", args)
                 if why:
                     old["grade_error"] = why
             kept.write_text(json.dumps(old, indent=2), encoding="utf-8")
@@ -256,13 +306,19 @@ def review_one(case: dict, meta: dict, run_out: Path, args) -> dict:
                 record["told"], why = _grade(case, review, must_tell, MUST_TELL_PROMPT, "TOLD", review_dir / "told", args)
                 if why:
                     record["grade_error"] = why
+            if args.outside_facts:
+                record["outside"], why = _grade_outside(case, review, review_dir / "outside", args)
+                if why:
+                    record["grade_error"] = why
     review_dir.mkdir(parents=True, exist_ok=True)
     kept.write_text(json.dumps(record, indent=2), encoding="utf-8")
-    failed = record.get("error") or record.get("found") is None or (must_tell and record.get("told") is None)
+    failed = (record.get("error") or record.get("found") is None or (must_tell and record.get("told") is None)
+              or (args.outside_facts and record.get("outside") is None))
     told = f", told {sum(record['told'].values())}" if record.get("told") else ""
+    facts = f", outside facts {len(record['outside'])}" if record.get("outside") is not None else ""
     print(f"[review] {case['id']} {meta['condition']} r{meta['rep']}: "
           + (f"ERROR {record.get('error') or record.get('grade_error')}" if failed
-             else f"{record['words']} words, found {sum(record['found'].values())}{told}"), flush=True)
+             else f"{record['words']} words, found {sum(record['found'].values())}{told}{facts}"), flush=True)
     return record
 
 
@@ -305,20 +361,23 @@ def report(summary: dict) -> str:
              "tools; the review is what came back. 'Found' counts the case's planted problems a grader says the "
              "review identifies; 'Told', when the case lists things the reader must be told, counts those the review "
              "asks for. 'Misquotes' counts double-quoted spans of three words or more that are in neither the "
-             "document nor the prompt (reviews with any / spans). Judge verdicts compare the reviews, not the "
-             "prompts.", ""]
+             "document nor the prompt (reviews with any / spans). 'Outside facts', with --outside-facts, counts "
+             "statements a grader says present a fact the document does not contain (reviews with any / statements). "
+             "Judge verdicts compare the reviews, not the prompts.", ""]
     for case_id, c in sorted(summary.items()):
         told = any(s["by_item"] for s in c["conditions"].values())
+        outside = any("outside" in s for s in c["conditions"].values())
         lines += [f"## {case_id}", "",
                   "| Condition | Reviews | Errors | Mean words | Mean found | Misquotes | Per problem |"
-                  + (" Mean told | Per item |" if told else ""),
-                  "|---|---|---|---|---|---|---|" + ("---|---|" if told else "")]
+                  + (" Mean told | Per item |" if told else "") + (" Outside facts |" if outside else ""),
+                  "|---|---|---|---|---|---|---|" + ("---|---|" if told else "") + ("---|" if outside else "")]
         for cond, s in sorted(c["conditions"].items()):
             per = ", ".join(f"{d} {n}/{s['graded']}" for d, n in s["by_defect"].items()) or "-"
             items = ", ".join(f"{d} {n}/{s['graded']}" for d, n in s["by_item"].items()) or "-"
             lines.append(f"| {cond} | {s['reviews']} | {s['errors']} | {s['mean_words']} | {s['mean_found']} | "
                          f"{s['misquoted_reviews']} / {s['misquotes']} | {per} |"
-                         + (f" {s['mean_told']} | {items} |" if told else ""))
+                         + (f" {s['mean_told']} | {items} |" if told else "")
+                         + (f" {s['outside_reviews']} / {s['outside']} |" if outside else ""))
         if c["pairs"]:
             lines += ["", "| Pair | Verdicts |", "|---|---|"]
             for pair, tally in sorted(c["pairs"].items()):
@@ -345,6 +404,8 @@ def main(argv=None) -> int:
     p.add_argument("--claude-model")
     p.add_argument("--seed", type=int, default=7)
     p.add_argument("--resume", action="store_true", help="keep finished reviews and verdicts, redo the rest")
+    p.add_argument("--outside-facts", action="store_true",
+                   help="also grade each review for statements of fact it supplies that the document does not contain")
     args = p.parse_args(argv)
 
     run_dir = Path(args.run_dir).resolve()
@@ -383,7 +444,8 @@ def main(argv=None) -> int:
 
     summary = summarise(reviews, verdicts,
                         {cid: [d["id"] for d in c["review_stage"]["defects"]] for cid, c in cases.items()},
-                        {cid: [d["id"] for d in c["review_stage"].get("must_tell", [])] for cid, c in cases.items()})
+                        {cid: [d["id"] for d in c["review_stage"].get("must_tell", [])] for cid, c in cases.items()},
+                        outside=args.outside_facts)
     verdict_file.write_text(json.dumps({"reviews": reviews, "judge": verdicts, "summary": summary}, indent=2),
                             encoding="utf-8")
     (run_dir / "review-stage.md").write_text(report(summary), encoding="utf-8")

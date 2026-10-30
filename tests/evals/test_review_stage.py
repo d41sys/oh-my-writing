@@ -100,3 +100,26 @@ def test_summary_counts_told_separately_and_treats_a_missing_told_grade_as_an_er
     text = review_stage.report(s)
     assert "| Mean told | Per item |" in text and "stop 1/1, access 0/1" in text
     assert text.count("Mean told") == 1
+
+
+def test_parse_outside_counts_fact_lines_and_needs_a_total():
+    reply = ('Thinking.\nFACT: "Wait until the kiln reads below 100°C."\nFACT: \u201cFixer must not go down the drain.\u201d\n'
+             "TOTAL: 3\n")
+    assert review_stage.parse_outside(reply) == ["Wait until the kiln reads below 100°C.",
+                                                 "Fixer must not go down the drain."]
+    assert review_stage.parse_outside("TOTAL: 0\n") == []
+    assert review_stage.parse_outside('FACT: "Something."\n') is None
+
+
+def test_summary_outside_facts_counts_statements_and_reviews_and_needs_a_grade():
+    reviews = [
+        {"case": "c", "condition": "skill", "rep": 1, "error": None, "words": 10, "found": {}, "outside": ["a", "b"]},
+        {"case": "c", "condition": "skill", "rep": 2, "error": None, "words": 10, "found": {}, "outside": []},
+        {"case": "c", "condition": "skill", "rep": 3, "error": None, "words": 10, "found": {}, "outside": None},
+    ]
+    s = review_stage.summarise(reviews, [], {"c": []}, outside=True)["c"]["conditions"]["skill"]
+    assert (s["reviews"], s["errors"], s["outside"], s["outside_reviews"]) == (2, 1, 2, 1)
+    plain = review_stage.summarise(reviews[:2], [], {"c": []})["c"]["conditions"]["skill"]
+    assert "outside" not in plain
+    text = review_stage.report(review_stage.summarise(reviews, [], {"c": []}, outside=True))
+    assert "Outside facts |" in text and "| 1 / 2 |" in text
