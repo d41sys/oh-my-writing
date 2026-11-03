@@ -167,6 +167,37 @@ def test_em_dash_in_bold_term_list_is_exempt(tmp_path):
     assert "em-dash-density" not in patterns(scan_json(write(tmp_path, "l.md", text)))
 
 
+def ban_json(path, *marks):
+    proc = run(SCAN, "--json", *[a for m in marks for a in ("--ban", m)], str(path))
+    return proc.returncode, json.loads(proc.stdout)
+
+
+def test_ban_lists_every_banned_mark_including_character_references(tmp_path):
+    text = ("We stopped; the rest waited.\n"
+            "One rule: test first \u2014 then ship -- always.\n"
+            "Ask R&D; they decide &#59; then &mdash; done.\n")
+    code, data = ban_json(write(tmp_path, "b.md", text), "semicolon", "colon", "em-dash")
+    assert code == 1
+    assert [(b["line"], b["mark"]) for b in data["banned"]] == [
+        (1, "semicolon"), (2, "colon"), (2, "em-dash"), (2, "em-dash"), (3, "semicolon"), (3, "semicolon"),
+        (3, "em-dash")]
+    code, data = ban_json(write(tmp_path, "b.md", text), "colon")
+    assert code == 1 and {b["mark"] for b in data["banned"]} == {"colon"}
+    assert "banned" not in scan_json(write(tmp_path, "b.md", text))
+
+
+def test_ban_ignores_syntax_and_protected_regions(tmp_path):
+    text = ('---\ntitle: "Notes: draft"\n---\n'
+            "We met at 10:30 and kept a 1:2 ratio. Fish &amp; chips.\n"
+            "Write to mailto:a@b.org, open C:\\temp, run `a:b; c` or see https://x.org/a:b;c here.\n"
+            'He said "wait: no; never" and left.\n'
+            "> Quoted: kept; as written \u2014 always.\n\n"
+            "| Item | Note |\n|:-----|-----:|\n| Pens | \u2014 |\n\n"
+            "[1]: https://example.org/ref\n")
+    code, data = ban_json(write(tmp_path, "s.md", text), "colon", "semicolon", "em-dash")
+    assert (code, data["banned"]) == (0, [])
+
+
 def test_rhythm_patterns_and_technical_skip(tmp_path):
     opener = write(tmp_path, "o.md", "We tested the cache. We measured the latency. We compared the results. We wrote the report.\n")
     assert "same-opener-run" in patterns(scan_json(opener))

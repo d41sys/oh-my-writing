@@ -22,12 +22,20 @@ Never scanned for prose patterns: fenced code, inline code, URLs, quoted lines
 (starting with ">"), text inside double quotes, closed YAML frontmatter and HTML
 comments. The only URL check is for chatbot referral parameters.
 
+House rule: --ban colon|semicolon|em-dash (repeatable) lists every use of a mark
+the user's style guide forbids, in the same regions the scan reads. These are not
+candidates: the user named the rule. Character references (&#59;, &mdash;) count
+as the mark. Not counted, because the mark is notation there: a time of day or a
+ratio between digits (10:30, 1:2), mailto:/tel: links, drive paths (C:\\), link
+and footnote definitions ("[1]: ..."), table delimiter rows, other character
+references (&amp;), and a table cell holding only a dash (an empty value).
+
 The lexical lists are English only. For other languages the report says so;
 an empty result then means nothing.
 
-Output: human lines use [OK], [FLAG] and "->"; --json prints one JSON object.
-Exit codes: 0 on success (even with candidates), 2 on an input error.
-The scanner never rewrites the text.
+Output: human lines use [OK], [FLAG], [BANNED] and "->"; --json prints one JSON object.
+Exit codes: 0 on success (even with candidates), 1 when a banned mark is found,
+2 on an input error. The scanner never rewrites the text.
 """
 from __future__ import annotations
 
@@ -37,6 +45,7 @@ import json
 import re
 import sys
 from dataclasses import dataclass
+from html.entities import html5 as HTML_ENTITIES
 
 FAMILIES = ("lexical", "framing", "contrast", "puffery", "rhythm", "ending", "format", "residue")
 PROFILES = ("casual", "professional", "technical", "academic")
@@ -60,6 +69,13 @@ BULLET_RE = re.compile(r"^\s*(?:[-*+]|\d+[.)])\s+(.*\S)\s*$")
 HASHTAG_RE = re.compile(r"(?<![\w&])#[A-Za-z]\w+")
 EM_DASH_RE = re.compile(r"\u2014|(?<=\s)--(?=\s)")
 LIST_TERM_DASH_RE = re.compile(r"^\s*[-*+]\s+\*\*[^*\n]+\*\*\s*\u2014")
+
+BAN_MARKS = {"colon": ":", "semicolon": ";", "em-dash": "\u2014"}
+TABLE_RULE_RE = re.compile(r"^\s*\|?\s*:?-+:?\s*(?:\|\s*:?-+:?\s*)+\|?\s*$")
+CHAR_REF_RE = re.compile(r"&(#[0-9]{1,7}|#[xX][0-9a-fA-F]{1,6}|[A-Za-z][A-Za-z0-9]{0,31});")
+COLON_SYNTAX_RE = re.compile(r"\d+(?::\d+)+|^ {0,3}\[[^\]\n]+\]:|\b(?:mailto|tel|sms):(?=\S)|\b[A-Za-z]:\\", re.I)
+EMPTY_CELL_DASH_RE = re.compile(r"(?<=\|)\s*\u2014\s*(?=\|)")
+SPACED_DOUBLE_HYPHEN_RE = re.compile(r"(?<=\s)--(?=\s)")
 ABBREV = {"e.g", "i.e", "etc", "vs", "dr", "mr", "mrs", "ms", "fig", "al", "approx", "cf", "inc", "ltd", "prof"}
 BOUNDARY_RE = re.compile(r"[.!?]+[\"'\u201d\u2019)\]]*\s+(?=[\"'\u201c\u2018(\[]?[A-Z0-9])")
 
@@ -468,7 +484,47 @@ def looks_non_english(masked: str) -> bool:
     return sum(1 for c in letters if ord(c) > 0x7F) / len(letters) > 0.08
 
 
-def scan(text: str, profile: str) -> dict:
+def _char_ref(name: str) -> str | None:
+    """The character a reference such as '#59', '#x2014' or 'mdash' stands for; None when it is not one."""
+    if name.startswith("#"):
+        code = int(name[2:], 16) if name[1:2] in ("x", "X") else int(name[1:])
+        return chr(code) if 0 < code <= 0x10FFFF else None
+    return HTML_ENTITIES.get(name + ";")
+
+
+def banned_marks(text: str, masked: str, ban) -> list:
+    """Every use of a banned mark in the scanned regions: [{line, col, mark, text}], in reading order."""
+    out, originals = [], text.split("\n")
+    for number, line in enumerate(masked.split("\n"), 1):
+        if "|" in line and TABLE_RULE_RE.match(line):
+            continue
+        hits, refs, colon_syntax, empty_cells = [], set(), set(), set()
+        for m in CHAR_REF_RE.finditer(line):
+            char = _char_ref(m.group(1))
+            if char is None:
+                continue  # "R&D;" is a word and a semicolon, not a reference
+            refs.update(range(m.start(), m.end()))
+            hits += [(m.start(), mark) for mark in ban if BAN_MARKS[mark] == char]
+        for m in COLON_SYNTAX_RE.finditer(line):
+            colon_syntax.update(range(m.start(), m.end()))
+        if line.lstrip().startswith("|"):
+            for m in EMPTY_CELL_DASH_RE.finditer(line):
+                empty_cells.update(range(m.start(), m.end()))
+        for col, char in enumerate(line):
+            if col in refs:
+                continue
+            for mark in ban:
+                if char == BAN_MARKS[mark] and not (mark == "colon" and col in colon_syntax) \
+                        and not (mark == "em-dash" and col in empty_cells):
+                    hits.append((col, mark))
+        if "em-dash" in ban:
+            hits += [(m.start(), "em-dash") for m in SPACED_DOUBLE_HYPHEN_RE.finditer(line)]
+        for col, mark in sorted(hits):
+            out.append({"line": number, "col": col + 1, "mark": mark, "text": originals[number - 1].strip()})
+    return out
+
+
+def scan(text: str, profile: str, ban=()) -> dict:
     masked = mask_protected(text)
     line_starts = [0]
     for m in re.finditer("\n", text):
@@ -557,7 +613,7 @@ def scan(text: str, profile: str) -> dict:
     if looks_non_english(masked):
         notes.append("Text looks non-English. The lexical, framing, contrast and ending lists are English only, "
                      "so an empty or short result says nothing. Check structure, evidence and preservation instead.")
-    return {
+    result = {
         "profile": profile,
         "words": words,
         "findings": findings,
@@ -566,6 +622,10 @@ def scan(text: str, profile: str) -> dict:
                     "by_family": by_family},
         "notes": notes,
     }
+    if ban:
+        result["ban"] = sorted(set(ban))
+        result["banned"] = banned_marks(text, masked, result["ban"])
+    return result
 
 
 def _sentences(block_text: str, base: int):
@@ -817,6 +877,15 @@ def render_human(result: dict, label: str) -> str:
     out.append(f"summary: {s['total']} candidates, {s['per_1000_words']} per 1000 words (candidates, not verdicts)")
     for fam, d in s["by_family"].items():
         out.append(f"  {fam}: {d['count']} ({d['per_1000_words']} per 1000 words)")
+    if "banned" in result:
+        marks = ", ".join(result["ban"])
+        if not result["banned"]:
+            out.append(f"[OK] house rule: no {marks} in the scanned text.")
+        for b in result["banned"]:
+            out.append(f"[BANNED] L{b['line']}:C{b['col']} {b['mark']} \"{snippet(b['text'], 70)}\"")
+        if result["banned"]:
+            out.append(f"house rule: {len(result['banned'])} uses of a banned mark ({marks}); "
+                       "each is a required change, not a candidate.")
     return "\n".join(out)
 
 
@@ -828,20 +897,23 @@ def main(argv=None) -> int:
     parser.add_argument("--profile", choices=PROFILES, default="professional",
                         help="which families to report (default: professional)")
     parser.add_argument("--json", action="store_true", help="print one JSON object instead of text")
+    parser.add_argument("--ban", action="append", choices=sorted(BAN_MARKS), default=[],
+                        help="a mark the user's house style forbids (repeatable); every use is listed and the exit "
+                             "code is 1 while any remain")
     args = parser.parse_args(argv)
     try:
         text = read_input(args.path)
     except OSError as exc:
         print(f"slop_scan: error: cannot read {args.path}: {exc.strerror or exc}", file=sys.stderr)
         return 2
-    result = scan(text, args.profile)
+    result = scan(text, args.profile, args.ban)
     label = "<stdin>" if args.path == "-" else args.path
     result["file"] = label
     if args.json:
         print(json.dumps(result, ensure_ascii=False, indent=2))
     else:
         print(render_human(result, label))
-    return 0
+    return 1 if result.get("banned") else 0
 
 
 if __name__ == "__main__":

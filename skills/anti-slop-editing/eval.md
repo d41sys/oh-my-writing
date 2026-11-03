@@ -16,7 +16,7 @@ Answer each check pass or fail. Fix every failure before returning.
 7. Are findings ranked by impact and grouped by shared cause, with weak single hits left out or labelled as judgment calls?
 8. Did you avoid padding the report with "scanned, nothing found" categories or invented concerns?
 9. Did you leave alone the habits the author shows in their own text or sample (dashes, fragments, hedges, asides, bold)?
-10. Did you avoid treating a count (dashes, bullets, bold, word hits) as a target to reach?
+10. Did you avoid treating a count (dashes, bullets, bold, word hits) as a target to reach? If the user named a house rule that forbids a mark, is that mark gone from the edited prose (a `--ban` scan exits 0, or the report says it was checked by reading), while quotes, code and URLs keep theirs?
 11. Did you leave a genuine question to the reader, a real label ("Result: 42 ms", "Steps to reproduce:") and an FAQ alone, and cut only staging such as "The best part?", "Here's the thing:", "Plot twist:" or a question answered at once?
 
 ## Preservation

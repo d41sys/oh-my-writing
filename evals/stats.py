@@ -230,6 +230,7 @@ CASE_KIND: dict[str, str] = {
     "anti-slop-editing/detect-only-report": "analysis",
     "anti-slop-editing/edit-announcement-keeps-facts": "reader",
     "anti-slop-editing/edit-contrast-keeps-both-sides": "reader",
+    "anti-slop-editing/edit-house-rule-bans-semicolons-and-dashes": "reader",
     "anti-slop-editing/edit-keeps-bare-stance": "reader",
     "anti-slop-editing/edit-punchline-keeps-every-except": "reader",
     "anti-slop-editing/edit-round-figure-kept-basis-asked": "reader",

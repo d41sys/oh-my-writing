@@ -1,0 +1,121 @@
+{
+ "id": "anti-slop-editing/edit-house-rule-bans-semicolons-and-dashes",
+ "skill": "anti-slop-editing",
+ "description": "Newsletter notice edited under a house rule the user names: no semicolons and no em dashes. The prose loses both marks with its meaning kept (the reopening, the twelve racks split eight and four, no evening desk); the semicolon inside Dana's direct quote and the one inside the code block stay, because a quote and a command are not the author's prose, and the clock time 10:30 is not punctuation.",
+ "prompt": "Tidy up notice.md for the staff newsletter. Our house style allows no semicolons and no em dashes. Save the edited version to out/notice.md.",
+ "files": {
+  "notice.md": "# Bike shed reopens\n\nThe bike shed by the east gate reopens on Monday; the lock code is on the board by reception. We added twelve racks — eight covered, four open — and a pump by the door.\n\nAs Dana from facilities put it: \"Bring your own lock; ours are for the racks only.\"\n\nRegister your bike once with this command:\n\n```\nbikeshed register --tag A12; bikeshed list\n```\n\nFacilities answer questions at 10:30 on weekdays; there is no evening desk.\n"
+ },
+ "output": "out/notice.md",
+ "checks": [
+  {
+   "type": "not_regex",
+   "pattern": "—|&mdash;|&#8212;| -- ",
+   "note": "the house rule forbids em dashes anywhere in the notice's prose"
+  },
+  {
+   "type": "not_regex",
+   "pattern": "(?m)^(?![^\\n]*bikeshed register)(?![^\\n]*Bring your own lock)[^\\n]*;",
+   "note": "no semicolon is left outside the quoted line and the command line"
+  },
+  {
+   "type": "not_regex",
+   "pattern": "[\"“]Bring your own lock(?!; ours are for the racks only\\.[\"”])",
+   "note": "words inside quotation marks are the speaker's: the quote stays exact, or becomes reported speech without quotation marks (corrected after v-house-rule, which required the quote verbatim)"
+  },
+  {
+   "type": "regex",
+   "pattern": "(?is)own lock.{0,120}racks only",
+   "note": "Dana's point survives, quoted or reported"
+  },
+  {
+   "type": "contains",
+   "values": [
+    "bikeshed register --tag A12; bikeshed list",
+    "10:30"
+   ],
+   "note": "a command keeps its own punctuation (a split or rewritten command may not behave the same); a clock time is not a colon to remove"
+  },
+  {
+   "type": "preserves",
+   "source": "notice.md",
+   "categories": [
+    "numbers",
+    "negations"
+   ]
+  },
+  {
+   "type": "no_added_facts",
+   "categories": [
+    "numbers",
+    "citations",
+    "urls"
+   ]
+  },
+  {
+   "type": "markers",
+   "min": 0,
+   "max": 0,
+   "target": "output"
+  }
+ ],
+ "controls": [
+  {
+   "name": "good",
+   "expect": "pass",
+   "output": "# Bike shed reopens\n\nThe bike shed by the east gate reopens on Monday. The lock code is on the board by reception. We added twelve racks (eight covered and four open) and a pump by the door.\n\nAs Dana from facilities put it: \"Bring your own lock; ours are for the racks only.\"\n\nRegister your bike once with this command:\n\n```\nbikeshed register --tag A12; bikeshed list\n```\n\nFacilities answer questions at 10:30 on weekdays. There is no evening desk.\n",
+   "reply": "Saved to out/notice.md. Replaced the semicolons and dashes in your own sentences; the quote and the command keep theirs."
+  },
+  {
+   "name": "trap-leaves-prose-semicolon",
+   "expect": "fail",
+   "fails": [
+    "not_regex"
+   ],
+   "output": "# Bike shed reopens\n\nThe bike shed by the east gate reopens on Monday; the lock code is on the board by reception. We added twelve racks (eight covered and four open) and a pump by the door.\n\nAs Dana from facilities put it: \"Bring your own lock; ours are for the racks only.\"\n\nRegister your bike once with this command:\n\n```\nbikeshed register --tag A12; bikeshed list\n```\n\nFacilities answer questions at 10:30 on weekdays. There is no evening desk.\n",
+   "reply": "Saved to out/notice.md. Replaced the semicolons and dashes in your own sentences; the quote and the command keep theirs."
+  },
+  {
+   "name": "trap-leaves-dash",
+   "expect": "fail",
+   "fails": [
+    "not_regex"
+   ],
+   "output": "# Bike shed reopens\n\nThe bike shed by the east gate reopens on Monday. The lock code is on the board by reception. We added twelve racks — eight covered and four open — and a pump by the door.\n\nAs Dana from facilities put it: \"Bring your own lock; ours are for the racks only.\"\n\nRegister your bike once with this command:\n\n```\nbikeshed register --tag A12; bikeshed list\n```\n\nFacilities answer questions at 10:30 on weekdays. There is no evening desk.\n",
+   "reply": "Saved to out/notice.md. Replaced the semicolons and dashes in your own sentences; the quote and the command keep theirs."
+  },
+  {
+   "name": "good-reported-speech",
+   "expect": "pass",
+   "reply": "Saved to out/notice.md. Replaced the semicolons and dashes in your own sentences; the quote and the command keep theirs.",
+   "output": "# Bike shed reopens\n\nThe bike shed by the east gate reopens on Monday. The lock code is on the board by reception. We added twelve racks (eight covered and four open) and a pump by the door.\n\nDana from facilities asks you to bring your own lock, because the club locks are for the racks only.\n\nRegister your bike once with this command:\n\n```\nbikeshed register --tag A12; bikeshed list\n```\n\nFacilities answer questions at 10:30 on weekdays. There is no evening desk.\n"
+  },
+  {
+   "name": "trap-edits-words-inside-the-quote",
+   "expect": "fail",
+   "fails": [
+    "not_regex"
+   ],
+   "output": "# Bike shed reopens\n\nThe bike shed by the east gate reopens on Monday. The lock code is on the board by reception. We added twelve racks (eight covered and four open) and a pump by the door.\n\nAs Dana from facilities put it: \"Bring your own lock. Ours are for the racks only.\"\n\nRegister your bike once with this command:\n\n```\nbikeshed register --tag A12; bikeshed list\n```\n\nFacilities answer questions at 10:30 on weekdays. There is no evening desk.\n",
+   "reply": "Saved to out/notice.md. Replaced the semicolons and dashes in your own sentences; the quote and the command keep theirs."
+  },
+  {
+   "name": "trap-splits-the-command",
+   "expect": "fail",
+   "fails": [
+    "contains"
+   ],
+   "output": "# Bike shed reopens\n\nThe bike shed by the east gate reopens on Monday. The lock code is on the board by reception. We added twelve racks (eight covered and four open) and a pump by the door.\n\nAs Dana from facilities put it: \"Bring your own lock; ours are for the racks only.\"\n\nRegister your bike once with this command:\n\n```\nbikeshed register --tag A12\nbikeshed list\n```\n\nFacilities answer questions at 10:30 on weekdays. There is no evening desk.\n",
+   "reply": "Saved to out/notice.md. Replaced the semicolons and dashes in your own sentences; the quote and the command keep theirs."
+  },
+  {
+   "name": "trap-drops-the-split",
+   "expect": "fail",
+   "fails": [
+    "preserves"
+   ],
+   "output": "# Bike shed reopens\n\nThe bike shed by the east gate reopens on Monday. The lock code is on the board by reception. We added twelve racks and a pump by the door.\n\nAs Dana from facilities put it: \"Bring your own lock; ours are for the racks only.\"\n\nRegister your bike once with this command:\n\n```\nbikeshed register --tag A12; bikeshed list\n```\n\nFacilities answer questions at 10:30 on weekdays. There is no evening desk.\n",
+   "reply": "Saved to out/notice.md. Replaced the semicolons and dashes in your own sentences; the quote and the command keep theirs."
+  }
+ ]
+}

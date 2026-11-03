@@ -4,7 +4,7 @@ description: Audits and edits prose for AI-writing patterns such as stock vocabu
 license: MIT
 compatibility: Optional helper scripts need Python 3.10+; the skill works without them.
 metadata:
-  version: "1.17"
+  version: "1.18"
   skill-author: d41sys
 ---
 
@@ -53,6 +53,7 @@ Steps:
 2. **Read the whole text once without changing anything.** Note the author's habits (dashes, fragments, hedges, asides, bold) from the text itself or the supplied sample. A habit the author shows is voice, not slop.
 3. **Locate candidates.** If Python 3.10+ is available, run the scanner by its path in this skill's `scripts/` directory (your working directory is probably the user's project, not the skill) and keep its output as a list of places to look:
    `python <skill-dir>/scripts/slop_scan.py --profile professional draft.md` (add `--json` for machine output; reads stdin when no file is given).
+   When the user names a house rule that forbids colons, semicolons or em dashes, add `--ban colon` (repeatable; also `semicolon`, `em-dash`). Those hits are not candidates: in `edit` and `rewrite` mode, recast each sentence so the mark is gone and the meaning, order and emphasis stay (two sentences, a comma, parentheses, or "and"), and run the scan again until the exit code is 0. The scan skips what the rule does not reach. Words inside quotation marks are the speaker's: keep them exactly, or, if the rule must cover them, turn the quote into reported speech without quotation marks; never change words inside them. Code and commands stay byte-identical even when a rewrite looks equivalent (`a; b` and `a && b` differ); say in the reply that they keep the mark. Times, ratios and link syntax are not punctuation. In `detect` mode, list the hits.
    Then read for what the scanner cannot see: reflexive triads, synonym cycling, echo summaries at paragraph ends, acknowledgment loops, invented specifics, and paragraph contribution (say in one phrase what each paragraph adds; if two paragraphs could swap places unchanged, report it as a structural note, and restructure only when asked). If the scanner is unavailable, work by reading with the [pattern catalog](references/pattern-catalog.md) and label the report "model-only".
 4. **Confirm findings.** For each candidate, answer four questions: is the pattern really present in context, does a genre or author exception apply, does it cost the reader something (empty, inflated, hidden, delayed), and is it inside the authorized scope and outside protected regions. Only a yes to all four is a finding. Group findings that share one cause. Rank them: P0 residue and credibility problems (chat wrappers, placeholders, leaked markup, unsupported claims), P1 clear tells (staged contrasts, significance inflation, vague attribution, era openers, formulaic closers, stacked stock words), P2 polish (dash density, cadence, transitions, bold, copula). Go deep on the few that matter; do not pad the list with weak hits.
 5. **Act by mode.**
