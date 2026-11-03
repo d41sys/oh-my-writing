@@ -89,9 +89,12 @@
         "DRAFT",
         "APPLICATION",
         "BEGIN",
-        "BEGIN DRAFT"
+        "BEGIN DRAFT",
+        "BEGIN DOCUMENT",
+        "END DOCUMENT",
+        "DOCUMENT"
       ],
-      "note": "list numbering and line numbers are not new figures; 'English' is the review language; BEGIN/END lines delimit the pasted draft"
+      "note": "list numbering and line numbers are not new figures; 'English' is the review language; BEGIN/END lines delimit the pasted draft (BEGIN/END DOCUMENT, the reviewer prompt template's own wording, added after v-final4-omp, as cases heldout7-13 already allow)"
     },
     {
       "type": "word_count",

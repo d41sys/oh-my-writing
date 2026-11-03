@@ -153,11 +153,15 @@ def test_grade_run_reports_difference_between_conditions(tmp_path, monkeypatch):
 def test_host_errors_are_excluded_from_both_rates(tmp_path, monkeypatch):
     case = {**CASE, "checks": [{"type": "no_added_facts"}]}
     other = {**case, "id": "anti-slop-editing/other"}
-    monkeypatch.setattr(grade, "load_cases", lambda patterns=None: [case, other])
+    fallback = {**case, "id": "anti-slop-editing/fallback"}
+    monkeypatch.setattr(grade, "load_cases", lambda patterns=None: [case, other, fallback])
     rows = [(case, "skill", "Latency fell from 40 ms to 12 ms.", None),
             (case, "baseline", "Latency fell from 40 ms to 3 ms.", None),
             (other, "skill", None, "exit 1: unrecognized model"),
-            (other, "baseline", "Latency fell from 40 ms to 12 ms.", None)]
+            (other, "baseline", "Latency fell from 40 ms to 12 ms.", None),
+            # another model wrote this output after a quota fallback: it measures neither condition
+            (fallback, "skill", "Latency fell from 40 ms to 12 ms.", "model fallback: gemini-3.8-flash"),
+            (fallback, "baseline", "Latency fell from 40 ms to 3 ms.", None)]
     for c, cond, text, error in rows:
         d = tmp_path / "runs" / f"{c['id'].replace('/', '__')}__claude__{cond}"
         (d / "workspace" / "out").mkdir(parents=True)
@@ -166,11 +170,11 @@ def test_host_errors_are_excluded_from_both_rates(tmp_path, monkeypatch):
         (d / "meta.json").write_text(json.dumps({"case": c["id"], "skill": c["skill"], "host": "claude",
                                                  "condition": cond, "skill_loaded": cond == "skill", "error": error}))
     total = grade.grade_run(tmp_path)["summary"]["by"]["claude/ALL"]
-    assert (total["skill_n"], total["baseline_n"], total["excluded"]) == (1, 1, 1)
+    assert (total["skill_n"], total["baseline_n"], total["excluded"]) == (1, 1, 2)
     assert total["delta"] == 1.0
     assert "| ERROR |" in (tmp_path / "report.md").read_text()
 
     # A case with only one condition on disk is unpaired and must not count either.
     (tmp_path / "runs" / "anti-slop-editing__other__claude__skill").rename(tmp_path / "gone")
     total = grade.grade_run(tmp_path)["summary"]["by"]["claude/ALL"]
-    assert (total["skill_n"], total["baseline_n"], total["excluded"]) == (1, 1, 1)
+    assert (total["skill_n"], total["baseline_n"], total["excluded"]) == (1, 1, 2)

@@ -355,6 +355,17 @@ def test_read_run_host_error_has_no_values_but_empty_output_scores_zero(tmp_path
     assert r2["metrics"]["words"] is None
 
 
+def test_read_run_fallback_or_leak_with_output_is_a_host_error(tmp_path):
+    for i, error in enumerate(["model fallback: gemini-3.8-flash", "isolation: advisor event"]):
+        root = tmp_path / str(i)
+        make_run(root, GOOD, error=error)
+        (r,) = stats.read_run(root)[1]
+        assert r["host_error"] and set(r["metrics"].values()) == {None}
+    make_run(tmp_path / "late", GOOD, error="timeout after 600s")  # the agent's own output, written in time
+    (r,) = stats.read_run(tmp_path / "late")[1]
+    assert not r["host_error"] and r["metrics"]["case_passed"] is not None
+
+
 def test_cli_writes_json_and_compare(tmp_path, capsys):
     a, b = tmp_path / "a", tmp_path / "b"
     make_run(a, GOOD)

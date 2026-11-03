@@ -1199,9 +1199,16 @@ def _scores(rows: list[dict]) -> dict:
     return {"mean": sum(values) / len(values), "min": min(values), "max": max(values)}
 
 
+# run.py errors that mean the run measured something other than its condition (another model after a quota fallback,
+# a leak through isolation): invalid whatever the run wrote
+INVALID_RUN_ERRORS = ("model fallback", "isolation:")
+
+
 def host_failed(r: dict) -> bool:
-    """The host crashed or timed out before writing the output: an infrastructure error, not a skill failure."""
-    return bool(r.get("error")) and not r["checks"][0]["passed"]
+    """An infrastructure error, not a skill failure: the host crashed or timed out before writing the output, or the
+    run measured something other than its condition."""
+    error = r.get("error") or ""
+    return bool(error) and (error.startswith(INVALID_RUN_ERRORS) or not r["checks"][0]["passed"])
 
 
 DEFAULT_JUDGE_PAIR = "skill:baseline"

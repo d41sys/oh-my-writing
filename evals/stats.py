@@ -866,7 +866,8 @@ def run_record(case: dict, meta: dict, output: str | None, reply: str, workspace
     """Metrics of one run. A run the host crashed before writing the output (error set, no file) is marked
     host_error and carries no values; a run that wrote nothing without an error scores check_pass_rate 0."""
     graded = grade.grade_case(case, output, reply, workspace)
-    host_error = bool(meta.get("error")) and output is None
+    error = meta.get("error") or ""
+    host_error = bool(error) and (output is None or error.startswith(grade.INVALID_RUN_ERRORS))
     metrics: dict[str, float | None] = dict.fromkeys(METRICS)
     if not host_error:
         if output is not None:

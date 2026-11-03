@@ -78,9 +78,13 @@
         "END MEMO",
         "MEMO",
         "END",
-        "English"
+        "English",
+        "BEGIN",
+        "BEGIN DOCUMENT",
+        "END DOCUMENT",
+        "DOCUMENT"
       ],
-      "note": "list numbering a prompt makes necessary is not a new figure; 'END MEMO' is the delimiter closing the pasted memo (run baseline r3) and 'English' the language of the review (runs skill r2, variant-iso r2)"
+      "note": "list numbering a prompt makes necessary is not a new figure; 'END MEMO' is the delimiter closing the pasted memo (run baseline r3) and 'English' the language of the review (runs skill r2, variant-iso r2). BEGIN/END DOCUMENT lines delimit the pasted memo (the reviewer prompt template's own wording; added after v-final4-omp, as cases heldout7-13 already allow)"
     },
     {
       "type": "word_count",

@@ -80,9 +80,13 @@
         "END DRAFT",
         "END PROPOSAL",
         "DRAFT",
-        "PROPOSAL"
+        "PROPOSAL",
+        "BEGIN",
+        "BEGIN DOCUMENT",
+        "END DOCUMENT",
+        "DOCUMENT"
       ],
-      "note": "list numbering and line numbers a prompt needs are not new figures; 'English' is the review language; END DRAFT / END PROPOSAL are delimiters closing the pasted draft. Corrected after v-review16-heldout: the first version flagged a line number ('14.') and those delimiters (3 runs outside the skill condition)"
+      "note": "list numbering and line numbers a prompt needs are not new figures; 'English' is the review language; END DRAFT / END PROPOSAL are delimiters closing the pasted draft. Corrected after v-review16-heldout: the first version flagged a line number ('14.') and those delimiters (3 runs outside the skill condition). BEGIN/END DOCUMENT lines (the reviewer prompt template's own wording) added after v-final4-omp, as cases heldout7-13 already allow"
     },
     {
       "type": "word_count",
