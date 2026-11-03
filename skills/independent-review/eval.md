@@ -4,7 +4,7 @@ Answer each check pass or fail. Fix every failure before returning.
 
 ## Independence
 
-1. Was every review round run in a new session, subagent or process, rather than in the writer's own context?
+1. Was every review round run in a new session, subagent or process, rather than in the writer's own context or a subagent that inherited it?
 2. If no fresh context was available, does the report say "Independent review: not run" with the reason, and label anything you did yourself as a self-check, instead of presenting it as a review?
 3. Does a self-check avoid a verdict of `ready` or "this is good" in the writer's own voice, list what it cannot see, and name what only the author can confirm (a date with no year or weekday, a place or number the brief leaves open)?
 4. Where a different model family was possible, was it used, and does the report give the reviewer's reported model id (or "unknown") and whether it matches the writer's family?

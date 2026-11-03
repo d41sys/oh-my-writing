@@ -4,7 +4,7 @@ description: Writes and checks claims against evidence. Builds a claims ledger, 
 license: MIT
 compatibility: Optional helper script needs Python 3.10+ standard library; the skill works without it.
 metadata:
-  version: "1.11"
+  version: "1.12"
   skill-author: d41sys
 ---
 

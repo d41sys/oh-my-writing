@@ -144,6 +144,8 @@ When revising any text, never raise strength unless new evidence is in the ledge
 | "the cohort showed" | "you should" / "people can" | group result turned into individual advice |
 | "no harm was observed in 40 patients" | "safe" | absence of detection written as safety |
 | "under these assumptions" / "forecast" | "will" | scenario written as prediction |
+| "page views doubled" | "readers understood the guide" | a measure that stands in for the outcome written as the outcome |
+| "no match in the two archives we searched" | "it was never published" | an empty search written as absence everywhere |
 
 If tightening for length, shorten words, not scope. When two edits conflict (shorter versus accurate), accuracy wins.
 
