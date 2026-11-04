@@ -2,12 +2,12 @@
 
 ## Summary
 
-On realistic writing tasks, an agent with these skills passed **89%** of tuned runs; the same agent with no skills passed **42%**. Against seven public writing-skill packs, it passed more runs than each of them. A blind model judge preferred our output to every pack except Humanizer. Against no skills at all, the judge split close to even. So the skills make output reliably more faithful to the material, but not clearly better-sounding.
+On all 94 benchmark cases (run `v-final4-omp`), an agent with these skills passed **73%** of runs; the same agent with no skills passed **45%**. Against seven public writing-skill packs (run `v-final2-omp`), it passed more runs than each of them, and a blind model judge preferred our output to every pack except Humanizer. Against no skills, the judge preferred the no-skills output, 111 to 69. Three skills make most of that gap (independent-review, project-report, report-writing); on the other cases it splits 54 to 46 for the skills. So the skills make output reliably more faithful to the material, but not better-sounding to a model judge.
 
 ## Setup
 
-- **Host and model:** omp with gpt-6-sol. Judges also use gpt-6-sol. Results directory `v-final2-omp`.
-- **Cases:** 59 tasks across the ten writing skills, each run 3 times (177 runs per condition). Each case has:
+- **Host and model:** omp with gpt-6-sol. Judges also use gpt-6-sol. Results directories: `v-final4-omp` for the full run of the current skills against no skills; `v-final2-omp`, an earlier commit, for old skills and the competitor packs.
+- **Cases:** 94 tasks across ten of the eleven skills (results-visualization has none yet) and the style and reader tracks (59 in `v-final2-omp`), each run 3 times. Each case has:
   - a prompt and material files: notes, transcripts, drafts, and real document folders with docx, xlsx, pptx, pdf, eml and csv files;
   - mechanical checks.
 - **Checks** grade what matters for trust:
@@ -23,12 +23,12 @@ On realistic writing tasks, an agent with these skills passed **89%** of tuned r
   - *old skills*: an earlier version, for A/B;
   - *competitor*: the agent with one public writing pack installed in place of ours, on the cases that pack targets.
 - **Judge:** a blind pairwise judge sees both outputs in both orders. A pick that flips when the order is swapped counts as *inconsistent* (I), not as a win.
-- **Case groups:**
+- **Case groups** (counts for `v-final2-omp`; 61, 11 and 22 in `v-final4-omp`):
   - *Tuned* (42 cases): used while improving the skills.
   - *Held-out 1* (7 cases): written before the last two rounds and never tuned on.
   - *Held-out 2* (10 cases): written by a separate agent with no access to results. Their checks were later audited on real outputs of all conditions, so they now separate the conditions only weakly.
 
-## Pass rates
+## Pass rates against old skills (`v-final2-omp`)
 
 | Case group | With skills | Old skills | No skills |
 |---|---|---|---|
@@ -54,13 +54,46 @@ How to read this table:
 - When a pack did not load, that run was effectively a no-skills run. On loaded runs only, humanizer passed 8/26 and we passed 22/26; proficiently passed 5/6 and we passed 6/6.
 - The judge preferred Humanizer's output (1-7) even though ours passed far more checks.
 
-## Judge against no skills
+## Judge against no skills (`v-final2-omp`)
 
 | Question | With skills preferred | No skills preferred | Inconsistent or tie |
 |---|---|---|---|
 | Which serves the reader better (all cases) | 52 | 58 | 43 |
 | Which sounds more like a person | 14 | 7 | 3 |
 | Which stays more faithful to the material | 18 | 2 | 4 |
+
+## Full run of the current skills (`v-final4-omp`)
+
+Every case, skills against no skills, 3 repeats: 564 runs, 0 host errors, no fallback-model runs. The run stopped at the gpt-6-sol usage limit after 424 runs and was resumed with the same skill versions (checked per run in `meta.json`); the case's skill loaded in 255 of 282 skill runs.
+
+| Case group | Cases | With skills | No skills |
+|---|---|---|---|
+| Tuned | 61 | **129 of 183 (70%)** | 59 of 183 (32%) |
+| Held-out 1 | 11 | 16 of 33 (48%) | 15 of 33 (45%) |
+| Held-out 2 and later | 22 | 60 of 66 (91%) | 54 of 66 (82%) |
+| All | 94 | **205 of 282 (73%)** | 128 of 282 (45%) |
+
+Per skill, runs passed and the blind judge on text and visual cases (W-L for the skills, ties and order-inconsistent picks left out):
+
+| Cases of | With skills | No skills | Judge W-L |
+|---|---|---|---|
+| anti-slop-editing | **31/45** | 7/45 | 16-16 |
+| author-voice | 12/15 | 10/15 | 7-6 |
+| career-documents | **12/12** | 6/12 | 6-4 |
+| evidence-grounded-writing | 11/12 | 7/12 | 6-4 |
+| independent-review | **51/51** | 41/51 | 7-39 |
+| post-writing | 12/15 | 12/15 | 9-6 |
+| project-report | **15/24** | 2/24 | 5-16 |
+| report-writing | **11/15** | 3/15 | 3-10 |
+| structured-drafting | 13/15 | 11/15 | 6-5 |
+| technical-docs | **12/12** | 6/12 | 4-5 |
+| style track | 10/24 | 5/24 | see below |
+| reader track | 15/42 | 18/42 | see below |
+
+Style track judge (24 pairs): reads more human 16-6, more faithful 16-3. Reader track judge (42 pairs): fit 13-20, flow 15-22, faithful 20-13.
+
+- **The checks and the judge disagree on three skills.** independent-review passes every run and loses the judge 7-39, the pattern traced in the placebo section below (the judge prefers the shorter no-skills reviewer prompt). project-report and report-writing pass far more often with skills and still lose. In the 15 project-report losses read by hand before the resume, 7 verdicts prefer the no-skills report for leading with the decision, totals or brevity. 5 come from the skill reporting a plan whose date had passed by the report date as still upcoming (one told the reader to publish pages "as planned" seven weeks after the planned day). In the other 3, the judge never saw the skill's diagram: text-judged cases showed only `report.md`, where a linked `diagrams/*.svg` is a path. The harness now shows the judge linked figures; no verdict in this run used them.
+- **The reader track still loses fit and flow** to no skills and wins faithfulness, the trade-off described in the reader track section.
 
 ## Reader track
 
@@ -201,11 +234,7 @@ What else the run showed:
 - **The checks and the skills were written by the same team.** Some checks were corrected after reading outputs. Each fix was justified in the check's note and applied to every condition. The fixes still lean toward the outputs we read most, which were ours. Treat the judge columns as the less biased signal.
 - **Results come from one model.** In a run that silently fell back to gemini-3.8-flash, the same skills passed 21 of 36 runs, against 29 of 36 for gpt-6-sol.
   - Run `v-weak-opus` (claude-opus-5-5 as writer and judge; the 24 cases that were weakest with gpt-6-sol, 3 repeats, 0 host errors): skills 20 of 72, no skills 19 of 72, so no gain on checks there; the judge preferred the skills 34 to 7 (6 inconsistent, 1 tie, 24 style-mode verdicts). Opus loaded the case's skill in 47 of 72 runs (gpt-6-sol: 51 of 54 on the same cases). project-report and report-writing failed every run in both conditions. Many fact-check failures are correct arithmetic the checks do not list as allowed: "10 ms over the limit" (310 − 300 ms) and "960 hours" (640 accounts × 1.5 hours). gpt-6-sol states such figures as given, while Opus derives them. Until those checks accept shown arithmetic, the Opus pass rates understate both conditions.
-- **The current version was not benchmarked as a whole.** The numbers above come from the commit before the last two edits:
-  - generic routing descriptions;
-  - six passages reworded away from source wording.
-
-  A partial clean run of those edits scored slightly lower (tuned 78 vs 81 of 86 matched runs). That gap is within run-to-run noise (p≈0.06).
+- **Competitor and old-skills numbers come from an earlier commit** (`v-final2-omp`), before the generic routing descriptions and the rewording away from source text. The current skills were run as a whole only against no skills (`v-final4-omp`).
 - **Three repeats per case.** Differences of one run per case are noise.
 
 ## Unit tests
