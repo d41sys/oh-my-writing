@@ -200,6 +200,7 @@ What else the run showed:
 
 - **The checks and the skills were written by the same team.** Some checks were corrected after reading outputs. Each fix was justified in the check's note and applied to every condition. The fixes still lean toward the outputs we read most, which were ours. Treat the judge columns as the less biased signal.
 - **Results come from one model.** In a run that silently fell back to gemini-3.8-flash, the same skills passed 21 of 36 runs, against 29 of 36 for gpt-6-sol.
+  - Run `v-weak-opus` (claude-opus-5-5 as writer and judge; the 24 cases that were weakest with gpt-6-sol, 3 repeats, 0 host errors): skills 20 of 72, no skills 19 of 72, so no gain on checks there; the judge preferred the skills 34 to 7 (6 inconsistent, 1 tie, 24 style-mode verdicts). Opus loaded the case's skill in 47 of 72 runs (gpt-6-sol: 51 of 54 on the same cases). project-report and report-writing failed every run in both conditions. Many fact-check failures are correct arithmetic the checks do not list as allowed: "10 ms over the limit" (310 − 300 ms) and "960 hours" (640 accounts × 1.5 hours). gpt-6-sol states such figures as given, while Opus derives them. Until those checks accept shown arithmetic, the Opus pass rates understate both conditions.
 - **The current version was not benchmarked as a whole.** The numbers above come from the commit before the last two edits:
   - generic routing descriptions;
   - six passages reworded away from source wording.
