@@ -93,8 +93,8 @@
     },
     {
       "type": "not_regex",
-      "pattern": "(?i)(?<!whether )(?<!if )(rollback|TrackerLegacy)[^.\\n]{0,60}(was|has been|is) (shut down|decommissioned|switched off|retired)\\b",
-      "note": "the checklist plans the TrackerLegacy shutdown after 29 August; it is not done ('Confirm whether TrackerLegacy was shut down' is a question, not a claim, so it is not matched)"
+      "pattern": "(?i)(?<!whether )(?<!if )(?<!confirm )(?<!confirm that )(?<!verify )(?<!verify that )(rollback|TrackerLegacy)[^.\\n]{0,60}(was|has been|is) (shut down|decommissioned|switched off|retired)\\b",
+      "note": "the checklist plans the TrackerLegacy shutdown after 29 August; it is not done ('Confirm whether TrackerLegacy was shut down' and the action 'Confirm that TrackerLegacy was shut down' ask for the fact, they do not claim it, so they are not matched)"
     },
     {
       "type": "regex",
