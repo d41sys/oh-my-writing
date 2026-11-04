@@ -151,7 +151,7 @@ def test_judge_pairs_each_rep_and_stores_visual_scores(case, tmp_path, monkeypat
     monkeypatch.setattr(run, "render_pages", lambda html, dest, prefix, **kw: ([png], None))
     calls = []
 
-    def judge_once(case_, a, b, host, run_dir, tag, a_args, shots=None, shot_note=""):
+    def judge_once(case_, a, b, host, run_dir, tag, a_args, shots=None, shot_note="", figures=None):
         calls.append((tag, a, b, shots is not None))
         # order 1 and 2 swap sides; the skill report always gets the higher scores
         a_is_skill = a.startswith("skill")
@@ -186,6 +186,51 @@ def test_text_judge_entry_has_no_visual_fields(case, tmp_path, monkeypatch):
     monkeypatch.setattr(run, "judge_once", lambda *a, **k: ("A", "r", {}))
     entry = run.judge_pair(case, "codex", 2, tmp_path, args(repeat=2))
     assert entry["rep"] == 2 and "visual" not in entry and "scores" not in entry
+
+
+def test_text_judge_shows_the_figure_files_a_report_links(case, tmp_path, monkeypatch):
+    case = {k: v for k, v in case.items() if k != "fixtures"}
+    make_runs(case, tmp_path, [1])
+    out = tmp_path / "runs" / run.slug_of(case, "codex", "skill", 1, 2) / "workspace" / "out"
+    (out / "diagrams").mkdir()
+    (out / "diagrams" / "s.svg").write_text("<svg/>")
+    (out / "photo.png").write_bytes(b"png")
+    (tmp_path / "outside.png").write_bytes(b"png")
+    (out / "report.md").write_text(
+        "skill text\n![Schedule](diagrams/s.svg)\n![remote](https://example.org/a.png)\n"
+        "![outside](../../../../outside.png)\n![gone](missing.svg)\n![again](diagrams/s.svg \"title\")\n"
+        "![photo](<photo.png>)\n[a link, not an image](diagrams/s.svg)\n")
+    # only local, existing files inside the workspace, shown as images, once each, in reading order
+    assert run.linked_figures(case, out.parent) == [(out / "diagrams" / "s.svg").resolve(), (out / "photo.png").resolve()]
+
+    rendered = tmp_path / "rendered.png"
+    rendered.write_bytes(b"png")
+    monkeypatch.setattr(run, "render_pages", lambda html, dest, prefix, **kw: ([rendered], None))
+    seen = []
+
+    def execute(host, prompt, ws, out_dir, a, read_only=False, timeout=None, images=None, **kw):
+        seen.append((prompt, [p.name for p in images or []]))
+        (out_dir / "reply.md").write_text("VERDICT: TIE")
+        return {"log": "", "exit_code": 0, "error": None, "duration_s": 0}
+
+    monkeypatch.setattr(run, "execute", execute)
+    entry = run.judge_pair(case, "codex", 1, tmp_path, args(repeat=2))
+    assert entry["winner"] == "tie" and len(seen) == 2
+    for prompt, images in seen:
+        assert sorted(images) == ["A-fig1.png", "A-fig2.png"] or sorted(images) == ["B-fig1.png", "B-fig2.png"]
+        side = images[0][0]
+        other = "B" if side == "A" else "A"
+        assert f"Response {other}: links no figure file" in prompt
+        # the figures are listed before the judging instructions, which still end the prompt
+        assert prompt.index(f"Response {side}: {side}-fig1.png") < prompt.index("Judge which response")
+        assert prompt.rstrip().endswith("VERDICT: TIE")
+
+    # no linked figure on either side: the prompt is the plain text prompt
+    (out / "report.md").write_text("skill text\n")
+    seen.clear()
+    run.judge_pair(case, "codex", 1, tmp_path, args(repeat=2))
+    assert all(images == [] and "links no figure" not in prompt for prompt, images in seen)
+
 
 
 def test_render_pages_reports_a_missing_browser(tmp_path, monkeypatch):

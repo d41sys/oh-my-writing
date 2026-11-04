@@ -324,7 +324,7 @@ def test_main_adopts_once_runs_the_new_skill_and_judges_the_new_pairs(repo, tmp_
 
     judged = []
 
-    def judge_once(case, a, b, host, run_dir, tag, a_args, shots=None, shot_note=""):
+    def judge_once(case, a, b, host, run_dir, tag, a_args, shots=None, shot_note="", figures=None):
         judged.append(tag)
         return "TIE", "same", {}
 

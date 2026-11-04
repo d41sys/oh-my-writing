@@ -1011,12 +1011,13 @@ def judge_omp_model(args) -> str:
     return getattr(args, "judge_omp_model", None) or args.omp_model
 
 
-def judge_once(case, a_text, b_text, judge_host, run_dir, tag, args, shots=None, shot_note="") -> tuple:
+def judge_once(case, a_text, b_text, judge_host, run_dir, tag, args, shots=None, shot_note="", figures=None) -> tuple:
     """One judging call. Returns (verdict, reply, extra). For text and visual judging verdict is A, B, TIE or ERROR
     and extra holds the visual scores {"A": {criterion: int}, "B": ...}. For style and reader judging verdict is
     STYLE or READER (ERROR when any answer is missing) and extra holds one verdict per question, e.g. {"human": "A",
     "faithful": "TIE"}; a_text and b_text must already have their gap markers stripped. shots is {"A": [png...],
-    "B": [png...]} for a visual case whose pages rendered, else None."""
+    "B": [png...]} for a visual case whose pages rendered, else None. figures is the same shape for text judging:
+    images of the figure files each response links, so a linked diagram is seen and not only its path."""
     if judge_host in QUOTA_HIT:
         return "ERROR", "", {}
     mode = judge_mode(case, args)
@@ -1066,7 +1067,26 @@ def judge_once(case, a_text, b_text, judge_host, run_dir, tag, args, shots=None,
             prompt = READER_JUDGE_PROMPT.format(style_note=note, **fields)
     else:
         files = "\n".join(f"<file name=\"{n}\">\n{t}\n</file>" for n, t in grade.source_texts(case).items())
-        prompt = JUDGE_PROMPT.format(prompt=case["prompt"], files=files, output=case["output"], a=a_text, b=b_text)
+        note = ""
+        if figures:
+            fig_dir = out_dir / "figures"
+            fig_dir.mkdir(exist_ok=True)
+            lines = []
+            for side in ("A", "B"):
+                names = []
+                for n, image in enumerate(figures[side], 1):
+                    target = fig_dir / f"{side}-fig{n}{image.suffix}"
+                    shutil.copyfile(image, target)
+                    images.append(target)
+                    names.append(target.name)
+                lines.append(f"Response {side}: " + (", ".join(names) if names else "links no figure file"))
+            where = ("attached as images in this order: response A's figures, then response B's" if judge_host == "codex"
+                     else "image files in the current folder; open each with the Read tool")
+            note = ("The figures the responses show by linking a file are part of what their reader sees. "
+                    f"They are {where}:\n" + "\n".join(lines) + "\n\n")
+        template = JUDGE_PROMPT.replace("Judge which response", "{figures}Judge which response", 1)
+        prompt = template.format(prompt=case["prompt"], files=files, output=case["output"], a=a_text, b=b_text,
+                                 figures=note)
     ws = Path(tempfile.mkdtemp(prefix="omw-judge-"))
     subprocess.run(["git", "init", "-q"], cwd=ws, check=True)
     try:
@@ -1142,6 +1162,45 @@ def side_text(case: dict, ws: Path) -> str | None:
     return None
 
 
+FIGURE_EXT = {".svg", ".html", ".png", ".jpg", ".jpeg"}
+FIGURE_LIMIT = 4  # per side; a report's first figures carry its argument, and every image costs judge context
+
+
+def linked_figures(case: dict, ws: Path) -> list[Path]:
+    """Local figure files the deliverable shows as images (![caption](path)), in reading order, without duplicates,
+    at most FIGURE_LIMIT. URLs, missing files and paths outside the workspace are skipped."""
+    path = ws / case["output"]
+    if not path.is_file():
+        return []
+    root, out = ws.resolve(), []
+    for target in re.findall(r"!\[[^\]]*\]\(\s*<?([^)\s>]+)", path.read_text(encoding="utf-8", errors="replace")):
+        if re.match(r"[a-z][a-z0-9+.-]*:", target, re.I):
+            continue
+        figure = (path.parent / re.split(r"[?#]", target)[0]).resolve()
+        if (figure.suffix.lower() in FIGURE_EXT and figure.is_file() and figure.is_relative_to(root)
+                and figure not in out):
+            out.append(figure)
+    return out[:FIGURE_LIMIT]
+
+
+def figure_images(case: dict, workspaces: dict[str, Path], dest: Path) -> dict[str, list[Path]]:
+    """PNG images of the figures each side's deliverable links: SVG and HTML figures are rendered (first page),
+    PNG and JPEG are used as they are. A text judge otherwise sees only a link where one side drew its diagram."""
+    images = {}
+    for cond, ws in workspaces.items():
+        found = []
+        for n, figure in enumerate(linked_figures(case, ws), 1):
+            if figure.suffix.lower() in (".svg", ".html"):
+                found += render_pages(figure, dest, f"{cond}-fig{n}", pages=1)[0]
+            else:
+                dest.mkdir(parents=True, exist_ok=True)
+                copy = dest / f"{cond}-fig{n}{figure.suffix.lower()}"
+                shutil.copyfile(figure, copy)
+                found.append(copy)
+        images[cond] = found
+    return images
+
+
 def judge_pair(case, host, rep, run_dir, args, pair: tuple[str, str] = DEFAULT_PAIR) -> dict | None:
     """Blind pairwise verdict between the outputs of two conditions (skill vs baseline unless `pair` says otherwise);
     the winner is the name of a condition, tie, inconsistent or error."""
@@ -1179,6 +1238,10 @@ def judge_pair(case, host, rep, run_dir, args, pair: tuple[str, str] = DEFAULT_P
             shots = found
         else:
             render_note = "text only, " + "; ".join(notes)
+    figures = None
+    if mode == "text":
+        found = figure_images(case, workspaces, run_dir / "judge" / f"{case['id'].replace('/', '__')}__{tail}__figures")
+        figures = found if any(found.values()) else None
     seed = f"{args.seed}:{case['id']}:{host}" + (f":{rep}" if rep > 1 else "") \
         + ("" if pair == DEFAULT_PAIR else f":{x}:{y}")
     first = random.Random(seed).choice([x, y])
@@ -1189,7 +1252,8 @@ def judge_pair(case, host, rep, run_dir, args, pair: tuple[str, str] = DEFAULT_P
     for tag, (a, b) in {"order1": (first, second), "order2": (second, first)}.items():
         verdict, reply, extra = judge_once(
             case, texts[a], texts[b], args.judge, run_dir, f"{tail}__{tag}", args,
-            shots={"A": shots[a], "B": shots[b]} if shots else None, shot_note=render_note or "")
+            shots={"A": shots[a], "B": shots[b]} if shots else None, shot_note=render_note or "",
+            figures={"A": figures[a], "B": figures[b]} if figures else None)
         last_reply = reply
         if axes:
             for axis in axes:

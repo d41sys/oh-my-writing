@@ -92,7 +92,7 @@ def test_judge_pair_stores_three_verdicts_combined_over_both_orders(tmp_path, mo
     make_runs(CASE, tmp_path, {"skill": "Short story.\n\n[VERIFY: date]\n", "baseline": "Long list."})
     seen = []
 
-    def judge_once(case, a, b, host, run_dir, tag, a_args, shots=None, shot_note=""):
+    def judge_once(case, a, b, host, run_dir, tag, a_args, shots=None, shot_note="", figures=None):
         seen.append((a, b))
         skill_is_a = a.startswith("Short story.")
         # skill wins fit and flow in whichever slot it is; faithfulness is split by slot, so the orders disagree

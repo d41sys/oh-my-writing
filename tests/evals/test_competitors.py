@@ -215,7 +215,7 @@ def test_judge_pair_between_skill_and_competitor(cache, tmp_path, monkeypatch):
     make_pair_runs(case, tmp_path, ["skill", "baseline", "competitor-humanizer"])
     calls = []
 
-    def judge_once(case_, a, b, host, run_dir, tag, a_args, shots=None, shot_note=""):
+    def judge_once(case_, a, b, host, run_dir, tag, a_args, shots=None, shot_note="", figures=None):
         calls.append((tag, a, b))
         return ("A" if a.startswith("skill") else "B"), "reasons", {}
 

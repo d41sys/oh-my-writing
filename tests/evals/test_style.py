@@ -192,7 +192,7 @@ def test_style_judge_strips_markers_from_both_texts_and_stores_two_verdicts(tmp_
     make_runs(case, tmp_path, MARKED)
     seen = []
 
-    def judge_once(case_, a, b, host, run_dir, tag, a_args, shots=None, shot_note=""):
+    def judge_once(case_, a, b, host, run_dir, tag, a_args, shots=None, shot_note="", figures=None):
         seen.append((a, b))
         a_is_skill = a.startswith("Hi Marta,\n\nLaunch is 10 November.")
         # the skill text reads more human but is less faithful, whichever side it is on
