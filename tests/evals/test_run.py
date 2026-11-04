@@ -100,18 +100,21 @@ def test_run_one_uses_case_timeout_rep_slug_and_resume(case, tmp_path, monkeypat
     assert not Path(seen[0]["ws"]).exists()  # temporary workspace removed
 
 
-def test_host_error_message_reads_omp_error_fields_and_spots_provider_limits():
+def test_host_error_reads_omp_error_fields_and_spots_provider_limits():
     capacity = ('{"type":"message_end","stopReason":"error","errorMessage":"503 No available channel for model '
                 'gpt-5.6-luna under group auto (distributor)"}\n')
     rate = '{"stopReason":"error","errorMessage":"Cloud Code Assist API error (429): {\\n  \\"error\\": 1}"}\n'
     crash = '{"stopReason":"error","errorMessage":"Request was aborted"}\n'
+    other_crash = '{"stopReason":"error","errorMessage":"Tool failed"}\n'
     event = '{"type": "error", "message": "You have hit your usage limit"}\n'
-    assert run.host_error_message(capacity, "").startswith("503 No available channel")
-    assert run.host_error_message(crash + rate, "").startswith("Cloud Code Assist API error (429)")  # the last one
-    assert run.host_error_message("no json here", "Traceback ...\nBoom\n") == "Traceback ...\nBoom"
     for log in (capacity, rate, event):
-        assert run.QUOTA_RE.search(run.host_error_message(log, ""))
-    assert not run.QUOTA_RE.search(run.host_error_message(crash, ""))
+        assert run.host_error(log, "")[1]
+    # the fallback chain ends with a generic error after the refusal: the refusal still counts and is the one kept
+    assert run.host_error(rate + crash, "") == (run.host_error(rate, "")[0], True)
+    assert run.host_error(rate, "")[0].startswith("Cloud Code Assist API error (429)")
+    assert run.host_error(crash + other_crash, "") == ("Tool failed", False)  # no refusal: the last error
+    assert run.host_error('{"errorMessage":""}\n', "Boom\n") == ("Boom", False)  # an empty field is not a message
+    assert run.host_error("no json here", "Traceback ...\nBoom\n") == ("Traceback ...\nBoom", False)
 
 
 def test_parse_scores_keeps_known_criteria_in_range():

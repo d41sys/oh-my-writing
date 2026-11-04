@@ -56,11 +56,15 @@ QUOTA_HIT: set[str] = set()  # hosts that refused a run for usage limits during 
 QUOTA_RE = re.compile(r"usage limit|rate limit|quota|\b429\b|no available channel", re.I)
 
 
-def host_error_message(log: str, stderr: str) -> str:
-    """The last error the host reported: an error event, or omp's errorMessage field, else the end of stderr."""
-    reported = re.findall(r'"type":\s*"error",\s*"message":\s*"((?:[^"\\]|\\.)*)"|"errorMessage":\s*"((?:[^"\\]|\\.)*)"',
-                          log)
-    return next(filter(None, reported[-1]))[:300] if reported else stderr.strip()[-300:]
+def host_error(log: str, stderr: str) -> tuple[str, bool]:
+    """What the host reported going wrong (error events and omp's errorMessage fields, else the end of stderr), and
+    whether any of it was a usage, rate or capacity refusal. A refusal is often followed by a generic error (the
+    fallback chain ends with "Request was aborted"), so the refusal, when there is one, is the message kept."""
+    reported = [a or b for a, b in re.findall(
+        r'"type":\s*"error",\s*"message":\s*"((?:[^"\\]|\\.)*)"|"errorMessage":\s*"((?:[^"\\]|\\.)*)"', log)]
+    refusals = [m for m in reported if QUOTA_RE.search(m)]
+    message = refusals[-1] if refusals else next((m for m in reversed(reported) if m), stderr.strip()[-300:])
+    return message[:300], bool(refusals) or bool(QUOTA_RE.search(message))
 
 
 CLAUDE_TOOLS = ("Read,Write,Edit,Glob,Grep,Skill,Bash(python3:*),Bash(python:*),Bash(ls:*),"
@@ -704,8 +708,9 @@ def execute(host: str, prompt: str, ws: Path, out_dir: Path, args, read_only=Fal
                               input=stdin_text, stdin=None if stdin_text is not None else subprocess.DEVNULL)
         log, code = proc.stdout + "\n" + proc.stderr, proc.returncode
         if code != 0:
-            error = f"exit {code}: " + host_error_message(log, proc.stderr)
-            if QUOTA_RE.search(error):
+            message, refused = host_error(log, proc.stderr)
+            error = f"exit {code}: {message}"
+            if refused:
                 QUOTA_HIT.add(host)
     except subprocess.TimeoutExpired as exc:
         partial = exc.stdout or ""
