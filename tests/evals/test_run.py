@@ -100,6 +100,20 @@ def test_run_one_uses_case_timeout_rep_slug_and_resume(case, tmp_path, monkeypat
     assert not Path(seen[0]["ws"]).exists()  # temporary workspace removed
 
 
+def test_host_error_message_reads_omp_error_fields_and_spots_provider_limits():
+    capacity = ('{"type":"message_end","stopReason":"error","errorMessage":"503 No available channel for model '
+                'gpt-5.6-luna under group auto (distributor)"}\n')
+    rate = '{"stopReason":"error","errorMessage":"Cloud Code Assist API error (429): {\\n  \\"error\\": 1}"}\n'
+    crash = '{"stopReason":"error","errorMessage":"Request was aborted"}\n'
+    event = '{"type": "error", "message": "You have hit your usage limit"}\n'
+    assert run.host_error_message(capacity, "").startswith("503 No available channel")
+    assert run.host_error_message(crash + rate, "").startswith("Cloud Code Assist API error (429)")  # the last one
+    assert run.host_error_message("no json here", "Traceback ...\nBoom\n") == "Traceback ...\nBoom"
+    for log in (capacity, rate, event):
+        assert run.QUOTA_RE.search(run.host_error_message(log, ""))
+    assert not run.QUOTA_RE.search(run.host_error_message(crash, ""))
+
+
 def test_parse_scores_keeps_known_criteria_in_range():
     reply = ("reasons\nSCORES A: accuracy=4 needs=3 tone=5 diagrams=2 layout=4\n"
              "SCORES B: accuracy=2 needs=9 bogus=3 tone=3\nVERDICT: A")

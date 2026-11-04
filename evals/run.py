@@ -52,6 +52,17 @@ SKILL_FOLDER = {"codex": ".agents/skills", "claude": ".claude/skills", "omp": ".
 USER_SKILL_DIRS = [Path.home() / ".agents" / "skills", Path.home() / ".claude" / "skills",
                    Path.home() / ".omp" / "agent" / "skills"]
 QUOTA_HIT: set[str] = set()  # hosts that refused a run for usage limits during this invocation
+# a refusal for usage, rate or capacity: the rest of this invocation would fail the same way, so --resume does them
+QUOTA_RE = re.compile(r"usage limit|rate limit|quota|\b429\b|no available channel", re.I)
+
+
+def host_error_message(log: str, stderr: str) -> str:
+    """The last error the host reported: an error event, or omp's errorMessage field, else the end of stderr."""
+    reported = re.findall(r'"type":\s*"error",\s*"message":\s*"((?:[^"\\]|\\.)*)"|"errorMessage":\s*"((?:[^"\\]|\\.)*)"',
+                          log)
+    return next(filter(None, reported[-1]))[:300] if reported else stderr.strip()[-300:]
+
+
 CLAUDE_TOOLS = ("Read,Write,Edit,Glob,Grep,Skill,Bash(python3:*),Bash(python:*),Bash(ls:*),"
                 "Bash(cat:*),Bash(mkdir:*),Bash(wc:*)")
 CHROME_PATHS = ["/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"]
@@ -693,9 +704,8 @@ def execute(host: str, prompt: str, ws: Path, out_dir: Path, args, read_only=Fal
                               input=stdin_text, stdin=None if stdin_text is not None else subprocess.DEVNULL)
         log, code = proc.stdout + "\n" + proc.stderr, proc.returncode
         if code != 0:
-            reported = re.findall(r'"type":\s*"error",\s*"message":\s*"((?:[^"\\]|\\.)*)"', log)
-            error = f"exit {code}: " + (reported[-1] if reported else proc.stderr.strip()[-300:])
-            if re.search(r"usage limit|rate limit|quota", error, re.I):
+            error = f"exit {code}: " + host_error_message(log, proc.stderr)
+            if QUOTA_RE.search(error):
                 QUOTA_HIT.add(host)
     except subprocess.TimeoutExpired as exc:
         partial = exc.stdout or ""
