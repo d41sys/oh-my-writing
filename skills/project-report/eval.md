@@ -24,7 +24,7 @@ Answer each check pass or fail. Fix every failure before returning.
 12. Is the register professional (plain, specific, active, numbers with units and dates, owners only from documents) with no hype, no stock opener or closer, and no cause, recommendation presented as the project's, or forecast that the documents lack, and is each limit or unknown stated once where it bites rather than in the key points, a section, a table note and the close, with few headings and no signposting in a short report?
 13. Does `report.md` hold the report only, with no brief, ledger, plan, note to the author or note about how it was produced, and does it read on its own as plain text: no front matter, no `[[fig:...]]` token, every figure an image link plus a caption line that says what it shows?
 14. Are citations compact: source lines under figures and tables, a sources appendix (one `Sources:` line in a one-page report), inline file names only for conflicts, superseded documents and single-source claims, no per-paragraph "(Sources: ...)" lists, no file-system dates standing in for a document date, no line or row numbers as locators (sections, sheets, slides and dates instead), and no sentence saying that files were read or that nothing conflicted?
-15. Is the date the evidence ends stated separately from the report date?
+15. Is the date the evidence ends stated separately from the report date, and does a plan dated between the two stay "planned, no record that it happened", with an action to confirm it rather than to carry it out or a word that calls it done?
 
 ## Diagrams
 
