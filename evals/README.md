@@ -45,7 +45,7 @@ The runner refuses to run when a skill with the same name is installed at user l
 
 `--repeat N` runs every (case, host, condition) N times; run folders get an `__r<k>` suffix and `meta.json` records `rep`. The grader pairs skill and baseline per (case, host, repetition), so a crash in one repetition excludes only that pair. `--timeout` is the default per-run limit; a case's own `timeout` wins.
 
-`--resume` with the same `--out` keeps finished runs and judge verdicts (per repetition) and redoes only errored or missing ones. When a host refuses for usage, rate or capacity (a usage limit, a 429, a provider with "no available channel"; omp reports these in `errorMessage` fields, and one anywhere in the run's errors counts), the remaining runs on that host are skipped immediately (recorded as host errors) so `--resume` can finish them after the limit resets.
+`--resume` with the same `--out` keeps finished runs and judge verdicts (per repetition) and redoes only errored or missing ones. When a host refuses for usage, rate or capacity (a usage limit, a 429, a provider with "no available channel"; omp reports these in `errorMessage` fields, and a refusal anywhere in the run's errors counts, not only the last error), the remaining runs on that host are skipped immediately (recorded as host errors) so `--resume` can finish them after the limit resets. On omp only the requested model's refusal counts: after a dropped connection omp tries fallback models, and their refusals make that one run a host error without stopping the rest. An error event that names no model (omp's `auto_retry_start`) belongs to the last model named before it.
 
 ## Competitor skills
 
