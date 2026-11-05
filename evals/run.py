@@ -56,15 +56,44 @@ QUOTA_HIT: set[str] = set()  # hosts that refused a run for usage limits during 
 QUOTA_RE = re.compile(r"usage limit|rate limit|quota|\b429\b|no available channel", re.I)
 
 
-def host_error(log: str, stderr: str) -> tuple[str, bool]:
+def bare_model(name: str) -> str:
+    """A model name without provider prefix or variant suffix: "openai/gpt-6-sol:high" -> "gpt-6-sol"."""
+    return name.split("/")[-1].split(":")[0]
+
+
+def reported_errors(node, found: list) -> list:
+    """(message, model or None) for every error event and non-empty errorMessage field, in log order."""
+    if isinstance(node, dict):
+        message = node.get("errorMessage") or (node.get("message") if node.get("type") == "error" else None)
+        if isinstance(message, str) and message:
+            found.append((message, node.get("model")))
+        for value in node.values():
+            reported_errors(value, found)
+    elif isinstance(node, list):
+        for value in node:
+            reported_errors(value, found)
+    return found
+
+
+def host_error(log: str, stderr: str, model: str | None = None) -> tuple[str, bool]:
     """What the host reported going wrong (error events and omp's errorMessage fields, else the end of stderr), and
-    whether any of it was a usage, rate or capacity refusal. A refusal is often followed by a generic error (the
-    fallback chain ends with "Request was aborted"), so the refusal, when there is one, is the message kept."""
-    reported = [a or b for a, b in re.findall(
-        r'"type":\s*"error",\s*"message":\s*"((?:[^"\\]|\\.)*)"|"errorMessage":\s*"((?:[^"\\]|\\.)*)"', log)]
-    refusals = [m for m in reported if QUOTA_RE.search(m)]
-    message = refusals[-1] if refusals else next((m for m in reversed(reported) if m), stderr.strip()[-300:])
-    return message[:300], bool(refusals) or bool(QUOTA_RE.search(message))
+    whether the requested model refused for usage, rate or capacity. A refusal is often followed by a generic error
+    (the fallback chain ends with "Request was aborted"), so the refusal, when there is one, is the message kept.
+    With `model` set, a refusal counts only from that model: after a dropped connection omp tries fallback models,
+    and their refusals say nothing about the requested model's limit. An error that names no model (omp's
+    auto_retry_start repeats the last one) belongs to the last model the log named before it, or counts if none."""
+    reported, last = [], None
+    for line in log.splitlines():
+        try:
+            found = reported_errors(json.loads(line), [])
+        except ValueError:
+            continue
+        reported += [(m, named or last) for m, named in found]
+        last = ([last] + re.findall(r'"model":\s*"([^"]+)"', line))[-1]
+    own = [m for m, named in reported if model is None or not named or bare_model(named) == bare_model(model)]
+    refusals = [m for m in own if QUOTA_RE.search(m)]
+    message = (refusals or own or [m for m, _ in reported] or [stderr.strip()[-300:]])[-1]
+    return message[:300], bool(refusals) or (not reported and bool(QUOTA_RE.search(message)))
 
 
 CLAUDE_TOOLS = ("Read,Write,Edit,Glob,Grep,Skill,Bash(python3:*),Bash(python:*),Bash(ls:*),"
@@ -708,7 +737,7 @@ def execute(host: str, prompt: str, ws: Path, out_dir: Path, args, read_only=Fal
                               input=stdin_text, stdin=None if stdin_text is not None else subprocess.DEVNULL)
         log, code = proc.stdout + "\n" + proc.stderr, proc.returncode
         if code != 0:
-            message, refused = host_error(log, proc.stderr)
+            message, refused = host_error(log, proc.stderr, (omp_model or args.omp_model) if host == "omp" else None)
             error = f"exit {code}: {message}"
             if refused:
                 QUOTA_HIT.add(host)
@@ -720,8 +749,8 @@ def execute(host: str, prompt: str, ws: Path, out_dir: Path, args, read_only=Fal
     if host == "omp" and error is None:
         # omp silently switches to the user's fallback chain when the requested model is out of quota; such a run
         # measures another model, so it is an error, not a result
-        wanted = (omp_model or args.omp_model).split("/")[-1].split(":")[0]
-        other = sorted({m for m in re.findall(r'"model":\s*"([^"]+)"', log) if m.split("/")[-1].split(":")[0] != wanted})
+        wanted = bare_model(omp_model or args.omp_model)
+        other = sorted({m for m in re.findall(r'"model":\s*"([^"]+)"', log) if bare_model(m) != wanted})
         if other:
             error = f"model fallback: {', '.join(other)}"
     if host == "claude":

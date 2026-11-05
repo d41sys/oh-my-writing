@@ -117,6 +117,25 @@ def test_host_error_reads_omp_error_fields_and_spots_provider_limits():
     assert run.host_error("no json here", "Traceback ...\nBoom\n") == ("Traceback ...\nBoom", False)
 
 
+def test_only_the_requested_models_refusal_stops_the_host():
+    def err(model, text):
+        return '{"type":"message_end","message":{"model":"%s","stopReason":"error","errorMessage":"%s"}}\n' % (model, text)
+
+    def retry(text):  # omp's auto_retry_start repeats the last error without naming a model
+        return '{"type":"auto_retry_start","errorMessage":"%s"}\n' % text
+
+    # gpt-6-sol drops a connection; omp falls back to models that refuse: a plain host error, not a quota stop
+    dropped = err("gpt-6-sol", "ECONNRESET: socket closed") + err("gpt-5.6-luna", "503 No available channel") + \
+        retry("503 No available channel") + err("gemini-3.8-flash", "Cloud Code Assist API error (429)")
+    assert run.host_error(dropped, "", "gpt-6-sol") == ("ECONNRESET: socket closed", False)
+    # the requested model's own usage limit stops it, named with or without a provider prefix, retried or not
+    limited = err("gpt-6-sol", "You have hit your ChatGPT usage limit") + err("gpt-5.6-luna", "503 No available channel")
+    assert run.host_error(limited, "", "openai/gpt-6-sol") == ("You have hit your ChatGPT usage limit", True)
+    assert run.host_error(retry("You have hit your usage limit"), "", "gpt-6-sol")[1]  # before any model is named
+    # without a requested model (codex, claude) every refusal counts, as before
+    assert run.host_error(dropped, "")[1]
+
+
 def test_parse_scores_keeps_known_criteria_in_range():
     reply = ("reasons\nSCORES A: accuracy=4 needs=3 tone=5 diagrams=2 layout=4\n"
              "SCORES B: accuracy=2 needs=9 bogus=3 tone=3\nVERDICT: A")
