@@ -2,7 +2,7 @@
 
 ## Summary
 
-On all 94 benchmark cases (run `v-final4-omp`), an agent with these skills passed **73%** of runs; the same agent with no skills passed **45%**. Against seven public writing-skill packs (run `v-final2-omp`), it passed more runs than each of them, and a blind model judge preferred our output to every pack except Humanizer. Against no skills, the judge preferred the no-skills output, 111 to 69. Three skills make most of that gap (independent-review, project-report, report-writing); on the other cases it splits 54 to 46 for the skills. So the skills make output reliably more faithful to the material, but not better-sounding to a model judge.
+On all 94 benchmark cases (run `v-final4-omp`), an agent with these skills passed **73%** of runs; the same agent with no skills passed **45%**. Most of that gap is on the tuned cases (70% against 32%); on the cases never tuned on it is small (held-out 1: 16 against 15 of 33; later held-out sets: 60 against 54 of 66). Against seven public writing-skill packs (run `v-final2-omp`), it passed more runs than each of them, and a blind model judge preferred our output to every pack except Humanizer. Against no skills, the judge preferred the no-skills output, 111 to 69. Three skills make most of that gap (independent-review, project-report, report-writing); on the other cases it splits 54 to 46 for the skills. So on the material the skills were tuned on they make output more faithful, the evidence that this carries over to new tasks is weak, and a model judge does not find the output better-sounding.
 
 ## Setup
 
