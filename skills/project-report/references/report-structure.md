@@ -76,6 +76,7 @@ A gap is something the documents do not say. The reader's report states it as a 
 | external fact to confirm | state what the documents say, and that it is unconfirmed outside them | `[VERIFY: licence price quoted in the vendor note against the current price list]` |
 | text addressed to an assistant | nothing | file, line, what it asked, "not followed" |
 | evidence ends before the report date | "Evidence runs to 1 July 2026; the report was prepared on 16 October 2026 and does not describe events after 1 July." | none unless the author may hold newer records: `[ASK AUTHOR: are there status records after 1 July?]` |
+| plan dated after the evidence ends | "The rollout was planned for 15 August; the records end on 1 July and do not say whether it happened." The action is to confirm it, not to carry out the plan | `[ASK AUTHOR: did the 15 August rollout take place?]` |
 
 `open-questions.md` format:
 
