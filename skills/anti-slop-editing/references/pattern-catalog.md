@@ -271,7 +271,7 @@ Found by reading shape, not words. Scanner hits here are always weak.
 ### Same-opener and fragment runs (`same-opener-run`, `fragment-run`)
 - Looks like: four sentences starting "We..."; "Fast. Cheap. Reliable. Done."
 - Cost: a drumbeat that replaces argument.
-- Fine when: instructions, dialogue, poetry, parallel structure the author chose.
+- Fine when: instructions, dialogue, poetry, parallel structure the author chose. A run is not a sign of model origin: on the HAP-E corpus (human texts and 2024-model continuations of the same openings), human prose had more same-opener runs than GPT-4o and fewer than Llama 3, so report a run only for what it does to the reader.
 - Fix: combine related sentences, or reorder so each starts from what it adds.
 
 ### Uniform sentence length (`uniform-length-run`)
@@ -289,7 +289,7 @@ Found by reading shape, not words. Scanner hits here are always weak.
 ### Manufactured punchlines and stranded auxiliaries (found by reading)
 - Looks like: "We checked every invoice. Except March's.", "The tool died; the data didn't.", "Not always. Not perfectly."
 - Cost: a twist or a beat stands where the specific event should be; one is style, a repeated habit is a template.
-- Fine when: one earned short sentence carries real weight, or the passage is comic or theatrical by design.
+- Fine when: one earned short sentence carries real weight, or the passage is comic or theatrical by design. A single stranded auxiliary is ordinary human style: on the HAP-E corpus it was several times more frequent in the human texts than in 2024-model continuations. Report only a habit that repeats in one piece.
 - Fix: keep one if earned; turn the rest into a sentence with the actual subject and cause. Keep the scope the original claims: "every invoice. Except March's." becomes one sentence that keeps "every ... except" ("We checked every invoice except March's"), not a smaller claim such as "we missed one". If the source does not say why the exception happened, keep the original beat or cut it, and ask in the reply (`[ASK AUTHOR: why was March not checked?]`) instead of guessing.
 
 ### Colon into a forced triple (found by reading)

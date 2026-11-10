@@ -3,7 +3,7 @@ name: post-writing
 description: Drafts, restructures and repurposes public posts such as blog posts, long-form articles, essays, newsletters, short email sequences, LinkedIn and X or Threads posts and threads, launch announcements, and adaptations of one piece across channels. Starts from the reader and one takeaway, opens on a concrete artifact, keeps proof ahead of adjectives, and never invents anecdotes, metrics, clients, links or calls to action. Use when asked to write or improve a blog post, article, essay, newsletter issue, LinkedIn post, X thread, announcement, launch post, welcome or onboarding email series, or to turn one piece into several channel versions.
 license: MIT
 metadata:
-  version: "1.11"
+  version: "1.12"
   skill-author: d41sys
 ---
 
