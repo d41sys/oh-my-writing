@@ -606,10 +606,11 @@ def host_command(host: str, prompt: str, ws: Path, reply_file: Path, args, read_
             cmd += ["-i", str(image)]
         return cmd if images else cmd + [prompt]
     if host == "omp":
-        # Rules and sessions off so the user's own rules and history cannot reach either condition; the overlay turns
-        # off the advisor, memory and user-level skills (only diagram-design is re-added, for every condition).
-        cmd = ["omp", "-p", "--mode", "json", "--no-session", "--no-rules", "--no-lsp", "--auto-approve",
-               "--config", str(omp_isolation_config()), "--model", omp_model or args.omp_model]
+        # Rules, sessions and extensions off so the user's own rules, history and plugin hooks (which inject
+        # instructions into every prompt) cannot reach any condition; the overlay turns off the advisor, memory,
+        # user-level and plugin skills (only diagram-design is re-added, for every condition).
+        cmd = ["omp", "-p", "--mode", "json", "--no-session", "--no-rules", "--no-lsp", "--no-extensions",
+               "--auto-approve", "--config", str(omp_isolation_config()), "--model", omp_model or args.omp_model]
         if args.omp_thinking:
             cmd += ["--thinking", args.omp_thinking]
         if read_only:
@@ -676,8 +677,10 @@ _OMP_ISOLATION: Path | None = None
 
 def omp_isolation_config() -> Path:
     """Config overlay, outside every workspace, that removes what the user's omp setup would add to a run: the
-    advisor (a second model reviewing each turn), memory recall and retention, and user-level skills. diagram-design
-    is the one user-level skill kept, through its own directory, so every condition sees the same set."""
+    advisor (a second model reviewing each turn), memory recall and retention, user-level skills and plugin skills
+    (omp, Claude-marketplace and Agent Plugins packages). diagram-design is the one user-level skill kept, through its
+    own directory, so every condition sees the same set. Plugin hooks that inject instructions are extensions, which
+    host_command turns off with --no-extensions."""
     global _OMP_ISOLATION
     if _OMP_ISOLATION is None:
         root = Path(tempfile.mkdtemp(prefix="omw-omp-isolation-"))
@@ -687,6 +690,7 @@ def omp_isolation_config() -> Path:
             shutil.copytree(grade.DIAGRAM_SKILL, skills / grade.DIAGRAM_SKILL.name,
                             ignore=shutil.ignore_patterns("__pycache__", "*.pyc", ".DS_Store", ".git"))
         overlay = {"advisor": {"enabled": False}, "memory": {"backend": "off"}, "autolearn": {"enabled": False},
+                   "disabledProviders": ["omp-plugins", "claude-plugins", "agent-plugins"],
                    "skills": {"enableAgentsUser": False, "enablePiUser": False, "enableClaudeUser": False,
                               "enableCodexUser": False, "customDirectories": [str(skills)]}}
         path = root / "config.yml"
