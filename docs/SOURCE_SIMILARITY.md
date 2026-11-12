@@ -8,17 +8,18 @@ Verbatim prose is the share of our words inside 8-word runs that also occur in o
 
 | skill | max verbatim prose (source) | max verbatim code lines (source) | code lines |
 |---|---|---|---:|
-| anti-slop-editing | 0.9% (avoid-ai-writing) | 2.0% (K-Dense) | 903 |
+| anti-slop-editing | 0.6% (avoid-ai-writing) | 1.8% (K-Dense) | 978 |
 | author-voice | 0.1% (avoid-ai-writing) | 5.0% (K-Dense) | 299 |
 | career-documents | 0.1% (ResumeSkills) | 0.0% | 5 |
 | evidence-grounded-writing | 0.1% (K-Dense) | 6.0% (K-Dense) | 217 |
-| independent-review | 0.1% (ARIS) | 0.0% | 115 |
+| independent-review | 0.1% (ARIS) | 0.0% | 114 |
 | post-writing | 0.1% (ECC) | no code | 0 |
 | project-report | 0.0% (none) | 2.7% (K-Dense) | 965 |
 | report-writing | 0.1% (K-Dense) | 0.0% | 3 |
+| results-visualization | 0.2% (K-Dense) | 4.1% (K-Dense) | 340 |
 | structured-drafting | 0.2% (mattpocock) | 0.0% | 47 |
 | technical-docs | 0.2% (ECC) | 0.0% | 27 |
-| *control (unrelated skills)* | 0.0% mean | 0.2% of 2581 lines | |
+| *control (unrelated skills)* | 0.0% mean | 0.2% of 2995 lines | |
 
 Longest shared prose runs (words) and code runs (5+ lines), for a human to check:
 
@@ -26,14 +27,14 @@ Longest shared prose runs (words) and code runs (5+ lines), for a human to check
 |---|---:|---|---|
 | prose | 13 words | `skills/anti-slop-editing/references/pattern-catalog.md:92-92` | `conorbronsdon__avoid-ai-writing/references/patterns.md:549-549` |
 | prose | 12 words | `skills/anti-slop-editing/references/pattern-catalog.md:92-92` | `conorbronsdon__avoid-ai-writing/references/patterns.md:449-449` |
-| prose | 12 words | `skills/anti-slop-editing/references/pattern-catalog.md:232-232` | `conorbronsdon__avoid-ai-writing/references/patterns.md:452-452` |
-| prose | 12 words | `skills/anti-slop-editing/references/pattern-catalog.md:272-272` | `conorbronsdon__avoid-ai-writing/references/patterns.md:572-572` |
+| prose | 12 words | `skills/anti-slop-editing/references/pattern-catalog.md:250-250` | `conorbronsdon__avoid-ai-writing/references/patterns.md:452-452` |
 | prose | 11 words | `skills/post-writing/references/repurposing.md:103-103` | `affaan-m__everything-claude-code/skills/crosspost/SKILL.md:97-99` |
 | prose | 10 words | `skills/technical-docs/references/readme-and-pr.md:145-145` | `coreyhaines31__marketingskills/skills/launch/references/shipped-changes.md:84-84` |
 | prose | 10 words | `skills/report-writing/references/comparisons-and-recommendations.md:129-129` | `K-Dense-AI__scientific-agent-skills/skills/market-research-reports/references/evidence_model.md:61-61` |
 | prose | 10 words | `skills/structured-drafting/references/shapes.md:117-117` | `mattpocock__skills/skills/in-progress/writing-shape/SKILL.md:66-66` |
-| prose | 9 words | `skills/anti-slop-editing/references/pattern-catalog.md:199-199` | `conorbronsdon__avoid-ai-writing/references/patterns.md:328-328` |
+| prose | 9 words | `skills/anti-slop-editing/references/pattern-catalog.md:217-217` | `conorbronsdon__avoid-ai-writing/references/patterns.md:328-328` |
 | prose | 9 words | `skills/anti-slop-editing/references/pattern-catalog.md:98-98` | `conorbronsdon__avoid-ai-writing/references/patterns.md:533-533` |
+| prose | 9 words | `skills/anti-slop-editing/references/preservation-check.md:28-28` | `conorbronsdon__avoid-ai-writing/skills/preservation-verifier/SKILL.md:75-75` |
 
 
 Single code lines found in a source, commonest first (judge for yourself whether they are idioms or borrowed logic):
@@ -41,10 +42,10 @@ Single code lines found in a source, commonest first (judge for yourself whether
 | our file | line (whitespace removed) | found in |
 |---|---|---|
 | `skills/anti-slop-editing/scripts/fact_diff.py:41` | `from__future__importannotations` | avoid-ai-writing |
-| `skills/anti-slop-editing/scripts/fact_diff.py:663` | `if__name__=="__main__":` | avoid-ai-writing |
-| `skills/anti-slop-editing/scripts/fact_diff.py:611` | `return"\n".join(out)` | K-Dense |
-| `skills/anti-slop-editing/scripts/fact_diff.py:637` | `parser=argparse.ArgumentParser(` | ECC |
-| `skills/anti-slop-editing/scripts/fact_diff.py:646` | `args=parser.parse_args(argv)` | ECC |
+| `skills/anti-slop-editing/scripts/fact_diff.py:670` | `if__name__=="__main__":` | avoid-ai-writing |
+| `skills/anti-slop-editing/scripts/fact_diff.py:618` | `return"\n".join(out)` | K-Dense |
+| `skills/anti-slop-editing/scripts/fact_diff.py:644` | `parser=argparse.ArgumentParser(` | ECC |
+| `skills/anti-slop-editing/scripts/fact_diff.py:653` | `args=parser.parse_args(argv)` | ECC |
 
 ## Same idea
 
@@ -52,25 +53,26 @@ Share of our sentences whose best sentence has embedding cosine at or above 0.75
 
 | skill | one source, at the cut (source) | one source, upper estimate | any source: at the cut | any source: estimate |
 |---|---|---|---:|---:|
-| anti-slop-editing | 2.7% (avoid-ai-writing) | 8.4% (avoid-ai-writing) | 4.3% | 17.2% |
-| author-voice | 0.6% (humanizer) | 6.1% (K-Dense) | 2.3% | 13.7% |
-| career-documents | 1.8% (ResumeSkills) | 6.1% (K-Dense) | 4.7% | 18.4% |
-| evidence-grounded-writing | 4.7% (K-Dense) | 16.5% (K-Dense) | 7.2% | 21.9% |
-| independent-review | 1.8% (ARIS) | 9.5% (K-Dense) | 4.0% | 18.0% |
-| post-writing | 1.6% (marketingskills) | 7.4% (marketingskills) | 3.9% | 16.6% |
+| anti-slop-editing | 2.3% (avoid-ai-writing) | 7.7% (avoid-ai-writing) | 3.8% | 16.4% |
+| author-voice | 0.6% (humanizer) | 6.0% (K-Dense) | 2.4% | 13.7% |
+| career-documents | 1.7% (ResumeSkills) | 6.1% (K-Dense) | 4.7% | 18.4% |
+| evidence-grounded-writing | 4.3% (K-Dense) | 16.5% (K-Dense) | 7.0% | 21.8% |
+| independent-review | 1.7% (ARIS) | 9.2% (K-Dense) | 3.8% | 18.0% |
+| post-writing | 1.6% (marketingskills) | 7.3% (marketingskills) | 3.9% | 16.5% |
 | project-report | 1.1% (K-Dense) | 11.8% (K-Dense) | 1.3% | 16.2% |
-| report-writing | 3.8% (K-Dense) | 13.4% (K-Dense) | 6.1% | 20.1% |
-| structured-drafting | 1.4% (mattpocock) | 6.8% (K-Dense) | 4.3% | 18.0% |
+| report-writing | 3.7% (K-Dense) | 13.4% (K-Dense) | 6.0% | 20.0% |
+| results-visualization | 1.3% (K-Dense) | 11.8% (K-Dense) | 1.3% | 14.3% |
+| structured-drafting | 1.4% (mattpocock) | 6.9% (K-Dense) | 4.2% | 18.0% |
 | technical-docs | 2.8% (K-Dense) | 11.9% (K-Dense) | 7.0% | 22.2% |
-| *control: median-size unrelated pool* (mean, max over skills) | 0.1%, 0.2% | 0.6%, 1.2% | n/a | n/a |
-| *control: whole unrelated pool* (mean, max over skills) | 0.1%, 0.3% | 1.3%, 3.0% | n/a | n/a |
+| *control: median-size unrelated pool* (mean, max over skills) | 0.1%, 0.2% | 0.5%, 1.2% | n/a | n/a |
+| *control: whole unrelated pool* (mean, max over skills) | 0.1%, 0.3% | 1.2%, 3.0% | n/a | n/a |
 
 ## Rule inventory
 
 | our skill | source | source rules covered by our skill (firm / firm+likely) | covered by any of our skills | our rules that trace to the source (firm / firm+likely) |
 |---|---|---|---|---|
-| anti-slop-editing | avoid-ai-writing (92 rules) | 68.5% / 82.6% | 77.2% / 91.3% | 62.8% / 76.9% of 78 |
-| author-voice | humanizer (26 rules) | 11.5% / 23.1% | 65.4% / 88.5% | 11.9% / 28.6% of 42 |
+| anti-slop-editing | avoid-ai-writing (92 rules) | 68.5% / 82.6% | 77.2% / 91.3% | 60.5% / 74.1% of 81 |
+| author-voice | humanizer (26 rules) | 15.4% / 26.9% | 65.4% / 88.5% | 11.9% / 31.0% of 42 |
 
 A source rule is *covered* when one unit of our files (a section, list item or table row) has cosine at or above the cut with it or a heading there names the same thing; an *our rule traces* when the same holds in the source's files. *Firm* is the precise cut, *likely* adds the lower cut.
 
