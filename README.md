@@ -3,12 +3,10 @@
 Writing skills for AI agents that draft and edit **without AI slop, invented facts, or a flattened author voice**. Eleven [Agent Skills](https://agentskills.io/specification) for Claude Code, Codex and omp: anti-slop editing, author voice, drafting from notes, evidence checks, independent review, posts, reports, technical docs, career documents, project reports with designed diagrams, and result charts for papers.
 
 ```bash
-npx github:d41sys/academic-writing-skill
+npx github:d41sys/oh-my-writing
 ```
 
 The installer links the skills for every host and backs up the old `academic-writing` skill. Manual install, plugin install and uninstall are in [INSTALL.md](INSTALL.md).
-
-> **Access:** the GitHub repository is private for now, so every install path (npx, plugin, clone) needs GitHub access on that machine: an SSH key added to GitHub, or `gh auth login` followed by `gh auth setup-git`.
 
 ## Skills
 
@@ -32,12 +30,18 @@ Ask in plain words, for example "edit this so it doesn't read like AI, keep ever
 
 ## Benchmark
 
-59 realistic writing tasks, 3 runs each, omp with gpt-6-sol. Measured on the commit before v2's last two skill edits (routing descriptions and reworded passages); the current version has not been re-run in full. Details, judge results and limits: [docs/BENCHMARK.md](docs/BENCHMARK.md).
+94 realistic writing tasks, 3 runs each, omp with gpt-6-sol (run `v-final4-omp`). Details, judge results and limits: [docs/BENCHMARK.md](docs/BENCHMARK.md).
 
-| | With skills | No skills |
+| Case group | With skills | No skills |
 |---|---|---|
-| Tuned cases (126 runs) | **89%** | 42% |
-| Held-out set 1 (21 runs) | **81%** | 57% |
+| Tuned (183 runs) | **70%** | 32% |
+| Held-out 1 (33 runs) | 48% | 45% |
+| Held-out 2 and later (66 runs) | 91% | 82% |
+| All (282 runs) | **73%** | 45% |
+
+The checks measure faithfulness: invented facts, lost hedges and negations, missing gap markers, stock phrasing. Most of the gain is on the cases the skills were tuned on; on held-out cases it is small. A blind judge preferred the no-skills output 111 to 69. Three skills make most of that gap (independent-review, project-report, report-writing); on the other cases the judge split 54 to 46 for the skills.
+
+Against seven public writing-skill packs, on an earlier commit (run `v-final2-omp`):
 
 | Pack | Ours passed | Theirs passed | Runs |
 |---|---|---|---|
@@ -49,11 +53,11 @@ Ask in plain words, for example "edit this so it doesn't read like AI, keep ever
 | proficiently cover letter | **15** | 8 | 15 |
 | ResumeSkills | **15** | 9 | 15 |
 
-The checks measure faithfulness: invented facts, lost hedges and negations, missing gap markers, stock phrasing. A blind judge preferred our output to every pack except humanizer, and split close to even against no skills. See the limits in the benchmark doc.
+The blind judge preferred our output to every pack except humanizer.
 
 A pre-registered run with a placebo (each skill's name and layout with generic advice of the same length) on the four skills revised last: 74% passed with our skills, 29% with the placebo, 38% with no skills. The blind judge did not agree. It preferred the placebo 34 to 27, mostly on independent-review, so we do not claim the judge sees the gain. See [Placebo control](docs/BENCHMARK.md#placebo-control-pre-registered).
 
-**Tests:** about 840 unit tests cover the skill contract, every helper script, the grader and the installer. Run `for t in tests/*/; do uv run --with pytest --with pyyaml --with numpy --with matplotlib python -m pytest "$t" -q; done`.
+**Tests:** about 850 unit tests cover the skill contract, every helper script, the grader and the installer. Run `for t in tests/*/; do uv run --with pytest --with pyyaml --with numpy --with matplotlib python -m pytest "$t" -q; done`.
 
 ## Contributing
 
@@ -87,7 +91,7 @@ Oh My Writing was inspired by the projects below, and we used them as references
 | [proficiently-claude-skills](https://github.com/proficientlyjobs/proficiently-claude-skills) | Truthful cover-letter and résumé tailoring |
 | [jezweb/claude-skills](https://github.com/jezweb/claude-skills) | Award applications, proposals and regional business English |
 | [diagram-design](https://github.com/cathrynlavery/diagram-design) | Diagram drawing for `project-report`; used as a separately installed skill, not bundled |
-| University career and writing centers, DAAD, European Education Area | Statement-of-purpose, personal-statement and motivation-letter guidance (cited per unit) |
+| University career and writing centers, DAAD, European Education Area | Statement-of-purpose, personal-statement and motivation-letter guidance |
 
 Copyright and license notices are kept in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Diátaxis-derived material, including `skills/technical-docs/`, is adapted from Diátaxis and modified, and stays CC-BY-SA 4.0 as its license requires.
 
@@ -109,22 +113,6 @@ The earlier research also drew on these attributed reading leads, directly or th
 
 Platform-ranking descriptions, including discussion of `xai-org/x-algorithm` in the surveyed marketing material, are research leads rather than verified current platform rules. No ranking weights or engagement outcomes are assumed by the writing references.
 
-### Publisher guideline sources
-
-The local [publisher export profiles](references/knowledge/visuals-and-formatting/publisher-export-profiles.md) contain the substantive planning knowledge. These primary URLs support attribution and future maintenance, not mandatory online reference loading. Dates describe the inherited source snapshots, not fresh verification by this project.
-
-| Publisher scope | Primary instructions and snapshot boundary |
-|---|---|
-| Nature flagship | [Final submission](https://www.nature.com/nature/for-authors/final-submission) and [figure specifications](https://research-figure-guide.nature.com/figures/preparing-figures-our-specifications), source review 2026-10-01; not portfolio-wide. |
-| Science flagship | [Initial](https://www.science.org/content/page/instructions-preparing-initial-manuscript) and [revised](https://www.science.org/content/page/instructions-preparing-revised-manuscript) instructions, historical 2026-07-23 snapshot; fresh access was blocked in the 2026-10-01 source review. |
-| Cell Press | [Figure guidelines](https://www.cell.com/information-for-authors/figure-guidelines), source review 2026-10-01; journal and article-type exceptions apply. |
-| PLOS | [PLOS Computational Biology figures](https://journals.plos.org/ploscompbiol/s/figures), source review 2026-10-01; verify the selected journal. |
-| Elsevier | [Formats checklist](https://www.elsevier.com/about/policies-and-standards/author/artwork-and-media-instructions/artwork-formats-checklist) and [artwork sizing](https://www.elsevier.com/about/policies-and-standards/author/artwork-and-media-instructions/artwork-sizing), source review 2026-10-01; journal instructions override general defaults. |
-| IEEE journals | [Resolution and size](https://journals.ieeeauthorcenter.ieee.org/create-your-ieee-journal-article/create-graphics-for-your-article/resolution-and-size/), page modified 2025-02-25, source review 2026-10-01. |
-| BMC Bioinformatics | [Submission guidelines](https://link.springer.com/journal/12859/submission-guidelines), source review 2026-10-01; one journal example, not a BMC-wide guarantee. |
-| ACS | [Legacy manuscript graphics](https://pubsapp.acs.org/paragonplus/submission/general/graphics_prep.html), updated 2006-01-21; not a current universal digital-export standard. |
-
-
 ## Paper writing: academic-writing (legacy)
 
 The repository root still holds the original `academic-writing` skill for ML/CV/NLP paper sections. It is not part of v2 and not installed by default. To use it beside v2: `ln -sfn ~/oh-my-writing ~/.claude/skills/academic-writing`.
@@ -144,10 +132,10 @@ Project-specific review lessons go in `paper/WRITING_LESSONS.md` in each project
 
 ### Install (global)
 ```bash
-git clone git@github.com:d41sys/academic-writing-skill.git ~/academic-writing-skill
-ln -s ~/academic-writing-skill ~/.claude/skills/academic-writing
+git clone https://github.com/d41sys/oh-my-writing.git ~/oh-my-writing
+ln -s ~/oh-my-writing ~/.claude/skills/academic-writing
 ```
-Update: `git -C ~/academic-writing-skill pull`.
+Update: `git -C ~/oh-my-writing pull`.
 
 ### Use
 "Rewrite the abstract", "write the introduction", or "write the paper". Works alongside the ARIS research skills (`paper-plan`, `paper-claim-audit`, `citation-audit`).
@@ -157,62 +145,6 @@ Update: `git -C ~/academic-writing-skill pull`.
 
 ### Slash command
 ```bash
-mkdir -p ~/.claude/commands && ln -s ~/academic-writing-skill/commands/academic-writing.md ~/.claude/commands/academic-writing.md
+mkdir -p ~/.claude/commands && ln -s ~/oh-my-writing/commands/academic-writing.md ~/.claude/commands/academic-writing.md
 ```
 Then: `/academic-writing rewrite the abstract` or `/academic-writing write the introduction, example paper: arXiv 2505.23941`.
-
-
-## Research library (maintainers)
-
-
-Oh My Writing is an independently organized writing knowledge library, separate from the existing academic-writing runtime above. Start with [the subject index](references/knowledge/index.md), [coverage and limitations](references/knowledge-review.md), or the [research report](WRITING_RESEARCH_REPORT.md).
-
-The [reference review report](REFERENCE_REVIEW_REPORT.md) records the current source-skill selection (§16), separately from the earlier synthesized-content usefulness audit (§14). Older source-fidelity tiers are historical, not approval of the expanded library.
-
-The [review checklist](REVIEW_CHECKLIST.md) lists the human decisions still needed before the reference library is final.
-
-For human review, open the generated `review/assets-review.html`. The main view selects **original writing skills and method libraries worth learning from**, not every repository file or internal K-ID. Common README/setup/configuration/release files and platform distributions are filtered with an exclusion ledger; a README containing the entire source prompt collection is an explicit exception. Retained skill instructions and supporting texts are read in full, including bounded parts for long files. Recommendations distinguish broad writing foundations, genre-specific value, redundancy, writing operations and unsuitable material. Each card explains value for our library, concrete overlap with named sources and what is already covered here. Suggestions remain model-assisted editorial opinions, not measured writing improvements. The full file inventory and earlier rewritten-content reviews are secondary tabs.
-
-Rebuild the local review from completed assessment artifacts and cached sources:
-
-```bash
-node scripts/build-asset-source-index.mjs
-node scripts/build-skill-scan.mjs
-node scripts/prepare-skill-comparisons.mjs
-node scripts/build-skill-value-review.mjs
-node scripts/build-asset-review.mjs
-open review/assets-review.html
-```
-
-These commands require local `review/usefulness-audit.json`, earlier provenance artifacts, `.cache/omw_sources/`, completed per-repo `review/skill-scan/*.assessment.json` and matching `comparison-results.json`. They do not download or re-judge source value. Full-text assessments and comparisons are separate evidence-backed review work, not a filename classifier hidden in the generators. Missing, changed or incomplete review inputs fail the build instead of generating placeholder suggestions. Source-source overlap is checked against retrieved candidate neighbors, not exhaustive all-pairs proof; candidate novelty is not proof that a method is absent from the whole library. Generated pages and audit data remain local artifacts. No reviewed knowledge file is imported, deleted or rewritten.
-
-The final assembly also requires the completed semantic curation files `review/skill-scan/editorial-general.json`, `editorial-specialist.json` and `editorial-library-evidence.json`. The main review hides unrelated/no-writing-method groups and remaining common-role documents after reading; their assessments remain in `skill-value-audit.json` under `excludedAfterReading`. This avoids presenting GPU tools, privacy policies or evaluation fixtures as writing skills.
-
-Decisions and notes stay in browser storage; export JSON to back them up. Skill decisions have their own record kind; older file and rewritten-content decisions remain intact. Matching counts and visible cards update with filters and decisions. “Mọi nhóm” removes only the group selection; “Xóa bộ lọc” clears all filter conditions and the group. Note editing preserves focus when the matching cards are unchanged. Content/assessment fingerprints prevent stale decisions from being treated as current approval.
-
-The [conflicts register](CONFLICTS_REGISTER.md) lists every contradiction found between knowledge units, open or reconciled, so it can be reviewed later.
-
-The [source insights report](SOURCE_INSIGHTS_REPORT.md) compares the 17 sources as skill designs: architecture, quality control, contradictions, and recommendations for this library.
-
-The [source knowledge coverage report](KNOWLEDGE_COVERAGE_REPORT.md) compares retained, partial, and missing methods within explicit audit scopes. Its percentages are static checklist judgments, not whole-repository coverage or measured model performance.
-
-References explain the writing methods directly: decisions, procedures, examples, exceptions, and checks. They do not send the model to copies of another repository. Shared guidance is merged by subject; specialist depth lives in our own modules. Load only what the task needs. The [100-pattern anti-slop catalog](references/ai-slop-catalog.md) and [post](references/writing-post.md), [paper](references/writing-paper.md), and [report](references/writing-report.md) guides supply detailed applications.
-
-With Node.js 18+ and no npm dependencies:
-
-```bash
-# Retrieve complete decisions with their conditions and examples.
-node scripts/get-reference.mjs --category evidence-and-claims --genre paper --query "negation exact numbers" --limit 3 --json
-
-# Inspect cases and prepare a fresh model-visible workspace.
-node scripts/writing-sandbox.mjs list
-node scripts/writing-sandbox.mjs prepare --case case-02-paper-negation --out /tmp/omw-paper-run
-
-# After a model writes response.json according to task.json:
-node scripts/writing-sandbox.mjs evaluate --run /tmp/omw-paper-run --json
-```
-
-See [retrieval options](references/retrieval.md) and [sandbox protocol](references/sandbox.md). The same file/JSON interfaces can be used by omp, Codex, or Claude; no host-specific advisor is required. This does not install an automatic runner for those hosts.
-
-The sandbox prepares workspaces and evaluates mechanical criteria. It does **not** enforce OS/network isolation, prove that self-reported references were read, or certify author voice and argument quality. Host permissions and observed telemetry must be supplied separately. The hand-authored sample responses exercise the harness; they are not model benchmark results.
-

@@ -252,8 +252,9 @@ All test suites pass:
 | `tests/author-voice` | 30 | `voice_stats.py` |
 | `tests/evidence-grounded-writing` | 77 | `claim_ledger.py` |
 | `tests/project-report` | 32 | `inventory.py`, `build_report.py` |
-| `tests/evals` | 452 | Grader, statistics gate, run harness, review stage, duplication and similarity tools |
+| `tests/evals` | 453 | Grader, statistics gate, run harness, review stage, duplication and similarity tools |
 | `tests/installer` | 20 | The npx installer, run in a temporary HOME |
+| `tests/results-visualization` | 32 | `plotstyle.py` |
 
 ## Reproduce
 

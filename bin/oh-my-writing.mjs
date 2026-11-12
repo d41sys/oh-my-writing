@@ -433,7 +433,7 @@ async function cmdInstall(ctx, o) {
   for (const w of report.warnings) console.log(`  warning: ${w}`);
   console.log('');
   console.log('Verify:');
-  console.log('  npx github:d41sys/academic-writing-skill doctor');
+  console.log('  npx github:d41sys/oh-my-writing doctor');
   console.log(`  ls -l ${tilde(ctx, ctx.hostDir.agents)} ${tilde(ctx, ctx.hostDir.claude)} | grep oh-my-writing`);
   console.log('Then start a new Claude Code, Codex or omp session and ask: "Make this paragraph sound less like AI, keep every fact".');
   return 0;
@@ -635,7 +635,7 @@ function cmdList(ctx, o, doctor) {
 
   const errors = [];
   const warns = [];
-  if (!installed && !info.manifest.entries.length) errors.push('Not installed. Run: npx github:d41sys/academic-writing-skill');
+  if (!installed && !info.manifest.entries.length) errors.push('Not installed. Run: npx github:d41sys/oh-my-writing');
   if (installed && installed !== PKG.version) warns.push(`Installed ${installed}, this package is ${PKG.version}. Re-run install to update.`);
 
   for (const r of info.rows) {

@@ -100,7 +100,7 @@ Every skill follows four rules:
   - a fact ledger tracing every figure to its file;
   - an `open-questions.md`.
 - **Rule:** conflicting figures across files stay visible, and superseded versions are flagged.
-- **Diagrams** use [diagram-design](https://github.com/cathrynlavery/diagram-design) when it is installed, otherwise Mermaid. Install it with `npx github:d41sys/academic-writing-skill install --with-diagram-design`.
+- **Diagrams** use [diagram-design](https://github.com/cathrynlavery/diagram-design) when it is installed, otherwise Mermaid. Install it with `npx github:d41sys/oh-my-writing install --with-diagram-design`.
 
 ### results-visualization: charts of your results
 
@@ -150,7 +150,7 @@ uv run --with matplotlib --with numpy python $S/results-visualization/scripts/pl
 
 | Symptom | Cause and fix |
 |---|---|
-| No skill seems to load | Start a new session after installing. Run `npx github:d41sys/academic-writing-skill doctor` to see which hosts see which skills. |
+| No skill seems to load | Start a new session after installing. Run `npx github:d41sys/oh-my-writing doctor` to see which hosts see which skills. |
 | The old academic-writing skill answers | It is still installed. Run the installer again (it backs up the old skill) or remove it by hand: see [INSTALL.md](../INSTALL.md). |
 | Two copies of a skill | Use either the plugin or the installer links, not both. `doctor` warns about duplicates. |
 | The output still has stock closers or filler | Weaker models follow the rules less reliably. Ask again with "check it against anti-slop-editing", or use a stronger model. |

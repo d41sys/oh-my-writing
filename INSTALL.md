@@ -1,22 +1,20 @@
-# Install Oh My Writing v2.1 (replaces the academic-writing install)
+# Install Oh My Writing v2 (replaces the academic-writing install)
 
 Oh My Writing v2 is the eleven skills in `skills/`. They replace the old single `academic-writing` skill as your everyday writing setup. Claude Code, Codex and omp all load them from the same two folders.
 
 Time: about 1 minute with npx, about 5 minutes by hand.
-
-> **Access:** the GitHub repository is private for now, so every install path (npx, plugin, clone) needs GitHub access on that machine: an SSH key added to GitHub, or `gh auth login` followed by `gh auth setup-git`.
 
 ## Install with npx
 
 Needs Node 18 or newer and git.
 
 ```bash
-npx github:d41sys/academic-writing-skill
+npx github:d41sys/oh-my-writing
 ```
 
 Copies the eleven skills to `~/.oh-my-writing/skills/` and links them into `~/.agents/skills` (Codex, omp) and `~/.claude/skills` (Claude Code, omp). The old `academic-writing` skill, its link and `~/.claude/commands/academic-writing.md` are moved to `~/.oh-my-writing/backup/<timestamp>/`, not deleted. If published to npm later, `npx oh-my-writing` does the same.
 
-Flags (add them after the command, for example `npx github:d41sys/academic-writing-skill install --dry-run`):
+Flags (add them after the command, for example `npx github:d41sys/oh-my-writing install --dry-run`):
 
 | Flag | Effect |
 |---|---|
@@ -31,10 +29,10 @@ Flags (add them after the command, for example `npx github:d41sys/academic-writi
 Check, uninstall, roll back:
 
 ```bash
-npx github:d41sys/academic-writing-skill doctor                    # versions, hosts, broken links, leftovers, duplicates
-npx github:d41sys/academic-writing-skill list                      # which host sees which skill
-npx github:d41sys/academic-writing-skill uninstall                 # removes only the links/copies it made
-npx github:d41sys/academic-writing-skill uninstall --restore       # same, then moves the backed-up academic-writing back
+npx github:d41sys/oh-my-writing doctor                    # versions, hosts, broken links, leftovers, duplicates
+npx github:d41sys/oh-my-writing list                      # which host sees which skill
+npx github:d41sys/oh-my-writing uninstall                 # removes only the links/copies it made
+npx github:d41sys/oh-my-writing uninstall --restore       # same, then moves the backed-up academic-writing back
 ```
 
 `uninstall` tracks its own entries in `~/.oh-my-writing/manifest.json`. A folder you put in place of one of its links is left alone.
@@ -57,7 +55,7 @@ mkdir -p ~/skills-backup
 ### 2. Get the code
 
 ```bash
-git clone https://github.com/d41sys/academic-writing-skill.git ~/oh-my-writing
+git clone https://github.com/d41sys/oh-my-writing.git ~/oh-my-writing
 git -C ~/oh-my-writing checkout v2.2.0
 ```
 
@@ -79,7 +77,7 @@ Where each host reads:
 | Codex | `~/.agents/skills` |
 | omp | both of the above, when its Claude and Agents skill providers are on (the default) |
 
-**Plugin instead of links.** Claude Code: run `/plugin marketplace add d41sys/academic-writing-skill`, then `/plugin install oh-my-writing@oh-my-writing`. Codex can read `.codex-plugin/plugin.json`. Use either links or the plugin, not both: two copies of the same skill compete for routing.
+**Plugin instead of links.** Claude Code: run `/plugin marketplace add d41sys/oh-my-writing`, then `/plugin install oh-my-writing@oh-my-writing`. Codex can read `.codex-plugin/plugin.json`. Use either links or the plugin, not both: two copies of the same skill compete for routing.
 
 ### 4. Optional: diagrams for project-report
 
