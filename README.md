@@ -30,7 +30,7 @@ Ask in plain words, for example "edit this so it doesn't read like AI, keep ever
 
 ## Benchmark
 
-94 realistic writing tasks, 3 runs each, omp with gpt-6-sol (run `v-final4-omp`). Details, judge results and limits: [docs/BENCHMARK.md](docs/BENCHMARK.md).
+94 realistic writing tasks, 3 runs each, omp with gpt-6-sol (run `v-final4-omp`; one case was removed from the repository after the run). Details, judge results and limits: [docs/BENCHMARK.md](docs/BENCHMARK.md).
 
 | Case group | With skills | No skills |
 |---|---|---|
@@ -69,31 +69,7 @@ MIT, see [LICENSE](LICENSE). Exception: Diátaxis-derived material, including `s
 
 ## Acknowledgments
 
-Oh My Writing was inspired by the projects below, and we used them as references while writing our own skills. The skills are our own work and wording: they do not include or redistribute these projects' skill packages ([similarity check](docs/SOURCE_SIMILARITY.md)). Much writing advice is shared across many sources, and we do not claim to have originated the ideas behind it. Their benchmark results do not transfer to Oh My Writing, or the other way round.
-
-| Project | What inspired us or served as a reference |
-|---|---|
-| [Avoid AI Writing](https://github.com/conorbronsdon/avoid-ai-writing) | Context-sensitive editing, diagnostic patterns, preservation and no-op boundaries |
-| [Humanizer](https://github.com/blader/humanizer) | Concrete writing tells, false positives and author voice |
-| [Marketing Skills](https://github.com/coreyhaines31/marketingskills) | Audience research, positioning, copy, outreach, lifecycle and communications |
-| [GreatWriter](https://github.com/d-wwei/great-writer) | Narrative, voice, adaptation and revision techniques |
-| [Everything Claude Code](https://github.com/affaan-m/everything-claude-code) | Article writing, comparison validity and evaluation methods |
-| [Scientific Agent Skills](https://github.com/K-Dense-AI/scientific-agent-skills) | Scientific evidence, specialist reporting, review and visual communication |
-| [AI Research Skills](https://github.com/Orchestra-Research/AI-Research-SKILLs) | ML/systems manuscripts, citations, evaluation and publication practice |
-| [Anthropic Skills](https://github.com/anthropics/skills) | Collaborative drafting, fresh-reader review and skill evaluation |
-| [Diátaxis](https://github.com/evildmp/diataxis-documentation-framework) | Reader-purpose distinctions and documentation construction |
-| [STORM](https://github.com/stanford-oval/storm) | Perspective-driven inquiry and evidence-grounded synthesis |
-| [Awesome AI Research Writing](https://github.com/Leey21/awesome-ai-research-writing) | Inspiration for bounded writing operations; no unlicensed original text is redistributed |
-| [ARIS (Auto-claude-code-research-in-sleep)](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep) | Paper planning and drafting, claim and citation audits, review/rebuttal, figures, talks, grants and patent writing |
-| [mattpocock/skills](https://github.com/mattpocock/skills) | Writing-for-agents, draft shaping and interview-style clarification methods |
-| [garden-skills](https://github.com/ConardLi/garden-skills) | Long-form article presentation and reader-facing layout |
-| [ResumeSkills](https://github.com/Paramchoudhary/ResumeSkills) | Résumé, CV, cover-letter, LinkedIn-profile and portfolio methods |
-| [proficiently-claude-skills](https://github.com/proficientlyjobs/proficiently-claude-skills) | Truthful cover-letter and résumé tailoring |
-| [jezweb/claude-skills](https://github.com/jezweb/claude-skills) | Award applications, proposals and regional business English |
-| [diagram-design](https://github.com/cathrynlavery/diagram-design) | Diagram drawing for `project-report`; used as a separately installed skill, not bundled |
-| University career and writing centers, DAAD, European Education Area | Statement-of-purpose, personal-statement and motivation-letter guidance |
-
-Copyright and license notices are kept in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Diátaxis-derived material, including `skills/technical-docs/`, is adapted from Diátaxis and modified, and stays CC-BY-SA 4.0 as its license requires.
+Oh My Writing was inspired by these open-source projects, which we used as references while writing our own skills: Avoid AI Writing, Humanizer, Marketing Skills, GreatWriter, Everything Claude Code, Scientific Agent Skills, AI Research Skills, Anthropic Skills, Diátaxis, STORM, Awesome AI Research Writing, ARIS, mattpocock/skills, garden-skills, ResumeSkills, proficiently-claude-skills and jezweb/claude-skills. The skills are our own work and wording ([similarity check](docs/SOURCE_SIMILARITY.md)). project-report draws its diagrams with [diagram-design](https://github.com/cathrynlavery/diagram-design), installed separately and not bundled. Copyright and license notices are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md); Diátaxis-derived material, including `skills/technical-docs/`, is adapted and stays CC-BY-SA 4.0.
 
 ### Research and evaluation reading
 
@@ -110,8 +86,6 @@ The earlier research also drew on these attributed reading leads, directly or th
 | Roy Levin and David D. Redell, *How (and How Not) to Write a Good Systems Paper*; systems-writing guidance by Gernot Heiser and Irene Zhang | Originality, significance, verifiability, evaluation design, and thesis-driven abstracts |
 | Wikipedia's AI Cleanup guidance; Charity Majors' *Confessions of an Unrepentant Sloper*; Simon Willison's *LLM Cliché Highlighter* | Formulaic rhetoric, stylistic homogenization, and contextual review of lexical signals |
 | Liang and colleagues' 2023 detector-bias research; Jabarian and Imas' 2025 detector research | False-positive risks and the limits of inferring authorship from classifier outputs |
-
-Platform-ranking descriptions, including discussion of `xai-org/x-algorithm` in the surveyed marketing material, are research leads rather than verified current platform rules. No ranking weights or engagement outcomes are assumed by the writing references.
 
 ## Paper writing: academic-writing (legacy)
 

@@ -133,7 +133,6 @@ def test_plugin_manifests_agree():
 CASES = REPO / "evals" / "cases"
 FIXTURES = REPO / "evals" / "fixtures"
 CASE_TEXT_SUFFIXES = {".md", ".txt", ".csv", ".eml", ".html", ".json"}
-SELF_DESCRIBING = "real-project-docs"  # documents this repository and quotes the skills; the copying runs the other way
 # Capitalized words that occur in cases and are ordinary vocabulary in the skills, not names from a scenario.
 ORDINARY_CAPITALIZED = {
     "Analyst", "ArgumentParser", "Classify", "Dual", "Ecology", "European", "Integrity", "LinkedIn", "Nightly",
@@ -149,7 +148,7 @@ def _case_texts() -> list[str]:
         case = json.loads(path.read_text(encoding="utf-8"))
         texts += [case["prompt"], *case.get("files", {}).values()]
     texts += [p.read_text(encoding="utf-8", errors="replace") for p in FIXTURES.rglob("*")
-              if p.is_file() and p.suffix in CASE_TEXT_SUFFIXES and SELF_DESCRIBING not in p.parts]
+              if p.is_file() and p.suffix in CASE_TEXT_SUFFIXES]
     return texts
 
 

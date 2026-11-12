@@ -10,6 +10,7 @@ On all 94 benchmark cases (run `v-final4-omp`), an agent with these skills passe
 - **Cases:** 94 tasks across ten of the eleven skills (results-visualization has none yet) and the style and reader tracks (59 in `v-final2-omp`), each run 3 times. Each case has:
   - a prompt and material files: notes, transcripts, drafts, and real document folders with docx, xlsx, pptx, pdf, eml and csv files;
   - mechanical checks.
+- **Removed case:** after the run, `project-report/real-project-docs` was removed from the repository with its fixture, a folder of this repository's internal research notes. The numbers below include its 6 runs as run; the repository now holds 93 cases.
 - **Checks** grade what matters for trust:
   - invented facts (any number, name, date or URL not in the material);
   - lost negations, hedges and scope;
@@ -252,7 +253,7 @@ All test suites pass:
 | `tests/author-voice` | 30 | `voice_stats.py` |
 | `tests/evidence-grounded-writing` | 77 | `claim_ledger.py` |
 | `tests/project-report` | 32 | `inventory.py`, `build_report.py` |
-| `tests/evals` | 453 | Grader, statistics gate, run harness, review stage, duplication and similarity tools |
+| `tests/evals` | 452 | Grader, statistics gate, run harness, review stage, duplication and similarity tools |
 | `tests/installer` | 20 | The npx installer, run in a temporary HOME |
 | `tests/results-visualization` | 32 | `plotstyle.py` |
 

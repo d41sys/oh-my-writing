@@ -281,7 +281,6 @@ CASE_KIND: dict[str, str] = {
     "project-report/heldout2-pool-refit-date-conflict-owner-gap": "draft",
     "project-report/mixed-formats-status": "draft",
     "project-report/noisy-folder-final-report": "draft",
-    "project-report/real-project-docs": "draft",
     "project-report/small-folder-short-report-no-padding": "draft",
     "project-report/system-migration-architecture": "draft",
     "reader/ferry-feed-cutover-update": "reader",
