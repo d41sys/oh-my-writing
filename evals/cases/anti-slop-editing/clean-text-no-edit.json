@@ -52,7 +52,7 @@
         "nothing to change",
         "nothing needed",
         "nothing worth changing",
-        "needed changing",
+        "found nothing",
         "exact copy",
         "didn't find anything",
         "did not find anything"
@@ -84,6 +84,15 @@
       ],
       "output": "We moved the invoice export to the new queue on Tuesday. It took about three hours, mostly because the old job held a lock on the orders table until 02:10. Nobody lost data, but 41 invoices went out twice; Priya sent the customers a correction on Wednesday.\n\nI think the retry limit of 5 is too high. It hid the lock problem for a week. I'd drop it to 3 and let the alert fire, but that's Dmitri's call, since he owns the pager rotation.\n\nThe estimator in the report is robust to outliers (breakdown point 0.5), so the median delay of 38 minutes isn't skewed by the two runs that stalled overnight.\n",
       "reply": "Cleaned up notes.md and saved the polished version to out/notes.md. It reads much better now."
+    },
+    {
+      "name": "trap-reply-says-edits-were-needed",
+      "expect": "fail",
+      "fails": [
+        "contains_any"
+      ],
+      "output": "We moved the invoice export to the new queue on Tuesday. It took about three hours, mostly because the old job held a lock on the orders table until 02:10. Nobody lost data, but 41 invoices went out twice; Priya sent the customers a correction on Wednesday.\n\nI think the retry limit of 5 is too high. It hid the lock problem for a week. I'd drop it to 3 and let the alert fire, but that's Dmitri's call, since he owns the pager rotation.\n\nThe estimator in the report is robust to outliers (breakdown point 0.5), so the median delay of 38 minutes isn't skewed by the two runs that stalled overnight.\n",
+      "reply": "Two phrases needed changing, so I fixed them and saved the result to out/notes.md."
     },
     {
       "name": "trap-adds-marker-and-number",
