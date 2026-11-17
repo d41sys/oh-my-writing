@@ -747,10 +747,11 @@ def test_day_ranges_and_a_year_inside_an_iso_date_are_source_facts(tmp_path):
 def test_an_ordinal_day_of_a_source_date_and_a_table_header_are_not_new_facts(tmp_path):
     before = write(tmp_path, "before.md", "The pool closes on 17 February.\n")
     after = write(tmp_path, "after.md", "Moving it would send people to a closed pool on the 17th. "
-                                        "Then 17 people came on the 3rd.\n\n| Quote | Smallest fix |\n|---|---|\n")
+                                        "Then 17 people came on the 3rd.\n\n| Quote | Smallest fix |\n|---|---|\n"
+                                        "| Dana | to ask |\n")
     _, report = diff_json(before, after)
     assert added_items(report, "numbers") == {"17", "date:--??-03"}  # a count and an unknown day still flag
-    assert not added_items(report, "names")
+    assert added_items(report, "names") == {"Dana"}  # a header cell is a label; a name in a body cell is not
 
 
 def test_a_small_gap_is_a_calculation_only_when_its_operands_sit_beside_it(tmp_path):

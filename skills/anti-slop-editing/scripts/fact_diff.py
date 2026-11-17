@@ -117,6 +117,8 @@ def _match_dates(lost: list, added: list, before_items: dict, after_items: dict)
     return lost, added
 
 
+TABLE_RULE_RE = re.compile(r"[ \t]*\|?[ \t]*:?-{3,}")  # the |---| line under a table's header row
+
 FIELD_LABEL_RE = re.compile(r"[A-Z]{3,}|[A-Z][a-z]+(?:-[A-Z][a-z]+)+")  # VERDICT, Reviewer-Model
 # List markers and heading section numbers ("## 2.1 Method", "## 1. Summary") are layout, not figures. A section
 # number without a closing dot or bracket needs a sub-number and a capitalised title word after it, so headings that
@@ -329,7 +331,9 @@ class Extraction:
             # "VERDICT: ready" and "Reviewer-Model: <id>" are field labels of a template, not names
             if work[m.end(): m.end() + 1] == ":" and len(tokens) == 1 and FIELD_LABEL_RE.fullmatch(tokens[0]):
                 continue
-            at_start = (not prefix) or prefix[-1] in ".!?:\n\"\u201c(-*\u2022>#|"
+            if prefix.endswith("|") and TABLE_RULE_RE.match(work, work.find("\n", m.end()) + 1) and "\n" in work[m.end():]:
+                continue  # a header cell labels a column; body cells are still read for names
+            at_start = (not prefix) or prefix[-1] in ".!?:\n\"\u201c(-*\u2022>#"
             if at_start:
                 while tokens and tokens[0].lower() in COMMON_START:
                     tokens.pop(0)
