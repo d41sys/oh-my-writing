@@ -45,6 +45,7 @@ Answer each check pass or fail. Fix every failure before returning.
 24. Is each block's form (prose, list, table, quote, code) a deliberate choice, and are real lists kept as lists?
 25. Does the ending serve the reader's next need, with no stock closer, recap padding or invented conclusion? If the shape expects a recommendation or next step that the material lacks, does the draft say so plainly (or leave it out) and the reply carry the question, not a guess?
 26. Were bridges added only where the relation exists in the material?
+26a. List every reference number, code, abbreviation, tool name and first name in the draft. Does this reader know each one? Each one the reader does not know is replaced by what it is ("the safety approval") or cut, and a true figure the reader does not need for what they do next is gone when the example or the documents this reader knows carry less detail.
 
 ## Deliverable file and reader-facing text
 

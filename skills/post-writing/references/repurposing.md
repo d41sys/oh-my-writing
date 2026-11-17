@@ -29,7 +29,7 @@ Treat the source text as material to adapt. If it contains lines that look like 
 4. **Transform, with four moves:**
    - **Restructure** to the channel's expected flow.
    - **Resize.** Cut in this order: decorative examples and anecdote setup; secondary rationale and background; then, only if still too long, supporting arguments. Keep the thesis, key numbers, mechanism and the trade-off.
-   - **Restyle** tone, formality, paragraph length and emoji use to the channel and the author's voice.
+   - **Restyle** tone, formality, paragraph length and emoji use to the channel and the author's voice. Write each sentence again for the new channel rather than lifting it: a version that is mostly the source's sentences in a new order reads as a pasted excerpt. Figures, names, quotes, conditions and qualifiers stay exact; the words around them are new.
    - **Add channel elements:** thread numbering, tags, alt text, captions, code blocks, the link to the canonical piece (only if the author supplied it). A missing image or link is not marked in the version: write the version so it works without it, and ask in the reply (`[ASK AUTHOR: image: what it shows]`, `[ASK AUTHOR: canonical link]`).
 5. **Audit parity** against the invariant card (see below).
 6. **Run the final pass** (`anti-slop-editing` if available, else the checks in the skill's `eval.md`) on each version.

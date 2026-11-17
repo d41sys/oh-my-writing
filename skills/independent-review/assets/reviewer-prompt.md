@@ -2,7 +2,7 @@ Load when: sending a draft to an independent reviewer (fresh session, ideally a 
 
 # Reviewer prompt
 
-Fill every `{{placeholder}}`. Delete any optional line you cannot fill truthfully (sources, rubric, reading date); do not invent it. Send the text inside the fence as the reviewer's whole prompt, in a new session, with read-only access.
+Fill every required `{{placeholder}}`. A line marked *(optional)* stays only when the author's request or the material states its value; otherwise delete the whole line. Never fill it from a guess, from today's date, or from what such documents usually need. Send the text inside the fence as the reviewer's whole prompt, in a new session, with read-only access.
 
 ## Before you send
 
@@ -18,7 +18,7 @@ Check the filled prompt against this list. Remove anything that matches.
 - An experienced-reader role that arrives with a list of things to check ("an accountant who will look at the VAT figures"): give the role only.
 - Confidential or unpublished material the owner has not cleared to leave this session (see step 3 of the skill).
 
-Allowed: who reads the text, what that reader knows and needs, the role of someone experienced in the task (the role only), the author's own question about what the reader can understand or do, what the reader must be able to answer after reading, the reading date, hard constraints (length, format, venue, house style), sources the text must agree with, the rubric, and the output format below. Not allowed: the draft's known weak spots, even as "check X carefully"; derive the reader's questions from the reader's job, not from what you already see missing.
+Allowed: who reads the text, what that reader knows and needs, the role of someone experienced in the task (the role only), the author's own question about what the reader can understand or do, what the reader must be able to answer after reading, a reading date and hard constraints (length, format, venue, house style) when the request or the material states them, sources the text must agree with, the rubric, and the output format below. Not allowed: the draft's known weak spots, even as "check X carefully"; derive the reader's questions from the reader's job, not from what you already see missing.
 
 ## The prompt
 
@@ -44,8 +44,8 @@ After reading, the reader has to: {{READER_NEXT_ACTION_OR_DECISION}}
 The question this review answers: {{REVIEW_QUESTION}}
 Questions the reader must be able to answer from the page (optional):
 {{READER_NEEDS}}
-Hard constraints: {{LENGTH_FORMAT_VENUE_STYLE_RULES}}
-The reader reads this on: {{READING_DATE}}
+Hard constraints (optional): {{LENGTH_FORMAT_VENUE_STYLE_RULES}}
+The reader reads this on (optional): {{READING_DATE}}
 Review in this language: {{REVIEW_LANGUAGE}}
 
 Open your reply with one line: Reviewer-Model: <your own model id, or unknown>
@@ -95,7 +95,8 @@ must supply; do not state the value or the procedure yourself.
 | `READER_NEEDS` | three to five questions anyone in that role would ask before acting, in plain words, one per line (funding call: what it costs, what it commits us to, by when, how success is judged; instructions: what to have ready, what each step does, how to know it worked) | questions that name the draft's gaps, the writer's worries or an expected answer |
 | `ARTIFACT_FILE_NAME` | the document's file name or path, so findings can be traced back to it | a description of the document |
 | `ARTIFACT_TEXT_VERBATIM` | the whole document, copied character for character, so a reviewer in a new session needs none of your files. Only when it is too long to paste or is not text, replace the BEGIN/END block with its path and tell the reviewer to open it | an excerpt, a summary, or a tidied copy |
-| `READING_DATE` | today's date, when the text has dates without a year or relative dates; otherwise delete the line | a guess |
+| `READING_DATE` | the day the reader reads the text, only when the request or the material fixes that day (a dated letter, a notice sent on a known day) and the text has dates without a year or relative dates; when readers get it on different days or nobody states the day, delete the line, and the reviewer flags relative dates it cannot place | today's date by default, the date you are working, or a guess |
+| `LENGTH_FORMAT_VENUE_STYLE_RULES` | limits the author or the material states: word or page limit, format, venue, house style | rules you think suit the genre or the reader ("plain English", "keep it short") |
 | `SOURCE_PATHS` | files, raw data, spec | your summary of them |
 | `RUBRIC_PATH_OR_TEXT` | a filled rubric; calibrated or labelled `calibration: none` | a rubric invented to fit the verdict |
 

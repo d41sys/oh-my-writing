@@ -110,8 +110,10 @@ def _match_dates(lost: list, added: list, before_items: dict, after_items: dict)
     out_days = {day(i) for i in after_items if i.startswith("date:")}
     added = [a for a in added if not (a["item"].startswith("date:") and day(a["item"]) in src_days
                                       and (a["item"].startswith("date:--") or a["item"][5:9] in src_years))
+             and not (a["item"].startswith("date:--??-") and a["item"][-2:] in {d[-2:] for d in src_days})
              and not (re.fullmatch(r"\d{4}", a["item"]) and a["item"] in src_years)]
-    lost = [l for l in lost if not (l["item"].startswith("date:") and day(l["item"]) in out_days)]
+    lost = [l for l in lost if not (l["item"].startswith("date:") and day(l["item"]) in out_days)
+            and not (l["item"].startswith("date:--??-") and l["item"][-2:] in {d[-2:] for d in out_days})]
     return lost, added
 
 
@@ -283,6 +285,9 @@ class Extraction:
             canon = UNIT_CANON.get(unit, "")
             cur = CURRENCY.get(m.group("cur") or "", "")
             canon = canon or cur
+            if unit in ("st", "nd", "rd", "th") and num.isdigit() and 1 <= int(num) <= 31:
+                self.add("numbers", f"date:--??-{int(num):02d}", m.start())  # "the 17th": a day of a month the text does not name
+                continue
             self.add("numbers", f"{num}{canon}" if canon == "%" else (f"{num} {canon}" if canon else num), m.start())
         for m in WORD_NUM_RE.finditer(work):
             unit = UNIT_CANON.get((m.group("unit") or "").lower(), "")
@@ -324,7 +329,7 @@ class Extraction:
             # "VERDICT: ready" and "Reviewer-Model: <id>" are field labels of a template, not names
             if work[m.end(): m.end() + 1] == ":" and len(tokens) == 1 and FIELD_LABEL_RE.fullmatch(tokens[0]):
                 continue
-            at_start = (not prefix) or prefix[-1] in ".!?:\n\"\u201c(-*\u2022>#"
+            at_start = (not prefix) or prefix[-1] in ".!?:\n\"\u201c(-*\u2022>#|"
             if at_start:
                 while tokens and tokens[0].lower() in COMMON_START:
                     tokens.pop(0)

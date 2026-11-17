@@ -322,7 +322,7 @@ Found by reading shape, not words. Scanner hits here are always weak.
 - Looks like: "Worth your time", "Thank me later", "What do you think? Let me know below."
 - Cost: a vote of confidence with no reason, or a reply farm.
 - Fine when: a DM between acquaintances, or the author really wants replies about something specific.
-- Fix: give the reason the item is worth the reader's time, if the text has it; otherwise end earlier.
+- Fix: give the reason the item is worth the reader's time, if the text has it. When the closer carries a real request (send feedback, where to ask), keep the request as one plain sentence; otherwise end earlier.
 
 ### Paragraph-final echoes
 - Looks like: the last sentence of a paragraph restates the paragraph.
@@ -334,7 +334,7 @@ Found by reading shape, not words. Scanner hits here are always weak.
 - Looks like: "Searches are faster." followed by "The index now answers in 40 ms, down from 90."; "The platform is built for every team." before the facts about who uses it.
 - Cost: the reader meets the claim twice, once as a bare adjective and once with the evidence.
 - Fine when: the genre needs a headline or summary line, or the first sentence adds a fact the second does not.
-- Fix: delete the lead-in and keep the facts it summed up, including any scope fact (who, for what, what it does not do) stated as a plain sentence.
+- Fix: fold the lead-in into the sentence with the evidence, keeping the topic it names ("Searches are faster: the index now answers in 40 ms, down from 90"); keep any scope fact (who, for what, what it does not do) as a plain sentence. A bare description with no fact behind it ("built for every team") is deleted.
 
 ### Paper-style endings (`future-work-formula`)
 - Looks like: "Future work could explore more settings."
