@@ -48,8 +48,8 @@
     },
     {
       "type": "regex",
-      "pattern": "(?is)(?:\\bF4\\b)(?:(?!\\bF\\d\\b).){0,500}?(?:reject|decline|\\[ASK AUTHOR|ask the author|needs author|needs? your (?:answer|input|confirmation|decision)|you need to (?:answer|confirm|check)|(?:author|you) must (?:answer|confirm|decide)|answer (?:it )?yourself|for you to (?:answer|decide|confirm)|do not promise|(?:booking|confirmation|source)[^.\\n]{0,60}(?:does not|doesn't|says nothing|gives? no|no mention)|(?:neither|nothing in)\\b(?:[^.\\n]|\\.md\\b){0,80}(?:establish|state|give|mention|cover|promise|say)|(?:ask|check with|confirm (?:with|the))\\b[^.\\n]{0,30}\\b(?:school|organi[sz]er|policy)|not (?:in|stated|given|supported|mentioned|confirmed))|(?m:^#+[^\\n]*\\b(?:reject|decline|answer (?:it )?yourself|you have to answer|needs? your (?:answer|input|decision)|ask the author|for you)[^\\n]*\\n(?:(?!^#).)*?\\bF4\\b)",
-      "note": "no source gives a refund policy: F4 is rejected or handed to the author. Corrected after v-review16-heldout: the first version missed hand-backs worded 'Author must answer', 'You must answer', 'Do not promise a full refund', 'Neither the booking nor the draft establishes…' and 'confirm with the school' (7 runs outside the skill condition). Corrected after v-fix-opus: 'Neither booking.md nor the draft says anything' (the dot in the file name ended the match) and a 'You have to answer' heading (3 skill runs)"
+      "pattern": "(?is)(?:\\bF4\\b)(?:(?!\\bF\\d\\b).){0,500}?(?:reject|decline|\\[ASK AUTHOR|ask the author|needs author|needs? your (?:answer|input|confirmation|decision)|you need to (?:answer|confirm|check)|(?:author|you) must (?:answer|confirm|decide)|answer (?:it )?yourself|for you to (?:answer|decide|confirm)|do not promise|(?:booking|confirmation|source)(?:[^.\\n]|\\.md\\b){0,60}(?:does not|doesn't|says nothing|gives? no|no mention)|(?:neither|nothing in)\\b(?:[^.\\n]|\\.md\\b){0,80}(?:establish|state|give|mention|cover|promise|say)|(?:ask|check with|confirm (?:with|the))\\b[^.\\n]{0,30}\\b(?:school|organi[sz]er|policy)|not (?:in|stated|given|supported|mentioned|confirmed))|(?m:^#+[^\\n]*\\b(?:reject|decline|answer (?:it )?yourself|you (?:have|need) to answer|needs? your (?:answer|input|decision)|ask the author|for you)[^\\n]*\\n(?:(?!^#).)*?\\bF4\\b)",
+      "note": "no source gives a refund policy: F4 is rejected or handed to the author. Corrected after v-review16-heldout: the first version missed hand-backs worded 'Author must answer', 'You must answer', 'Do not promise a full refund', 'Neither the booking nor the draft establishes…' and 'confirm with the school' (7 runs outside the skill condition). Corrected after v-fix-opus: 'Neither booking.md nor the draft says anything' and 'booking.md doesn't mention' (the dot in the file name ended the match), and a 'You have to answer' or 'You need to answer' heading (3 skill runs)"
     },
     {
       "type": "not_regex",
@@ -85,6 +85,18 @@
       "expect": "pass",
       "output": "# Triage\n\n## Act on\n\n- F1: the booking says pick-up 7:45, the letter says 8:15. Change it to 7:45.\n\n## Skip\n\n- F2: the booking confirms £12 per pupil, so the reviewer's £18 is wrong.\n- F3: already in the letter (speak to the office in confidence).\n- F5: a matter of taste.\n\n## Answer yourself\n\n- F4: nothing in the booking covers refunds. Do you have a weather refund policy?\n",
       "reply": "Saved to out/triage.md: act on F1, skip F2, F3 and F5, answer F4 yourself."
+    },
+    {
+      "name": "good-heading-you-need-to-answer",
+      "expect": "pass",
+      "output": "# Triage\n\n## Act on\n\n- F1: the booking says pick-up 7:45, the letter says 8:15. Change it to 7:45.\n\n## Skip\n\n- F2: the booking confirms £12 per pupil, so the reviewer's £18 is wrong.\n- F3: already in the letter (speak to the office in confidence).\n- F5: a matter of taste.\n\n## You need to answer\n\n- F4: is there a weather refund arrangement with the coach firm?\n",
+      "reply": "Saved to out/triage.md."
+    },
+    {
+      "name": "good-file-name-before-the-verb",
+      "expect": "pass",
+      "output": "# Triage\n\n## Act on\n\n- F1: the booking says pick-up 7:45, the letter says 8:15. Change it to 7:45.\n\n## Skip\n\n- F2: the booking confirms £12 per pupil, so the reviewer's £18 is wrong.\n- F3: already in the letter (speak to the office in confidence).\n- F5: a matter of taste.\n\n## Open\n\n- F4: neither booking.md nor the draft says anything about refunds.\n",
+      "reply": "Saved to out/triage.md."
     },
     {
       "name": "trap-adopts-wrong-price",
