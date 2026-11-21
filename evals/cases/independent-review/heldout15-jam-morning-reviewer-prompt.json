@@ -1,0 +1,191 @@
+{
+  "id": "independent-review/heldout15-jam-morning-reviewer-prompt",
+  "skill": "independent-review",
+  "heldout": true,
+  "description": "Held-out (written and committed before any run on this case; a 5-run no-skills pilot screens the must-tell list). Asked to prepare the prompt for an independent reviewer of a preserving circle's kitchen sheet read by members who have never made jam. The review stage counts four planted problems (a batch weight that does not add up, the jars washed after they are filled, two hard-boil times, 'the flake test' unexplained) and eight candidate must-tell omissions, several of the kind an experienced jam maker would raise (scalds, hot jam into cold jars, how full and whether the lid has sealed, what to do when it has not set, the oven setting for the jars, what a label for sale needs, kitchen hygiene, who to ask). Screening rule, fixed before the pilot: an item enters the decision count when the pilot's no-skills reviews ask for it in 1 to 4 of 5; every item is reported. The notes ask a general question and name none of them. The prompt stage checks the reader, leaks, and hints that point at a planted problem or tell the reviewer what the sheet lacks, including an experienced-reader role that comes with a list of what to check.",
+  "prompt": "Can you put together a prompt I can give to an independent reviewer (new session, hasn't seen any of this) for draft.md? It gets pinned up in the hall kitchen on Friday. What I know is in notes.md. Save the prompt to out/reviewer-prompt.md.",
+  "files": {
+    "draft.md": "# Jam mornings in the hall kitchen\n\nFrom September, any member can book the hall kitchen and make a batch of jam for the stall.\n\n## Booking\n\nBook a three-hour morning slot on the kitchen calendar. A batch costs £4 towards sugar and jars, paid into the tin.\n\n## What is in the kitchen\n\nThe preserving pan, a jam funnel, a ladle, a sugar thermometer and tongs are in the tall cupboard. Jars and new lids are in the crate under the hatch. A batch uses 1.5 kg of fruit and 1.5 kg of sugar and fills ten 340 g jars, 2.4 kg of jam in all.\n\n## Making a batch\n\n1. Wash the fruit, cut it up and simmer it in the pan with a little water until soft.\n2. Add the sugar, stir until it has dissolved, then boil hard for 15 minutes.\n3. Check with the flake test.\n4. Ladle the jam into the jars through the funnel and put the lids on.\n5. Wash the jars in hot soapy water and dry them in the oven.\n6. Label each jar with the fruit and the date and put the batch on the stall shelf.\n\n| | |\n|---|---|\n| Fruit | 1.5 kg |\n| Sugar | 1.5 kg |\n| Hard boil | 8 minutes |\n\n## Before you leave\n\nWash the pan, funnel and ladle, wipe the worktops and put everything back in the tall cupboard.\n",
+    "notes.md": "Who reads it: members who joined the circle this year. None of them has made jam before; until now the same two members made every batch.\n\nWhat I'd like from the reviewer: could one of them make a batch on their own, using only this page? A short list of what would go wrong is enough.\n\nNot for the reviewer:\n- The hall committee is thinking of charging us for the kitchen, and I don't want to hand them a reason.\n- One of the two who used to make the jam is offended at being replaced.\n"
+  },
+  "output": "out/reviewer-prompt.md",
+  "review_stage": {
+    "files": [
+      "draft.md"
+    ],
+    "brief": "Could a member who has never made jam make a batch on their own, safely, using only this page? A short list of what would go wrong is enough.",
+    "defects": [
+      {
+        "id": "batch-weight",
+        "description": "The batch weight does not add up: ten 340 g jars hold 3.4 kg, not the 2.4 kg the sheet gives."
+      },
+      {
+        "id": "jar-order",
+        "description": "Step 5 washes the jars and dries them in the oven after step 4 has already filled them and put the lids on, so following the steps fills unwashed jars."
+      },
+      {
+        "id": "boil-time",
+        "description": "Step 2 says to boil hard for 15 minutes, but the table gives 8 minutes for the hard boil."
+      },
+      {
+        "id": "flake-test",
+        "description": "Step 3 says to 'check with the flake test', which the sheet does not explain."
+      }
+    ],
+    "must_tell": [
+      {
+        "id": "scalds",
+        "description": "That boiling jam scalds badly: how to avoid it (splashes, a full pan, children kept away) or what to do after a burn."
+      },
+      {
+        "id": "hot-jars",
+        "description": "That the jars must be warm or hot when the hot jam goes in, so the glass does not crack, or how to handle hot jars."
+      },
+      {
+        "id": "seal",
+        "description": "How full to fill a jar, or how to tell that the lid has sealed."
+      },
+      {
+        "id": "not-set",
+        "description": "What to do if the jam has not set: boil it longer and test again."
+      },
+      {
+        "id": "oven",
+        "description": "The oven temperature or the time the jars need in it."
+      },
+      {
+        "id": "label",
+        "description": "What a label needs when the jam is sold, such as ingredients, allergens, weight or a best-before date."
+      },
+      {
+        "id": "hygiene",
+        "description": "Kitchen hygiene for food that will be sold, such as hand washing, tied-back hair or clean cloths."
+      },
+      {
+        "id": "contact",
+        "description": "Who to ask or phone, and how, if something goes wrong or the member is unsure during the session."
+      }
+    ]
+  },
+  "checks": [
+    {
+      "type": "not_contains",
+      "values": [
+        "hall committee",
+        "charging us",
+        "hand them a reason",
+        "offended",
+        "being replaced"
+      ],
+      "note": "everything under 'Not for the reviewer' is background on the writer, not on the reader"
+    },
+    {
+      "type": "regex",
+      "pattern": "(?i)\\bjoined (?:the circle |us )?this year\\b|\\bnever made jam\\b|\\bnot made jam\\b|\\bnone (?:of (?:them|whom) )?has (?:ever )?made\\b|\\bno (?:jam-making |practical |hands-on )?experience\\b|\\bnew(?:er)? members?\\b|\\bbeginners?\\b|\\bfirst[- ]tim\\w+\\b|\\bfirst batch\\b",
+      "note": "the reader (members who joined this year and have never made jam) goes to the reviewer; the sheet's own text does not satisfy this"
+    },
+    {
+      "type": "not_regex",
+      "pattern": "(?i)(?:340 ?g|2\\.4 ?kg|ten jars|10 jars|number of jars|batch weight)[^.\\n]{0,80}\\b(?:add up|adds up|totals?|arithmetic|sums?|multipl\\w+)\\b|\\b(?:wash\\w*|steril\\w*|oven)\\b[^.\\n]{0,60}\\b(?:before|after)\\b[^.\\n]{0,40}\\b(?:fill\\w*|ladl\\w*|lids?)\\b|\\b(?:before|after)\\b[^.\\n]{0,40}\\b(?:fill\\w*|ladl\\w*)\\b[^.\\n]{0,40}\\b(?:wash\\w*|steril\\w*|oven)\\b|(?:15 minutes|8 minutes|hard boil|boiling time)[^.\\n]{0,80}\\b(?:conflict|contradict|inconsisten|disagree|differ|match)\\w*|\\b(?:conflict|contradict|inconsisten|disagree)\\w*[^.\\n]{0,80}(?:15 minutes|8 minutes|hard boil|boiling time)|\\bflake test\\b[^.\\n]{0,60}\\b(?:explain\\w*|defin\\w*|mean\\w*|jargon|terms?|missing)\\b|\\b(?:explain\\w*|defin\\w*|jargon)\\b[^.\\n]{0,40}\\bflake test\\b|(?:^|[.:;!?]\\s+|\\n\\s*(?:[-*]|\\d+\\.)?\\s*)(?:note that |remember that |bear in mind that )?(?:the |this )?(?:sheet|guide|page|draft|document|text|instructions)\\s+(?:never|only|nowhere|does not|doesn't|fails? to|omits? to)\\s+(?:say|says|state|states|mention|mentions|tell|tells|explain|explains|cover|covers|give|gives)\\b|\\b(?:no|missing|absent|lacks?|lacking|omits?|without)\\b[^.\\n]{0,30}\\b(?:burns?|scalds?|first[- ]aid|steril\\w+|seal\\w*|allergen\\w*|best[- ]before|hygiene|hand[- ]?washing|headspace)\\b|\\b(?:jam maker|preserver|environmental health officer|expert|experienced|specialist)\\b[^.\\n]{0,80}\\b(?:burns?|scalds?|first[- ]aid|steril\\w+|seal\\w*|allergen\\w*|hygiene|botulism)\\b|\\b(?:check|look at|pay attention to|focus on|attention to)\\b[^.\\n]{0,40}\\b(?:burns?|scalds?|first[- ]aid|steril\\w+|allergen\\w*|hygiene|labell?ing)\\b",
+      "note": "a finding written in advance: an instruction that points the reviewer at a planted problem (the batch weight; jars washed after filling; 15 against 8 minutes; 'the flake test'), tells the reviewer what the sheet lacks ('the sheet never says how hot the oven should be', 'there is no mention of allergens'), or gives an experienced-reader role with a list of what to check ('an experienced jam maker checking sterilising and seals'). The role alone, general rules ('check the arithmetic', 'flag unexplained terms') and reader-role questions ('what do I do if something goes wrong?') are allowed; the sheet's own text does not match"
+    },
+    {
+      "type": "no_added_facts",
+      "categories": [
+        "numbers",
+        "citations",
+        "urls",
+        "names"
+      ],
+      "allow": [
+        "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+        "11", "12", "13", "14", "15", "16", "17", "18", "19", "20",
+        "21", "22", "23", "24", "25", "26", "27", "28", "29", "30",
+        "31", "32", "33", "34", "35", "36", "37", "38", "39", "40",
+        "English",
+        "BEGIN",
+        "END",
+        "DOCUMENT",
+        "DRAFT",
+        "SHEET",
+        "NOTICE",
+        "BEGIN DOCUMENT",
+        "END DOCUMENT",
+        "BEGIN DRAFT",
+        "END DRAFT",
+        "BEGIN SHEET",
+        "END SHEET",
+        "DRAFT NOTICE",
+        "BEGIN NOTICE",
+        "END NOTICE",
+        "END OF DRAFT",
+        "END OF DOCUMENT",
+        "END OF SHEET"
+      ],
+      "note": "list numbering and line numbers are not new figures; 'English' is the review language; BEGIN/END lines delimit a pasted sheet"
+    },
+    {
+      "type": "word_count",
+      "min": 60
+    }
+  ],
+  "controls": [
+    {
+      "name": "good-pasted",
+      "expect": "pass",
+      "output": "You are reviewing a one-page sheet before it goes to its readers. Judge only what is on the page.\n\nReader: members who joined the circle this year; none of them has made jam before, and until now the same two members made every batch.\n\nQuestion to answer first: could one of them make a batch on their own, using only this page?\n\nThen list what would go wrong, worst first, each with a short quote and the smallest fix. Do not rewrite the sheet.\n\nDocument to review (draft.md), copied exactly:\n\nBEGIN DOCUMENT\n# Jam mornings in the hall kitchen\n\nFrom September, any member can book the hall kitchen and make a batch of jam for the stall.\n\n## Booking\n\nBook a three-hour morning slot on the kitchen calendar. A batch costs £4 towards sugar and jars, paid into the tin.\n\n## What is in the kitchen\n\nThe preserving pan, a jam funnel, a ladle, a sugar thermometer and tongs are in the tall cupboard. Jars and new lids are in the crate under the hatch. A batch uses 1.5 kg of fruit and 1.5 kg of sugar and fills ten 340 g jars, 2.4 kg of jam in all.\n\n## Making a batch\n\n1. Wash the fruit, cut it up and simmer it in the pan with a little water until soft.\n2. Add the sugar, stir until it has dissolved, then boil hard for 15 minutes.\n3. Check with the flake test.\n4. Ladle the jam into the jars through the funnel and put the lids on.\n5. Wash the jars in hot soapy water and dry them in the oven.\n6. Label each jar with the fruit and the date and put the batch on the stall shelf.\n\n| | |\n|---|---|\n| Fruit | 1.5 kg |\n| Sugar | 1.5 kg |\n| Hard boil | 8 minutes |\n\n## Before you leave\n\nWash the pan, funnel and ladle, wipe the worktops and put everything back in the tall cupboard.\nEND DOCUMENT\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "good-experienced-role-alone",
+      "expect": "pass",
+      "output": "Please review the sheet in draft.md before it is pinned up in a hall kitchen. You have not seen it before, and that is the point: judge only what is on the page.\n\nIt is for members who joined the circle this year. None of them has made jam before. Follow the steps in order as one of them would on the morning. Then read it again as someone who has made jam for years and has taught others would: what would that person make sure a newcomer knew before starting, and does the page say it?\n\nThe author's question: could one of them make a batch on their own, using only this page? Answer that first, then give a short list of what would go wrong, worst first, with a short quote for each and the smallest fix. If something they would need is not on the page, say what is missing rather than supplying it.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-leaks-private-context",
+      "expect": "fail",
+      "fails": [
+        "not_contains"
+      ],
+      "output": "You are reviewing a one-page sheet before it goes to its readers. Judge only what is on the page.\n\nDocument to review: draft.md.\n\nReader: members who joined the circle this year and have never made jam.\n\nThe hall committee is looking for a reason to start charging, so look hard at anything about leaving the kitchen clean. List what would go wrong, worst first, each with a short quote, what goes wrong for the reader, and the smallest fix. Do not rewrite the sheet.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-drops-reader",
+      "expect": "fail",
+      "fails": [
+        "regex"
+      ],
+      "output": "You are reviewing a one-page sheet before it goes to its readers. Judge only what is on the page, and do not rely on anything you know about the circle from elsewhere.\n\nDocument to review: draft.md.\n\nList what would go wrong for the people who read it, worst first, each with a short quote, what goes wrong for them, and the smallest fix. Do not rewrite the sheet, and do not add facts the sheet does not contain. Finish with one line saying whether the sheet is ready to go up.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-prewritten-omission",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "You are reviewing a one-page sheet before it goes to its readers. Judge only what is on the page.\n\nDocument to review: draft.md.\n\nReader: members who joined the circle this year and have never made jam.\n\nThe sheet never says how hot the oven should be, so start there. List what would go wrong, worst first, each with a short quote, what goes wrong for the reader, and the smallest fix. Do not rewrite the sheet.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-role-with-checklist",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "You are reviewing a one-page sheet before it goes to its readers. Judge only what is on the page.\n\nDocument to review: draft.md.\n\nReader: members who joined the circle this year and have never made jam.\n\nRead it as an experienced jam maker checking sterilising and whether the lids seal. List what would go wrong, worst first, each with a short quote, what goes wrong for the reader, and the smallest fix. Do not rewrite the sheet.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    },
+    {
+      "name": "trap-prewritten-order",
+      "expect": "fail",
+      "fails": [
+        "not_regex"
+      ],
+      "output": "You are reviewing a one-page sheet before it goes to its readers. Judge only what is on the page.\n\nDocument to review: draft.md.\n\nReader: members who joined the circle this year and have never made jam.\n\nCheck whether the jars are washed before the jam is ladled in. List what would go wrong, worst first, each with a short quote, what goes wrong for the reader, and the smallest fix. Do not rewrite the sheet.\n",
+      "reply": "Saved to out/reviewer-prompt.md."
+    }
+  ]
+}

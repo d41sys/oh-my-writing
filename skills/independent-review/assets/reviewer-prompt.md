@@ -1,110 +1,86 @@
-Load when: sending a draft to an independent reviewer (fresh session, ideally a different model family).
+Load when: writing the prompt for an independent reviewer (a fresh session, ideally a different model family), whether the author will send it or this skill runs it.
 
 # Reviewer prompt
 
-Fill every required `{{placeholder}}`. A line marked *(optional)* stays only when the author's request or the material states its value; otherwise delete the whole line. Never fill it from a guess, from today's date, or from what such documents usually need. Send the text inside the fence as the reviewer's whole prompt, in a new session, with read-only access.
+Write the prompt as a short brief from one person to another: plain sentences, built from the author's request and notes, in the author's words. It is not a form. A prompt that reads like a filled-in template gets a template review, and every line the notes do not support is an instruction nobody gave. The brief itself is usually 120 to 250 words; the document follows it.
 
-## Before you send
+## What goes in
 
-Check the filled prompt against this list. Remove anything that matches.
+In this order, each as a sentence or a short paragraph:
 
-- A statement of what the writer wants, hopes, or meant the text to do.
+1. **What the document is and what is about to happen to it** ("a one-page set-up guide, about to go to stallholders").
+2. **Who reads it**: what they know, what they do not, and how and when they get it. Take this from the notes and add no trait the notes do not give.
+3. **What the reader has to do or decide after reading**, with its date when the notes give one.
+4. **The question**, in the author's own words when the author asked one about the reader. If the author gave none: could this reader do that using only this document, and where would they go wrong?
+5. **How to read it**, in two or three general sentences. First as that reader would, through what they would actually do, noting where they would get stuck, be misled or have to guess; that includes parts that disagree with each other, figures that do not add up, a weekday that does not match its date, and a step that needs something the reader does not have yet. Then as someone who has done this task many times and has shown newcomers how: what would that person make sure this reader knew before starting, and does the page say it? A beginner does not know what to ask, so an omission that could hurt them or waste their work counts even when no question names it. Keep both sentences general: name the experienced role by the task only, give it no list of things to check, and do not tailor either sentence to what you saw in the draft.
+6. **What to send back**: the form and length the author asked for (a short list, a table, half a page). If the author did not say: the problems this reader would hit, worst first, each with a short quote, what goes wrong for the reader, and a fix when the page allows one. Always add the rule on missing facts: the reviewer uses what it knows to see what is missing or risky, never to fill the gap. When the reader needs something the page does not give (a limit, a time, a contact, a safety step), the reviewer names what the author must supply and does not state the value or the procedure itself. If nothing would stop or mislead the reader, the reviewer says so.
+7. **The document**, whole, copied character for character under its file name, after the brief. Give a path instead only when it is too long to paste or is not text.
+
+Add one sentence for each of these only when the request or the notes state it: sources the document must agree with (as paths the reviewer opens, never your summary), a rubric or the criteria the reader judges by, a limit the document must meet (word count, format, venue rule), the day the reader reads it when the text has dates without a year, and the review language when it differs from the document's. Never fill one from a guess, from today's date, or from what such documents usually need.
+
+## What stays out
+
+- What the writer wants, hopes or meant the text to do, and anything else about the writer, their organisation's disputes, process, tools or model.
 - A summary or paraphrase of the draft written by you.
 - Earlier versions, earlier findings, or a list of changes and fixes.
-- Any hint of the verdict you want, or reassurance or warnings about weak spots.
+- Any hint of the verdict you want, and reassurance or warnings about weak spots, even as "check X carefully".
 - Leading questions ("is the opening strong?", "isn't this clear?").
-- Anything about the writer's process, tools, or model.
 - A rule or warning that names a kind of gap you saw in the draft ("do not assume a form exists", "internal committee names"): it is a finding written in advance, however general it sounds.
-- An experienced-reader role that arrives with a list of things to check ("an accountant who will look at the VAT figures"): give the role only.
+- A named reviewer persona, a list of questions the reader must be able to answer, or a checklist, unless the notes give it. The reviewer reads as the reader and then as someone experienced in the task; neither role comes with a list.
+- Lines for a machine: a model-id line, a language line, a fixed verdict line. They belong only to the run described under "When this skill runs the review".
 - Confidential or unpublished material the owner has not cleared to leave this session (see step 3 of the skill).
 
-Allowed: who reads the text, what that reader knows and needs, the role of someone experienced in the task (the role only), the author's own question about what the reader can understand or do, what the reader must be able to answer after reading, a reading date and hard constraints (length, format, venue, house style) when the request or the material states them, sources the text must agree with, the rubric, and the output format below. Not allowed: the draft's known weak spots, even as "check X carefully"; derive the reader's questions from the reader's job, not from what you already see missing.
+## Example
 
-## The prompt
+Notes say: stallholders new to the market get this guide by email the week before; the author asks "could someone who has never traded here set up on time from this alone?" and wants a short list.
 
 ```
-You are reviewing this document on behalf of its intended reader, as
-{{EXPERIENCED_READER}} would: someone who knows this kind of task well and is
-checking whether this reader, with only what they already know, could act on
-the document safely and correctly. You have not seen how it was written.
-Judge only what is on the page.
+I'd like an independent read of the set-up guide below before it goes out to
+stallholders.
 
-Document to review ({{ARTIFACT_FILE_NAME}}), copied exactly:
+The people who get it are trading at this market for the first time. It
+arrives by email the week before their first Saturday, and they will set up
+from it on the day without anyone to ask.
 
-BEGIN DOCUMENT
-{{ARTIFACT_TEXT_VERBATIM}}
-END DOCUMENT
+The question is: could someone who has never traded here set up on time from
+this guide alone?
 
-Read these directly; do not rely on any summary:
-- Sources the document must agree with (optional): {{SOURCE_PATHS}}
-- Rubric (optional): {{RUBRIC_PATH_OR_TEXT}}
+Please read it as one of them would, going through what they would actually
+do from arriving to opening, and note anywhere they would get stuck, be
+misled or have to guess. That includes parts that disagree with each other,
+figures that do not add up, a weekday that does not match its date, and a
+step that needs something they will not have yet.
 
-Reader: {{WHO_THEY_ARE_AND_WHAT_THEY_ALREADY_KNOW}}
-After reading, the reader has to: {{READER_NEXT_ACTION_OR_DECISION}}
-The question this review answers: {{REVIEW_QUESTION}}
-Questions the reader must be able to answer from the page (optional):
-{{READER_NEEDS}}
-Hard constraints (optional): {{LENGTH_FORMAT_VENUE_STYLE_RULES}}
-The reader reads this on (optional): {{READING_DATE}}
-Review in this language: {{REVIEW_LANGUAGE}}
+Then read it once more as someone who has run a stall here for years and has
+helped newcomers through their first morning. What would that person make
+sure a first-timer knew before the day, and does the guide say it?
 
+Send back a short list, worst first. For each item quote the line, say what
+would go wrong for the stallholder, and suggest a fix if the guide itself
+makes one possible. Use what you know to spot what is missing or risky, not
+to fill it in: if the guide leaves out something they need, tell me what we
+have to add and leave the times, rules and procedures to us, even ones you
+are sure of. If nothing would trip them up, say so.
+
+The guide (setup-guide.md):
+
+<the whole guide, copied exactly>
+```
+
+## When this skill runs the review
+
+When you send the prompt yourself and must record the result, add these two lines at the end of the brief, before the document. Leave them out of a prompt the author will send, unless the author asks for a verdict line.
+
+```
 Open your reply with one line: Reviewer-Model: <your own model id, or unknown>
-
-Do not edit any file or rewrite the document. Use what you know to see what is
-missing or risky, never to fill a gap: when the reader needs a fact the page
-does not give (a limit, a time, a contact, a safety step), say what the author
-must supply; do not state the value or the procedure yourself.
-
-1. Answer the review question above first, in one or two plain sentences.
-2. Read the whole document once more for what a careful reader would catch:
-   sections that disagree with each other, figures and totals that do not
-   add up, a weekday that does not match its date, steps in an order the
-   reader cannot follow, and steps that need something the reader will not
-   have yet.
-3. Then ask what someone experienced in this task would make sure this reader
-   knows before starting, and whether the page says it. A beginner may not
-   know to ask; an omission that could hurt them or waste their work is a
-   problem even if no reader question names it.
-4. List the problems this reader would actually hit, worst first: what stops
-   them acting at all, then what makes them act wrongly, then what slows them
-   down. For each, give a short exact quote (or the section), what goes wrong
-   for the reader, and the smallest fix. A problem that one fix solves is one
-   item, even if it shows in two places. A reader question the page does not
-   answer is a problem in this list; so is a date without a year or a relative
-   date the reading date cannot place. Call a full date past only after
-   comparing its day, month and year with the reading date. Name date
-   problems; do not repair them. A fix adds no fact the document does not
-   contain; if something is missing, say what the author must supply. If
-   sources were given, include anything that differs from them; if a rubric
-   was given, score each criterion with a reason.
-   Report only real problems. If none would make the reader act wrongly or
-   stall, say "no critical or major findings".
-5. Then one line: Read: <all of the document | the sections you read>
-   Finish with one line, exactly:
-   VERDICT: ready | revise
+End with one line saying how much of the document you read, then one line, exactly: VERDICT: ready | revise
 ```
 
-## Placeholder notes
-
-| Placeholder | Fill with | Do not fill with |
-|---|---|---|
-| `WHO_THEY_ARE_AND_WHAT_THEY_ALREADY_KNOW` | role, background, vocabulary they have | what you wish they believed |
-| `EXPERIENCED_READER` | a role, not a person: whoever normally does this task for this reader, trains them in it, or answers their questions about it ("a payroll clerk who handles new starters", "a shift supervisor who trains new staff") | a role followed by what to check, or a role chosen to match a weakness you saw in the draft |
-| `READER_NEXT_ACTION_OR_DECISION` | the concrete act: approve, run, apply, reply | the conclusion you want them to reach |
-| `REVIEW_QUESTION` | the author's own question about the reader, in the author's words, when it asks what the reader can understand or do from the page ("could a new volunteer do this from the page alone?"); if the author gave none: could this reader take the next action using only this document, and where would they go wrong? | a question that names a part of the draft or a suspected weak spot, the writer's hopes, or the verdict wanted |
-| `READER_NEEDS` | three to five questions anyone in that role would ask before acting, in plain words, one per line (funding call: what it costs, what it commits us to, by when, how success is judged; instructions: what to have ready, what each step does, how to know it worked) | questions that name the draft's gaps, the writer's worries or an expected answer |
-| `ARTIFACT_FILE_NAME` | the document's file name or path, so findings can be traced back to it | a description of the document |
-| `ARTIFACT_TEXT_VERBATIM` | the whole document, copied character for character, so a reviewer in a new session needs none of your files. Only when it is too long to paste or is not text, replace the BEGIN/END block with its path and tell the reviewer to open it | an excerpt, a summary, or a tidied copy |
-| `READING_DATE` | the day the reader reads the text, only when the request or the material fixes that day (a dated letter, a notice sent on a known day) and the text has dates without a year or relative dates; when readers get it on different days or nobody states the day, delete the line, and the reviewer flags relative dates it cannot place | today's date by default, the date you are working, or a guess |
-| `LENGTH_FORMAT_VENUE_STYLE_RULES` | limits the author or the material states: word or page limit, format, venue, house style | rules you think suit the genre or the reader ("plain English", "keep it short") |
-| `SOURCE_PATHS` | files, raw data, spec | your summary of them |
-| `RUBRIC_PATH_OR_TEXT` | a filled rubric; calibrated or labelled `calibration: none` | a rubric invented to fit the verdict |
-
-If the reply has no `VERDICT:` line, or ends before it, treat it as `revise` and a failed review, and rerun it in a new session. If the `Read:` line names less than the whole document, the verdict covers only those parts.
+Give the reviewer read-only access. If the reply has no `VERDICT:` line, or ends before it, treat it as `revise` and a failed review, and rerun it in a new session. If the reviewer read less than the whole document, the verdict covers only those parts. If a rubric was given, the reviewer scores each criterion with a reason.
 
 ## Variant: rejection memo (High depth, or after a review that approved everything)
 
-Two separate sessions, neither the writer's. Use the same header block as above (reader, constraints, sources). The writer's defence of the text is never given to either session.
+Two separate sessions, neither the writer's. Each gets the same brief (reader, limits, sources) and the document. The writer's defence of the text is never given to either session.
 
 Session 1, the attacker:
 
