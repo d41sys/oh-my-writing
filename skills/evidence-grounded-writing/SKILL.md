@@ -1,10 +1,10 @@
 ---
 name: evidence-grounded-writing
-description: Writes and checks claims against evidence. Builds a claims ledger, sets claim strength to what the evidence supports, separates causal from correlational wording, checks comparisons, numbers and statistics (including against result files), audits whether each citation supports its sentence, keeps quotes honest, replaces vague attribution with named sources, places uncertainty where it matters, and flags health, legal or finance statements for verification. Use when asked to "fact-check this", "check my claims", "audit the citations", "are these numbers right", "tone down the overclaiming", "cut what we cannot support", "add sources", "is this claim supported", "build a claims ledger", or "write a literature synthesis", and when asked to cut down an abstract or results paragraph the user already wrote ("make this abstract shorter"). Drafting from notes, even to a word limit, goes to structured-drafting; an audit for AI phrasing to anti-slop-editing; a whole-draft reader review to independent-review.
+description: Use when a text's facts, numbers, comparisons or citations must be checked against evidence. Covers a fact-check, a citation audit, fixing overclaiming or causal wording, checking figures against result files, a literature synthesis, a policy or research brief written from a report or studies, and shortening an abstract or results passage without losing what the data supports.
 license: MIT
 compatibility: Optional helper script needs Python 3.10+ standard library; the skill works without it.
 metadata:
-  version: "1.12"
+  version: "1.13"
   skill-author: d41sys
 ---
 
