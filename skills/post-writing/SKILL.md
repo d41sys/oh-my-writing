@@ -3,7 +3,7 @@ name: post-writing
 description: Drafts, restructures and repurposes public posts such as blog posts, long-form articles, essays, newsletters, short email sequences, LinkedIn and X or Threads posts and threads, launch announcements, and adaptations of one piece across channels. Starts from the reader and one takeaway, opens on a concrete artifact, keeps proof ahead of adjectives, and never invents anecdotes, metrics, clients, links or calls to action. Use when asked to write or improve a blog post, article, essay, newsletter issue, LinkedIn post, X thread, announcement, launch post, welcome or onboarding email series, or to turn one piece into several channel versions.
 license: MIT
 metadata:
-  version: "1.14"
+  version: "1.15"
   skill-author: d41sys
 ---
 
@@ -27,6 +27,7 @@ Not for:
 - Capturing or applying a specific author's voice: use `author-voice`.
 - A fresh-reader or adversarial review of a finished post: use `independent-review`.
 - Turning raw notes into a brief and outline for a long piece, or co-writing interactively: use `structured-drafting`.
+- A post or article written from a transcript, an interview or a chat log: read `structured-drafting` first for how to treat the source (remarks not meant for print, a figure the speaker corrected, gaps), then come back here for the form.
 - Claim strength, citations and number checking in depth: use `evidence-grounded-writing`.
 - Decision, research or market reports and executive summaries, and the blameless incident post-mortem document written for a team: use `report-writing`. A public blog post that tells an incident's story stays here.
 - Documentation pages for a product or tool (tutorials, how-to guides, READMEs, PR descriptions, release notes, changelogs): use `technical-docs`. A blog-style how-to post and a launch announcement post stay here.
