@@ -2,7 +2,7 @@ Load when: sending a draft to an independent reviewer (fresh session, ideally a 
 
 # Reviewer prompt
 
-Fill every required `{{placeholder}}`. A line marked *(optional)* stays only when the author's request or the material states its value; otherwise delete the whole line. Never fill it from a guess, from today's date, or from what such documents usually need. Send the text inside the fence as the reviewer's whole prompt, in a new session, with read-only access.
+Fill every required `{{placeholder}}`. A line marked *(optional)* stays only when the author's request or the material states its value; otherwise delete the whole line. Never fill it from a guess, from today's date, or from what such documents usually need. The reading-date line is the usual slip: a weekday or a relative day in the request ("on Friday", "next week") is not a date. Keep that line only when the document itself has a date the reader must place (one without a year, or "tomorrow"), and then copy the author's own words for the day; never work out a calendar date. Send the text inside the fence as the reviewer's whole prompt, in a new session, with read-only access.
 
 ## Before you send
 
