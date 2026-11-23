@@ -66,7 +66,7 @@
 <section class="section" id="cases" aria-labelledby="cases-title">
   <div class="wrap">
     <h2 id="cases-title">Eleven skills, every use case</h2>
-    <p class="lead">Fictional briefs. Actual saved excerpts, or the request from the usage guide.</p>
+    <p class="lead">Fictional briefs. Each saved run shows the full text the same model wrote without the skill and with it.</p>
     <nav class="jump" aria-label="Skills">
       <a href="#anti-slop-editing">anti-slop-editing</a>
       <a href="#author-voice">author-voice</a>
@@ -91,21 +91,7 @@
         <details name="cases" open>
           <summary>Remove the AI-sounding phrasing</summary>
           <p class="ask"><b>Request:</b> <q>This notice for our orchard volunteer day sounds machine-written. Remove the AI-sounding phrasing from notice.md and save the edited version to out/notice.md.</q></p>
-          <div class="pair">
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>Here's the thing: last year was big. The best part? Volunteers planted 340 saplings in 6 hours, up from 215 saplings in 9 hours in 2025, which is 125 more trees in 3 fewer hours.</p>
-              </blockquote>
-            </figure>
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>Last year, volunteers planted 340 saplings in 6 hours, up from 215 saplings in 9 hours in 2025, which is 125 more trees in 3 fewer hours.</p>
-              </blockquote>
-              <p class="gap">Saved beside it: [VERIFY: "Last year" and "up from ... in 2025" read as the same year. Which year had 340 saplings, and which had 215?]</p>
-            </figure>
-          </div>
+          <div class="pair" data-case="anti-slop-editing/heldout2-orchard-notice-keeps-quote-and-figures" data-run="v-fix2-opus/r1"></div>
           <p class="trace">Skill: anti-slop-editing. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/anti-slop-editing/heldout2-orchard-notice-keeps-quote-and-figures.json">View test fixture</a></p>
         </details>
 
@@ -113,21 +99,7 @@
         <details name="cases">
           <summary>Just tell me what sounds off</summary>
           <p class="ask"><b>Request:</b> <q>Read draft.md and just tell me what sounds off. Don't change the text. Put your notes in out/report.md.</q></p>
-          <div class="pair">
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>Experts say indexing should take under a second. Lumen's ranker is robust to typos (edit distance up to 2), and it indexed 1.2 million documents in 41 seconds on a laptop.</p>
-              </blockquote>
-            </figure>
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>L5 "Experts say indexing should take under a second." Vague attribution: the text never says which experts.</p>
-                <p>Left alone: "robust to typos (edit distance up to 2)". Here "robust" is backed by a specific number.</p>
-              </blockquote>
-            </figure>
-          </div>
+          <div class="pair" data-case="anti-slop-editing/detect-only-report" data-run="v-fix2-opus/r1"></div>
           <p class="trace">Skill: anti-slop-editing. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/anti-slop-editing/detect-only-report.json">View test fixture</a></p>
         </details>
 
@@ -135,22 +107,7 @@
         <details name="cases">
           <summary>Fix only what needs fixing</summary>
           <p class="ask"><b>Request:</b> <q>Check notes.md for AI-sounding phrasing and clean up whatever needs it. Save the result to out/notes.md.</q></p>
-          <div class="pair">
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>I think the retry limit of 5 is too high. It hid the lock problem for a week. I'd drop it to 3 and let the alert fire, but that's Dmitri's call, since he owns the pager rotation.</p>
-                <p>The estimator in the report is robust to outliers (breakdown point 0.5), so the median delay of 38 minutes isn't skewed by the two runs that stalled overnight.</p>
-              </blockquote>
-            </figure>
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>I think the retry limit of 5 is too high. It hid the lock problem for a week. I'd drop it to 3 and let the alert fire, but that's Dmitri's call, since he owns the pager rotation.</p>
-                <p>The estimator in the report is robust to outliers (breakdown point 0.5), so the median delay of 38 minutes isn't skewed by the two runs that stalled overnight.</p>
-              </blockquote>
-            </figure>
-          </div>
+          <div class="pair" data-case="anti-slop-editing/clean-text-no-edit" data-run="v-fix2-opus/r1"></div>
           <p class="trace">Skill: anti-slop-editing. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/anti-slop-editing/clean-text-no-edit.json">View test fixture</a></p>
         </details>
       </div>
@@ -166,21 +123,7 @@
         <details name="cases">
           <summary>Build my voice profile</summary>
           <p class="ask"><b>Request:</b> <q>samples.md has four blog posts I wrote for our cooperative. I want a voice profile I can hand to a writer or an AI so they can write in my voice later. I'd also like to sound a bit more formal in funding proposals, but I haven't written one yet. Save the profile to out/voice-profile.md.</q></p>
-          <div class="pair">
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>We spent the morning on a rim that was bent in a way nobody could explain (it was not the rim's fault). We fixed it anyway. The stand stays.</p>
-              </blockquote>
-            </figure>
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>Ends on a short, flat statement of how things stand now, in present tense; no moral, summary, question or call to action</p>
-              </blockquote>
-              <p class="gap">Saved beside it: [ASK AUTHOR: What should "a bit more formal" change in proposals: drop the deadpan asides and "which is fine", longer point-first paragraphs, headings?]</p>
-            </figure>
-          </div>
+          <div class="pair" data-case="author-voice/profile-from-samples-no-biography" data-run="v-final5-opus/r1"></div>
           <p class="trace">Skill: author-voice. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/author-voice/profile-from-samples-no-biography.json">View test fixture</a></p>
         </details>
 
@@ -188,20 +131,7 @@
         <details name="cases">
           <summary>Write the October letter like me</summary>
           <p class="ask"><b>Request:</b> <q>samples.md has three letters I sent to my honey subscribers, and notes.md has what happened this season. Write the October letter so it sounds like me, and save it to out/letter.md.</q></p>
-          <div class="pair">
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>Two were lost over the summer. Why, I don't know yet; nobody has looked at them.</p>
-              </blockquote>
-            </figure>
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>Two were lost over the summer. I don't know why yet, and nobody has looked at them, so I won't guess.</p>
-              </blockquote>
-            </figure>
-          </div>
+          <div class="pair" data-case="author-voice/heldout2-beekeeper-letter-no-invented-cause" data-run="v-final5-opus/r1"></div>
           <p class="trace">Skill: author-voice. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/author-voice/heldout2-beekeeper-letter-no-invented-cause.json">View test fixture</a></p>
         </details>
 
@@ -223,22 +153,7 @@
         <details name="cases">
           <summary>Draft a neighbourhood newsletter profile</summary>
           <p class="ask"><b>Request:</b> <q>Here is my chat with Rutendo in chat.md. Write a short profile (around 300 words) from it for our neighbourhood newsletter and save it to out/profile.md. I'm away today, so don't wait for me.</q></p>
-          <div class="pair">
-            <!-- source: evals/cases/structured-drafting/heldout-speaker-revises-figure.json, files["chat.md"], Rutendo's first answer -->
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>Rutendo: We have about 120 members. Hmm, no, that was the spring number. We are at 164 since the summer drive.</p>
-              </blockquote>
-            </figure>
-            <!-- output: evals/results/v-fix2-opus/runs/structured-drafting__heldout-speaker-revises-figure__omp__skill__r1/workspace/out/profile.md, paragraph 2, second sentence -->
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>It had about 120 members in the spring, and after the summer membership drive it now has 164.</p>
-              </blockquote>
-            </figure>
-          </div>
+          <div class="pair" data-case="structured-drafting/heldout-speaker-revises-figure" data-run="v-fix2-opus/r1"></div>
           <p class="trace">Skill: structured-drafting. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/structured-drafting/heldout-speaker-revises-figure.json">View test fixture</a></p>
         </details>
 
@@ -246,22 +161,7 @@
         <details name="cases">
           <summary>Turn meeting notes into an update</summary>
           <p class="ask"><b>Request:</b> <q>Turn my meeting notes in notes.md into a short update for the wider product team and save it to out/update.md. They need to know where we stand and what is needed from them.</q></p>
-          <div class="pair">
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>Nobody said which option to pick. Decision wanted by Oct 24 because quarter-end invoicing starts Oct 31.</p>
-                <p>Possible help from Norwind Software (their API team) on the export format. NOT confirmed - Lena is still waiting for a reply.</p>
-              </blockquote>
-            </figure>
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>We have two options and have not picked one:</p>
-                <p>We also asked Norwind Software's API team for help with the export format. That is not confirmed; we are still waiting for their reply.</p>
-              </blockquote>
-            </figure>
-          </div>
+          <div class="pair" data-case="structured-drafting/meeting-notes-no-recommendation" data-run="v-fix2-opus/r1"></div>
           <p class="trace">Skill: structured-drafting. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/structured-drafting/meeting-notes-no-recommendation.json">View test fixture</a></p>
         </details>
 
@@ -269,21 +169,7 @@
         <details name="cases">
           <summary>Write a 3-sentence email</summary>
           <p class="ask"><b>Request:</b> <q>Write a 3-sentence email to Ravi from notes.md and save it to out/email.md.</q></p>
-          <div class="pair">
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>not done: 2 of 5 vendors left, Halden and Orrin</p>
-                <p>want his OK to share the draft with legal first? not sure he wants legal in yet, so ask him</p>
-              </blockquote>
-            </figure>
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>The Q3 vendor audit you asked for on Friday isn't finished yet: three of the five vendors are done, and Halden and Orrin are still left. I can send you the full audit by Wednesday the 22nd. Before then, are you OK with me sharing the draft with legal first, or would you rather keep them out of it for now?</p>
-              </blockquote>
-            </figure>
-          </div>
+          <div class="pair" data-case="structured-drafting/tiny-email-no-scaffolding" data-run="v-fix2-opus/r1"></div>
           <p class="trace">Skill: structured-drafting. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/structured-drafting/tiny-email-no-scaffolding.json">View test fixture</a></p>
         </details>
 
@@ -311,22 +197,7 @@
         <details name="cases">
           <summary>Check every citation</summary>
           <p class="ask"><b>Request:</b> <q>I wrote a short section in draft.md and pasted the passages behind each citation into sources.md. Check whether every citation really backs the sentence it is attached to. Don't change the draft; write what you find to out/audit.md.</q></p>
-          <div class="pair">
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>Melatonin supplements fix this problem for most night workers [2].</p>
-                <p>In a placebo-controlled trial of 40 night-shift workers, 3 mg of melatonin shortened the average time to fall asleep by 7 minutes compared with placebo. No difference in total sleep time was detected.</p>
-              </blockquote>
-            </figure>
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>I checked 4 citation uses. 1 supports its sentence, 2 support it only in part, and 1 does not support it. The draft is unchanged.</p>
-              </blockquote>
-              <p class="gap">Saved beside it: [VERIFY: check the full Halden trial for any responder analysis or sleep-duration subgroup]</p>
-            </figure>
-          </div>
+          <div class="pair" data-case="evidence-grounded-writing/citation-audit-unsupported-ref" data-run="v-final5-opus/r1"></div>
           <p class="trace">Skill: evidence-grounded-writing. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/evidence-grounded-writing/citation-audit-unsupported-ref.json">View test fixture</a></p>
         </details>
 
@@ -334,23 +205,7 @@
         <details name="cases">
           <summary>Fix what we can't back up</summary>
           <p class="ask"><b>Request:</b> <q>This paragraph goes to the school board next week (evidence notes are in notes.md). Fix whatever we can't actually back up, change as little else as you can, and save the revised paragraph to out/revised.md.</q></p>
-          <div class="pair">
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>Our analysis of 1,240 students at Harlow Academy shows that the tutoring app Quillpad raises exam scores.</p>
-                <p>Studies show that apps like this always improve results, which proves that every school should adopt Quillpad.</p>
-              </blockquote>
-            </figure>
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>Our analysis of 1,240 students at Harlow Academy links the tutoring app Quillpad with higher spring-exam scores.</p>
-                <p>Usage was voluntary, and we did not collect prior grades, so this analysis cannot show whether Quillpad caused the difference.</p>
-              </blockquote>
-              <p class="gap">Saved beside it: [ASK AUTHOR: outside source for the claim about other tutoring apps]</p>
-            </figure>
-          </div>
+          <div class="pair" data-case="evidence-grounded-writing/causal-overclaim-fix" data-run="v-final5-opus/r1"></div>
           <p class="trace">Skill: evidence-grounded-writing. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/evidence-grounded-writing/causal-overclaim-fix.json">View test fixture</a></p>
         </details>
 
@@ -358,20 +213,7 @@
         <details name="cases">
           <summary>Tighten this paragraph a lot</summary>
           <p class="ask"><b>Request:</b> <q>This paragraph in draft.md is far too wordy for our abstract. Tighten it a lot, keep it as one paragraph, and save the tighter version to out/tight.md.</q></p>
-          <div class="pair">
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>It is important to note that, on the basis of the results that were obtained in the experiments carried out in our laboratory, the compound known as Rilvastat may possibly be able to reduce the growth of tumours in mice, although it should also be pointed out that this effect was observed in a total of 24 mice given 10 mg/kg daily for 28 days, and that the compound has not been tested in humans.</p>
-              </blockquote>
-            </figure>
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>In our laboratory experiments, Rilvastat may have reduced tumour growth in 24 mice given 10 mg/kg daily for 28 days; it has not been tested in humans.</p>
-              </blockquote>
-            </figure>
-          </div>
+          <div class="pair" data-case="evidence-grounded-writing/concise-keeps-hedge-and-scope" data-run="v-final4-omp/r1"></div>
           <p class="trace">Skill: evidence-grounded-writing. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/evidence-grounded-writing/concise-keeps-hedge-and-scope.json">View test fixture</a></p>
         </details>
 
@@ -399,21 +241,7 @@
         <details name="cases">
           <summary>Review it yourself, honestly</summary>
           <p class="ask"><b>Request:</b> <q>Using brief.md, write a newsletter notice of about 120 words and save it to out/notice.md. Then review it yourself and tell me honestly whether it is good enough to send. I only have this chat: there is no second model, reviewer or other session I can use. Save your review to out/review.md.</q></p>
-          <div class="pair">
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>Fernside Co-op's Saturday tool library is moving from the old garage to the community hall on 5 April.</p>
-              </blockquote>
-            </figure>
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>Self-check only. Independent review: not run (no second model, reviewer or fresh session available).</p>
-                <p>Which year is 5 April? In 2026 it was a Sunday and in 2027 it is a Monday. The library opens on Saturdays, so the first session in the hall will not fall on 5 April itself. Members may turn up on the wrong day.</p>
-              </blockquote>
-            </figure>
-          </div>
+          <div class="pair" data-case="independent-review/self-review-not-independent" data-run="v-fix-opus/r1"></div>
           <p class="trace">Skill: independent-review. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/independent-review/self-review-not-independent.json">View test fixture</a></p>
         </details>
 
@@ -421,22 +249,7 @@
         <details name="cases">
           <summary>Write a reviewer prompt</summary>
           <p class="ask"><b>Request:</b> <q>I'm about to send draft.md to the directors and I want a proper outside check first. Please prepare the prompt I will give to an independent reviewer (a separate session, a different model if I have one). My background notes are in author-notes.md. Save the prompt to out/reviewer-prompt.md.</q></p>
-          <div class="pair">
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>My goal: I want them to say the argument is airtight so I can skip the extra meeting.</p>
-                <p>Please make sure the reviewer is not too harsh on the cost section, the numbers are rough.</p>
-              </blockquote>
-            </figure>
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>The question this review answers: could this reader take that decision using only this document, and where would they go wrong?</p>
-                <p>Use what you know to see what is missing or risky, never to fill a gap: when the reader needs a fact the page does not give (a limit, a time, a contact, a safety step), say what the author must supply; do not state the value or the procedure yourself.</p>
-              </blockquote>
-            </figure>
-          </div>
+          <div class="pair" data-case="independent-review/reviewer-prompt-no-leak" data-run="v-fix-opus/r1"></div>
           <p class="trace">Skill: independent-review. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/independent-review/reviewer-prompt-no-leak.json">View test fixture</a></p>
         </details>
 
@@ -444,21 +257,7 @@
         <details name="cases">
           <summary>Triage the reviewer's findings</summary>
           <p class="ask"><b>Request:</b> <q>A reviewer sent four findings on draft.md; they are in findings.md. Sort them for me: which ones I should act on, which to skip and why, and which I need to answer myself. Save it to out/triage.md.</q></p>
-          <div class="pair">
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>The notice does not show why the change is good for residents. Add a resident quote and a concrete figure for how much time or money the new schedule saves, so the benefit is real.</p>
-              </blockquote>
-            </figure>
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>Reject as written. The draft has no resident quote and no savings figure, and writing either would mean making it up. Leave the draft unchanged unless you can supply them.</p>
-                <p>F4: Do you have an approved quote from a resident and a time or money saving figure with its basis (who measured it, and how)? If yes, send them and I'll add one short benefit sentence. If not, leave the benefit out.</p>
-              </blockquote>
-            </figure>
-          </div>
+          <div class="pair" data-case="independent-review/triage-rejects-unsupported-fix" data-run="v-fix-opus/r1"></div>
           <p class="trace">Skill: independent-review. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/independent-review/triage-rejects-unsupported-fix.json">View test fixture</a></p>
         </details>
       </div>
@@ -474,24 +273,7 @@
         <details name="cases">
           <summary>Turn a post into a thread</summary>
           <p class="ask"><b>Request:</b> <q>Turn the blog post in post.md into a thread for X. Save the thread to out/thread.md. No hashtags.</q></p>
-          <div class="pair">
-            <!-- source: evals/cases/post-writing/blog-to-x-thread-keeps-conditions.json, files["post.md"], paragraphs 4 and 6 after the byline -->
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>The gain likely comes from skipping the network download, but we measured end-to-end times only, so the split between restore time and a quieter network is unknown to us. If you want that split, time the restore step separately.</p>
-                <p>A few limits matter if you want to copy this. We tested Linux runners only, and one repository only, a service of moderate size. A monorepo may look different, because its cache is far larger and a local disk fills quickly.</p>
-              </blockquote>
-            </figure>
-            <!-- output: evals/results/v-fix2-opus/runs/post-writing__blog-to-x-thread-keeps-conditions__omp__skill__r1/workspace/out/thread.md, posts 6/ and 8/ without their numbers -->
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>The gain most likely comes from skipping the network download. We only measured end-to-end times, though, so we can't say how much came from restore time vs. a quieter network. If you want that split, time the restore step separately.</p>
-                <p>Limits if you want to copy this: Linux runners only, and a single repository, a moderately sized service. A monorepo may look different, since its cache is far larger and a local disk fills quickly.</p>
-              </blockquote>
-            </figure>
-          </div>
+          <div class="pair" data-case="post-writing/blog-to-x-thread-keeps-conditions" data-run="v-fix2-opus/r1"></div>
           <p class="trace">Skill: post-writing. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/post-writing/blog-to-x-thread-keeps-conditions.json">View test fixture</a></p>
         </details>
 
@@ -499,22 +281,7 @@
         <details name="cases">
           <summary>Write a LinkedIn post</summary>
           <p class="ask"><b>Request:</b> <q>Write a LinkedIn post of about 130 words from the pilot notes in notes.md and save it to out/post.md. No hashtags.</q></p>
-          <div class="pair">
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>Free-school-meal uptake did not change: 71% before, 71% after.</p>
-                <p>We think the waste drop is because the kitchen cooks what was ordered, but we did not test that. We have no data on what was binned.</p>
-              </blockquote>
-            </figure>
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>Free-school-meal uptake did not change: 71% before, 71% after.</p>
-                <p>We think waste dropped because the kitchen now cooks what was ordered, but we did not test that, and we have no data on what was binned.</p>
-              </blockquote>
-            </figure>
-          </div>
+          <div class="pair" data-case="post-writing/heldout2-school-lunch-linkedin-keeps-null-result" data-run="v-fix2-opus/r1"></div>
           <p class="trace">Skill: post-writing. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/post-writing/heldout2-school-lunch-linkedin-keeps-null-result.json">View test fixture</a></p>
         </details>
 
@@ -522,21 +289,7 @@
         <details name="cases">
           <summary>Announce Fernpath 2.4, with a story</summary>
           <p class="ask"><b>Request:</b> <q>Write a LinkedIn post announcing Fernpath 2.4 from launch_notes.md. Make it relatable with a story, people engage more with stories. Save the post to out/post.md and put any notes for me in your reply.</q></p>
-          <div class="pair">
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>Customers: nobody is running 2.4 in production yet. The first beta group starts next month.</p>
-              </blockquote>
-            </figure>
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>Nobody runs 2.4 in production yet. Our first beta group starts next month.</p>
-              </blockquote>
-              <p class="gap">Saved beside it: [ASK AUTHOR: a real moment, e.g. a team or your own experience with slow cold starts in short-lived containers]</p>
-            </figure>
-          </div>
+          <div class="pair" data-case="post-writing/launch-post-story-requested-none-given" data-run="v-fix2-opus/r1"></div>
           <p class="trace">Skill: post-writing. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/post-writing/launch-post-story-requested-none-given.json">View test fixture</a></p>
         </details>
 
@@ -544,22 +297,7 @@
         <details name="cases">
           <summary>Draft this week's newsletter</summary>
           <p class="ask"><b>Request:</b> <q>Draft this week's newsletter issue from notes.md, around 250 words, and save it to out/issue.md.</q></p>
-          <div class="pair">
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>MAIN IDEA (the whole issue is about this): write the rollback step before you write the deploy step.</p>
-                <p>Over the 14 deploys since the change, we rolled back twice and both took under 10 minutes.</p>
-              </blockquote>
-            </figure>
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>So we changed the order. Every deploy plan now starts with a rollback section, and it is written before the deploy steps.</p>
-                <p>We have done 14 deploys since the change. Two of them needed a rollback, and both rollbacks took under 10 minutes, compared with 47 the time we had nothing written down.</p>
-              </blockquote>
-            </figure>
-          </div>
+          <div class="pair" data-case="post-writing/newsletter-one-idea-three-tangents" data-run="v-fix2-opus/r1"></div>
           <p class="trace">Skill: post-writing. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/post-writing/newsletter-one-idea-three-tangents.json">View test fixture</a></p>
         </details>
 
@@ -567,21 +305,7 @@
         <details name="cases">
           <summary>Write the blog article from outline</summary>
           <p class="ask"><b>Request:</b> <q>Write the blog article from outline.md, about 800 words, in my voice (I'm Mara). Save it to out/article.md.</q></p>
-          <div class="pair">
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>Why, my guess only: small tickets have fewer ways to go wrong. I did not measure review time.</p>
-              </blockquote>
-            </figure>
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>As for why, this part is my guess only: small tickets have fewer ways to go wrong. I did not measure review time, so I cannot say how much of the cycle time change came from review and how much from everything else.</p>
-              </blockquote>
-              <p class="gap">Saved beside it: [ASK AUTHOR: more material to reach ~800 words, e.g. how the team decides where to split a ticket, how many tickets the calendar sync and notifications features became, how Dev now presents forecasts]</p>
-            </figure>
-          </div>
+          <div class="pair" data-case="style/article-800-from-outline" data-run="v-fix2-opus/r1"></div>
           <p class="trace">Skill: post-writing. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/style/article-800-from-outline.json">View test fixture</a></p>
         </details>
       </div>
@@ -597,24 +321,7 @@
         <details name="cases">
           <summary>Write a board report from notes</summary>
           <p class="ask"><b>Request:</b> <q>Write the Q2 operations report for the Larkhall Food Bank board from notes.md and save it to out/report.md.</q></p>
-          <div class="pair">
-            <!-- source: evals/cases/report-writing/heldout2-food-bank-definition-change.json, files["notes.md"], two lines under "Households served" -->
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>Q2 (April to June): 1,840, up 320 on Q1.</p>
-                <p>NOTE: from 1 May the counting changed. Q1 and April counted every visit as a household served. From May each household is counted once a month, however often it visits. I have not recalculated Q2 the old way.</p>
-              </blockquote>
-            </figure>
-            <!-- output: evals/results/v-fix2-opus/runs/report-writing__heldout2-food-bank-definition-change__omp__skill__r1/workspace/out/report.md, first body paragraph; gap from out/open-questions.md item 1 -->
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>The Q2 households-served figure of 1,840 cannot be read as 1,840 households, nor compared directly with Q1's 1,520. From 1 May the count changed: Q1 and April counted every visit as a household served, while May and June count each household once a month however often it visits. Q2 therefore mixes the two methods, and it has not been recalculated the old way.</p>
-              </blockquote>
-              <p class="gap">Saved beside it: [ASK AUTHOR: Can Q2 (or Q1) be recalculated under one counting method?]</p>
-            </figure>
-          </div>
+          <div class="pair" data-case="report-writing/heldout2-food-bank-definition-change" data-run="v-fix2-opus/r1"></div>
           <p class="trace">Skill: report-writing. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/report-writing/heldout2-food-bank-definition-change.json">View test fixture</a></p>
         </details>
 
@@ -622,21 +329,7 @@
         <details name="cases">
           <summary>One-page executive summary, with recommendation</summary>
           <p class="ask"><b>Request:</b> <q>Marc wants a one-page executive summary for Friday's leadership review, with our recommendation. My analysis notes are in analysis-notes.md. Save the summary to out/exec-summary.md.</q></p>
-          <div class="pair">
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>I have not settled on whether to scale calls or roll the checklist out more widely. Each has a weakness, and I have not talked to Marc about budget.</p>
-              </blockquote>
-            </figure>
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>The analysis does not yet settle whether to scale onboarding calls or roll the in-app checklist out more widely.</p>
-              </blockquote>
-              <p class="gap">Saved beside it: [ASK AUTHOR: the notes support scaling onboarding calls or rolling out the in-app checklist, and say the choice is not settled; which do you recommend?]</p>
-            </figure>
-          </div>
+          <div class="pair" data-case="report-writing/exec-summary-no-stated-recommendation" data-run="v-fix2-opus/r1"></div>
           <p class="trace">Skill: report-writing. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/report-writing/exec-summary-no-stated-recommendation.json">View test fixture</a></p>
         </details>
 
@@ -644,21 +337,7 @@
         <details name="cases">
           <summary>Decision memo on which vendor</summary>
           <p class="ask"><b>Request:</b> <q>Dana needs a decision memo on which route-optimization vendor to pick. The pilot notes are in vendor-notes.md. Write the memo and save it to out/memo.md.</q></p>
-          <div class="pair">
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>Pilot window: 24 Mar to 6 Apr (14 days). That fortnight included the Easter freeze, and volume averaged 14,000 requests per day.</p>
-              </blockquote>
-            </figure>
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>The two vendors were piloted in different fortnights at different volumes, and nobody has run them side by side. That rules out ranking them on latency or on-time rate.</p>
-              </blockquote>
-              <p class="gap">Saved beside it: [ASK AUTHOR: can Quillon's p95 latency be measured at 40,000 requests per day before 30 April, and who would run it?]</p>
-            </figure>
-          </div>
+          <div class="pair" data-case="report-writing/vendor-comparison-mismatched-windows" data-run="v-fix2-opus/r1"></div>
           <p class="trace">Skill: report-writing. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/report-writing/vendor-comparison-mismatched-windows.json">View test fixture</a></p>
         </details>
 
@@ -666,21 +345,7 @@
         <details name="cases">
           <summary>Write the post-mortem</summary>
           <p class="ask"><b>Request:</b> <q>Write up the 7 Oct checkout outage as a post-mortem for the engineering all-hands. The raw notes from the incident channel are in incident-notes.md. Save it to out/postmortem.md.</q></p>
-          <div class="pair">
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>Tomás Reyes (on call) deployed a config change to the payments service. He pushed the wrong config, his error.</p>
-              </blockquote>
-            </figure>
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>The on-call engineer deploys a config change to the payments service. Checkout starts failing.</p>
-                <p>Three conditions let a one-field mistake become a 49-minute outage: nothing between the schema and production rejects a null timeout, a page reaches a single person for its first 30 minutes, and the rollback runbook describes a deploy tool we no longer use.</p>
-              </blockquote>
-            </figure>
-          </div>
+          <div class="pair" data-case="report-writing/postmortem-blameless-from-blame-notes" data-run="v-fix2-opus/r1"></div>
           <p class="trace">Skill: report-writing. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/report-writing/postmortem-blameless-from-blame-notes.json">View test fixture</a></p>
         </details>
       </div>
@@ -696,21 +361,7 @@
         <details name="cases">
           <summary>Write a README</summary>
           <p class="ask"><b>Request:</b> <q>I want to share csvtrim.py with the rest of the team. Write a README for it and save it to out/README.md.</q></p>
-          <div class="pair">
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>Standard library only. Tested with Python 3.11.</p>
-              </blockquote>
-            </figure>
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>It is a single Python script that uses only the standard library. It has been tested with Python 3.11.</p>
-              </blockquote>
-              <p class="gap">Saved beside it: [ASK AUTHOR: which license applies, and who owns/maintains the script? Neither is stated, so the README leaves both out.]</p>
-            </figure>
-          </div>
+          <div class="pair" data-case="technical-docs/readme-from-cli-script" data-run="v-final5-opus/r1"></div>
           <p class="trace">Skill: technical-docs. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/technical-docs/readme-from-cli-script.json">View test fixture</a></p>
         </details>
 
@@ -718,22 +369,7 @@
         <details name="cases">
           <summary>Getting-started guide with every option</summary>
           <p class="ask"><b>Request:</b> <q>tailr is our small log-tailing tool (tailr.py, with tailr.toml.example for the settings). Write a getting-started guide for new users that also lists every config option. Save the guide to out/getting-started.md; put any other page you decide to create in out/ as well.</q></p>
-          <div class="pair">
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>tailr configuration. Only "path" is required.</p>
-                <p>How often to check the file for new data, in milliseconds. 50 to 5000. Default: 250.</p>
-              </blockquote>
-            </figure>
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>Only `path` is required. Any option you leave out uses its default.</p>
-                <p>The example file recommends 50–5000; tailr does not enforce this range.</p>
-              </blockquote>
-            </figure>
-          </div>
+          <div class="pair" data-case="technical-docs/mixed-tutorial-and-reference-request" data-run="v-fix2-opus/r1"></div>
           <p class="trace">Skill: technical-docs. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/technical-docs/mixed-tutorial-and-reference-request.json">View test fixture</a></p>
         </details>
 
@@ -741,25 +377,7 @@
         <details name="cases">
           <summary>Write a pull request description</summary>
           <p class="ask"><b>Request:</b> <q>Write the pull request description for the change in changes.diff, using my notes in notes.md. Save it to out/PR.md.</q></p>
-          <div class="pair">
-            <!-- source: evals/cases/technical-docs/pr-body-no-invented-results.json, files["notes.md"], paragraphs 3 and 4 -->
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>Only ran `pytest tests/test_retry.py` locally: 4 passed. I have not run the rest of the suite and CI has not started yet.</p>
-                <p>The nightly sync uses attempts=12, so it will now wait at most 30 seconds between tries instead of growing. That is what I want, but it is a change for that job.</p>
-              </blockquote>
-            </figure>
-            <!-- output: evals/results/v-fix2-opus/runs/technical-docs__pr-body-no-invented-results__omp__skill__r1/workspace/out/PR.md, "Testing" and "What could break" sections; gap from out/open-questions.md line 2 -->
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>I ran `pytest tests/test_retry.py` locally: 4 passed. I have not run the rest of the suite, and CI has not run yet.</p>
-                <p>The cap is on by default, so every caller that does not pass `max_delay` changes behaviour with no change to its call. The nightly sync uses `attempts=12`; it will now wait at most 30 seconds (plus jitter) between tries instead of continuing to grow. That is intended, but it is a behaviour change for that job.</p>
-              </blockquote>
-              <p class="gap">Saved beside it: [UNTESTED] Full test suite and CI not yet run.</p>
-            </figure>
-          </div>
+          <div class="pair" data-case="technical-docs/pr-body-no-invented-results" data-run="v-fix2-opus/r1"></div>
           <p class="trace">Skill: technical-docs. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/technical-docs/pr-body-no-invented-results.json">View test fixture</a></p>
         </details>
 
@@ -767,23 +385,7 @@
         <details name="cases">
           <summary>Write the CHANGELOG entry</summary>
           <p class="ask"><b>Request:</b> <q>Write the CHANGELOG entry for sluicer 3.2.0 from commits.txt and my notes in notes.md and save it to out/CHANGELOG-entry.md. It goes into the repo as it is.</q></p>
-          <div class="pair">
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>The timeout change will break people on slow VPNs: anyone relying on the 30 s default now has to pass --timeout 30 or set SLUICER_TIMEOUT=30.</p>
-                <p>Dry run covers `sluicer push` only. It does not cover `sluicer pull` yet.</p>
-              </blockquote>
-            </figure>
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>The default network timeout is now 10 s (was 30 s). On slow connections such as VPNs, pass `--timeout 30` or set `SLUICER_TIMEOUT=30` to keep the old behaviour.</p>
-                <p>`sluicer push --dry-run`. Dry run is not available for `sluicer pull`.</p>
-              </blockquote>
-              <p class="gap">Saved beside it: [ASK AUTHOR: What is the release date? The heading says "unreleased" until it is fixed.]</p>
-            </figure>
-          </div>
+          <div class="pair" data-case="technical-docs/heldout2-changelog-breaking-default" data-run="v-fix2-opus/r2"></div>
           <p class="trace">Skill: technical-docs. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/technical-docs/heldout2-changelog-breaking-default.json">View test fixture</a></p>
         </details>
       </div>
@@ -799,21 +401,7 @@
         <details name="cases">
           <summary>Add numbers to my résumé</summary>
           <p class="ask"><b>Request:</b> <q>Here is my resume in resume.md. The bullets feel flat. Make them more impressive by adding numbers and metrics, and save the improved resume to out/resume.md.</q></p>
-          <div class="pair">
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>Handled the billing-escalation queue.</p>
-              </blockquote>
-            </figure>
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>Handled the billing-escalation queue, working customers' payment and billing issues through to resolution.</p>
-              </blockquote>
-              <p class="gap">Saved beside it: [ASK AUTHOR: billing-escalation queue: tickets per week, your share of the queue, and any change in resolution time or backlog?]</p>
-            </figure>
-          </div>
+          <div class="pair" data-case="career-documents/resume-numbers-request" data-run="v-final5-opus/r1"></div>
           <p class="trace">Skill: career-documents. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/career-documents/resume-numbers-request.json">View test fixture</a></p>
         </details>
 
@@ -821,21 +409,7 @@
         <details name="cases">
           <summary>Tailor my résumé to a job</summary>
           <p class="ask"><b>Request:</b> <q>Tailor my resume in resume.md to the job posting in job.md. Save only the tailored resume to out/resume.md and put any comments for me in your reply, not in the file.</q></p>
-          <div class="pair">
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>Production experience with Kubernetes</p>
-                <p>Docker, AWS ECS, Jenkins, Ansible, Prometheus, Grafana, Bash, Linux</p>
-              </blockquote>
-            </figure>
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>Docker, Jenkins, AWS ECS, Prometheus, Grafana, Ansible, Linux, Bash</p>
-              </blockquote>
-            </figure>
-          </div>
+          <div class="pair" data-case="career-documents/tailor-missing-skill" data-run="v-final5-opus/r1"></div>
           <p class="trace">Skill: career-documents. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/career-documents/tailor-missing-skill.json">View test fixture</a></p>
         </details>
 
@@ -843,22 +417,7 @@
         <details name="cases">
           <summary>Write a cover letter</summary>
           <p class="ask"><b>Request:</b> <q>Write a cover letter for the job in job.md from my resume in resume.md. Save the letter to out/cover-letter.md. I will sign it myself, so leave no placeholders in the file; put any comments for me in your reply.</q></p>
-          <div class="pair">
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>College of Nurses of Ontario: application submitted 3 September 2026, decision pending.</p>
-                <p>Led a change to the intake form that cut the average wait to first assessment from 48 minutes to 31 minutes, a drop of 17 minutes.</p>
-              </blockquote>
-            </figure>
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>I submitted my application to the College of Nurses of Ontario on 3 September 2026, and the decision is pending.</p>
-                <p>I led a change to our intake form that brought the average wait to first assessment down from 48 minutes to 31.</p>
-              </blockquote>
-            </figure>
-          </div>
+          <div class="pair" data-case="career-documents/heldout2-cover-letter-licence-pending" data-run="v-final5-opus/r1"></div>
           <p class="trace">Skill: career-documents. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/career-documents/heldout2-cover-letter-licence-pending.json">View test fixture</a></p>
         </details>
 
@@ -866,21 +425,7 @@
         <details name="cases">
           <summary>Research statement paragraph</summary>
           <p class="ask"><b>Request:</b> <q>Paragraph 2 of my research statement (what I did, why it matters, where it goes next) from notes.md. Keep it concise and tell the story of what I did. statement-sample.md is a colleague's that worked; match how it reads. Save it to out/rs-para2.md.</q></p>
-          <div class="pair">
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>Result: 17 of 19 undated logs now sit in a ~10-year window (+-5).</p>
-                <p>Checked on the 60 logs where date known (held out): 54 right (90%).</p>
-              </blockquote>
-            </figure>
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>That places 17 of the 19 undated logs within about a decade, and it was right for 54 of 60 logs whose dates are known.</p>
-              </blockquote>
-            </figure>
-          </div>
+          <div class="pair" data-case="reader/research-statement-undated-logbooks" data-run="v-fix2-opus/r1"></div>
           <p class="trace">Skill: career-documents. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/reader/research-statement-undated-logbooks.json">View test fixture</a></p>
         </details>
 
@@ -888,21 +433,7 @@
         <details name="cases">
           <summary>Email a professor before applying</summary>
           <p class="ask"><b>Request:</b> <q>I want to email Prof. Marchetti before I apply to her program. My details are in about_me.md and her public page is in prof.md. Write the first email and save it to out/email.md. Keep it short, she gets a lot of mail and doesn't know me.</q></p>
-          <div class="pair">
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>What I have read of hers: the abstract and methods section of her 2025 paper on seagrass carbon storage. I have not read her other work.</p>
-              </blockquote>
-            </figure>
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>I have read the abstract and methods of your 2025 paper on seagrass carbon stocks after a marine heatwave, and I would like to work on coastal vegetation and carbon storage in your group.</p>
-              </blockquote>
-              <p class="gap">Saved beside it: [ASK AUTHOR: what did you take from the abstract and methods of her 2025 paper? Does any part of it connect to your drone mapping, for example the method used to measure carbon stocks?]</p>
-            </figure>
-          </div>
+          <div class="pair" data-case="career-documents/cold-email-professor" data-run="v-final5-opus/r1"></div>
           <p class="trace">Skill: career-documents. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/career-documents/cold-email-professor.json">View test fixture</a></p>
         </details>
       </div>
@@ -918,23 +449,7 @@
         <details name="cases">
           <summary>Status report from a folder</summary>
           <p class="ask"><b>Request:</b> <q>Everything about the Reminderline pilot is in the docs/ folder. Write a status report for the practice board from those documents: plain professional tone, with a diagram where it helps. Save the report to out/report.md. I'm away today, so don't wait for me.</q></p>
-          <div class="pair">
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>As of 10 October we had spent 21,900 GBP out of the 24,000 GBP budget.</p>
-                <p>The consent wording has not been started because I am not sure whose job it is, and patients cannot be texted until it exists.</p>
-              </blockquote>
-            </figure>
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>Two figures exist for spend to 10 October: 18,400 GBP in the budget sheet and 21,900 GBP in the 13 October status email, against an approved budget of 24,000 GBP. They differ by 3,500 GBP and are not reconciled.</p>
-                <p>The delivery lead, Casimir Brandt, wrote on 13 October that it had not been started "because I am not sure whose job it is". No owner is named in the project records.</p>
-              </blockquote>
-              <p class="gap">Saved beside it: [ASK AUTHOR: who owns the consent wording, and has it started or finished since 13 October?]</p>
-            </figure>
-          </div>
+          <div class="pair" data-case="project-report/heldout-folder-spend-conflict-owner-gap" data-run="v-final5-opus/r1"></div>
           <p class="trace">Skill: project-report. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/project-report/heldout-folder-spend-conflict-owner-gap.json">View test fixture</a></p>
         </details>
 
@@ -942,23 +457,7 @@
         <details name="cases">
           <summary>Final report from an untidy folder</summary>
           <p class="ask"><b>Request:</b> <q>Helpdesk One is finished. Everything we have about it is in the folder docs/, I did not clean it up. Please write the final project report for Sofia Marin, who sponsored the project. Professional tone, and well-designed diagrams please. Save the report to out/report.md and also an HTML version to out/report.html that I can read and print. I'm not available today, so don't wait for me.</q></p>
-          <div class="pair">
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>Supersedes plan v1 of 2 February 2026. Reason: change request CR-03 (phone integration) approved on 5 March 2026.</p>
-                <p>Budget: $92,000 (the $85,000 of plan v1 plus $7,000 for CR-03).</p>
-              </blockquote>
-            </figure>
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>CR-03, approved on 5 March, added a phone integration for $7,000 and moved go-live three weeks, from 1 June to 22 June.</p>
-                <p>Actual spend was $82,800 against $92,000 approved, $9,200 less (82,800 − 92,000).</p>
-              </blockquote>
-              <p class="gap">Saved beside it: [ASK AUTHOR: Who owns decommissioning the legacy North and South ticket systems, and by when?]</p>
-            </figure>
-          </div>
+          <div class="pair" data-case="project-report/noisy-folder-final-report" data-run="v-final5-opus/r1"></div>
           <p class="trace">Skill: project-report. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/project-report/noisy-folder-final-report.json">View test fixture</a></p>
         </details>
 
@@ -966,22 +465,7 @@
         <details name="cases">
           <summary>Short status report for Ben</summary>
           <p class="ask"><b>Request:</b> <q>The website refresh documents are in the folder docs/. Write a short project status report from them for Ben, with a diagram only if it helps. Save it to out/report.md. I'm not available today, so don't wait for me.</q></p>
-          <div class="pair">
-            <figure class="source">
-              <figcaption>Source excerpt</figcaption>
-              <blockquote>
-                <p>The new site pages are 8 of 12 done. Copy for the last 4 pages is waiting on legal review; I asked on 5 September and have no date back. Hosting stays at $240 per month. Next: I will publish the 8 finished pages on 19 September.</p>
-              </blockquote>
-            </figure>
-            <figure class="output">
-              <figcaption>Saved excerpt</figcaption>
-              <blockquote>
-                <p>As of 12 September 2026, the date of the latest record on file, 8 of the 12 new site pages are done. Copy for the other 4 is waiting on legal review: Amira Haddad asked legal on 5 September and had no date back.</p>
-                <p>the 8 finished pages were planned to go live on 19 September. The records do not say whether that happened.</p>
-              </blockquote>
-              <p class="gap">Saved beside it: [ASK AUTHOR: Did Amira publish the 8 finished pages on 19 September 2026?]</p>
-            </figure>
-          </div>
+          <div class="pair" data-case="project-report/small-folder-short-report-no-padding" data-run="v-final5-opus/r3"></div>
           <p class="trace">Skill: project-report. <a href="https://github.com/d41sys/oh-my-writing/blob/main/evals/cases/project-report/small-folder-short-report-no-padding.json">View test fixture</a></p>
         </details>
       </div>
@@ -1008,7 +492,7 @@
         <details name="cases">
           <summary>Confusion matrices for three datasets</summary>
           <p class="ask"><b>Request:</b> <q>confusion matrices for the three datasets</q></p>
-          <p class="gets"><b>You get:</b> figures drawn from your result files or results table. LaTeX text is used when `latex` is installed.</p>
+          <p class="gets"><b>You get:</b> figures drawn from your result files or results table. LaTeX text is used when <code>latex</code> is installed.</p>
         </details>
 
         <details name="cases">
