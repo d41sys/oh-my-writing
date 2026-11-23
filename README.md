@@ -59,6 +59,20 @@ A pre-registered run with a placebo (each skill's name and layout with generic a
 
 **Tests:** about 850 unit tests cover the skill contract, every helper script, the grader and the installer. Run `for t in tests/*/; do uv run --with pytest --with pyyaml --with numpy --with matplotlib python -m pytest "$t" -q; done`.
 
+## Site
+
+The project site lives in `site/` (Vite, vanilla JS). It is separate from the installer above and is not published to npm.
+
+Developing the website needs Node 20.19.x or Node 22.12 and newer. Installing the writing skills themselves still works on Node 18.
+
+```bash
+cd site
+npm install
+npm run dev      # local dev server
+npm run build    # static files in site/dist, relative asset paths
+npm run preview  # serve site/dist locally
+```
+
 ## Contributing
 
 Bug reports with a real failing example, new benchmark cases and rule fixes are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, skill rules (your own wording, general rules not test fixes, no invented facts) and how to add a case.

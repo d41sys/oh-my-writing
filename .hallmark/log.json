@@ -1,0 +1,28 @@
+[
+ {
+  "shape": "Workbench",
+  "theme": "Editorial",
+  "axes": "light/display-condensed/chromatic-green",
+  "hero": "Ledge",
+  "nav": "slab",
+  "footer": "colophon block",
+  "imagery": "none",
+  "photos": [],
+  "entry": "actual edit",
+  "fingerprint": "Left-margin|Asymmetric spans|Hairline|Solid|None|None",
+  "sections": [
+   "proof",
+   "assignment disclosures",
+   "skill index",
+   "install band",
+   "colophon"
+  ],
+  "signature": "Verbatim deleted phrases followed by the saved revision",
+  "waived": [
+   "26b"
+  ],
+  "prompt": "Show the use cases of Oh My Writing in Vite",
+  "date": "2026-11-23",
+  "mode": "build"
+ }
+]
