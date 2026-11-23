@@ -17,7 +17,7 @@ for (const [, id, run] of html.matchAll(/data-case="([^"]+)" data-run="([^"]+)"/
     return existsSync(new URL(path, root)) ? read(path) : undefined;
   };
   cases[id] = {
-    files: spec.files ?? {},
+    description: spec.description, checks: spec.checks, files: spec.files ?? {},
     without: read(dir('baseline') + spec.output), withoutQuestions: asked('baseline'),
     with: read(dir('skill') + spec.output), withQuestions: asked('skill'),
   };

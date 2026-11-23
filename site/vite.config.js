@@ -25,13 +25,26 @@ export default {
     name: 'saved-runs',
     transformIndexHtml(html) {
       const cases = JSON.parse(readFileSync(new URL('cases.json', import.meta.url), 'utf8'));
+      let n = 0;
       return html.replace(/<div class="pair" data-case="([^"]+)" data-run="[^"]+"><\/div>/g, (_, id) => {
         const c = cases[id];
         if (!c) throw new Error(`cases.json has no ${id}; run node collect-cases.mjs`);
+        n += 1;
         const sources = Object.entries(c.files).map(([name, text]) =>
           `<details class="given"><summary>Given: ${esc(name)}</summary>${body(name, text.trim())}</details>`).join('');
+        // A check without a note shows its own settings, so no rule is hidden.
+        const checks = c.checks.map(({ type, note, ...rest }) =>
+          `<li><code>${esc(type)}</code> ${esc(note ?? JSON.stringify(rest))}</li>`).join('');
         const same = c.without === c.with ? '<p class="trace">The two saved texts are identical.</p>' : '';
-        return `${sources}<div class="pair">${doc('without', 'Without the skill', c.without, c.withoutQuestions)}${doc('output', 'With the skill', c.with, c.withQuestions)}</div>${same}`;
+        // Without scripting the tab row stays hidden and both panels show, one after the other.
+        return `<div class="views">
+<div class="tabs" role="tablist" aria-label="Views of this case" hidden>
+<button type="button" role="tab" id="tab-${n}-a" aria-controls="panel-${n}-a" aria-selected="true">Comparison</button>
+<button type="button" role="tab" id="tab-${n}-b" aria-controls="panel-${n}-b" aria-selected="false" tabindex="-1">Benchmark source</button>
+</div>
+<div role="tabpanel" id="panel-${n}-a" aria-labelledby="tab-${n}-a"><div class="pair">${doc('without', 'Without the skill', c.without, c.withoutQuestions)}${doc('output', 'With the skill', c.with, c.withQuestions)}</div>${same}</div>
+<div role="tabpanel" id="panel-${n}-b" aria-labelledby="tab-${n}-b"><p class="tag">What this benchmark case tests</p><p>${esc(c.description)}</p>${sources}<p class="tag">Checks the grader runs on the saved file</p><ul class="checks">${checks}</ul></div>
+</div>`;
       });
     },
   }],
