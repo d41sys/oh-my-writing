@@ -8,7 +8,7 @@ Verbatim prose is the share of our words inside 8-word runs that also occur in o
 
 | skill | max verbatim prose (source) | max verbatim code lines (source) | code lines |
 |---|---|---|---:|
-| anti-slop-editing | 0.6% (avoid-ai-writing) | 1.8% (K-Dense) | 978 |
+| anti-slop-editing | 0.6% (avoid-ai-writing) | 1.8% (K-Dense) | 984 |
 | author-voice | 0.1% (avoid-ai-writing) | 5.0% (K-Dense) | 299 |
 | career-documents | 0.1% (ResumeSkills) | 0.0% | 5 |
 | evidence-grounded-writing | 0.1% (K-Dense) | 6.0% (K-Dense) | 217 |
@@ -19,7 +19,7 @@ Verbatim prose is the share of our words inside 8-word runs that also occur in o
 | results-visualization | 0.2% (K-Dense) | 4.1% (K-Dense) | 340 |
 | structured-drafting | 0.2% (mattpocock) | 0.0% | 47 |
 | technical-docs | 0.2% (ECC) | 0.0% | 27 |
-| *control (unrelated skills)* | 0.0% mean | 0.2% of 2995 lines | |
+| *control (unrelated skills)* | 0.0% mean | 0.2% of 3001 lines | |
 
 Longest shared prose runs (words) and code runs (5+ lines), for a human to check:
 
@@ -42,10 +42,10 @@ Single code lines found in a source, commonest first (judge for yourself whether
 | our file | line (whitespace removed) | found in |
 |---|---|---|
 | `skills/anti-slop-editing/scripts/fact_diff.py:41` | `from__future__importannotations` | avoid-ai-writing |
-| `skills/anti-slop-editing/scripts/fact_diff.py:670` | `if__name__=="__main__":` | avoid-ai-writing |
-| `skills/anti-slop-editing/scripts/fact_diff.py:618` | `return"\n".join(out)` | K-Dense |
-| `skills/anti-slop-editing/scripts/fact_diff.py:644` | `parser=argparse.ArgumentParser(` | ECC |
-| `skills/anti-slop-editing/scripts/fact_diff.py:653` | `args=parser.parse_args(argv)` | ECC |
+| `skills/anti-slop-editing/scripts/fact_diff.py:679` | `if__name__=="__main__":` | avoid-ai-writing |
+| `skills/anti-slop-editing/scripts/fact_diff.py:627` | `return"\n".join(out)` | K-Dense |
+| `skills/anti-slop-editing/scripts/fact_diff.py:653` | `parser=argparse.ArgumentParser(` | ECC |
+| `skills/anti-slop-editing/scripts/fact_diff.py:662` | `args=parser.parse_args(argv)` | ECC |
 
 ## Same idea
 
@@ -53,25 +53,25 @@ Share of our sentences whose best sentence has embedding cosine at or above 0.75
 
 | skill | one source, at the cut (source) | one source, upper estimate | any source: at the cut | any source: estimate |
 |---|---|---|---:|---:|
-| anti-slop-editing | 2.3% (avoid-ai-writing) | 7.7% (avoid-ai-writing) | 3.8% | 16.4% |
-| author-voice | 0.6% (humanizer) | 6.0% (K-Dense) | 2.4% | 13.7% |
-| career-documents | 1.7% (ResumeSkills) | 6.1% (K-Dense) | 4.7% | 18.4% |
-| evidence-grounded-writing | 4.3% (K-Dense) | 16.5% (K-Dense) | 7.0% | 21.8% |
-| independent-review | 1.7% (ARIS) | 9.2% (K-Dense) | 3.8% | 18.0% |
+| anti-slop-editing | 2.2% (avoid-ai-writing) | 7.6% (avoid-ai-writing) | 3.7% | 16.0% |
+| author-voice | 0.6% (humanizer) | 6.1% (K-Dense) | 2.4% | 13.7% |
+| career-documents | 1.7% (ResumeSkills) | 6.2% (K-Dense) | 4.7% | 18.4% |
+| evidence-grounded-writing | 4.3% (K-Dense) | 16.4% (K-Dense) | 7.0% | 21.8% |
+| independent-review | 1.7% (ARIS) | 9.1% (K-Dense) | 3.8% | 17.8% |
 | post-writing | 1.6% (marketingskills) | 7.3% (marketingskills) | 3.9% | 16.5% |
 | project-report | 1.1% (K-Dense) | 11.8% (K-Dense) | 1.3% | 16.2% |
 | report-writing | 3.7% (K-Dense) | 13.4% (K-Dense) | 6.0% | 20.0% |
 | results-visualization | 1.3% (K-Dense) | 11.8% (K-Dense) | 1.3% | 14.3% |
-| structured-drafting | 1.4% (mattpocock) | 6.9% (K-Dense) | 4.2% | 18.0% |
-| technical-docs | 2.8% (K-Dense) | 11.9% (K-Dense) | 7.0% | 22.2% |
-| *control: median-size unrelated pool* (mean, max over skills) | 0.1%, 0.2% | 0.5%, 1.2% | n/a | n/a |
-| *control: whole unrelated pool* (mean, max over skills) | 0.1%, 0.3% | 1.2%, 3.0% | n/a | n/a |
+| structured-drafting | 1.4% (mattpocock) | 6.8% (K-Dense) | 4.3% | 18.1% |
+| technical-docs | 2.8% (K-Dense) | 11.9% (K-Dense) | 7.0% | 22.1% |
+| *control: median-size unrelated pool* (mean, max over skills) | 0.1%, 0.2% | 0.5%, 1.1% | n/a | n/a |
+| *control: whole unrelated pool* (mean, max over skills) | 0.1%, 0.3% | 1.2%, 2.9% | n/a | n/a |
 
 ## Rule inventory
 
 | our skill | source | source rules covered by our skill (firm / firm+likely) | covered by any of our skills | our rules that trace to the source (firm / firm+likely) |
 |---|---|---|---|---|
-| anti-slop-editing | avoid-ai-writing (92 rules) | 68.5% / 82.6% | 77.2% / 91.3% | 60.5% / 74.1% of 81 |
+| anti-slop-editing | avoid-ai-writing (92 rules) | 69.6% / 82.6% | 77.2% / 91.3% | 61.0% / 73.2% of 82 |
 | author-voice | humanizer (26 rules) | 15.4% / 26.9% | 65.4% / 88.5% | 11.9% / 31.0% of 42 |
 
 A source rule is *covered* when one unit of our files (a section, list item or table row) has cosine at or above the cut with it or a heading there names the same thing; an *our rule traces* when the same holds in the source's files. *Firm* is the precise cut, *likely* adds the lower cut.
