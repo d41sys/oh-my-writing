@@ -208,6 +208,32 @@ THEIRS = {
     "humanizer": ("blader__humanizer", ("SKILL.md",)),
 }
 PAIRS = [("anti-slop-editing", "avoid-ai-writing"), ("author-voice", "humanizer")]
+# The other nine skills against the source skill folder(s) that hold most of their sentence-level best matches
+# (cosine >= 0.60), chosen by hand from that count. Rules on both sides are topic headings, not catalogued patterns.
+FOLDER_PAIRS = [
+    ("career-documents", "jezweb resume-cover-letter", ("jezweb__claude-skills/plugins/writing/skills/resume-cover-letter",)),
+    ("evidence-grounded-writing", "K-Dense scientific-writing, citation-management",
+     ("K-Dense-AI__scientific-agent-skills/skills/scientific-writing",
+      "K-Dense-AI__scientific-agent-skills/skills/citation-management")),
+    ("independent-review", "ARIS rebuttal, Orchestra ml-paper-writing",
+     ("wanshuiyin__Auto-claude-code-research-in-sleep/skills/rebuttal",
+      "Orchestra-Research__AI-Research-SKILLs/20-ml-paper-writing/ml-paper-writing")),
+    ("post-writing", "marketingskills social", ("coreyhaines31__marketingskills/skills/social",)),
+    ("project-report", "K-Dense markdown-mermaid-writing",
+     ("K-Dense-AI__scientific-agent-skills/skills/markdown-mermaid-writing",)),
+    ("report-writing", "K-Dense market-research-reports",
+     ("K-Dense-AI__scientific-agent-skills/skills/market-research-reports",)),
+    ("results-visualization", "Orchestra academic-plotting",
+     ("Orchestra-Research__AI-Research-SKILLs/20-ml-paper-writing/academic-plotting",)),
+    ("structured-drafting", "mattpocock writing skills (in-progress)", ("mattpocock__skills/skills/in-progress",)),
+    ("technical-docs", "K-Dense markdown-mermaid-writing",
+     ("K-Dense-AI__scientific-agent-skills/skills/markdown-mermaid-writing",)),
+]
+
+
+def heading_rules(units: list[Unit]) -> list[Unit]:
+    """Level 2 to 4 section headings and bold-led list items: the generic notion of a rule for a folder pair."""
+    return [u for u in units if (u.kind == "section" and 2 <= u.level <= 4) or (u.kind == "item" and u.bold)]
 
 
 def md_units(files: list[Path], base: Path) -> dict[str, list[Unit]]:
@@ -243,6 +269,18 @@ def inventory(backend, root: Path, cache: Path, cuts: tuple[float, float]) -> li
         else:
             our_rules = (rules_items(own[f"skills/{ours}/SKILL.md"])
                          + trait_rows(own[f"skills/{ours}/references/trait-catalog.md"]))
+        out.append({
+            "ours": ours, "theirs": theirs,
+            "their_rules": their_rules, "our_rules": our_rules,
+            "covered": match_rules(backend, their_rules, flat_own, strong, ok),
+            "covered_any": match_rules(backend, their_rules, flat_all, strong, ok),
+            "traced": match_rules(backend, our_rules, flat_theirs, strong, ok),
+        })
+    for ours, theirs, folders in FOLDER_PAIRS:
+        files = [f for d in folders for f in sorted((cache / d).rglob("*.md")) if f.name != "README.md"]
+        flat_theirs = [u for us in md_units(files, cache).values() for u in us]
+        flat_own = [u for us in all_ours[ours].values() for u in us]
+        their_rules, our_rules = heading_rules(flat_theirs), heading_rules(flat_own)
         out.append({
             "ours": ours, "theirs": theirs,
             "their_rules": their_rules, "our_rules": our_rules,

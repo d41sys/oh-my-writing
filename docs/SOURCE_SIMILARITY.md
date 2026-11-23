@@ -73,8 +73,17 @@ Share of our sentences whose best sentence has embedding cosine at or above 0.75
 |---|---|---|---|---|
 | anti-slop-editing | avoid-ai-writing (92 rules) | 69.6% / 82.6% | 77.2% / 91.3% | 61.0% / 73.2% of 82 |
 | author-voice | humanizer (26 rules) | 15.4% / 26.9% | 65.4% / 88.5% | 11.9% / 31.0% of 42 |
+| career-documents | jezweb resume-cover-letter (32 rules) | 78.1% / 100.0% | 81.2% / 100.0% | 27.0% / 40.3% of 159 |
+| evidence-grounded-writing | K-Dense scientific-writing, citation-management (641 rules) | 25.0% / 39.6% | 41.0% / 60.4% | 51.0% / 71.7% of 145 |
+| independent-review | ARIS rebuttal, Orchestra ml-paper-writing (404 rules) | 20.3% / 31.2% | 47.8% / 67.3% | 40.4% / 54.3% of 94 |
+| post-writing | marketingskills social (269 rules) | 26.8% / 39.0% | 39.0% / 57.2% | 27.0% / 34.1% of 267 |
+| project-report | K-Dense markdown-mermaid-writing (754 rules) | 16.7% / 25.3% | 54.1% / 69.2% | 48.2% / 65.8% of 114 |
+| report-writing | K-Dense market-research-reports (154 rules) | 51.9% / 66.2% | 64.3% / 77.3% | 50.0% / 65.0% of 120 |
+| results-visualization | Orchestra academic-plotting (135 rules) | 26.7% / 39.3% | 50.4% / 72.6% | 48.6% / 67.6% of 37 |
+| structured-drafting | mattpocock writing skills (in-progress) (59 rules) | 28.8% / 45.8% | 45.8% / 59.3% | 15.2% / 27.7% of 112 |
+| technical-docs | K-Dense markdown-mermaid-writing (754 rules) | 30.8% / 44.7% | 54.1% / 69.2% | 59.0% / 69.9% of 173 |
 
-A source rule is *covered* when one unit of our files (a section, list item or table row) has cosine at or above the cut with it or a heading there names the same thing; an *our rule traces* when the same holds in the source's files. *Firm* is the precise cut, *likely* adds the lower cut.
+A source rule is *covered* when one unit of our files (a section, list item or table row) has cosine at or above the cut with it or a heading there names the same thing; an *our rule traces* when the same holds in the source's files. *Firm* is the precise cut, *likely* adds the lower cut. The first two rows compare catalogued patterns; the other nine compare topic headings of the source skill folder(s) that our sentences match most often, with cuts that were calibrated on the first two rows only.
 
 ## Method
 

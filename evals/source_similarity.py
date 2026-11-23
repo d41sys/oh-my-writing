@@ -1072,7 +1072,9 @@ def render_rules(w, x) -> None:
       "before its context profiles, plus the bold entries under Formatting and Sentence structure; for humanizer, its 26 "
       "numbered patterns; for anti-slop-editing, each `###` heading of `pattern-catalog.md` and each numbered rule in "
       "`SKILL.md`; for author-voice, each numbered rule in `SKILL.md` and each trait row of `trait-catalog.md`. The source "
-      "side of the trace is all units of the source's `SKILL.md` and, for avoid-ai-writing, `patterns.md`.")
+      "side of the trace is all units of the source's `SKILL.md` and, for avoid-ai-writing, `patterns.md`. The other nine "
+      "skills are paired with the source skill folder(s) holding most of their sentence-level best matches; there a rule "
+      "is a level 2 to 4 heading or a bold-led list item on either side, and the cuts above were not calibrated on them.")
     w("")
     w("| our skill | source | source rules | covered by our paired skill: firm / firm+likely | covered by any of our skills | "
       "our rules | our rules that trace to the source: firm / firm+likely |")
@@ -1203,7 +1205,9 @@ def render_docs(x) -> str:
     w("")
     w("A source rule is *covered* when one unit of our files (a section, list item or table row) has cosine at or above "
       "the cut with it or a heading there names the same thing; an *our rule traces* when the same holds in the source's "
-      "files. *Firm* is the precise cut, *likely* adds the lower cut.")
+      "files. *Firm* is the precise cut, *likely* adds the lower cut. The first two rows compare catalogued patterns; the "
+      "other nine compare topic headings of the source skill folder(s) that our sentences match most often, with cuts "
+      "that were calibrated on the first two rows only.")
     w("")
     w("## Method")
     w("")
