@@ -42,17 +42,11 @@ def tree(home):
     return out
 
 
-def make_old_install(home):
-    old = home / ".agents" / "skills" / "academic-writing"
-    old.mkdir(parents=True)
-    (old / "SKILL.md").write_text("old skill\n")
-    claude = home / ".claude" / "skills"
-    claude.mkdir(parents=True)
-    (claude / "academic-writing").symlink_to("../../.agents/skills/academic-writing")
-    cmds = home / ".claude" / "commands"
-    cmds.mkdir(parents=True)
-    (cmds / "academic-writing.md").write_text("old command\n")
-    return old
+def make_foreign(home):
+    foreign = home / ".claude" / "skills" / "author-voice"
+    foreign.mkdir(parents=True)
+    (foreign / "SKILL.md").write_text("mine\n")
+    return foreign
 
 
 def test_fresh_install_links_every_skill_per_host(home):
@@ -100,31 +94,6 @@ def test_copy_mode_makes_real_folders(home):
     assert not (home / ".agents" / "skills" / SKILLS[0]).exists()
 
 
-def test_old_academic_writing_moved_to_backup_not_deleted(home):
-    make_old_install(home)
-    r = run(home, "install", "--yes")
-    assert r.returncode == 0, r.stderr
-    assert not (home / ".agents" / "skills" / "academic-writing").exists()
-    assert not (home / ".claude" / "skills" / "academic-writing").is_symlink()
-    assert not (home / ".claude" / "commands" / "academic-writing.md").exists()
-    backups = list((home / ".oh-my-writing" / "backup").iterdir())
-    assert len(backups) == 1
-    b = backups[0]
-    assert (b / "agents-skills" / "academic-writing" / "SKILL.md").read_text() == "old skill\n"
-    assert (b / "claude-skills" / "academic-writing").is_symlink()
-    assert (b / "claude-commands" / "academic-writing.md").read_text() == "old command\n"
-
-
-def test_keep_academic_writing_flag(home):
-    old = make_old_install(home)
-    assert run(home, "install", "--yes", "--keep-academic-writing").returncode == 0
-    assert (old / "SKILL.md").exists()
-    assert (home / ".claude" / "skills" / "academic-writing").is_symlink()
-    assert not (home / ".oh-my-writing" / "backup").exists()
-    doc = run(home, "doctor")
-    assert "academic-writing" in doc.stdout and "Leftover" in doc.stdout
-
-
 def test_foreign_folder_blocks_install_without_force(home):
     foreign = home / ".claude" / "skills" / "author-voice"
     foreign.mkdir(parents=True)
@@ -167,37 +136,34 @@ def test_uninstall_removes_only_own_entries(home):
     assert not (home / ".oh-my-writing" / "skills").exists()
 
 
-def test_uninstall_restore_brings_academic_writing_back(home):
-    old = make_old_install(home)
-    assert run(home, "install", "--yes").returncode == 0
+def test_uninstall_restore_brings_backed_up_folder_back(home):
+    foreign = make_foreign(home)
+    assert run(home, "install", "--yes", "--force").returncode == 0
     r = run(home, "uninstall", "--restore", "--yes")
     assert r.returncode == 0, r.stderr
-    assert (old / "SKILL.md").read_text() == "old skill\n"
-    link = home / ".claude" / "skills" / "academic-writing"
-    assert link.is_symlink() and (link / "SKILL.md").read_text() == "old skill\n"
-    assert (home / ".claude" / "commands" / "academic-writing.md").read_text() == "old command\n"
+    assert not foreign.is_symlink() and (foreign / "SKILL.md").read_text() == "mine\n"
     assert not (home / ".oh-my-writing").exists()
-    assert not [p for p in (home / ".agents" / "skills").iterdir() if p.name != "academic-writing"]
+    assert not list((home / ".agents" / "skills").iterdir())
 
 
 def test_uninstall_without_restore_keeps_backup(home):
-    old = make_old_install(home)
-    assert run(home, "install", "--yes").returncode == 0
+    foreign = make_foreign(home)
+    assert run(home, "install", "--yes", "--force").returncode == 0
     assert run(home, "uninstall", "--yes").returncode == 0
-    assert not old.exists()
+    assert not foreign.exists()
     assert len(list((home / ".oh-my-writing" / "backup").iterdir())) == 1
 
 
 def test_dry_run_changes_nothing(home):
-    make_old_install(home)
+    make_foreign(home)
     before = tree(home)
-    r = run(home, "install", "--dry-run", "--yes")
+    r = run(home, "install", "--dry-run", "--yes", "--force")
     assert r.returncode == 0, r.stderr
     assert "dry run" in r.stdout.lower()
     assert tree(home) == before
     assert not (home / ".oh-my-writing").exists()
     # uninstall dry run after a real install changes nothing either
-    assert run(home, "install", "--yes").returncode == 0
+    assert run(home, "install", "--yes", "--force").returncode == 0
     before = tree(home)
     r = run(home, "uninstall", "--restore", "--dry-run")
     assert r.returncode == 0, r.stderr

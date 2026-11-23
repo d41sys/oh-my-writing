@@ -3,7 +3,7 @@ name: independent-review
 description: Reviews a finished or near-finished draft through a reader or reviewer who does not share the writer's context, so the verdict is not contaminated by what the writer meant. Covers fresh-reader tests, independent reviewer prompts, rubric calibration against human-chosen examples, blind pairwise comparison of two versions, finding triage by reader impact, point-by-point responses to reviewer comments, and stop rules. Use when the user asks to review, critique, test or sanity-check a draft, wants a fresh pair of eyes or a second opinion, asks whether a reader will understand it, wants to choose between two versions, has reviewer or editor comments to sort or answer, or asks you to grade your own writing.
 license: MIT
 metadata:
-  version: "1.24"
+  version: "1.25"
   skill-author: d41sys
 ---
 
@@ -17,9 +17,9 @@ A writer cannot be the final judge of its own prose: it fills every gap from mem
 - The user asks "does this make sense to someone new?", "review this", "audit this draft as a reader", "second opinion", "which version is better?", or "score this". ("Audit" aimed at AI phrasing is `anti-slop-editing`; aimed at claims, numbers or citations it is `evidence-grounded-writing`.)
 - You (the model) just wrote or edited the text and are about to call it good.
 - A reviewer's comments arrived (human or model) and need sorting into do / skip / ask.
-- A response letter, rebuttal or point-by-point reply to reviewer, editor or client comments has to be drafted or checked; see [responding to reviews](references/responding-to-reviews.md). This skill owns the "rebuttal" and "response to reviewers" requests; for an ML paper, `academic-writing` (if installed) handles the manuscript revision through its own revision guide.
+- A response letter, rebuttal or point-by-point reply to reviewer, editor or client comments has to be drafted or checked; see [responding to reviews](references/responding-to-reviews.md). This skill owns the "rebuttal" and "response to reviewers" requests.
 
-Not for: detecting or removing machine-sounding patterns (use `anti-slop-editing`); building a voice profile (`author-voice`); checking claims, numbers and citations against sources line by line (`evidence-grounded-writing`); writing the first draft (`structured-drafting`); editing an ML paper's sections once comments are accepted (use `academic-writing` if installed; otherwise `structured-drafting` for structure plus `evidence-grounded-writing` for claims). If one of those is unavailable, apply its checks from this skill's `eval.md` instead.
+Not for: detecting or removing machine-sounding patterns (use `anti-slop-editing`); building a voice profile (`author-voice`); checking claims, numbers and citations against sources line by line (`evidence-grounded-writing`); writing the first draft (`structured-drafting`); editing an ML paper's sections once comments are accepted (use `structured-drafting` for structure plus `evidence-grounded-writing` for claims). If one of those is unavailable, apply its checks from this skill's `eval.md` instead.
 
 ## Inputs
 

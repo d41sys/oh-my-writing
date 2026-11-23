@@ -3,7 +3,7 @@ name: report-writing
 description: Use when writing a report, memo or status update from notes or data. Read it before drafting even a short update that looks easy, because the usual failures there are a buried decision and the wrong length. Covers a decision memo, option or vendor comparison, executive summary, status or progress report, project update, research, market or competitive report, investor update, one-pager, audit report, lessons-learned entry and blameless post-mortem or incident write-up, including one that follows the shape of an earlier report.
 license: MIT
 metadata:
-  version: "1.19"
+  version: "1.20"
   skill-author: d41sys
 ---
 
@@ -21,7 +21,7 @@ A report exists so a specific reader can decide something or trust a record. Thi
 - An audit or diagnostic report that checks something against a standard and lists what fails.
 - Revising any of the above: restructure, tighten, repair the comparison, fix inconsistent numbers.
 
-Not for: ML paper sections (use `academic-writing` if installed; otherwise `structured-drafting` for structure plus `evidence-grounded-writing` for claims); blog posts, essays, newsletters and public incident-story posts (use `post-writing`); tutorials, READMEs, PR descriptions, release notes, changelogs (use `technical-docs`); résumés, application letters and job or academic outreach (use `career-documents`); only checking claims or citations (use `evidence-grounded-writing`); only reviewing a finished draft (use `independent-review`). For a generic material-to-outline job with no report genre, use `structured-drafting`. Investor, customer or partner outreach messages (cold emails, pitches, sales follow-ups) are out of scope for all of the writing skills here: this skill writes the investor update report, not the outreach email.
+Not for: ML paper sections (use `structured-drafting` for structure plus `evidence-grounded-writing` for claims); blog posts, essays, newsletters and public incident-story posts (use `post-writing`); tutorials, READMEs, PR descriptions, release notes, changelogs (use `technical-docs`); résumés, application letters and job or academic outreach (use `career-documents`); only checking claims or citations (use `evidence-grounded-writing`); only reviewing a finished draft (use `independent-review`). For a generic material-to-outline job with no report genre, use `structured-drafting`. Investor, customer or partner outreach messages (cold emails, pitches, sales follow-ups) are out of scope for all of the writing skills here: this skill writes the investor update report, not the outreach email.
 
 ## Inputs
 

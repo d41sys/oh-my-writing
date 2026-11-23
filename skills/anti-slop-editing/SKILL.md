@@ -4,7 +4,7 @@ description: Audits and edits prose for AI-writing patterns such as stock vocabu
 license: MIT
 compatibility: Optional helper scripts need Python 3.10+; the skill works without them.
 metadata:
-  version: "1.23"
+  version: "1.24"
   skill-author: d41sys
 ---
 
@@ -19,7 +19,7 @@ This skill finds the places where prose reads as generic, inflated or templated,
 - A text contains chatbot leftovers (greetings, offers, placeholders, leaked markup).
 - Another writing skill has produced a draft and needs a final pass.
 
-Not for: building or applying a voice from the author's samples, including "sound like me" and "match my voice" (use `author-voice`); planning or drafting from raw material (`structured-drafting`); checking claims, numbers and citations, including "audit the citations" and "fact-check" (`evidence-grounded-writing`); an independent fresh-reader review of the whole piece (`independent-review`); or genre-specific writing (`post-writing`, `report-writing`, `technical-docs`, `career-documents`). For ML paper sections use `academic-writing` if installed; otherwise `structured-drafting` for structure plus `evidence-grounded-writing` for claims. If the user asks whether a text was written by a model, do not give a verdict; offer the writing-quality findings instead.
+Not for: building or applying a voice from the author's samples, including "sound like me" and "match my voice" (use `author-voice`); planning or drafting from raw material (`structured-drafting`); checking claims, numbers and citations, including "audit the citations" and "fact-check" (`evidence-grounded-writing`); an independent fresh-reader review of the whole piece (`independent-review`); or genre-specific writing (`post-writing`, `report-writing`, `technical-docs`, `career-documents`). For ML paper sections use `structured-drafting` for structure plus `evidence-grounded-writing` for claims. If the user asks whether a text was written by a model, do not give a verdict; offer the writing-quality findings instead.
 
 ## Inputs
 

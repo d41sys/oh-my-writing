@@ -3,7 +3,7 @@ name: post-writing
 description: Drafts, restructures and repurposes public posts such as blog posts, long-form articles, essays, newsletters, short email sequences, LinkedIn and X or Threads posts and threads, launch announcements, and adaptations of one piece across channels. Starts from the reader and one takeaway, opens on a concrete artifact, keeps proof ahead of adjectives, and never invents anecdotes, metrics, clients, links or calls to action. Use when asked to write or improve a blog post, article, essay, newsletter issue, LinkedIn post, X thread, announcement, launch post, welcome or onboarding email series, or to turn one piece into several channel versions.
 license: MIT
 metadata:
-  version: "1.15"
+  version: "1.16"
   skill-author: d41sys
 ---
 
@@ -33,7 +33,7 @@ Not for:
 - Documentation pages for a product or tool (tutorials, how-to guides, READMEs, PR descriptions, release notes, changelogs): use `technical-docs`. A blog-style how-to post and a launch announcement post stay here.
 - Résumés, cover letters, profiles and personal outreach emails for jobs or academia (cold, networking, referral, prospective supervisor): use `career-documents`. Email sequences and newsletters stay here.
 - Paid ad copy, app-store listings, conversion landing pages and compliance-heavy SMS or WhatsApp programs are not covered in depth here. If asked, apply the grounding rules (no invented proof, no invented urgency), write to the strictest field limit first, and list every limit that needs checking in the reply.
-- Machine-learning paper sections: use `academic-writing` if installed; otherwise `structured-drafting` for structure plus `evidence-grounded-writing` for claims.
+- Machine-learning paper sections: use `structured-drafting` for structure plus `evidence-grounded-writing` for claims.
 
 ## Inputs
 

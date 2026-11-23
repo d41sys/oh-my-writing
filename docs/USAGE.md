@@ -151,7 +151,6 @@ uv run --with matplotlib --with numpy python $S/results-visualization/scripts/pl
 | Symptom | Cause and fix |
 |---|---|
 | No skill seems to load | Start a new session after installing. Run `npx github:d41sys/oh-my-writing doctor` to see which hosts see which skills. |
-| The old academic-writing skill answers | It is still installed. Run the installer again (it backs up the old skill) or remove it by hand: see [INSTALL.md](../INSTALL.md). |
 | Two copies of a skill | Use either the plugin or the installer links, not both. `doctor` warns about duplicates. |
 | The output still has stock closers or filler | Weaker models follow the rules less reliably. Ask again with "check it against anti-slop-editing", or use a stronger model. |
 | Too many markers | Your material is missing facts the text needs. Add them, or tell the agent to leave those sentences out. |

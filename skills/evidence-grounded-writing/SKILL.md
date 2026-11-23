@@ -4,7 +4,7 @@ description: Use when a text's facts, numbers, comparisons or citations must be 
 license: MIT
 compatibility: Optional helper script needs Python 3.10+ standard library; the skill works without it.
 metadata:
-  version: "1.13"
+  version: "1.14"
   skill-author: d41sys
 ---
 
@@ -20,7 +20,7 @@ Every factual sentence should rest on something the author can point to. This sk
 - Synthesising several sources into a themed summary that shows where they disagree.
 - Shortening or tightening a passage that reports a result, a number, a hedge or a limit (an abstract, a results paragraph, a claim in a pitch): the cut must not strengthen a verb, drop a scope word, or lose a figure. Mode: edit guard.
 
-Not for: removing generic AI phrasing without a fact question, including an "audit this draft for AI tells" (use `anti-slop-editing`); matching a personal voice (`author-voice`); planning and drafting from scratch (`structured-drafting`); a fresh-reader critique or review of the whole draft (`independent-review`). For ML paper sections use `academic-writing` if installed; otherwise `structured-drafting` for structure plus this skill for claims. When the text is a post, a decision report, documentation or a career document, `post-writing`, `report-writing`, `technical-docs` and `career-documents` own its structure and voice; this skill still checks the claims in them and works on its own if those skills are absent.
+Not for: removing generic AI phrasing without a fact question, including an "audit this draft for AI tells" (use `anti-slop-editing`); matching a personal voice (`author-voice`); planning and drafting from scratch (`structured-drafting`); a fresh-reader critique or review of the whole draft (`independent-review`). For ML paper sections use `structured-drafting` for structure plus this skill for claims. When the text is a post, a decision report, documentation or a career document, `post-writing`, `report-writing`, `technical-docs` and `career-documents` own its structure and voice; this skill still checks the claims in them and works on its own if those skills are absent.
 
 ## Inputs
 

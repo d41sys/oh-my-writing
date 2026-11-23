@@ -3,7 +3,7 @@ name: career-documents
 description: "Writes and edits truthful career documents from the candidate's real material: résumés, academic CVs, tailoring to a job posting, cover letters, statements of purpose, personal statements, motivation letters, LinkedIn and portfolio profiles, short application-form answers, and cold, networking, warm-intro, thank-you or prospective-supervisor emails. Never invents experience, dates, titles, skills, contacts or numbers. Use when the user asks to write, rewrite, tailor, shorten or review a resume, CV, cover letter, SOP, personal statement, motivation letter, LinkedIn headline or About section, application answer, or a job-search, networking or academic outreach email."
 license: MIT
 metadata:
-  version: "1.6"
+  version: "1.7"
   skill-author: d41sys
 ---
 
@@ -22,7 +22,7 @@ This skill covers résumés and CVs, tailoring, cover letters, statements, profi
 - Answer short application-form fields ("why us", "years with X", "tell us about yourself").
 - Draft a cold email, networking message, referral or warm-intro request, thank-you note, reference request, offer reply, or an email to a prospective supervisor or program contact.
 
-Not for: ML paper sections (use `academic-writing` if installed; otherwise `structured-drafting` for structure plus `evidence-grounded-writing` for claims); blog posts, essays, newsletters, email sequences and LinkedIn feed posts (use `post-writing`); research, market or decision reports (use `report-writing`); READMEs and PR text (use `technical-docs`); building a voice profile from samples (use `author-voice`). Investor, customer, partner or sales outreach (cold emails, pitches, sales follow-ups) is out of scope for all of the writing skills here; this skill covers outreach for jobs, careers and academia only.
+Not for: ML paper sections (use `structured-drafting` for structure plus `evidence-grounded-writing` for claims); blog posts, essays, newsletters, email sequences and LinkedIn feed posts (use `post-writing`); research, market or decision reports (use `report-writing`); READMEs and PR text (use `technical-docs`); building a voice profile from samples (use `author-voice`). Investor, customer, partner or sales outreach (cold emails, pitches, sales follow-ups) is out of scope for all of the writing skills here; this skill covers outreach for jobs, careers and academia only.
 
 ## Inputs
 

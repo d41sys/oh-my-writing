@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 // Oh My Writing installer. Node stdlib only.
 // Copies skills/* into ~/.oh-my-writing/skills, links them into the host skill folders,
-// backs up (never deletes) the old academic-writing install, and tracks what it created
-// in ~/.oh-my-writing/manifest.json so uninstall removes only its own entries.
+// and tracks what it created in ~/.oh-my-writing/manifest.json so uninstall removes only its own entries.
 
 import fs from 'node:fs';
 import os from 'node:os';
@@ -15,7 +14,6 @@ const PKG_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'
 const PKG = JSON.parse(fs.readFileSync(path.join(PKG_ROOT, 'package.json'), 'utf8'));
 const SRC_SKILLS = path.join(PKG_ROOT, 'skills');
 
-const LEGACY = 'academic-writing';
 const DIAGRAM = 'diagram-design';
 const DIAGRAM_REPO = 'https://github.com/cathrynlavery/diagram-design';
 const EXCLUDE = new Set(['__pycache__', '.DS_Store', 'tests']);
@@ -31,7 +29,7 @@ Commands:
   install      (default) copy skills to ~/.oh-my-writing and link them into the hosts
   uninstall    remove the links/copies this tool created (add --restore to bring back the backup)
   list         show installed version and which hosts see each skill
-  doctor       list + check for broken links, leftover academic-writing, duplicate skills
+  doctor       list + check for broken links and duplicate skills
 
 Flags:
   --hosts a,b      claude, codex, omp (default: all). codex and omp read ~/.agents/skills,
@@ -40,7 +38,6 @@ Flags:
   --dry-run        print what would happen, change nothing
   --yes, -y        do not ask for confirmation
   --force          back up and replace an existing folder that has a skill's name
-  --keep-academic-writing   leave the old academic-writing install in place
   --with-diagram-design     git clone ${DIAGRAM_REPO} and link it too
   --restore        (uninstall) move the latest backup of each path back
   --help, --version
@@ -69,7 +66,6 @@ function makeCtx() {
       agents: path.join(home, '.agents', 'skills'),
       claude: path.join(home, '.claude', 'skills'),
     },
-    legacyCommand: path.join(home, '.claude', 'commands', `${LEGACY}.md`),
   };
 }
 
@@ -202,7 +198,6 @@ function parseArgs(argv) {
     dryRun: false,
     yes: false,
     force: false,
-    keepLegacy: false,
     withDiagram: false,
     restore: false,
     help: false,
@@ -214,7 +209,6 @@ function parseArgs(argv) {
     '--yes': 'yes',
     '-y': 'yes',
     '--force': 'force',
-    '--keep-academic-writing': 'keepLegacy',
     '--with-diagram-design': 'withDiagram',
     '--restore': 'restore',
     '--help': 'help',
@@ -258,7 +252,6 @@ function planInstall(ctx, o, names, gitOk) {
   const mode = o.copy ? 'copy' : 'link';
   const items = [];
   const conflicts = [];
-  const legacy = [];
   const warnings = [];
 
   const targetOf = (name) => (name === DIAGRAM ? path.join(ctx.diagramDir, 'skills', DIAGRAM) : path.join(ctx.store, name));
@@ -269,10 +262,6 @@ function planInstall(ctx, o, names, gitOk) {
   }
 
   for (const key of keys) {
-    if (!o.keepLegacy) {
-      const p = path.join(ctx.hostDir[key], LEGACY);
-      if (lstat(p)) legacy.push({ path: p, key: `${key}-skills` });
-    }
     for (const name of names) {
       const dest = path.join(ctx.hostDir[key], name);
       const target = targetOf(name);
@@ -295,10 +284,7 @@ function planInstall(ctx, o, names, gitOk) {
       }
     }
   }
-  if (!o.keepLegacy && keys.includes('claude') && lstat(ctx.legacyCommand)) {
-    legacy.push({ path: ctx.legacyCommand, key: 'claude-commands' });
-  }
-  return { items, conflicts, legacy, warnings, names, targetOf };
+  return { items, conflicts, warnings, names, targetOf };
 }
 
 function place(ctx, item, report) {
@@ -335,7 +321,6 @@ async function cmdInstall(ctx, o) {
   console.log(`Oh My Writing ${PKG.version}${dry ? ' (dry run, nothing will change)' : ''}`);
   console.log(`  copy ${copyCount} skills to ${tilde(ctx, ctx.store)}`);
   for (const key of hostDirKeys(o.hosts)) console.log(`  ${o.copy ? 'copy' : 'link'} into ${tilde(ctx, ctx.hostDir[key])}`);
-  for (const l of plan.legacy) console.log(`  back up ${tilde(ctx, l.path)}`);
   for (const i of plan.items.filter((x) => x.op === 'replace-foreign-link' || x.op === 'replace-foreign-dir')) {
     console.log(`  back up ${tilde(ctx, i.dest)} (not created by this tool)`);
   }
@@ -383,8 +368,6 @@ async function cmdInstall(ctx, o) {
       }
     }
 
-    for (const l of plan.legacy) backup.move(l.path, l.key);
-
     for (const item of plan.items) {
       if (item.name === DIAGRAM && !diagramReady) continue;
       if (item.op === 'keep') {
@@ -427,8 +410,6 @@ async function cmdInstall(ctx, o) {
   if (backup.entries.length) {
     console.log(`  ${dry ? 'Would back up' : 'Backed up'} (moved, not deleted) to ${tilde(ctx, backup.dir)}:`);
     for (const e of backup.entries) console.log(`    ${tilde(ctx, e.original)}`);
-  } else if (o.keepLegacy) {
-    console.log(`  Kept the old ${LEGACY} install (--keep-academic-writing).`);
   }
   for (const w of report.warnings) console.log(`  warning: ${w}`);
   console.log('');
@@ -660,11 +641,6 @@ function cmdList(ctx, o, doctor) {
     for (const r of have.filter((x) => x.states[key] === 'foreign')) {
       warns.push(`${tilde(ctx, path.join(ctx.hostDir[key], r.name))} is a folder this tool did not create`);
     }
-  }
-
-  const legacyPaths = [path.join(ctx.hostDir.agents, LEGACY), path.join(ctx.hostDir.claude, LEGACY), ctx.legacyCommand].filter((p) => lstat(p));
-  if (legacyPaths.length) {
-    warns.push(`Leftover ${LEGACY} install: ${legacyPaths.map((p) => tilde(ctx, p)).join(', ')}. Re-run install (without --keep-academic-writing) to back it up.`);
   }
 
   const dupes = findPluginDuplicates(ctx, info.names);

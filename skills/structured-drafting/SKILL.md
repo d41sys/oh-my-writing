@@ -3,7 +3,7 @@ name: structured-drafting
 description: Use when writing from notes, a transcript, an interview or a rough draft. Read it before drafting even a short bio, email, update or abstract that looks easy, because the usual failures there are invented detail and the wrong length. Covers emails, updates, bios, profiles, abstracts, summaries, articles and outlines made from meeting notes, a chat log, bullets or source excerpts, including a piece that has to match an example document. Also restructures a draft or co-writes it section by section.
 license: MIT
 metadata:
-  version: "1.13"
+  version: "1.14"
   skill-author: d41sys
 ---
 
@@ -17,7 +17,7 @@ Turns loose material into a first draft that a reader can follow. The skill work
 - The author wants an outline before any prose, or wants to write a document together, section by section.
 - A draft exists but the order is wrong: points are used before they are explained, or the pieces could swap places unnoticed.
 
-Not for: polishing sentence-level AI patterns (use `anti-slop-editing`); matching or building a personal voice (use `author-voice`); verifying claims, numbers and citations (use `evidence-grounded-writing`); a cold read of a finished draft (use `independent-review`); writing a finished document of a known genre from material that is already organized, which goes to the genre skill alone: posts (`post-writing`), reports (`report-writing`), documentation (`technical-docs`), CVs and letters (`career-documents`). When the input is loose notes or a transcript, this skill handles the path from material to structure, and the genre skill supplies the conventions of the form; use both. For ML paper sections use `academic-writing` if installed; otherwise this skill for structure plus `evidence-grounded-writing` for claims.
+Not for: polishing sentence-level AI patterns (use `anti-slop-editing`); matching or building a personal voice (use `author-voice`); verifying claims, numbers and citations (use `evidence-grounded-writing`); a cold read of a finished draft (use `independent-review`); writing a finished document of a known genre from material that is already organized, which goes to the genre skill alone: posts (`post-writing`), reports (`report-writing`), documentation (`technical-docs`), CVs and letters (`career-documents`). When the input is loose notes or a transcript, this skill handles the path from material to structure, and the genre skill supplies the conventions of the form; use both. For ML paper sections use this skill for structure plus `evidence-grounded-writing` for claims.
 
 ## Inputs
 

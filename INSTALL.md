@@ -1,6 +1,6 @@
-# Install Oh My Writing v2 (replaces the academic-writing install)
+# Install Oh My Writing v2
 
-Oh My Writing v2 is the eleven skills in `skills/`. They replace the old single `academic-writing` skill as your everyday writing setup. Claude Code, Codex and omp all load them from the same two folders.
+Oh My Writing v2 is the eleven skills in `skills/`. Claude Code, Codex and omp all load them from the same two folders.
 
 Time: about 1 minute with npx, about 5 minutes by hand.
 
@@ -12,7 +12,7 @@ Needs Node 18 or newer and git.
 npx github:d41sys/oh-my-writing
 ```
 
-Copies the eleven skills to `~/.oh-my-writing/skills/` and links them into `~/.agents/skills` (Codex, omp) and `~/.claude/skills` (Claude Code, omp). The old `academic-writing` skill, its link and `~/.claude/commands/academic-writing.md` are moved to `~/.oh-my-writing/backup/<timestamp>/`, not deleted. If published to npm later, `npx oh-my-writing` does the same.
+Copies the eleven skills to `~/.oh-my-writing/skills/` and links them into `~/.agents/skills` (Codex, omp) and `~/.claude/skills` (Claude Code, omp). If published to npm later, `npx oh-my-writing` does the same.
 
 Flags (add them after the command, for example `npx github:d41sys/oh-my-writing install --dry-run`):
 
@@ -23,16 +23,15 @@ Flags (add them after the command, for example `npx github:d41sys/oh-my-writing 
 | `--hosts claude,codex,omp` | Install for these hosts only (default: all) |
 | `--copy` | Copy into the host folders instead of symlinking |
 | `--force` | Back up and replace an existing folder that has a skill's name (without it, the install stops) |
-| `--keep-academic-writing` | Leave the old academic-writing install where it is |
 | `--with-diagram-design` | Also `git clone` [diagram-design](https://github.com/cathrynlavery/diagram-design) into `~/.oh-my-writing/diagram-design` and link it |
 
 Check, uninstall, roll back:
 
 ```bash
-npx github:d41sys/oh-my-writing doctor                    # versions, hosts, broken links, leftovers, duplicates
+npx github:d41sys/oh-my-writing doctor                    # versions, hosts, broken links, duplicates
 npx github:d41sys/oh-my-writing list                      # which host sees which skill
 npx github:d41sys/oh-my-writing uninstall                 # removes only the links/copies it made
-npx github:d41sys/oh-my-writing uninstall --restore       # same, then moves the backed-up academic-writing back
+npx github:d41sys/oh-my-writing uninstall --restore       # same, then moves folders that --force backed up back
 ```
 
 `uninstall` tracks its own entries in `~/.oh-my-writing/manifest.json`. A folder you put in place of one of its links is left alone.
@@ -41,25 +40,14 @@ npx github:d41sys/oh-my-writing uninstall --restore       # same, then moves the
 
 Use this if you do not want npx. Same result as above.
 
-### 1. Remove the old academic-writing install
-
-The old install is a folder in `~/.agents/skills/` and a link in `~/.claude/skills/`. Move the folder aside instead of deleting it, so you can roll back:
-
-```bash
-mkdir -p ~/skills-backup
-[ -L ~/.claude/skills/academic-writing ] && rm ~/.claude/skills/academic-writing
-[ -e ~/.agents/skills/academic-writing ] && mv ~/.agents/skills/academic-writing ~/skills-backup/academic-writing
-[ -L ~/.claude/commands/academic-writing.md ] && rm ~/.claude/commands/academic-writing.md
-```
-
-### 2. Get the code
+### 1. Get the code
 
 ```bash
 git clone https://github.com/d41sys/oh-my-writing.git ~/oh-my-writing
 git -C ~/oh-my-writing checkout v2.3.0
 ```
 
-### 3. Link the eleven skills
+### 2. Link the eleven skills
 
 ```bash
 mkdir -p ~/.agents/skills ~/.claude/skills
@@ -79,7 +67,7 @@ Where each host reads:
 
 **Plugin instead of links.** Claude Code: run `/plugin marketplace add d41sys/oh-my-writing`, then `/plugin install oh-my-writing@oh-my-writing`. Codex can read `.codex-plugin/plugin.json`. Use either links or the plugin, not both: two copies of the same skill compete for routing.
 
-### 4. Optional: diagrams for project-report
+### 3. Optional: diagrams for project-report
 
 ```bash
 git clone https://github.com/cathrynlavery/diagram-design.git ~/diagram-design
@@ -89,7 +77,7 @@ ln -sfn ~/diagram-design/skills/diagram-design ~/.claude/skills/diagram-design
 
 Without it, `project-report` falls back to Mermaid diagrams.
 
-### 5. Check it works
+### 4. Check it works
 
 ```bash
 ls -l ~/.agents/skills ~/.claude/skills | grep oh-my-writing   # eleven links in each
@@ -115,20 +103,11 @@ Then, in a new session of Claude Code, Codex or omp, ask: `Make this paragraph s
 
 The skills never invent facts. Anything missing from your material comes back as `[ASK AUTHOR: …]` or `[VERIFY: …]`. Answer those, or remove them, before you send the text.
 
-## Paper writing
-
-v2 has no paper-section skill yet. The old paper workflow (story card, then outline, then draft, then external review) is still in this repository's root `SKILL.md`. To keep it beside v2, link it under its old name:
-
-```bash
-ln -sfn ~/oh-my-writing ~/.claude/skills/academic-writing   # needs the manual clone; the npx install copies only skills/
-```
-
-## Update and roll back
+## Update and remove
 
 ```bash
 git -C ~/oh-my-writing fetch --tags && git -C ~/oh-my-writing checkout <new tag>   # update; the links stay valid
-for s in ~/oh-my-writing/skills/*/; do rm -f ~/.agents/skills/$(basename "$s") ~/.claude/skills/$(basename "$s"); done
-mv ~/skills-backup/academic-writing ~/.agents/skills/ && ln -s ../../.agents/skills/academic-writing ~/.claude/skills/academic-writing   # roll back
+for s in ~/oh-my-writing/skills/*/; do rm -f ~/.agents/skills/$(basename "$s") ~/.claude/skills/$(basename "$s"); done   # remove the links
 ```
 
 ## Known limits (from the benchmark)

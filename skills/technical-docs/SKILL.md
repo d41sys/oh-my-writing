@@ -3,7 +3,7 @@ name: technical-docs
 description: Use when writing technical text from code, a diff, commits, a config or a methods passage, including a plain-language account of a method for lay readers. Read it before drafting even a short changelog entry or pull request description that looks easy, because the usual failures there are invented results and the wrong reader. Covers a README, API or CLI reference, tutorial, how-to, quickstart, design rationale, code walkthrough, ADR, commit message, release notes and migration guide.
 license: CC-BY-SA-4.0
 metadata:
-  version: "1.11"
+  version: "1.12"
   skill-author: d41sys
 ---
 
@@ -18,7 +18,7 @@ Technical readers arrive in one of four states: they want to learn by doing, to 
 - A hard-to-reverse technical choice needs a short decision record (ADR).
 - A docs set feels messy: pages try to teach, instruct, specify and justify all at once.
 
-Not for: ML paper sections (use `academic-writing` if installed; otherwise `structured-drafting` for structure plus `evidence-grounded-writing` for claims); blog posts, essays or newsletters, including a blog-style how-to post and a launch announcement post (use `post-writing`; release notes and changelogs stay here); multi-option decision, research or market reports and blameless incident post-mortems (use `report-writing`; a single engineering decision stays here as an ADR); résumés and cover letters (use `career-documents`); tracing which claims need sources (use `evidence-grounded-writing`). For a final AI-pattern cleanup, use `anti-slop-editing` if available; otherwise apply the checks in [eval.md](eval.md). Clipped imperative fragments, bare parameter lists and repeated domain terms are normal in docs, changelogs and commit messages; do not "fix" them as style defects.
+Not for: ML paper sections (use `structured-drafting` for structure plus `evidence-grounded-writing` for claims); blog posts, essays or newsletters, including a blog-style how-to post and a launch announcement post (use `post-writing`; release notes and changelogs stay here); multi-option decision, research or market reports and blameless incident post-mortems (use `report-writing`; a single engineering decision stays here as an ADR); résumés and cover letters (use `career-documents`); tracing which claims need sources (use `evidence-grounded-writing`). For a final AI-pattern cleanup, use `anti-slop-editing` if available; otherwise apply the checks in [eval.md](eval.md). Clipped imperative fragments, bare parameter lists and repeated domain terms are normal in docs, changelogs and commit messages; do not "fix" them as style defects.
 
 ## Inputs
 

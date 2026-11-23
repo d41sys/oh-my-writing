@@ -4,7 +4,7 @@ description: Builds an evidence-based voice profile from an author's real writin
 license: MIT
 compatibility: Optional helper scripts need Python 3.10+; the skill works without them.
 metadata:
-  version: "1.6"
+  version: "1.7"
   skill-author: d41sys
 ---
 
@@ -27,7 +27,7 @@ Not for:
 - Removing AI-writing patterns or making text "sound less robotic" or "more natural" with no profile involved: use `anti-slop-editing`. If it is available, run it as the last pass on text this skill produced; otherwise apply the checks in `eval.md`.
 - Planning structure from raw material: use `structured-drafting`.
 - Checking claims, numbers and citations: use `evidence-grounded-writing`.
-- ML paper sections: use `academic-writing` if installed; otherwise `structured-drafting` for structure plus `evidence-grounded-writing` for claims.
+- ML paper sections: use `structured-drafting` for structure plus `evidence-grounded-writing` for claims.
 - Imitating a third party's writing to pass it off as theirs. Only the author's own or authorized samples are used.
 
 ## Inputs
