@@ -63,7 +63,7 @@ A pre-registered run with a placebo (each skill's name and layout with generic a
 
 The project site lives in `site/` (Vite, vanilla JS). It is separate from the installer above and is not published to npm.
 
-Developing the website needs Node 20.19.x or Node 22.12 and newer. Installing the writing skills themselves still works on Node 18.
+Developing the website needs Node 20.19 or newer in the 20 line, or Node 22.12 and newer. Installing the writing skills themselves still works on Node 18.
 
 ```bash
 cd site

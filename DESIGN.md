@@ -102,6 +102,15 @@ components:
     padding: "24px 8px"
   disclosure-summary-hover:
     textColor: "{colors.proof-green}"
+  skill-block:
+    textColor: "{colors.ink}"
+    rounded: "{rounded.none}"
+    padding: "24px 0 64px"
+  compare-table:
+    backgroundColor: "{colors.newsprint-shade}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.none}"
+    padding: "12px 24px 12px 0"
   install-band:
     backgroundColor: "{colors.ink}"
     textColor: "{colors.newsprint}"
@@ -113,7 +122,7 @@ components:
 
 **Creative North Star: "The Editor's Proof Sheet"**
 
-A single-page site that behaves like a marked-up galley. Newsprint ground, ink rules, condensed lettering, and one green editorial mark. The reader judges a writing skill by reading the before and after sentences, so the page gives text room and refuses the feature-card grid. Other assignments sit in disclosures; the reader picks the piece instead of waiting for a carousel.
+A single-page site that behaves like a marked-up galley. Newsprint ground, ink rules, condensed lettering, and one green editorial mark. The reader judges a writing skill by reading the before and after sentences, so the page gives text room and refuses the feature-card grid. Each skill is its own ruled block with its assignments in disclosures; the reader picks the piece instead of waiting for a carousel. A comparison table then sets all eleven side by side.
 
 Density is open and restrained. Everything is flat and square: no shadows, no radius, no imagery. Hierarchy comes from heavy condensed display type, a 4px ink rule under the masthead, hairlines between entries, and one tonal step of paper. Green is the proofreader's pen: it marks the deletion, the improved line label, hover, and focus.
 
@@ -121,6 +130,7 @@ Density is open and restrained. Everything is flat and square: no shadows, no ra
 - Flat, square, shadowless; depth by paper tone and rules only.
 - Condensed heavy sans for voice, serif for reading.
 - Real deleted text (`<del>`) in the first viewport is the signature.
+- Eleven ruled skill blocks and one comparison table carry the page; no cards.
 - One accent, green, used for marks and state.
 - Ink band inverts the page once, at install.
 
@@ -135,13 +145,13 @@ Warm newsprint and near-black ink with a single deep proofreader green. Neutrals
 
 ### Neutral
 - **Newsprint** (`colors.newsprint`): page ground and the output panel.
-- **Newsprint Shade** (`colors.newsprint-shade`): the proof sheet, input panels, skills section.
+- **Newsprint Shade** (`colors.newsprint-shade`): the hero proof sheet, input panels, and the comparison section.
 - **Newsprint Deep** (`colors.newsprint-deep`): image-slot gradient end and hover fill on the band button.
 - **Ink** (`colors.ink`): text, heavy rules, copy button fill, install band.
 - **Ink Soft** (`colors.ink-soft`): the struck "before" sentence in the hero proof.
 - **Margin Gray** (`colors.margin-gray`): captions, notes, scrollbar.
-- **Hairline** (`colors.hairline`): row dividers in the skills index.
-- **Hairline Strong** (`colors.hairline-strong`): disclosure borders, the rule above "after".
+- **Hairline** (`colors.hairline`): defined; not used by the shipped page.
+- **Hairline Strong** (`colors.hairline-strong`): disclosure borders, the rule above "after", table row dividers.
 
 ### Named Rules
 **The One Pen Rule.** Green marks an edit or a state, never a surface. No green backgrounds except the hover fill of the copy button.
@@ -159,22 +169,22 @@ Warm newsprint and near-black ink with a single deep proofreader green. Neutrals
 ### Hierarchy
 - **Display** (800, clamp 3.5rem to 6rem, 0.98): hero H1 only ("How your agent edits"), capped at 12ch.
 - **Headline** (800, clamp 2rem to 3.5rem, 1.05): section H2s, max 30ch.
-- **Title** (800, clamp 1.25rem to 1.625rem, 1.2): brand, disclosure summaries, H3.
+- **Title** (800, clamp 1.25rem to 1.625rem, 1.2): brand, skill names (H3), disclosure summaries.
 - **Lead** (400, clamp 1.125rem to 1.375rem, 1.45): hero and section intros, 44ch in hero, 52ch elsewhere.
 - **Body** (400, 1.125rem, 1.55): paragraphs capped at 65ch; ask text at 72ch.
 - **After sentence** (400, clamp 1.5rem to 2.3rem, 1.2): the revised line at reading-display size.
-- **UI** (500, 1rem, optical size 12): nav links and copy buttons.
+- **UI** (500, 1rem, optical size 12): nav links, skill jump links and copy buttons.
 - **Label** (500, 0.875rem, optical size 12): hero proof caption and notes. Case source links and trace links stay serif.
-- **Index link** (500, Title size, width axis 75, 1.2): skill names in the skills index.
+- **Table head** (800, 1rem, 1.3): comparison column heads. Row heads (skill names) use 1.25rem, width axis 75, no wrap.
 
 ### Named Rules
 **The Voice Split Rule.** Condensed sans speaks (headings, summaries, skill names); text-size sans at weight 500 and optical size 12 carries interface labels (nav, buttons, captions, notes). Serif is the material being read. Never swap.
 
 ## Layout
 
-A 1440px container with fluid gutters (64px, 24px under 60rem, 16px under 40rem). The hero is a two-column grid (1fr / 1.12fr) under a slim masthead, filling the viewport below it (`min-height: calc(100svh - 64px)`, none under 49rem): title and command left, proof sheet right, 4px ink rules above and below. Sections are single-column with a 120px base gap (80px, 56px on smaller screens). The skills index is a two-column definition list (1fr / 1.7fr) that collapses to one column under 35rem. The install band is two columns above 49rem. Cases are a pair grid that stacks under 49rem. On a phone the command precedes the proof.
+A 1440px container with fluid gutters (64px, 24px under 60rem, 16px under 40rem). The hero is a two-column grid (1fr / 1.12fr) under a slim masthead, filling the viewport below it (`min-height: calc(100svh - 64px)`, none under 49rem): title and command left, proof sheet right, 4px ink rules above and below. Sections are single-column with a 120px base gap (80px, 56px on smaller screens). The cases section opens with a jump nav, a wrapping row of eleven in-page skill links (24px column gap), then eleven skill blocks. Each skill block starts under a 4px ink rule and is a two-column grid (`minmax(20rem, 1fr)` / `2.4fr`): name and one-line description left, disclosures right. It stacks under 60rem. The comparison table runs full width on Newsprint Shade and restacks under 49rem into labelled blocks. The install band is two columns above 49rem. Case pairs stack under 49rem. On a phone the command precedes the proof.
 
-Spacing scale: 2, 4, 8, 12, 16, 24, 40, 64, 96, 144px. Tap targets in nav, footer, and index links are at least 48px high.
+Spacing scale: 2, 4, 8, 12, 16, 24, 40, 64, 96, 144px. Tap targets in nav, jump, skill-name and footer links are at least 48px high.
 
 ## Elevation & Depth
 
@@ -200,10 +210,16 @@ Square everywhere: `--radius-card` and `--radius-pill` are `0`. Borders are 1px 
 Newsprint Shade panel, padding clamp 24px to 64px. Struck "before" sentence in Ink Soft at Title size (clamp 1.25rem to 1.625rem), then a hairline-strong rule, then the "after" sentence in display-sized serif with a green label and a Margin Gray caption.
 
 ### Case Disclosure
-Native `<details name="cases">` (exclusive group); the first case is open on load. Hairline-strong top border, closing border on the last. Summary in Title type with a green marker, hover to green. Open content: ask paragraph, then an input/output pair. The output panel is newsprint with a 4px ink top rule; the input panel is Newsprint Shade.
+Native `<details name="cases">` (exclusive group); only the first case on the page is open on load. Hairline-strong top border (none on the first in a skill block), closing border on the last. Summary in Title type with a green marker, hover to green. Open content: ask paragraph, then an input/output pair. The output panel is newsprint with a 4px ink top rule; the input panel is Newsprint Shade. Cases drawn only from the usage guide have no pair: a single "You get" line (`p.gets`, 65ch) follows the request.
 
-### Skills Index
-Definition list on a Newsprint Shade section. Name (a link in Index link type) on the left, description on the right, each row topped with a Hairline.
+### Skill Jump Nav
+Wrapping row of eleven in-page links in UI type (Bricolage 500, 1rem, optical size 12), 24px column gap, 48px tap height, hover to green. Sits above the skill blocks.
+
+### Skill Block
+One per skill. A 4px ink rule on top, 24px above and 64px below the content. Left: H3 skill name as a link to the skill's folder (Title type, no underline until hover, no wrap) and a one-line description in Ink Soft (max 32ch). Right: that skill's disclosures. Stacks to one column under 60rem.
+
+### Comparison Table
+Full-bleed Newsprint Shade section holding a four-column table (Skill, You ask for, You give, You get). The head row has a 4px ink rule above it; body rows are separated by Hairline Strong 1px rules. Column heads and the "label: " prefix are in the display face. Row heads are condensed display type linking to the skill block. Under 49rem the head row is hidden and each row becomes a block with labelled lines.
 
 ### Install Band
 Full-bleed Ink section with newsprint text; headline and command left, host list right with Margin Gray hairline dividers.
