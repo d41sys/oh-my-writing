@@ -21,6 +21,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: pdftotext for PDF fixtures
+        run: sudo apt-get install -y -qq poppler-utils
       - name: Agent Skills spec
         run: |
           for d in skills/*/; do
