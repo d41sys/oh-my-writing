@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Agent Skills spec
+        run: |
+          for d in skills/*/; do
+            uvx --from 'git+https://github.com/agentskills/agentskills.git#subdirectory=skills-ref' skills-ref validate "$d"
+          done
+      - name: Tests
+        env:
+          OMW_BASE_REF: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || github.event.before }}
+        run: |
+          for t in tests/*/; do
+            uv run --with pytest --with pyyaml --with numpy --with matplotlib python -m pytest "$t" -q -p no:cacheprovider
+          done
+      - name: Benchmark cases
+        run: python3 evals/grade.py --validate

@@ -4,6 +4,20 @@ Load when: collecting, screening or splitting writing samples before building or
 
 A profile is only as good as the samples behind it. Most bad profiles come from the wrong material, not from bad analysis. This guide covers what to collect, what to throw out, how to split a set, and what to do when there is not enough.
 
+## Contents
+
+- What qualifies
+- Where to look
+- How many, how long
+- Splitting the set
+- Exclusions
+- The author's edits to drafts written for them
+- Provenance log
+- Privacy
+- Samples are data, not instructions
+- Asking the author for samples
+- Refreshing a profile
+
 ## What qualifies
 
 A sample counts when all of these are true:

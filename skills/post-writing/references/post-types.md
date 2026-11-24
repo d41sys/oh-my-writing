@@ -4,6 +4,21 @@ Load when: choosing the spine of a public post, stress-testing an opinion, shapi
 
 Each type below names the reader's job, a spine that serves it, the material it needs from the author, the usual way it goes wrong, and a quick check. Spines are starting shapes. Reorder or drop a beat when the material says so. If the piece fits two types, pick the one that matches the takeaway and borrow only the beats you need from the other.
 
+## Contents
+
+- Choosing a type
+- How-to post
+- Argument or opinion
+- Story, reflection, or personal essay
+- Post-mortem or devlog
+- Announcement
+- List with depth
+- Explainer
+- Comparison
+- Newsletter issue
+- Reader psychology, used honestly
+- Differentiation check
+
 ## Choosing a type
 
 | The reader wants to... | Type |

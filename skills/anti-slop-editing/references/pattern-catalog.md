@@ -8,6 +8,18 @@ Fix principle for all entries: subtract, or restate the point from the author's 
 
 Scanner names appear in parentheses where `scripts/slop_scan.py` has a matching check.
 
+## Contents
+
+- 1. Lexical inflation
+- 2. Empty framing and throat-clearing
+- 3. Contrast and reveal templates
+- 4. Puffery and vague attribution
+- 5. Rhythm and shape uniformity
+- 6. Formulaic endings
+- 7. Formatting decoration
+- 8. Chat residue
+- 9. Signals this skill does not use
+
 ## 1. Lexical inflation
 
 Words that rose in machine-assisted prose and often stand in for a plainer or more exact word.

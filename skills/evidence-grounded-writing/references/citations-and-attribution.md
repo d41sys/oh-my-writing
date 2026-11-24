@@ -4,6 +4,18 @@ Load when: checking references or quotes, auditing whether each citation support
 
 A citation is a promise: "the support for this sentence is here, and I looked." Every rule below protects that promise.
 
+## Contents
+
+- 1. Integrity rules
+- 2. What the citation is doing
+- 3. Replacing vague attribution
+- 4. Citation markers and placement
+- 5. Bibliography checks (when a reference list exists)
+- 6. Auditing the citations in a draft
+- 7. Literature synthesis
+- 8. Source quality notes
+- 9. Writing the marker text
+
 ## 1. Integrity rules
 
 1. **Cite what you read.** Only cite a source that was opened and read at the relevant passage. A title, an abstract, a search snippet or a model's memory is a lead to follow, not evidence.

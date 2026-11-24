@@ -4,6 +4,22 @@ Load when: choosing the section order, density, voice, or typical traps for a sp
 
 Each type below gives the reader's job, a default spine, the voice and density to aim for, and the usual failure. Spines are defaults. Drop a section the reader will not use; never drop the evidence trail. Lengths are habits observed in practice, not quotas: a short report that decides is better than a long one that surveys.
 
+## Contents
+
+- How to pick
+- Voice and density by type
+- Decision memo
+- Research or analysis report
+- Market report
+- Competitive report
+- Executive summary
+- Status or progress report
+- Investor materials
+- Post-mortem or incident review
+- Lessons-learned entry (short form)
+- Audit or diagnostic report
+- Gaps in a reader-facing report
+
 ## How to pick
 
 | The reader needs to | Type |

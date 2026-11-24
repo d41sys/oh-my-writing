@@ -4,7 +4,7 @@ description: Builds an evidence-based voice profile from an author's real writin
 license: MIT
 compatibility: Optional helper scripts need Python 3.10+; the skill works without them.
 metadata:
-  version: "1.7"
+  version: "1.7.1"
   skill-author: d41sys
 ---
 

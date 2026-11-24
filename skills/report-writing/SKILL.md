@@ -3,7 +3,7 @@ name: report-writing
 description: Use when writing a report, memo or status update from notes or data. Read it before drafting even a short update that looks easy, because the usual failures there are a buried decision and the wrong length. Covers a decision memo, option or vendor comparison, executive summary, status or progress report, project update, research, market or competitive report, investor update, one-pager, audit report, lessons-learned entry and blameless post-mortem or incident write-up, including one that follows the shape of an earlier report.
 license: MIT
 metadata:
-  version: "1.20"
+  version: "1.20.1"
   skill-author: d41sys
 ---
 

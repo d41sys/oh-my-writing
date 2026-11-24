@@ -3,7 +3,7 @@ name: project-report
 description: Turns a folder of project documents (meeting notes, status emails, budgets, plans, slide decks, spreadsheets, PDFs) into a professional project report - status, progress, final or closing report - with a fact ledger, a planned set of designed diagrams, and one self-contained HTML file ready to read or print to PDF. Inventories every file, keeps conflicting figures visible, never invents numbers, dates or owners, and draws diagrams through the diagram-design skill when it is installed (Mermaid fallback otherwise). Use when asked to "make a project report from these documents", "write a status report from this folder", "final report with diagrams", or "summarise the project files into a report".
 license: MIT
 metadata:
-  version: "1.9"
+  version: "1.9.1"
   skill-author: d41sys
 ---
 

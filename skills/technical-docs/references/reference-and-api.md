@@ -2,6 +2,17 @@ Load when: writing API, CLI, configuration, script or library reference; generat
 
 # Reference, API and markdown conventions
 
+## Contents
+
+- Principles for reference pages
+- Build from source of truth
+- HTTP API entry
+- CLI, script and config reference
+- Markdown conventions
+- Diagrams
+- Pre-delivery checks for reference work
+- Reviewing code comments and docstrings
+
 ## Principles for reference pages
 
 - The reader scans mid-task. Put the fact first, in the same place in every entry.

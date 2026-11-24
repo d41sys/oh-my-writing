@@ -6,6 +6,21 @@ Load when: fitting a post to a specific channel, checking display limits and con
 
 **No distribution claims.** Third-party claims about what a platform's ranking favours (link placement, hashtag counts, posting intervals, reply timing, format weight) are unverified and change often. This file does not use them. Write for a human reader, fit the display limit, and follow the platform's stated rules. If the author asks "what does the algorithm reward", say the guidance is not verifiable and answer with reader-facing craft.
 
+## Contents
+
+- Universal facts across short-form feeds
+- LinkedIn
+- X (long and short posts, threads)
+- Threads, Bluesky, Mastodon and other short-text networks
+- Instagram
+- Carousel and slide frameworks (any platform)
+- Forums and communities (Reddit, Hacker News, Stack-style communities, Discord)
+- Newsletter and email
+- Blog and long-form article
+- WeChat official account (公众号)
+- Xiaohongshu (RED)
+- Choosing channels (planning note)
+
 ## Universal facts across short-form feeds
 
 - Feeds truncate. The first line or two must stand alone and carry the point or the artifact.

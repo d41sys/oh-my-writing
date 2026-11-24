@@ -4,6 +4,19 @@ Load when: the report compares options, vendors, competitors, or periods; scores
 
 A comparison exists to inform a choice. It is valid only if the candidates are measured the same way, the criteria were chosen before the results were known, and the reader can see which parts are proven and which are only claimed.
 
+## Contents
+
+- 1. Fix the decision context first
+- 2. Scope the set and say why
+- 3. The measurement contract
+- 4. Criteria, rubrics, weights, tension poles
+- 5. Evidence status: proven, asserted, unknown
+- 6. The ledger for market and industry numbers
+- 7. Forecasts and scenarios
+- 8. Options and trade-offs
+- 9. The recommendation
+- 10. Quick checks
+
 ## 1. Fix the decision context first
 
 Before scoring anything, write down in a few lines:

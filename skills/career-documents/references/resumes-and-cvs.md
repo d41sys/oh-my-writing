@@ -4,6 +4,21 @@ Load when: building, tailoring, shortening or checking a résumé or academic CV
 
 Length figures, section orders and file-type advice below are common practice drawn from career-center style guidance. They differ by region, field and employer. Name the norm you are using and tell the user to check the target's instructions.
 
+## Contents
+
+- 1. Pick the document type
+- 2. Truth contract for every line
+- 3. Section order by stage
+- 4. Accomplishment bullets
+- 5. Tailoring to a posting
+- 6. Level of reader and scenarios
+- 7. Career change, gaps, short tenures
+- 8. Variants
+- 9. Academic CV
+- 10. Parse-safe format and file handling
+- 11. Length and regional conventions
+- 12. Final assembly checklist
+
 ## 1. Pick the document type
 
 | Question | If yes | If no |

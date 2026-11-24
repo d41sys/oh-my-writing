@@ -4,7 +4,7 @@ description: Use when a text's facts, numbers, comparisons or citations must be 
 license: MIT
 compatibility: Optional helper script needs Python 3.10+ standard library; the skill works without it.
 metadata:
-  version: "1.14"
+  version: "1.14.1"
   skill-author: d41sys
 ---
 

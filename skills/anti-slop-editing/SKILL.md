@@ -4,7 +4,7 @@ description: Audits and edits prose for AI-writing patterns such as stock vocabu
 license: MIT
 compatibility: Optional helper scripts need Python 3.10+; the skill works without them.
 metadata:
-  version: "1.24"
+  version: "1.24.1"
   skill-author: d41sys
 ---
 

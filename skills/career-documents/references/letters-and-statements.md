@@ -4,6 +4,15 @@ Load when: writing or revising a cover letter, letter of interest, statement of 
 
 Word counts, page counts and structure below are common practice. The program, employer, portal or funder's written instructions always win. Tell the user to re-read the current instructions before submitting, because limits and prompts change from year to year.
 
+## Contents
+
+- 1. Choose the document
+- 2. Cover letter
+- 3. Statements of purpose, personal statements, motivation letters
+- 4. Award, scholarship and fellowship essays
+- 5. Checks before returning any letter or statement
+- 6. Gaps in a letter or statement
+
 ## 1. Choose the document
 
 | Situation | Document |

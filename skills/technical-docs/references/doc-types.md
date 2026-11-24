@@ -4,6 +4,18 @@ Load when: choosing a documentation type, building a tutorial, how-to guide, ref
 
 Adapted from the Diátaxis framework (Daniele Procida and contributors, CC-BY-SA 4.0); see the attribution in SKILL.md.
 
+## Contents
+
+- Classify with the compass
+- Where mixing happens
+- Tutorial
+- How-to guide
+- Reference
+- Explanation
+- Docs architecture and navigation
+- Mixed-page repair, quickly
+- A request that mixes types
+
 ## Classify with the compass
 
 Two questions place any piece of content. Apply them loosely and at any scale: a whole site, a page, a paragraph, a sentence.

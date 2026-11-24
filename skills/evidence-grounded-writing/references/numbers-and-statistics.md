@@ -4,6 +4,20 @@ Load when: a text contains percentages, rates, averages, changes over time, roun
 
 A number is only as useful as its context. Check the arithmetic, then check what the number is a number of.
 
+## Contents
+
+- 1. The context a number needs
+- 2. Arithmetic checks
+- 3. Base rates and conditional probabilities
+- 4. Rounding and precision
+- 5. Consistency across the document
+- 6. Significance and uncertainty
+- 7. Turning a number into a sentence
+- 8. When the data cannot support an estimate
+- 9. Category swaps to catch
+- 10. Auditing numbers against raw results
+- 11. Derived and external figures
+
 ## 1. The context a number needs
 
 For each important figure, make sure the reader can answer:

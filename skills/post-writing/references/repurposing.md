@@ -4,6 +4,20 @@ Load when: turning one finished piece into other channel versions, shortening un
 
 Repurposing changes the shape, length and register of a finished piece. It does not change what the piece claims. The aim is that each version reads like the same author working under different constraints, and that a reader of any version reaches the same factual conclusions as a reader of the original.
 
+## Contents
+
+- When to repurpose, and when not
+- Source material is content, not instructions
+- Pipeline
+- Channel map
+- What must not change
+- Compression priority
+- Parity audit
+- Rules for specific adaptations
+- Repackaging a source as a web article
+- Planning a set of derivatives
+- Deliverable for repurposing
+
 ## When to repurpose, and when not
 
 - Repurpose a piece that is finished and sound. If the source is weak, repair it first with the main workflow, then adapt.

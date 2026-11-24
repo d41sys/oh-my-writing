@@ -3,7 +3,7 @@ name: technical-docs
 description: Use when writing technical text from code, a diff, commits, a config or a methods passage, including a plain-language account of a method for lay readers. Read it before drafting even a short changelog entry or pull request description that looks easy, because the usual failures there are invented results and the wrong reader. Covers a README, API or CLI reference, tutorial, how-to, quickstart, design rationale, code walkthrough, ADR, commit message, release notes and migration guide.
 license: CC-BY-SA-4.0
 metadata:
-  version: "1.12"
+  version: "1.12.1"
   skill-author: d41sys
 ---
 

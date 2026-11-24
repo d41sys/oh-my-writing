@@ -651,6 +651,43 @@ def parse_omp(log: str) -> str:
     return reply
 
 
+def parse_usage(host: str, log: str) -> dict | None:
+    """Tokens a run used, summed over the host's events: input, output, cache_read, cache_write (Claude and omp) and
+    cost_usd where the host reports it. None when the log holds no usage, for example a run that died at start."""
+    total: dict = {}
+
+    def add(**fields):
+        for k, v in fields.items():
+            if isinstance(v, (int, float)):
+                total[k] = total.get(k, 0) + v
+
+    for line in log.splitlines():
+        try:
+            event = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if not isinstance(event, dict):
+            continue
+        if host == "omp":
+            msg = event.get("message") or {}
+            u = msg.get("usage") if event.get("type") == "message_end" and msg.get("role") == "assistant" else None
+            if u:
+                add(input=u.get("input"), output=u.get("output"), cache_read=u.get("cacheRead"),
+                    cache_write=u.get("cacheWrite"), cost_usd=(u.get("cost") or {}).get("total"))
+        elif host == "claude" and event.get("type") == "result":  # the result event carries the session totals
+            u = event.get("usage") or {}
+            total.clear()
+            add(input=u.get("input_tokens"), output=u.get("output_tokens"),
+                cache_read=u.get("cache_read_input_tokens"), cache_write=u.get("cache_creation_input_tokens"),
+                cost_usd=event.get("total_cost_usd"))
+        elif host == "codex" and event.get("type") == "turn.completed":
+            u = event.get("usage") or {}
+            add(input=u.get("input_tokens"), output=u.get("output_tokens"), cache_read=u.get("cached_input_tokens"))
+    if "cost_usd" in total:
+        total["cost_usd"] = round(total["cost_usd"], 6)
+    return total or None
+
+
 def skill_was_loaded(host: str, skill: str, log: str) -> bool:
     if f"skills/{skill}/SKILL.md" in log:
         return True
@@ -809,7 +846,7 @@ def run_one(case: dict, host: str, condition: str, rep: int, run_dir: Path, args
     error = result["error"] or ("isolation: " + "; ".join(problems) if problems else None)
     meta = {**base, "skill_loaded": condition_loaded(host, condition, case, result["log"]),
             "exit_code": result["exit_code"], "error": error, "duration_s": result["duration_s"],
-            "timeout": timeout, "date": dt.date.today().isoformat()}
+            "tokens": parse_usage(host, result["log"]), "timeout": timeout, "date": dt.date.today().isoformat()}
     (out_dir / "meta.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
     status = "ERROR" if meta["error"] else "done"
     print(f"[{status}] {case['id']} {host} {condition} r{rep} {meta['duration_s']}s"

@@ -60,7 +60,7 @@ def test_frontmatter_contract(skill):
     assert "Use when" in meta["description"], "description must say when to use the skill"
     metadata = meta.get("metadata") or {}
     assert isinstance(metadata.get("version"), str), "metadata.version must be a quoted string"
-    assert re.search(r'^\s+version:\s*"[0-9.]+"\s*$', raw, re.M), "quote metadata.version"
+    assert re.search(r'^\s+version:\s*"\d+\.\d+\.\d+"\s*$', raw, re.M), 'metadata.version is a quoted "x.y.z"'
     assert all(isinstance(v, str) for v in metadata.values()), "metadata values must be strings"
 
 
@@ -69,6 +69,21 @@ def test_body_limits_and_sections(skill):
     assert len(text.splitlines()) < 500, "keep SKILL.md under 500 lines"
     for heading in ("## When to use", "## Workflow"):
         assert heading in text, f"SKILL.md needs a '{heading}' section"
+
+
+def test_every_reference_is_reached_from_skill_md(skill):
+    """Each reference file is one link away from SKILL.md, where the agent learns when to load it."""
+    linked = {m.split("#", 1)[0] for m in LINK_RE.findall((skill / "SKILL.md").read_text(encoding="utf-8"))}
+    for f in sorted((skill / "references").glob("*.md")):
+        assert f"references/{f.name}" in linked, f"SKILL.md never links references/{f.name}"
+
+
+def test_long_references_open_with_contents(skill):
+    """A partial read of a long file still shows everything it holds."""
+    for f in sorted((skill / "references").glob("*.md")):
+        lines = f.read_text(encoding="utf-8").splitlines()
+        if len(lines) > 100:
+            assert any(line.startswith(("## Contents", "Contents:")) for line in lines[:30]), f"{f.name}: add Contents"
 
 
 def test_eval_and_codex_metadata(skill):

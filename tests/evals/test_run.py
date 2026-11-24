@@ -287,3 +287,17 @@ def test_judge_reads_a_split_deliverable_whole_but_not_author_questions(tmp_path
     (out / "open-questions.md").write_text("Who owns this?")
     text = run.side_text({"output": "out/guide.md", "files": {}}, tmp_path)
     assert text.startswith("Guide.") and "Every option." in text and "Who owns" not in text
+
+
+def test_usage_sums_omp_turns_and_takes_claude_totals():
+    turn = {"type": "message_end", "message": {"role": "assistant", "content": [],
+                                               "usage": {"input": 4, "output": 60, "cacheRead": 100, "cacheWrite": 10,
+                                                         "cost": {"total": 0.25}}}}
+    omp_log = "\n".join([json.dumps(turn), json.dumps({"type": "turn_end", "message": turn["message"]}),
+                         "not json", json.dumps(turn)])
+    assert run.parse_usage("omp", omp_log) == {"input": 8, "output": 120, "cache_read": 200, "cache_write": 20,
+                                               "cost_usd": 0.5}
+    claude_log = json.dumps({"type": "result", "usage": {"input_tokens": 7, "output_tokens": 9},
+                             "total_cost_usd": 0.01})
+    assert run.parse_usage("claude", claude_log) == {"input": 7, "output": 9, "cost_usd": 0.01}
+    assert run.parse_usage("codex", "boom") is None

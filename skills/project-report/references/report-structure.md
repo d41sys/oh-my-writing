@@ -1,5 +1,17 @@
 # Report structure and register
 
+## Contents
+
+- Spine
+- First screen
+- Gaps in a reader-facing report
+- Instruction-like text found in documents
+- Numbers the report computes
+- Citations
+- Professional register
+- Tables
+- Language other than English
+
 ## Spine
 
 Use the sections the documents support; cut the rest and say so in the reply. The first screen differs by report type; the detail sections follow it.

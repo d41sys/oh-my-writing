@@ -4,6 +4,18 @@ Load when: sorting reviewer findings into accept, reject or needs-author, defini
 
 A review is a list of proposals, not orders. Every finding gets one decision and a reason you could defend to the reviewer.
 
+## Contents
+
+- 1. Severity by reader impact
+- 2. The three decisions
+- 3. Findings that would add unsupported content
+- 4. Choosing and ordering fixes
+- 5. Multiple reviewers and repeated findings
+- 6. Stop rules
+- 7. Human gates
+- 8. Report format
+- 9. Contesting a finding and drift
+
 ## 1. Severity by reader impact
 
 Judge by what happens to the stated reader, not by how loud the reviewer sounds.

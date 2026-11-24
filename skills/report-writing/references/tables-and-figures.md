@@ -6,6 +6,19 @@ A visual earns its place when it shows a relationship, distribution, or contrast
 
 To build a chart from result data in a consistent paper style, with the plotting script and honest-axis checks, use the `results-visualization` skill when it is installed.
 
+## Contents
+
+- 1. Pick by the relationship shown
+- 2. Chart forms to avoid or handle with care
+- 3. Table craft
+- 4. Time, forecasts, and scenarios in charts
+- 5. Captions
+- 6. Accessibility and honesty
+- 7. Figure suggestion format
+- 8. Diagrams as code
+- 9. Document conventions in Markdown
+- 10. Visual audit before delivery
+
 ## 1. Pick by the relationship shown
 
 | The reader's question | Use | Notes |

@@ -23,6 +23,16 @@ Run it from the output folder. The deliverable folder holds `report.md` (the por
 
 Exit codes: 0 built, 1 `--strict` with warnings, 2 bad input (missing file or diagram).
 
+## Contents
+
+- Source format
+- Figures
+- Portable Markdown
+- How a diagram is embedded
+- Print
+- Styling
+- Build warnings
+
 ## Source format
 
 A Markdown subset. Front matter is optional:

@@ -4,6 +4,17 @@ Load when: writing a LinkedIn or portfolio profile, a portfolio case study, a st
 
 Character limits, field sizes and platform features named below change. Treat them as snapshots to verify in the live interface. Facts, titles, dates and numbers must match the résumé; expand wording, never history.
 
+## Contents
+
+- 1. Professional network profile
+- 2. Portfolio case studies
+- 3. Story bank (reusable evidence)
+- 4. Short application answers
+- 5. Cold and networking outreach
+- 6. Reference lists and reference requests
+- 7. Offer replies and negotiation messages
+- 8. Regional business English
+
 ## 1. Professional network profile
 
 A profile is a long-lived public record read by many recruiters and peers. It differs from a résumé (one application) and from feed posts (episodic; use `post-writing`).

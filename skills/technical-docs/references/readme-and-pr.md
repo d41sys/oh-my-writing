@@ -2,6 +2,17 @@ Load when: writing a README, code walkthrough, pull request description, commit 
 
 # README, walkthroughs, PRs, commits, ADRs, changelogs, migrations
 
+## Contents
+
+- README
+- Code walkthroughs (narrated tours of code)
+- Pull request descriptions
+- Decision records (ADRs)
+- Changelogs and release notes
+- Migration guides
+- Gaps in a reader-facing page
+- Safety pass before publishing
+
 ## README
 
 A README is the front door. Its reader has one question: "Is this for me, and can I make it work?" It is not the manual; it routes into the four page types.

@@ -3,7 +3,7 @@ name: structured-drafting
 description: Use when writing from notes, a transcript, an interview or a rough draft. Read it before drafting even a short bio, email, update or abstract that looks easy, because the usual failures there are invented detail and the wrong length. Covers emails, updates, bios, profiles, abstracts, summaries, articles and outlines made from meeting notes, a chat log, bullets or source excerpts, including a piece that has to match an example document. Also restructures a draft or co-writes it section by section.
 license: MIT
 metadata:
-  version: "1.14"
+  version: "1.14.1"
   skill-author: d41sys
 ---
 

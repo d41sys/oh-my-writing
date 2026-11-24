@@ -6,6 +6,19 @@ A trait belongs in a profile only if you can point at the evidence: a measured f
 
 Throughout: numbers describe the samples, they do not set targets. Words such as "short" or "long" below are labels for describing what you saw. They are not bins to write toward.
 
+## Contents
+
+- How to use the catalog
+- Measured traits
+- Move traits (read, then quote)
+- Language-specific notes
+- Regional English
+- Stated register with no samples
+- Channel and register
+- Observed versus preferred
+- Strength rubric
+- What never goes into a profile
+
 ## How to use the catalog
 
 1. Run the measured traits first (`scripts/voice_stats.py`, or count by hand on two or three samples if Python is unavailable).

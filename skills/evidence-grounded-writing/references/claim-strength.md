@@ -4,6 +4,17 @@ Load when: rewriting a partial claim, judging causal or comparative wording, dec
 
 A claim has two parts: what it says happens, and how widely. Evidence supports a certain width. Writing too wide is overclaiming; writing narrower than the evidence is sandbagging. Both mislead.
 
+## Contents
+
+- 1. The four levels
+- 2. Claim types and the verbs that fit
+- 3. Causal versus correlational wording
+- 4. Comparison validity
+- 5. Placing uncertainty
+- 6. Editing without upgrading
+- 7. High-stakes domains
+- 8. Quick rewrite recipes
+
 ## 1. The four levels
 
 Ordered by how much generalisation the sentence asserts.

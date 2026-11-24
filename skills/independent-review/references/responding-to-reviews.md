@@ -4,6 +4,19 @@ Load when: drafting or checking a point-by-point reply to reviewer, editor or cl
 
 Triage ([triage](triage.md)) decides which comments are worth acting on. This file turns that decision into the reply itself. The reply is an artifact like any other: the reader is the reviewer or editor, and every claim in it must trace to something the author has confirmed. The reply is reader-facing: it holds no `[ASK AUTHOR]`, `[VERIFY]` or `[UNTESTED]` markers and no notes to the author (unless the author asked for a draft to edit). The working file, issue list and hand-off in section 10 are author-facing, and markers stay there. Editing the manuscript text once comments are accepted belongs to the genre skill, or, for ML papers, to `structured-drafting` for structure plus `evidence-grounded-writing` for claims; checking numbers and citations against sources belongs to `evidence-grounded-writing`.
 
+## Contents
+
+- 1. Read the contract before drafting
+- 2. Split the comments into single issues
+- 3. Choose the response mode per issue
+- 4. The response block
+- 5. Three gates before the reply leaves
+- 6. Keep the letter and the manuscript in sync
+- 7. Over the limit
+- 8. Check the reply with a fresh reader
+- 9. Follow-up rounds
+- 10. Hand-off
+
 ## 1. Read the contract before drafting
 
 Collect, and ask the author for anything missing:

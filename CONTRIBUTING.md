@@ -39,11 +39,12 @@ Each skill is `skills/<name>/`, laid out like this:
 
 Rules that `tests/_meta` enforces or reviewers will ask about:
 
-1. **Bump `metadata.version`** in `SKILL.md` on every change.
-2. **Write in your own words.** Do not paste text from other skill packs or articles. Name sources only in README Acknowledgments and `THIRD_PARTY_NOTICES.md`. Before sending a PR, run `python3 evals/source_similarity.py --out /tmp/sim.md`. Any new long verbatim run with a source must be reworded.
-3. **Write general rules, not fixes for one test.** A rule must make sense to a writer who has never seen the benchmark. Skill text and descriptions must not contain names, phrases or answers from `evals/cases/`. `_meta` checks for 7-word runs from cases and fixtures, and for 5-word runs from case prompts in descriptions.
-4. **Never let a skill invent facts.** Gaps use only `[ASK AUTHOR: …]`, `[VERIFY: …]` or `[UNTESTED]`, outside the reader-facing text.
-5. **Keep descriptions as task classes** ("PR descriptions from a diff"), not copies of one prompt.
+1. **Bump `metadata.version`** (`"x.y.z"`) in `SKILL.md` on every change: z for wording, y for a new rule or reference, x for a changed workflow. CI fails a skill that changed without a bump.
+2. **Keep `SKILL.md` lean.** Under 500 lines and about 5,000 tokens; detail goes to `references/`, each file linked from `SKILL.md` with when to load it, and a `## Contents` list when it passes 100 lines.
+3. **Write in your own words.** Do not paste text from other skill packs or articles. Name sources only in README Acknowledgments and `THIRD_PARTY_NOTICES.md`. Before sending a PR, run `python3 evals/source_similarity.py --out /tmp/sim.md`. Any new long verbatim run with a source must be reworded.
+4. **Write general rules, not fixes for one test.** A rule must make sense to a writer who has never seen the benchmark. Skill text and descriptions must not contain names, phrases or answers from `evals/cases/`. `_meta` checks for 7-word runs from cases and fixtures, and for 5-word runs from case prompts in descriptions.
+5. **Never let a skill invent facts.** Gaps use only `[ASK AUTHOR: …]`, `[VERIFY: …]` or `[UNTESTED]`, outside the reader-facing text.
+6. **Keep descriptions as task classes** ("PR descriptions from a diff"), not copies of one prompt.
 
 ## Add a benchmark case
 
